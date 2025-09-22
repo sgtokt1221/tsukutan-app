@@ -4,6 +4,7 @@ import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
+import ReviewFlashcard from './ReviewFlashcard';
 
 const levelDescriptions = {
   1: "中1・前期", 2: "中1・後期", 3: "中2・前期", 4: "中2・後期", 5: "中3・前期",
@@ -39,8 +40,14 @@ export default function StudentDashboard() {
   const [selectionMode, setSelectionMode] = useState('main');
   const [testResultLevel, setTestResultLevel] = useState(0);
   const [learningWords, setLearningWords] = useState([]);
+  const [reviewWords, setReviewWords] = useState([]);
 
   useEffect(() => {
+    const savedReviewWords = localStorage.getItem('reviewWords');
+    if (savedReviewWords) {
+      setReviewWords(JSON.parse(savedReviewWords));
+    }
+
     const fetchInitialData = async () => {
       try {
         const wordsSnapshot = await getDocs(collection(db, 'words'));
@@ -94,12 +101,43 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
 
+  const handleLearningBack = (incorrectWords) => {
+    if (incorrectWords.length > 0) {
+      const newReviewWords = [...reviewWords];
+      incorrectWords.forEach(word => {
+        if (!newReviewWords.some(rw => rw.id === word.id)) {
+          newReviewWords.push(word);
+        }
+      });
+      setReviewWords(newReviewWords);
+      localStorage.setItem('reviewWords', JSON.stringify(newReviewWords));
+    }
+    setViewMode('select');
+    setSelectionMode('filter');
+  };
+
+  const startReview = () => {
+    setViewMode('review');
+  };
+
+  const handleUpdateReviewWords = (wordToRemove) => {
+    const newReviewWords = reviewWords.filter(word => word.id !== wordToRemove.id);
+    setReviewWords(newReviewWords);
+    localStorage.setItem('reviewWords', JSON.stringify(newReviewWords));
+  };
+
   if (loading) return <div className="loading-container"><p>単語データを読み込み中...</p></div>;
 
   const renderContent = () => {
     switch(viewMode) {
       case 'learn':
-        return <LearningFlashcard words={learningWords} onBack={() => { setViewMode('select'); setSelectionMode('filter'); }} />;
+        return <LearningFlashcard words={learningWords} onBack={handleLearningBack} />;
+      case 'review':
+        return <ReviewFlashcard
+                  words={reviewWords}
+                  onBack={() => setViewMode('select')}
+                  onUpdateReviewWords={handleUpdateReviewWords}
+                />;
       case 'test':
         return <VocabularyCheckTest allWords={allWords} onTestComplete={handleTestComplete} />;
       case 'result':
@@ -162,6 +200,14 @@ export default function StudentDashboard() {
             <button className="main-selection-card" onClick={() => setSelectionMode('filter')}>
               <span className="main-selection-title">大阪府公立入試英単語</span>
               <span className="main-selection-desc">レベル別・品詞別で学習</span>
+            </button>
+            <button
+              className="main-selection-card"
+              onClick={startReview}
+              disabled={reviewWords.length === 0}
+            >
+              <span className="main-selection-title">復習モード</span>
+              <span className="main-selection-desc">{reviewWords.length}単語を復習</span>
             </button>
           </div>
         );
