@@ -1,114 +1,133 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 function ReviewFlashcard({ words, onBack, onUpdateReviewWords }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [sessionWords, setSessionWords] = useState(words);
 
+  const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const x = useMotionValue(0); // for horizontal movement if any
-  const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  
-  // Change background color based on vertical drag
-  const backgroundColor = useTransform(y, [-150, 0, 150], ["#fef08a", "#ffffff", "#ffffff"]);
 
-  useEffect(() => {
-    setSessionWords(words);
-  }, [words]);
+  const rotateX = useTransform(y, [-150, 0, 150], [30, 0, -30]);
+  const rotateY = useTransform(x, [-150, 0, 150], [-30, 0, 30]);
 
-  const goToNextCard = () => {
-    setIsFlipped(false);
-    y.set(0);
-    x.set(0);
-    if (sessionWords.length > 0) {
-      setCurrentIndex((prevIndex) => (prevIndex + 1));
-    }
-  };
-  
-  const handleDragEnd = (event, info) => {
-    if (info.offset.y < -100) { // 上にスワイプ
-      const removedWord = sessionWords[currentIndex];
-      
-      // Update parent state
-      onUpdateReviewWords(removedWord);
-      
-      // Update local state for the current session
-      const newSessionWords = sessionWords.filter(w => w.id !== removedWord.id);
-      setSessionWords(newSessionWords);
+  // ▼▼▼ 修正点 ▼▼▼
+  // 左右・上のスワイプ方向を正しく判定し、色を返すようにロジックを修正
+  const backgroundColor = useTransform(
+    [x, y],
+    ([latestX, latestY]) => {
+      const isVerticalDrag = Math.abs(latestY) > Math.abs(latestX);
 
-      // Reset card position but don't change index immediately
-      y.set(0);
-      x.set(0);
-
-      // If we removed the last card in the list, we might need to handle the index
-      if (currentIndex >= newSessionWords.length && newSessionWords.length > 0) {
-        setCurrentIndex(newSessionWords.length - 1);
+      if (isVerticalDrag) {
+        // 上方向へのスワイプ（難しい）
+        if (latestY < -50) {
+          return "#facc15"; // 黄色
+        }
+      } else {
+        // 横方向へのスワイプ
+        if (latestX < -50) {
+          return "#ef4444"; // 左：赤（不正解）
+        } else if (latestX > 50) {
+          return "#4ade80"; // 右：緑（正解）
+        }
       }
 
-    } else if (info.offset.x > 100 || info.offset.x < -100) {
-        // Allow normal left/right swipe to go to next card without removing
-        goToNextCard();
-    } else {
-      // Snap back if not dragged far enough
-      y.set(0);
-      x.set(0);
+      // デフォルトの色
+      return "#ffffff"; // 白色
     }
-  };
-  
+  );
+  // ▲▲▲ 修正点 ▲▲▲
+
   const handleTap = () => {
     setIsFlipped(!isFlipped);
-    if (!isFlipped && sessionWords.length > 0 && sessionWords[currentIndex]) {
-      const utterance = new SpeechSynthesisUtterance(sessionWords[currentIndex].word);
+    if (!isFlipped && words.length > 0) {
+      const utterance = new SpeechSynthesisUtterance(words[questionIndex].word);
       utterance.lang = 'en-US';
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  if (!sessionWords || sessionWords.length === 0 || currentIndex >= sessionWords.length) {
+  const handleSwipe = (result) => {
+    const currentWord = words[questionIndex];
+    if (result === 'correct') {
+      onUpdateReviewWords(currentWord);
+    }
+    
+    if (questionIndex < words.length - 1) {
+      setQuestionIndex(prev => prev + 1);
+      setIsFlipped(false);
+      x.set(0);
+      y.set(0);
+    } else {
+      onBack();
+    }
+  };
+
+  const handleDragEnd = (event, info) => {
+    const { offset, velocity } = info;
+    const isVerticalDrag = Math.abs(velocity.y) > Math.abs(velocity.x);
+
+    if (isVerticalDrag) {
+      // 上方向へのスワイプ
+      if (offset.y < -100) {
+        handleSwipe('difficult');
+        return;
+      }
+    } else {
+      // 横方向へのスワイプ
+      if (offset.x > 100) {
+        handleSwipe('correct'); // 右：正解
+      } else if (offset.x < -100) {
+        handleSwipe('incorrect'); // 左：不正解
+      }
+    }
+  };
+
+  if (!words || words.length === 0) {
     return (
-      <div>
-        <p>復習する単語はもうありません。</p>
-        <button onClick={onBack} className="back-btn">← メインメニューに戻る</button>
+      <div className="flashcard-container">
+        <p>復習する単語はありません。</p>
+        <button onClick={onBack} className="back-btn">戻る</button>
       </div>
     );
   }
-  
-  const currentWord = sessionWords[currentIndex];
+
+  const currentWord = words[questionIndex];
 
   return (
     <>
-      <div className="learning-header">
-        <button onClick={onBack} className="back-btn">← メインメニューに戻る</button>
+      <div className="test-header">
+        <h3>復習モード</h3>
+        <p>右にスワイプで「覚えた」、左で「まだ」、上で「難しい」</p>
       </div>
-      <div id="flashcard-container">
+      <div className="flashcard-container">
         <motion.div
-          key={currentWord.id}
-          id="flashcard"
+          key={questionIndex}
+          className="flashcard"
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          style={{ y, x, rotate }}
+          style={{ x, y, rotateX, rotateY, backgroundColor }}
           onDragEnd={handleDragEnd}
           onTap={handleTap}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ duration: 0.4 }}
         >
-          <motion.div className="card-face card-front" style={{ backgroundColor }}>
-            <p id="card-front-text">{currentWord?.word}</p>
-          </motion.div>
-          <motion.div className="card-face card-back" style={{ backgroundColor }}>
-            <h3 id="card-back-word">{currentWord?.word}</h3>
-            <p id="card-back-meaning">{currentWord?.meaning}</p>
+          <div className="card-face card-front">
+            <p className="card-front-text">{currentWord?.word}</p>
+          </div>
+          <div className="card-face card-back">
+            <h3 className="card-back-word">{currentWord?.word}</h3>
+            <p className="card-back-meaning">{currentWord?.meaning}</p>
             <hr />
             <p className="example-text">{currentWord?.example}</p>
             <p className="example-text-ja">{currentWord?.exampleJa}</p>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
       <div className="card-navigation">
-        <div className="card-counter">{currentIndex + 1} / {sessionWords.length}</div>
+        <button onClick={onBack} className="back-btn small-btn">終了</button>
+        <div className="card-counter">{questionIndex + 1} / {words.length}</div>
       </div>
-       <p className="review-instruction">上にスワイプしてリストから削除</p>
     </>
   );
 }
