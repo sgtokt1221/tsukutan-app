@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 function LearningFlashcard({ words, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [incorrectWords, setIncorrectWords] = useState([]);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
@@ -25,7 +26,11 @@ function LearningFlashcard({ words, onBack }) {
   };
 
   const handleDragEnd = (event, info) => {
-    if (info.offset.x > 100 || info.offset.x < -100) {
+    if (info.offset.x < -100) { // 左にスワイプ（不正解）
+      const currentWord = words[currentIndex];
+      setIncorrectWords(prev => [...prev, currentWord]);
+      goToNextCard();
+    } else if (info.offset.x > 100) { // 右にスワイプ（正解）
       goToNextCard();
     }
   };
@@ -39,11 +44,15 @@ function LearningFlashcard({ words, onBack }) {
     }
   };
 
+  const handleBack = () => {
+    onBack(incorrectWords);
+  };
+
   if (!words || words.length === 0) {
     return (
       <div>
         <p>学習する単語がありません。</p>
-        <button onClick={onBack} className="back-btn">← 範囲選択に戻る</button>
+        <button onClick={handleBack} className="back-btn">← 範囲選択に戻る</button>
       </div>
     );
   }
@@ -53,7 +62,7 @@ function LearningFlashcard({ words, onBack }) {
   return (
     <>
       <div className="learning-header">
-        <button onClick={onBack} className="back-btn">← 範囲選択に戻る</button>
+        <button onClick={handleBack} className="back-btn">← 範囲選択に戻る</button>
       </div>
       <div id="flashcard-container">
         <motion.div
