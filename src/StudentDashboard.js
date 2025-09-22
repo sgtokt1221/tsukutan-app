@@ -151,17 +151,27 @@ export default function StudentDashboard() {
               <div className="filter-header">
                 <button onClick={() => setSelectionMode('main')} className="back-btn">← 教材選択に戻る</button>
                 <h3>大阪府公立入試英単語</h3>
-                {testResultLevel > 0 && (
-                  <div className="user-level-display">
-                    あなたのレベル: <strong>{testResultLevel}</strong>
-                  </div>
-                )}
               </div>
 
-             <button className="main-selection-card test-card" onClick={() => setViewMode('test')}>
-  <span className="main-selection-title">単語力チェックテスト</span>
-  <span className="main-selection-desc">現在の実力を測定します</span>
-</button>
+              {testResultLevel > 0 && (
+                <div className="result-card-display">
+                  <span className="result-card-title">現在のあなたのレベル</span>
+                  <span className="result-card-level">{testResultLevel}</span>
+                  <p className="result-card-desc">
+                    {getRecommendedLevels(testResultLevel).length > 0
+                      ? `レベル ${getRecommendedLevels(testResultLevel).join(', ')} の教材がおすすめです。`
+                      : '診断テストの結果、全範囲の学習がおすすめです。'
+                    }
+                  </p>
+                </div>
+              )}
+
+              <div className="test-button-container">
+                <button className="main-selection-card test-card" onClick={() => setViewMode('test')}>
+                  <span className="main-selection-title">単語力チェックテスト</span>
+                  <span className="main-selection-desc">現在の実力を測定します</span>
+                </button>
+              </div>
 
               <p className="description">
                 {recommendedLevels.length > 0

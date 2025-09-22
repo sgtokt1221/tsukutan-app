@@ -346,155 +346,10 @@ body {
   max-width: 300px;
   background-color: var(--primary-color);
   color: var(--text-color);
-}
-/* ... これまでのCSS ... */
-
-:root {
-  --primary-color: #A3E635; /* ライムグリーン */
-  --background-color: #F7FEE7;
-  --text-color: #36421E;
-  --card-bg: #FFFFFF;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-}
-
-body {
-  background-color: var(--background-color);
-  font-family: 'M PLUS Rounded 1c', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  margin: 0;
-}
-
-/* ===== ローディング画面 ===== */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-/* ===== ログイン画面のスタイル ===== */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-.login-box {
-  background-color: var(--card-bg);
-  padding: 40px;
-  border-radius: 24px;
-  box-shadow: 0 10px 30px var(--shadow-color);
-  width: 100%;
-  max-width: 380px;
-  text-align: center;
-}
-.logo-title {
-  font-size: 3rem;
-  color: var(--primary-color);
-  margin: 0 0 30px 0;
-  font-family: 'Yusei Magic', sans-serif;
-  transform: rotate(-2deg);
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-.input-group {
-  text-align: left;
-  margin-bottom: 20px;
-}
-.input-group label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #64748b;
-  margin-bottom: 5px;
-}
-.input-group input {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-.input-group input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.3);
-}
-.login-btn, .register-btn, .restart-btn {
-  width: 100%;
-  padding: 15px;
-  border: none;
   border-radius: 9999px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.login-btn {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  margin-bottom: 15px;
-}
-.register-btn {
-  background-color: #f1f5f9;
-  color: #475569;
-}
-.login-btn:hover, .register-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px var(--shadow-color);
-}
-
-/* ===== ダッシュボード共通のスタイル ===== */
-.dashboard-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  flex-shrink: 0;
-  background-color: var(--card-bg);
-}
-.dashboard-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  font-family: 'Yusei Magic', sans-serif;
-  transform: rotate(-2deg);
-}
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-size: 0.9rem;
-}
-.logout-btn {
-  width: auto;
-  padding: 5px 10px;
-  background: none;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.card-main {
-  flex-grow: 1;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--background-color);
-  overflow-y: auto;
 }
 
 /* ===== 新しい教材選択・フィルター画面のスタイル ===== */
-.selection-container {
-  width: 100%;
-}
 .selection-container.main-menu {
   display: flex;
   flex-direction: column;
@@ -513,6 +368,7 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  margin-bottom: 20px;
 }
 .main-selection-card:hover {
   transform: translateY(-5px) scale(1.02);
@@ -531,188 +387,66 @@ body {
   color: #64748b;
   margin-top: 10px;
 }
-.selection-container h3, .selection-container h4 {
-  text-align: center;
-  color: var(--text-color);
-}
-.selection-container h4 {
-  margin-top: 30px;
-  color: #94a3b8;
-}
-.description {
-  text-align: center;
-  color: #64748b;
-  margin-top: 5px;
-  padding: 0 20px;
-}
 .filter-header {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 .filter-header .back-btn {
   position: absolute;
   left: 0;
 }
 
-.start-btn {
-  width: 100%;
-}
-.test-link-container {
-  margin-top: 40px;
+/* ===== テスト結果表示カード ===== */
+.result-card-display {
+  background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+  color: #064e3b;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
   text-align: center;
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
 }
-.test-link-btn {
-  background: none;
-  border: none;
-  color: #64748b;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 5px;
-  width: auto;
+.result-card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  opacity: 0.8;
+  display: block;
 }
-.test-link-btn:hover {
-  color: var(--primary-color);
+.result-card-level {
+  font-size: 2.5rem;
+  font-weight: 900;
+  display: block;
+  margin: 5px 0;
+  text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+}
+.result-card-desc {
+  font-size: 0.9rem;
+  margin: 0;
 }
 
-/* ===== フラッシュカードのスタイル ===== */
-#flashcard-container {
-  flex-grow: 1;
+/* ===== テストボタンのコンテナ ===== */
+.test-button-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  perspective: 1000px;
-}
-#flashcard {
-  width: 95%;
-  max-width: 340px;
-  height: 250px;
-  position: relative;
-  transform-style: preserve-3d;
-  cursor: pointer;
-}
-.card-face {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px var(--shadow-color);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
-}
-.card-front { }
-.card-back {
-  transform: rotateY(180deg);
-  text-align: center;
-}
-#card-front-text {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-#card-back-word { font-size: 1.8rem; margin: 0; }
-#card-back-meaning { font-size: 1.2rem; margin-top: 5px; }
-#flashcard hr { width: 80%; border: 0; border-top: 1px solid var(--text-color); opacity: 0.5; margin: 15px 0; }
-.example-text { font-size: 1rem; margin: 5px 0 0 0; }
-.example-text-ja { font-size: 0.9rem; color: var(--text-color); opacity: 0.8; margin: 5px 0 0 0; }
-.card-navigation {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 20px;
-  flex-shrink: 0;
-}
-.card-navigation button {
-  width: 100px;
-  padding: 10px;
-  background-color: white;
-  border-radius: 9999px;
-}
-.card-counter {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #94a3b8;
-}
-.learning-header {
-  margin-bottom: 15px;
-}
-.back-btn {
-  width: auto;
-  background: none;
-  border: none;
-  color: #64748b;
-  cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0;
-}
-/* ===== テスト・結果画面のスタイル ===== */
-.test-header {
-  text-align: center;
   margin-bottom: 20px;
-  flex-shrink: 0;
 }
-.test-header h3 {
-  margin: 0;
-  color: var(--primary-color);
-}
-.test-header p {
-  margin: 5px 0 0 0;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-.test-result-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 20px 0;
-  height: 100%;
-  justify-content: center;
-}
-.test-result-container h2 {
-  color: var(--primary-color);
-  font-family: 'Yusei Magic', sans-serif;
-}
-.result-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
+.test-button-container .test-card {
   width: 90%;
-  box-shadow: 0 4px 15px var(--shadow-color);
-  margin-top: 20px;
+  max-width: 380px;
+  padding: 20px;
 }
-.result-card h3 {
-  margin: 0 0 15px 0;
+
+/* ===== テストカード専用のスタイル ===== */
+.main-selection-card.test-card {
+  background: linear-gradient(135deg, #34d399, #2dd4bf);
+  border-color: #2dd4bf;
 }
-.result-card p {
-  line-height: 1.6;
-  font-size: 0.9rem;
-}
-.result-card ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-  margin-top: 20px;
-}
-.result-card ul li {
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-}
-.restart-btn {
-  margin-top: 30px;
-  width: 80%;
-  max-width: 300px;
-  background-color: var(--primary-color);
-  color: var(--text-color);
+.main-selection-card.test-card .main-selection-title,
+.main-selection-card.test-card .main-selection-desc {
+  color: white;
 }
 
 /* ===== おすすめレベルをハイライトするスタイル ===== */
@@ -722,7 +456,6 @@ body {
   box-shadow: 0 8px 20px rgba(163, 230, 53, 0.4);
   position: relative;
 }
-
 .selection-card.recommended::after {
   content: 'おすすめ！';
   position: absolute;
@@ -735,66 +468,4 @@ body {
   border-radius: 10px;
   font-weight: 700;
   transform: rotate(10deg);
-}
-
-/* ... これまでのCSS ... */
-
-/* ===== 新しい教材選択画面のスタイル ===== */
-.selection-container.main-menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-.main-selection-card {
-  width: 90%;
-  max-width: 380px;
-  padding: 40px 20px;
-  border-radius: 24px;
-  background-color: white;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 8px 16px var(--shadow-color);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-.main-selection-card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 24px var(--shadow-color);
-  border-color: var(--primary-color);
-}
-.main-selection-title {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-.main-selection-desc {
-  display: block;
-  font-size: 1rem;
-  color: #64748b;
-  margin-top: 10px;
-}
-.filter-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  margin-bottom: 10px;
-}
-.filter-header .back-btn {
-  position: absolute;
-  left: 0;
-}
-
-/* ===== テストカード専用のスタイル ===== */
-.main-selection-card.test-card {
-  background: linear-gradient(135deg, #34d399, #2dd4bf);
-  border-color: #2dd4bf;
-}
-
-.main-selection-card.test-card .main-selection-title,
-.main-selection-card.test-card .main-selection-desc {
-  color: white;
 }
