@@ -28,9 +28,9 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
     };
     
     if (allWords.length > 0) {
-      if (stage === 1) setupStage(4);
-      if (stage === 2) setupStage(6);
-      if (stage === 3) setupStage(8);
+      if (stage === 1) setupStage(3); // ステージ1: 中学卒業レベル (英検3級)
+      if (stage === 2) setupStage(5); // ステージ2: 高校標準レベル (英検2級)
+      if (stage === 3) setupStage(7); // ステージ3: 大学中級レベル (英検準1級)
     }
   }, [allWords, stage, x]);
 
@@ -51,15 +51,19 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
   };
 
   const evaluateStage = (finalScore) => {
-    if (stage === 1) {
-      if (finalScore >= 8) { setStage(2); }
-      else if (finalScore <= 3) { onTestComplete(2); }
-      else { onTestComplete(4); }
-    } else if (stage === 2) {
-      if (finalScore >= 8) { setStage(3); }
-      else { onTestComplete(6); }
-    } else if (stage === 3) {
-      onTestComplete(8);
+    if (stage === 1) { // 中学卒業レベル(3)の結果
+      if (finalScore >= 8) { setStage(2); }         // -> 高校標準(5)のテストへ
+      else if (finalScore <= 2) { onTestComplete(1); } // -> 中学基礎(1)と判定
+      else if (finalScore <= 5) { onTestComplete(2); } // -> 中学標準(2)と判定
+      else { onTestComplete(3); }                      // -> 中学卒業(3)と判定
+    } else if (stage === 2) { // 高校標準レベル(5)の結果
+      if (finalScore >= 8) { setStage(3); }         // -> 大学中級(7)のテストへ
+      else if (finalScore <= 4) { onTestComplete(4); } // -> 高校基礎(4)と判定
+      else { onTestComplete(5); }                      // -> 高校標準(5)と判定
+    } else if (stage === 3) { // 大学中級レベル(7)の結果
+      if (finalScore >= 8) { onTestComplete(8); } // -> 大学上級(8)と判定
+      else if (finalScore <= 4) { onTestComplete(6); } // -> 高校応用(6)と判定
+      else { onTestComplete(7); }                      // -> 大学中級(7)と判定
     }
   };
 
@@ -113,5 +117,4 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
   );
 }
 
-// この行がエラーを解決します！
 export default VocabularyCheckTest;

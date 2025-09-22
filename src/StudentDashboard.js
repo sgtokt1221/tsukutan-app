@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 import VocabularyCheckTest from './VocabularyCheckTest';
@@ -6,9 +6,16 @@ import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
 
+// 新しいレベル定義（再配分案）
 const levelDescriptions = {
-  1: "中1・前期", 2: "中1・後期", 3: "中2・前期", 4: "中2・後期", 5: "中3・前期",
-  6: "中3・後期", 7: "高校入試標準", 8: "高校入試応用", 9: "高校基礎", 10: "難関レベル",
+  1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1" },
+  2: { label: "中学標準", equivalent: "英検4級 / A1" },
+  3: { label: "中学卒業", equivalent: "英検3級 / A2" },
+  4: { label: "高校基礎", equivalent: "英検準2級 / A2" },
+  5: { label: "高校標準", equivalent: "英検2級 / B1" },
+  6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2" },
+  7: { label: "大学中級", equivalent: "英検準1級 / B2" },
+  8: { label: "大学上級", equivalent: "英検1級 / C1" }
 };
 
 const posMap = {
@@ -23,14 +30,9 @@ const posDisplayOrder = [
 ];
 
 const getRecommendedLevels = (resultLevel) => {
-  if (!resultLevel || resultLevel === 0) return [];
-  switch (resultLevel) {
-    case 2: return [1, 2, 3];
-    case 4: return [4, 5];
-    case 6: return [6, 7];
-    case 8: return [8, 9];
-    default: return [];
-  }
+  if (resultLevel === null || resultLevel === undefined || resultLevel === 0) return [];
+  if (resultLevel >= 8) return [8];
+  return [resultLevel, resultLevel + 1];
 };
 
 export default function StudentDashboard() {
@@ -41,6 +43,7 @@ export default function StudentDashboard() {
   const [testResultLevel, setTestResultLevel] = useState(0);
   const [learningWords, setLearningWords] = useState([]);
   const [reviewWords, setReviewWords] = useState([]);
+  const [filterTab, setFilterTab] = useState('level');
 
   useEffect(() => {
     const savedReviewWords = localStorage.getItem('reviewWords');
@@ -156,11 +159,11 @@ export default function StudentDashboard() {
               {testResultLevel > 0 && (
                 <div className="result-card-display">
                   <span className="result-card-title">現在のあなたのレベル</span>
-                  <span className="result-card-level">{testResultLevel}</span>
+                  <span className="result-card-level">{levelDescriptions[testResultLevel]?.label || `レベル ${testResultLevel}`}</span>
                   <p className="result-card-desc">
-                    {getRecommendedLevels(testResultLevel).length > 0
-                      ? `レベル ${getRecommendedLevels(testResultLevel).join(', ')} の教材がおすすめです。`
-                      : '診断テストの結果、全範囲の学習がおすすめです。'
+                    {recommendedLevels.length > 1
+                      ? `${levelDescriptions[recommendedLevels[0]]?.label}、${levelDescriptions[recommendedLevels[1]]?.label}の教材がおすすめです。`
+                      : '全範囲の学習がおすすめです。'
                     }
                   </p>
                 </div>
@@ -173,33 +176,35 @@ export default function StudentDashboard() {
                 </button>
               </div>
 
-              <p className="description">
-                {recommendedLevels.length > 0
-                  ? `あなたへのおすすめは緑色のレベルです！`
-                  : "学習したい範囲をタップしてください。"
-                }
-              </p>
-              <h4>レベルから選ぶ</h4>
-              <div className="selection-grid">
-                {Object.entries(levelDescriptions).map(([level, desc]) => {
-                  const levelNum = parseInt(level);
-                  const isRecommended = recommendedLevels.includes(levelNum);
-                  return (
-                    <button key={level} className={`selection-card ${isRecommended ? 'recommended' : ''}`} onClick={() => startLearning('level', levelNum)}>
-                      <span className="selection-card-level">レベル {level}</span>
-                      <span className="selection-card-desc">{desc}</span>
+              <div className="filter-tabs">
+                <button onClick={() => setFilterTab('level')} className={filterTab === 'level' ? 'active' : ''}>レベル別</button>
+                <button onClick={() => setFilterTab('pos')} className={filterTab === 'pos' ? 'active' : ''}>品詞別</button>
+              </div>
+
+              {filterTab === 'level' && (
+                <div className="selection-grid">
+                  {Object.entries(levelDescriptions).map(([level, { label, equivalent }]) => {
+                    const levelNum = parseInt(level);
+                    const isRecommended = recommendedLevels.includes(levelNum);
+                    return (
+                      <button key={level} className={`selection-card ${isRecommended ? 'recommended' : ''}`} onClick={() => startLearning('level', levelNum)}>
+                        <span className="selection-card-level">{label}</span>
+                        <span className="selection-card-desc">{equivalent}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {filterTab === 'pos' && (
+                <div className="selection-grid pos-grid">
+                  {posDisplayOrder.map(pos => (
+                    <button key={pos} className="selection-card pos-card" onClick={() => startLearning('pos', pos)}>
+                      {pos}
                     </button>
-                  );
-                })}
-              </div>
-              <h4>品詞から選ぶ</h4>
-              <div className="selection-grid pos-grid">
-                {posDisplayOrder.map(pos => (
-                  <button key={pos} className="selection-card pos-card" onClick={() => startLearning('pos', pos)}>
-                    {pos}
-                  </button>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         }
