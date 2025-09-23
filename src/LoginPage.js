@@ -11,8 +11,8 @@ function LoginPage() {
       alert('IDとパスワードを入力してください。');
       return;
     }
-    // 生徒IDからメールアドレスを生成
-    const email = `${studentId}@tsukasafoods.com`;
+    // If studentId contains '@', treat it as a full email. Otherwise, append domain.
+    const email = studentId.includes('@') ? studentId : `${studentId}@tsukasafoods.com`;
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
@@ -31,8 +31,7 @@ function LoginPage() {
             type="text"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            placeholder="4桁のID"
-            maxLength="4"
+            placeholder="IDまたはメールアドレス"
           />
         </div>
         <div className="input-group">
