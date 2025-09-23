@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
 import { auth } from './firebaseConfig.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleRegister = async () => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      alert(`登録に失敗しました: ${error.message}`);
-    }
-  };
 
   const handleLogin = async () => {
     try {
@@ -47,9 +39,10 @@ function LoginPage() {
         <button className="login-btn" onClick={handleLogin}>
           ログイン
         </button>
-        <button className="register-btn" onClick={handleRegister}>
+        {/* Registration is now handled by admin import */}
+        {/* <button className="register-btn" onClick={handleRegister}>
           新規登録
-        </button>
+        </button> */}
       </div>
     </div>
   );

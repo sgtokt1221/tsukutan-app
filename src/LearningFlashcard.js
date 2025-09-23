@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
+function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo, auth, db, onSaveLog }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
@@ -15,16 +15,16 @@ function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
   useEffect(() => {
     return () => {
       // セッションが最後まで終わっていない場合のみ保存
-      if (currentIndex < words.length - 1 && sessionInfo) {
+      if (currentIndex < words.length - 1 && sessionInfo && onSaveLog) {
         const sessionData = {
           ...sessionInfo,
           index: currentIndex,
+          timestamp: new Date()
         };
-        localStorage.setItem('lastLearningSession', JSON.stringify(sessionData));
-        console.log('学習進捗を保存しました:', sessionData);
+        onSaveLog(sessionData);
       }
     };
-  }, [currentIndex, words, sessionInfo]);
+  }, [currentIndex, words, sessionInfo, onSaveLog]);
   // ▲▲▲ 修正完了 ▲▲▲
 
   const goToNextCard = () => {
@@ -74,7 +74,7 @@ function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
   // ▼▼▼ 「続きから」機能のための修正 ▼▼▼
   // 正常に終了した場合（戻るボタンを押した時）は、保存されたセッション情報を削除する
   const handleBack = () => {
-    localStorage.removeItem('lastLearningSession');
+    // The log is now deleted in the parent component's handleLearningBack
     onBack(incorrectWords);
   };
   // ▲▲▲ 修正完了 ▲▲▲

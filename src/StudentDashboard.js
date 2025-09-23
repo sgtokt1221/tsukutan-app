@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
-import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc, writeBatch, deleteDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
@@ -61,32 +61,32 @@ export default function StudentDashboard() {
   const [currentSessionInfo, setCurrentSessionInfo] = useState(null);
 
   useEffect(() => {
-    const savedSession = localStorage.getItem('lastLearningSession');
-    if (savedSession) {
-      try {
-        setLastSession(JSON.parse(savedSession));
-      } catch (e) {
-        console.error("セッション情報の読み込みに失敗:", e);
-        localStorage.removeItem('lastLearningSession');
-      }
-    }
-    
-    const savedReviewWords = localStorage.getItem('reviewWords');
-    if (savedReviewWords) {
-      try {
-        setReviewWords(JSON.parse(savedReviewWords));
-      } catch (e) {
-        console.error("復習単語の読み込みに失敗しました:", e);
-        setReviewWords([]);
-      }
-    }
-
     const fetchUserData = async () => {
       if (auth.currentUser) {
-        const userDocRef = doc(db, 'users', auth.currentUser.uid);
+        const uid = auth.currentUser.uid;
+
+        // Fetch user level
+        const userDocRef = doc(db, 'users', uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists() && userDoc.data().level) {
           setTestResultLevel(userDoc.data().level);
+        }
+
+        // Fetch review words
+        const reviewWordsColRef = collection(db, 'users', uid, 'reviewWords');
+        const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
+        const reviewWordsData = reviewWordsSnapshot.docs.map(d => d.data());
+        setReviewWords(reviewWordsData);
+
+        // Fetch last session log
+        const logsColRef = collection(db, 'users', uid, 'logs');
+        const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
+        const logSnapshot = await getDocs(q);
+        if (!logSnapshot.empty) {
+          const lastLog = logSnapshot.docs[0].data();
+          // To prevent resuming a completed session, we need a status field.
+          // For now, let's assume if a log exists, it's resumable.
+          setLastSession(lastLog);
         }
       }
       setLoading(false);
@@ -141,20 +141,31 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
   
-  const handleLearningBack = (incorrectWords) => {
-    localStorage.removeItem('lastLearningSession');
-    setLastSession(null); 
-    
-    if (incorrectWords && incorrectWords.length > 0) {
-      const newReviewWords = [...reviewWords];
-      incorrectWords.forEach(word => {
-        if (!newReviewWords.some(rw => rw.id === word.id)) {
-          newReviewWords.push(word);
-        }
-      });
-      setReviewWords(newReviewWords);
-      localStorage.setItem('reviewWords', JSON.stringify(newReviewWords));
+  const handleLearningBack = async (incorrectWords) => {
+    if (auth.currentUser) {
+      const uid = auth.currentUser.uid;
+
+      // Session is finished, so clear the resumable session state
+      setLastSession(null);
+
+      // Add new words to the review list
+      if (incorrectWords && incorrectWords.length > 0) {
+        const batch = writeBatch(db);
+        const newReviewWords = [...reviewWords];
+
+        incorrectWords.forEach(word => {
+          if (!newReviewWords.some(rw => rw.id === word.id)) {
+            newReviewWords.push(word);
+            const reviewWordRef = doc(db, 'users', uid, 'reviewWords', word.id);
+            batch.set(reviewWordRef, word);
+          }
+        });
+
+        await batch.commit();
+        setReviewWords(newReviewWords);
+      }
     }
+
     setViewMode('select');
     setSelectionMode('filter');
   };
@@ -213,9 +224,23 @@ export default function StudentDashboard() {
     setViewMode('review');
   };
 
-  const handleReviewComplete = (remainingWords) => {
+  const handleReviewComplete = async (remainingWords) => {
+    if (auth.currentUser) {
+      const uid = auth.currentUser.uid;
+      const originalWordIds = reviewWords.map(w => w.id);
+      const remainingWordIds = remainingWords.map(w => w.id);
+      const completedWordIds = originalWordIds.filter(id => !remainingWordIds.includes(id));
+
+      if (completedWordIds.length > 0) {
+        const batch = writeBatch(db);
+        completedWordIds.forEach(wordId => {
+          const reviewWordRef = doc(db, 'users', uid, 'reviewWords', wordId);
+          batch.delete(reviewWordRef);
+        });
+        await batch.commit();
+      }
+    }
     setReviewWords(remainingWords);
-    localStorage.setItem('reviewWords', JSON.stringify(remainingWords));
     setViewMode('select');
     setSelectionMode('main');
   };
@@ -228,14 +253,26 @@ export default function StudentDashboard() {
 
   if (loading) return <div className="loading-container"><p>読み込み中...</p></div>;
 
+  const handleSaveLog = async (sessionData) => {
+    if (auth.currentUser) {
+      const uid = auth.currentUser.uid;
+      const logsColRef = collection(db, 'users', uid, 'logs');
+      await addDoc(logsColRef, { ...sessionData, status: 'paused' });
+      console.log('学習進捗をDBに保存しました:', sessionData);
+    }
+  };
+
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
-        return <LearningFlashcard 
-                  words={learningWords} 
+        return <LearningFlashcard
+                  words={learningWords}
                   onBack={handleLearningBack}
                   initialIndex={initialLearnIndex}
                   sessionInfo={currentSessionInfo}
+                  auth={auth}
+                  db={db}
+                  onSaveLog={handleSaveLog}
                 />;
       case 'review':
         return <ReviewFlashcard words={reviewWords} onBack={handleReviewComplete} />;
