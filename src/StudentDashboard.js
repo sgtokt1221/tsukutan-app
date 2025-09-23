@@ -5,8 +5,13 @@ import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
+import LevelBadge from './LevelBadge';
 
-// 新しいレベル定義（再配分案）
+const textbooks = {
+  'osaka-koukou-nyuushi': '大阪府公立入試英単語',
+  'target-1900': 'ターゲット1900'
+};
+
 const levelDescriptions = {
   1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1" },
   2: { label: "中学標準", equivalent: "英検4級 / A1" },
@@ -15,7 +20,9 @@ const levelDescriptions = {
   5: { label: "高校標準", equivalent: "英検2級 / B1" },
   6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2" },
   7: { label: "大学中級", equivalent: "英検準1級 / B2" },
-  8: { label: "大学上級", equivalent: "英検1級 / C1" }
+  8: { label: "大学上級", equivalent: "英検1級 / C1" },
+  9: { label: "超上級", equivalent: "英検1級+" },
+  10:{ label: "ネイティブ", equivalent: "ネイティブレベル" }
 };
 
 const posMap = {
@@ -29,12 +36,6 @@ const posDisplayOrder = [
   '疑問副詞', '疑問形容詞', '疑問代名詞', '関係代名詞', '冠詞', '間投詞', '熟語'
 ];
 
-const getRecommendedLevels = (resultLevel) => {
-  if (resultLevel === null || resultLevel === undefined || resultLevel === 0) return [];
-  if (resultLevel >= 8) return [8];
-  return [resultLevel, resultLevel + 1];
-};
-
 export default function StudentDashboard() {
   const [allWords, setAllWords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,36 +45,85 @@ export default function StudentDashboard() {
   const [learningWords, setLearningWords] = useState([]);
   const [reviewWords, setReviewWords] = useState([]);
   const [filterTab, setFilterTab] = useState('level');
+  const [selectedTextbookId, setSelectedTextbookId] = useState(null);
+  const [testWords, setTestWords] = useState([]);
+  
+  // ▼▼▼ 修正点 ▼▼▼
+  const [lastSession, setLastSession] = useState(null);
+  const [initialLearnIndex, setInitialLearnIndex] = useState(0);
+  const [currentSessionInfo, setCurrentSessionInfo] = useState(null);
+  // ▲▲▲ 修正点 ▲▲▲
 
   useEffect(() => {
     const savedReviewWords = localStorage.getItem('reviewWords');
     if (savedReviewWords) {
-      setReviewWords(JSON.parse(savedReviewWords));
+      try {
+        setReviewWords(JSON.parse(savedReviewWords));
+      } catch (e) {
+        console.error("復習単語の読み込みに失敗しました:", e);
+        setReviewWords([]);
+      }
     }
 
-    const fetchInitialData = async () => {
-      try {
-        const wordsSnapshot = await getDocs(collection(db, 'words'));
-        const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAllWords(wordsData);
+    // ▼▼▼ 修正点 ▼▼▼
+    const savedSession = localStorage.getItem('lastLearningSession');
+    if (savedSession) {
+      setLastSession(JSON.parse(savedSession));
+    }
+    // ▲▲▲ 修正点 ▲▲▲
 
-        if (auth.currentUser) {
-          const userDocRef = doc(db, 'users', auth.currentUser.uid);
-          const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists() && userDoc.data().level) {
-            setTestResultLevel(userDoc.data().level);
-          }
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const userDocRef = doc(db, 'users', auth.currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists() && userDoc.data().level) {
+          setTestResultLevel(userDoc.data().level);
         }
-      } catch (error) {
-        console.error("データの取得に失敗しました:", error);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
-    fetchInitialData();
+    fetchUserData();
   }, []);
 
+  const handleSelectTextbook = async (textbookId) => {
+    setLoading(true);
+    setSelectedTextbookId(textbookId);
+    try {
+      const wordsSnapshot = await getDocs(collection(db, 'textbooks', textbookId, 'words'));
+      const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAllWords(wordsData);
+      setSelectionMode('filter');
+    } catch (error) {
+      console.error("単語データの取得に失敗しました:", error);
+      alert("単語データの読み込みに失敗しました。");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = () => auth.signOut();
+
+  const startCheckTest = async () => {
+    setLoading(true);
+    try {
+      let combinedWords = [];
+      for (const id of Object.keys(textbooks)) {
+        const wordsSnapshot = await getDocs(collection(db, 'textbooks', id, 'words'));
+        const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        combinedWords = [...combinedWords, ...wordsData];
+      }
+      
+      const uniqueWords = Array.from(new Map(combinedWords.map(word => [word.word, word])).values());
+      
+      setTestWords(uniqueWords);
+      setViewMode('test');
+    } catch (error) {
+      console.error("全単語データの取得に失敗しました:", error);
+      alert("テストデータの読み込みに失敗しました。");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTestComplete = async (finalLevel) => {
     setTestResultLevel(finalLevel);
@@ -94,18 +144,62 @@ export default function StudentDashboard() {
       filtered = allWords.filter(word => word.level === value);
     } else if (filterType === 'pos') {
       const posAbbreviation = posMap[value];
-      filtered = allWords.filter(word => word.partOfSpeech.includes(posAbbreviation));
+      filtered = allWords.filter(word => word.partOfSpeech && word.partOfSpeech.includes(posAbbreviation));
     }
     if (filtered.length === 0) {
       alert('選択された条件に一致する単語がありません。');
       return;
     }
+    
+    // ▼▼▼ 修正点 ▼▼▼
+    // 新しいセッションを開始するので、前回の続き情報をクリアし、開始点を0に
+    localStorage.removeItem('lastLearningSession');
+    setLastSession(null);
+    setInitialLearnIndex(0);
+    
+    // 現在のセッション情報を保存
+    setCurrentSessionInfo({ textbookId: selectedTextbookId, filterType, filterValue: value });
+    // ▲▲▲ 修正点 ▲▲▲
+
     setLearningWords(filtered);
     setViewMode('learn');
   };
 
+  // ▼▼▼ 修正点 ▼▼▼
+  // 「続きから」ボタンが押された時の処理
+  const resumeLearning = async () => {
+    if (!lastSession) return;
+    setLoading(true);
+    try {
+      // 該当の教材データを読み込む
+      const wordsSnapshot = await getDocs(collection(db, 'textbooks', lastSession.textbookId, 'words'));
+      const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      // 該当のレベル・品詞でフィルタリング
+      let filtered = [];
+      if (lastSession.filterType === 'level') {
+        filtered = wordsData.filter(word => word.level === lastSession.filterValue);
+      } else if (lastSession.filterType === 'pos') {
+        const posAbbreviation = posMap[lastSession.filterValue];
+        filtered = wordsData.filter(word => word.partOfSpeech && word.partOfSpeech.includes(posAbbreviation));
+      }
+      
+      setLearningWords(filtered);
+      setInitialLearnIndex(lastSession.index); // 保存されたインデックスを開始点に設定
+      setCurrentSessionInfo(lastSession); // セッション情報を引き継ぐ
+      setViewMode('learn');
+    } catch(error) {
+      alert('学習データの読み込みに失敗しました。');
+      localStorage.removeItem('lastLearningSession');
+      setLastSession(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // ▲▲▲ 修正点 ▲▲▲
+  
   const handleLearningBack = (incorrectWords) => {
-    if (incorrectWords.length > 0) {
+    if (incorrectWords && incorrectWords.length > 0) {
       const newReviewWords = [...reviewWords];
       incorrectWords.forEach(word => {
         if (!newReviewWords.some(rw => rw.id === word.id)) {
@@ -123,59 +217,48 @@ export default function StudentDashboard() {
     setViewMode('review');
   };
 
-  const handleUpdateReviewWords = (wordToRemove) => {
-    const newReviewWords = reviewWords.filter(word => word.id !== wordToRemove.id);
-    setReviewWords(newReviewWords);
-    localStorage.setItem('reviewWords', JSON.stringify(newReviewWords));
+  const handleReviewComplete = (remainingWords) => {
+    setReviewWords(remainingWords);
+    localStorage.setItem('reviewWords', JSON.stringify(remainingWords));
+    setViewMode('select');
+    setSelectionMode('main');
+  };
+  
+  const handleBackToMainMenu = () => {
+    setSelectionMode('main');
+    setSelectedTextbookId(null);
+    setAllWords([]);
   };
 
-  if (loading) return <div className="loading-container"><p>単語データを読み込み中...</p></div>;
+  if (loading) return <div className="loading-container"><p>読み込み中...</p></div>;
 
   const renderContent = () => {
-    switch(viewMode) {
+    switch (viewMode) {
       case 'learn':
-        return <LearningFlashcard words={learningWords} onBack={handleLearningBack} />;
-      case 'review':
-        return <ReviewFlashcard 
-                  words={reviewWords} 
-                  onBack={() => setViewMode('select')} 
-                  onUpdateReviewWords={handleUpdateReviewWords} 
+        // ▼▼▼ 修正点 ▼▼▼
+        return <LearningFlashcard 
+                  words={learningWords} 
+                  onBack={handleLearningBack}
+                  initialIndex={initialLearnIndex}
+                  sessionInfo={currentSessionInfo}
                 />;
+        // ▲▲▲ 修正点 ▲▲▲
+      case 'review':
+        return <ReviewFlashcard words={reviewWords} onBack={handleReviewComplete} />;
       case 'test':
-        return <VocabularyCheckTest allWords={allWords} onTestComplete={handleTestComplete} />;
+        return <VocabularyCheckTest allWords={testWords} onTestComplete={handleTestComplete} />;
       case 'result':
         return <TestResult level={testResultLevel} onRestart={() => setViewMode('select')} />;
       case 'select':
       default:
-        if (selectionMode === 'filter') {
-          const recommendedLevels = getRecommendedLevels(testResultLevel);
+        if (selectionMode === 'filter' && selectedTextbookId) {
           return (
             <div className="selection-container">
               <div className="filter-header">
-                <button onClick={() => setSelectionMode('main')} className="back-btn">← 教材選択に戻る</button>
-                <h3>大阪府公立入試英単語</h3>
+                <button onClick={handleBackToMainMenu} className="back-btn">← 教材選択に戻る</button>
+                <h3>{textbooks[selectedTextbookId]}</h3>
               </div>
-
-              {testResultLevel > 0 && (
-                <div className="result-card-display">
-                  <span className="result-card-title">現在のあなたのレベル</span>
-                  <span className="result-card-level">{levelDescriptions[testResultLevel]?.label || `レベル ${testResultLevel}`}</span>
-                  <p className="result-card-desc">
-                    {recommendedLevels.length > 1
-                      ? `${levelDescriptions[recommendedLevels[0]]?.label}、${levelDescriptions[recommendedLevels[1]]?.label}の教材がおすすめです。`
-                      : '全範囲の学習がおすすめです。'
-                    }
-                  </p>
-                </div>
-              )}
-
-              <div className="test-button-container">
-                <button className="main-selection-card test-card" onClick={() => setViewMode('test')}>
-                  <span className="main-selection-title">単語力チェックテスト</span>
-                  <span className="main-selection-desc">現在の実力を測定します</span>
-                </button>
-              </div>
-
+              
               <div className="filter-tabs">
                 <button onClick={() => setFilterTab('level')} className={filterTab === 'level' ? 'active' : ''}>レベル別</button>
                 <button onClick={() => setFilterTab('pos')} className={filterTab === 'pos' ? 'active' : ''}>品詞別</button>
@@ -185,9 +268,8 @@ export default function StudentDashboard() {
                 <div className="selection-grid">
                   {Object.entries(levelDescriptions).map(([level, { label, equivalent }]) => {
                     const levelNum = parseInt(level);
-                    const isRecommended = recommendedLevels.includes(levelNum);
                     return (
-                      <button key={level} className={`selection-card ${isRecommended ? 'recommended' : ''}`} onClick={() => startLearning('level', levelNum)}>
+                      <button key={level} className="selection-card" onClick={() => startLearning('level', levelNum)}>
                         <span className="selection-card-level">{label}</span>
                         <span className="selection-card-desc">{equivalent}</span>
                       </button>
@@ -211,11 +293,37 @@ export default function StudentDashboard() {
         // メイン選択画面
         return (
           <div className="selection-container main-menu">
+            <LevelBadge level={testResultLevel} />
+            
             <h3>学習メニュー</h3>
-            <button className="main-selection-card" onClick={() => setSelectionMode('filter')}>
-              <span className="main-selection-title">大阪府公立入試英単語</span>
-              <span className="main-selection-desc">レベル別・品詞別で学習</span>
+            
+            {/* ▼▼▼ 修正点：続きからボタンの表示 ▼▼▼ */}
+            {lastSession && (
+              <button className="main-selection-card continue-card" onClick={resumeLearning}>
+                <span className="main-selection-title">続きから学習する</span>
+                <span className="main-selection-desc">
+                  {textbooks[lastSession.textbookId]} - {
+                    lastSession.filterType === 'level' 
+                    ? levelDescriptions[lastSession.filterValue]?.label 
+                    : lastSession.filterValue
+                  }
+                </span>
+              </button>
+            )}
+            {/* ▲▲▲ 修正点 ▲▲▲ */}
+
+            <button className="main-selection-card test-card" onClick={startCheckTest}>
+              <span className="main-selection-title">単語力チェックテスト</span>
+              <span className="main-selection-desc">現在の実力を測定します</span>
             </button>
+
+            {Object.entries(textbooks).map(([id, name]) => (
+              <button key={id} className="main-selection-card" onClick={() => handleSelectTextbook(id)}>
+                <span className="main-selection-title">{name}</span>
+                <span className="main-selection-desc">レベル別・品詞別で学習</span>
+              </button>
+            ))}
+            
             <button 
               className="main-selection-card" 
               onClick={startReview} 
