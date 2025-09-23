@@ -3,14 +3,21 @@ import { auth } from './firebaseConfig.js';
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    if (!studentId || !password) {
+      alert('IDとパスワードを入力してください。');
+      return;
+    }
+    // 生徒IDからメールアドレスを生成
+    const email = `${studentId}@tsukasafoods.com`;
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      alert(`ログインに失敗しました: ${error.message}`);
+      alert(`ログインに失敗しました。IDまたはパスワードが間違っています。`);
+      console.error("Login error:", error);
     }
   };
 
@@ -19,12 +26,13 @@ function LoginPage() {
       <div className="login-box">
         <h1 className="logo-title">つくたん</h1>
         <div className="input-group">
-          <label>メールアドレス</label>
+          <label>ID</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="test@example.com"
+            type="text"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            placeholder="4桁のID"
+            maxLength="4"
           />
         </div>
         <div className="input-group">
@@ -33,16 +41,12 @@ function LoginPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="6文字以上"
+            placeholder="先生から指定されたパスワード"
           />
         </div>
         <button className="login-btn" onClick={handleLogin}>
           ログイン
         </button>
-        {/* Registration is now handled by admin import */}
-        {/* <button className="register-btn" onClick={handleRegister}>
-          新規登録
-        </button> */}
       </div>
     </div>
   );
