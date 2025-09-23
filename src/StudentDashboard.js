@@ -36,6 +36,14 @@ const posDisplayOrder = [
   '疑問副詞', '疑問形容詞', '疑問代名詞', '関係代名詞', '冠詞', '間投詞', '熟語'
 ];
 
+// ▼▼▼ 修正点：この関数を再度追加しました ▼▼▼
+const getRecommendedLevels = (resultLevel) => {
+  if (resultLevel === null || resultLevel === undefined || resultLevel === 0) return [];
+  if (resultLevel >= 10) return [10];
+  return [resultLevel, resultLevel + 1];
+};
+// ▲▲▲ 修正完了 ▲▲▲
+
 export default function StudentDashboard() {
   const [allWords, setAllWords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,13 +56,21 @@ export default function StudentDashboard() {
   const [selectedTextbookId, setSelectedTextbookId] = useState(null);
   const [testWords, setTestWords] = useState([]);
   
-  // ▼▼▼ 修正点 ▼▼▼
   const [lastSession, setLastSession] = useState(null);
   const [initialLearnIndex, setInitialLearnIndex] = useState(0);
   const [currentSessionInfo, setCurrentSessionInfo] = useState(null);
-  // ▲▲▲ 修正点 ▲▲▲
 
   useEffect(() => {
+    const savedSession = localStorage.getItem('lastLearningSession');
+    if (savedSession) {
+      try {
+        setLastSession(JSON.parse(savedSession));
+      } catch (e) {
+        console.error("セッション情報の読み込みに失敗:", e);
+        localStorage.removeItem('lastLearningSession');
+      }
+    }
+    
     const savedReviewWords = localStorage.getItem('reviewWords');
     if (savedReviewWords) {
       try {
@@ -64,13 +80,6 @@ export default function StudentDashboard() {
         setReviewWords([]);
       }
     }
-
-    // ▼▼▼ 修正点 ▼▼▼
-    const savedSession = localStorage.getItem('lastLearningSession');
-    if (savedSession) {
-      setLastSession(JSON.parse(savedSession));
-    }
-    // ▲▲▲ 修正点 ▲▲▲
 
     const fetchUserData = async () => {
       if (auth.currentUser) {
@@ -84,6 +93,71 @@ export default function StudentDashboard() {
     };
     fetchUserData();
   }, []);
+
+  const resumeLearning = async () => {
+    if (!lastSession) return;
+    setLoading(true);
+    try {
+      const wordsSnapshot = await getDocs(collection(db, 'textbooks', lastSession.textbookId, 'words'));
+      const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      let filtered = [];
+      if (lastSession.filterType === 'level') {
+        filtered = wordsData.filter(word => word.level === lastSession.filterValue);
+      } else if (lastSession.filterType === 'pos') {
+        const posAbbreviation = posMap[lastSession.filterValue];
+        filtered = wordsData.filter(word => word.partOfSpeech && word.partOfSpeech.includes(posAbbreviation));
+      }
+      
+      setLearningWords(filtered);
+      setInitialLearnIndex(lastSession.index);
+      setCurrentSessionInfo(lastSession);
+      setViewMode('learn');
+    } catch(error) {
+      console.error("学習データの読み込みに失敗しました:", error);
+      alert('学習データの読み込みに失敗しました。');
+      localStorage.removeItem('lastLearningSession');
+      setLastSession(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const startLearning = (filterType, value) => {
+    let filtered = [];
+    if (filterType === 'level') {
+      filtered = allWords.filter(word => word.level === value);
+    } else if (filterType === 'pos') {
+      const posAbbreviation = posMap[value];
+      filtered = allWords.filter(word => word.partOfSpeech && word.partOfSpeech.includes(posAbbreviation));
+    }
+    if (filtered.length === 0) {
+      alert('選択された条件に一致する単語がありません。');
+      return;
+    }
+    setLearningWords(filtered);
+    setInitialLearnIndex(0);
+    setCurrentSessionInfo({ textbookId: selectedTextbookId, filterType, filterValue: value });
+    setViewMode('learn');
+  };
+  
+  const handleLearningBack = (incorrectWords) => {
+    localStorage.removeItem('lastLearningSession');
+    setLastSession(null); 
+    
+    if (incorrectWords && incorrectWords.length > 0) {
+      const newReviewWords = [...reviewWords];
+      incorrectWords.forEach(word => {
+        if (!newReviewWords.some(rw => rw.id === word.id)) {
+          newReviewWords.push(word);
+        }
+      });
+      setReviewWords(newReviewWords);
+      localStorage.setItem('reviewWords', JSON.stringify(newReviewWords));
+    }
+    setViewMode('select');
+    setSelectionMode('filter');
+  };
 
   const handleSelectTextbook = async (textbookId) => {
     setLoading(true);
@@ -112,14 +186,11 @@ export default function StudentDashboard() {
         const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         combinedWords = [...combinedWords, ...wordsData];
       }
-      
       const uniqueWords = Array.from(new Map(combinedWords.map(word => [word.word, word])).values());
-      
       setTestWords(uniqueWords);
       setViewMode('test');
     } catch (error) {
       console.error("全単語データの取得に失敗しました:", error);
-      alert("テストデータの読み込みに失敗しました。");
     } finally {
       setLoading(false);
     }
@@ -137,82 +208,7 @@ export default function StudentDashboard() {
     }
     setViewMode('result');
   };
-
-  const startLearning = (filterType, value) => {
-    let filtered = [];
-    if (filterType === 'level') {
-      filtered = allWords.filter(word => word.level === value);
-    } else if (filterType === 'pos') {
-      const posAbbreviation = posMap[value];
-      filtered = allWords.filter(word => word.partOfSpeech && word.partOfSpeech.includes(posAbbreviation));
-    }
-    if (filtered.length === 0) {
-      alert('選択された条件に一致する単語がありません。');
-      return;
-    }
-    
-    // ▼▼▼ 修正点 ▼▼▼
-    // 新しいセッションを開始するので、前回の続き情報をクリアし、開始点を0に
-    localStorage.removeItem('lastLearningSession');
-    setLastSession(null);
-    setInitialLearnIndex(0);
-    
-    // 現在のセッション情報を保存
-    setCurrentSessionInfo({ textbookId: selectedTextbookId, filterType, filterValue: value });
-    // ▲▲▲ 修正点 ▲▲▲
-
-    setLearningWords(filtered);
-    setViewMode('learn');
-  };
-
-  // ▼▼▼ 修正点 ▼▼▼
-  // 「続きから」ボタンが押された時の処理
-  const resumeLearning = async () => {
-    if (!lastSession) return;
-    setLoading(true);
-    try {
-      // 該当の教材データを読み込む
-      const wordsSnapshot = await getDocs(collection(db, 'textbooks', lastSession.textbookId, 'words'));
-      const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
-      // 該当のレベル・品詞でフィルタリング
-      let filtered = [];
-      if (lastSession.filterType === 'level') {
-        filtered = wordsData.filter(word => word.level === lastSession.filterValue);
-      } else if (lastSession.filterType === 'pos') {
-        const posAbbreviation = posMap[lastSession.filterValue];
-        filtered = wordsData.filter(word => word.partOfSpeech && word.partOfSpeech.includes(posAbbreviation));
-      }
-      
-      setLearningWords(filtered);
-      setInitialLearnIndex(lastSession.index); // 保存されたインデックスを開始点に設定
-      setCurrentSessionInfo(lastSession); // セッション情報を引き継ぐ
-      setViewMode('learn');
-    } catch(error) {
-      alert('学習データの読み込みに失敗しました。');
-      localStorage.removeItem('lastLearningSession');
-      setLastSession(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // ▲▲▲ 修正点 ▲▲▲
   
-  const handleLearningBack = (incorrectWords) => {
-    if (incorrectWords && incorrectWords.length > 0) {
-      const newReviewWords = [...reviewWords];
-      incorrectWords.forEach(word => {
-        if (!newReviewWords.some(rw => rw.id === word.id)) {
-          newReviewWords.push(word);
-        }
-      });
-      setReviewWords(newReviewWords);
-      localStorage.setItem('reviewWords', JSON.stringify(newReviewWords));
-    }
-    setViewMode('select');
-    setSelectionMode('filter');
-  };
-
   const startReview = () => {
     setViewMode('review');
   };
@@ -235,14 +231,12 @@ export default function StudentDashboard() {
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
-        // ▼▼▼ 修正点 ▼▼▼
         return <LearningFlashcard 
                   words={learningWords} 
                   onBack={handleLearningBack}
                   initialIndex={initialLearnIndex}
                   sessionInfo={currentSessionInfo}
                 />;
-        // ▲▲▲ 修正点 ▲▲▲
       case 'review':
         return <ReviewFlashcard words={reviewWords} onBack={handleReviewComplete} />;
       case 'test':
@@ -252,13 +246,13 @@ export default function StudentDashboard() {
       case 'select':
       default:
         if (selectionMode === 'filter' && selectedTextbookId) {
+          const recommendedLevels = getRecommendedLevels(testResultLevel);
           return (
             <div className="selection-container">
               <div className="filter-header">
                 <button onClick={handleBackToMainMenu} className="back-btn">← 教材選択に戻る</button>
                 <h3>{textbooks[selectedTextbookId]}</h3>
               </div>
-              
               <div className="filter-tabs">
                 <button onClick={() => setFilterTab('level')} className={filterTab === 'level' ? 'active' : ''}>レベル別</button>
                 <button onClick={() => setFilterTab('pos')} className={filterTab === 'pos' ? 'active' : ''}>品詞別</button>
@@ -290,27 +284,23 @@ export default function StudentDashboard() {
             </div>
           );
         }
-        // メイン選択画面
         return (
           <div className="selection-container main-menu">
             <LevelBadge level={testResultLevel} />
-            
             <h3>学習メニュー</h3>
             
-            {/* ▼▼▼ 修正点：続きからボタンの表示 ▼▼▼ */}
             {lastSession && (
-              <button className="main-selection-card continue-card" onClick={resumeLearning}>
-                <span className="main-selection-title">続きから学習する</span>
+              <button className="main-selection-card resume-card" onClick={resumeLearning}>
+                <span className="main-selection-title">前回の続きから</span>
                 <span className="main-selection-desc">
-                  {textbooks[lastSession.textbookId]} - {
+                  {textbooks[lastSession.textbookId] || '教材'} - {
                     lastSession.filterType === 'level' 
-                    ? levelDescriptions[lastSession.filterValue]?.label 
+                    ? (levelDescriptions[lastSession.filterValue]?.label || `レベル${lastSession.filterValue}`)
                     : lastSession.filterValue
-                  }
+                  } ({lastSession.index + 1}番目〜)
                 </span>
               </button>
             )}
-            {/* ▲▲▲ 修正点 ▲▲▲ */}
 
             <button className="main-selection-card test-card" onClick={startCheckTest}>
               <span className="main-selection-title">単語力チェックテスト</span>
@@ -352,3 +342,4 @@ export default function StudentDashboard() {
     </div>
   );
 }
+

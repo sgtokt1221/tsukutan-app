@@ -606,3 +606,16 @@ body {
 .main-selection-card.continue-card:hover {
   background: linear-gradient(135deg, #059669, #10b981);
 }
+.resume-card {
+  background: linear-gradient(135deg, #10b981, #34d399); /* 緑系のグラデーション */
+  border: 2px solid #a7f3d0;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.resume-card .main-selection-title {
+  color: white;
+}
+
+.resume-card .main-selection-desc {
+  color: #d1fae5;
+}
