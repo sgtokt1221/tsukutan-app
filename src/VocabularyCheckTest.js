@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 const shuffleArray = (array) => {
-  return [...array].sort(() => Math.random() - 0.5);
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
 };
 
+// 5ステージ・各20問の厳密な適応型テストロジック
 function VocabularyCheckTest({ allWords, onTestComplete }) {
   const [stage, setStage] = useState(1);
+  const [currentLevel, setCurrentLevel] = useState(4); // Stage 1: 中学卒業レベル(4)から開始
   const [currentQuestions, setCurrentQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -17,10 +24,22 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
   const cardColor = useTransform(x, [-100, 0, 100], ["#ef4444", "#ffffff", "#4ade80"]);
 
   useEffect(() => {
-    const setupStage = (targetLevel) => {
-      const filteredWords = allWords.filter(word => word.level === targetLevel);
+    const setupStage = (level) => {
+      const QUESTIONS_PER_STAGE = 20; // 1ステージあたりの問題数を20に変更
+      console.log(`Setting up stage ${stage} with level ${level}`);
+      let filteredWords = allWords.filter(word => word.level === level);
+
+      // もしそのレベルの単語が20個未満なら、近いレベルから補完する
+      if (filteredWords.length < QUESTIONS_PER_STAGE) {
+        const needed = QUESTIONS_PER_STAGE - filteredWords.length;
+        const nearbyWords = allWords.filter(
+          word => word.level === level - 1 || word.level === level + 1
+        );
+        filteredWords.push(...shuffleArray(nearbyWords).slice(0, needed));
+      }
+      
       const shuffled = shuffleArray(filteredWords);
-      setCurrentQuestions(shuffled.slice(0, 10));
+      setCurrentQuestions(shuffled.slice(0, QUESTIONS_PER_STAGE));
       setQuestionIndex(0);
       setScore(0);
       setIsFlipped(false);
@@ -28,11 +47,9 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
     };
     
     if (allWords.length > 0) {
-      if (stage === 1) setupStage(3); // ステージ1: 中学卒業レベル (英検3級)
-      if (stage === 2) setupStage(5); // ステージ2: 高校標準レベル (英検2級)
-      if (stage === 3) setupStage(7); // ステージ3: 大学中級レベル (英検準1級)
+      setupStage(currentLevel);
     }
-  }, [allWords, stage, x]);
+  }, [allWords, stage, currentLevel, x]);
 
   const handleDragEnd = (event, info) => {
     if (Math.abs(info.offset.x) < 50) return;
@@ -40,7 +57,7 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
     const isCorrect = info.offset.x > 100;
     const newScore = score + (isCorrect ? 1 : 0);
 
-    if (questionIndex < 9) {
+    if (questionIndex < currentQuestions.length - 1) {
       setScore(newScore);
       setQuestionIndex(prev => prev + 1);
       setIsFlipped(false);
@@ -50,22 +67,30 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
     }
   };
 
+  // ▼▼▼ 修正点：5ステージ制のレベル判定ロジック ▼▼▼
   const evaluateStage = (finalScore) => {
-    if (stage === 1) { // 中学卒業レベル(3)の結果
-      if (finalScore >= 8) { setStage(2); }         // -> 高校標準(5)のテストへ
-      else if (finalScore <= 2) { onTestComplete(1); } // -> 中学基礎(1)と判定
-      else if (finalScore <= 5) { onTestComplete(2); } // -> 中学標準(2)と判定
-      else { onTestComplete(3); }                      // -> 中学卒業(3)と判定
-    } else if (stage === 2) { // 高校標準レベル(5)の結果
-      if (finalScore >= 8) { setStage(3); }         // -> 大学中級(7)のテストへ
-      else if (finalScore <= 4) { onTestComplete(4); } // -> 高校基礎(4)と判定
-      else { onTestComplete(5); }                      // -> 高校標準(5)と判定
-    } else if (stage === 3) { // 大学中級レベル(7)の結果
-      if (finalScore >= 8) { onTestComplete(8); } // -> 大学上級(8)と判定
-      else if (finalScore <= 4) { onTestComplete(6); } // -> 高校応用(6)と判定
-      else { onTestComplete(7); }                      // -> 大学中級(7)と判定
+    console.log(`Stage ${stage} finished. Level: ${currentLevel}, Score: ${finalScore}`);
+    
+    let nextLevel = currentLevel;
+
+    // 正答率に応じて次のレベルを決定
+    if (finalScore >= 16) { // 80%以上正解
+      nextLevel = Math.min(10, currentLevel + 1); // 1レベル上げる（上限10）
+    } else if (finalScore <= 8) { // 40%以下
+      nextLevel = Math.max(1, currentLevel - 1); // 1レベル下げる（下限1）
+    }
+    // 41%~79%の場合はレベル維持
+
+    // 最終ステージでなければ、次のステージへ
+    if (stage < 5) {
+      setCurrentLevel(nextLevel);
+      setStage(stage + 1);
+    } else {
+      // Stage 5 の結果で最終判定
+      onTestComplete(nextLevel);
     }
   };
+  // ▲▲▲ 修正完了 ▲▲▲
 
   const handleTap = () => {
     setIsFlipped(!isFlipped);
@@ -76,19 +101,19 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
     }
   };
 
-  if (currentQuestions.length === 0) return <p>テスト問題を準備中...</p>;
+  if (currentQuestions.length === 0) return <div className="loading-container"><p>テスト問題を準備中...</p></div>;
 
   const currentWord = currentQuestions[questionIndex];
 
   return (
     <>
       <div className="test-header">
-        <h3>単語力チェックテスト (ステージ {stage})</h3>
+        <h3>単語力チェックテスト (ステージ {stage} / 5)</h3>
         <p>カードをタップでめくり、右にスワイプで「わかる」、左で「わからない」</p>
       </div>
       <div id="flashcard-container">
         <motion.div
-          key={questionIndex}
+          key={`${stage}-${questionIndex}`}
           id="flashcard"
           drag="x"
           dragConstraints={{ left: 0, right: 0, top:0, bottom:0 }}
@@ -111,7 +136,7 @@ function VocabularyCheckTest({ allWords, onTestComplete }) {
         </motion.div>
       </div>
       <div className="card-navigation">
-        <div className="card-counter">{questionIndex + 1} / 10</div>
+        <div className="card-counter">{questionIndex + 1} / {currentQuestions.length}</div>
       </div>
     </>
   );

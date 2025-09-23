@@ -469,3 +469,140 @@ body {
   font-weight: 700;
   transform: rotate(10deg);
 }
+/* レベルバッジ用のスタイル */
+.level-badge-container {
+  width: 100%;
+  padding: 10px;
+  background-color: #f9fafb; /* 薄いグレー */
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.level-badge-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #6b7280; /* やや濃いグレー */
+  text-align: center;
+  margin: 0 0 8px 0;
+}
+
+.level-badge {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed); /* 紫系のグラデーション */
+  color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.level-badge-cefr {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.level-badge-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* レベル未判定時のプレースホルダー */
+.level-badge-placeholder {
+  width: 100%;
+  padding: 20px;
+  background-color: #f3f4f6;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.level-badge-placeholder p {
+  margin: 0;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+/* 新しいテスト結果画面のスタイル */
+.stylish-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.result-meter-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.result-meter-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.result-meter-level-label {
+  font-size: 28px;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.result-meter-equivalent {
+  font-size: 16px;
+  color: #4b5563;
+  margin: 4px 0 24px 0;
+}
+
+.meter-background {
+  width: 100%;
+  height: 20px;
+  background-color: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.meter-foreground {
+  height: 100%;
+  border-radius: 10px;
+}
+
+.result-meter-level-num {
+  font-size: 18px;
+  font-weight: bold;
+  color: #374151;
+  margin-top: 12px;
+}
+
+.stylish-result .restart-btn {
+  background-color: #4f46e5;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+}
+
+/* ... 既存のスタイル ... */
+
+/* 続きから学習するボタンのスタイル */
+.main-selection-card.continue-card {
+  background: linear-gradient(135deg, #10b981, #34d399); /* 緑系のグラデーション */
+  border: 2px solid #059669;
+}
+
+.main-selection-card.continue-card:hover {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
