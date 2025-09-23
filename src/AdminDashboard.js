@@ -87,25 +87,42 @@ function AdminDashboard() {
           throw new Error("Cloud Function URL is not configured. Please set REACT_APP_IMPORT_USERS_URL in your environment.");
         }
 
-        const response = await fetch(functionUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain',
-            'Authorization': `Bearer ${idToken}`
-          },
-          body: csvData
-        });
+        try {
+          const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain',
+              'Authorization': `Bearer ${idToken}`
+            },
+            body: csvData
+          });
 
-        const result = await response.json();
+          if (!response.ok) {
+            // Try to get error message from backend, otherwise use generic message
+            let errorMessage = `HTTPエラー: ${response.status} ${response.statusText}`;
+            try {
+              const result = await response.json();
+              errorMessage = result.message || errorMessage;
+            } catch (e) {
+              // Ignore if response is not JSON
+            }
+            throw new Error(errorMessage);
+          }
 
-        if (response.ok) {
+          const result = await response.json();
           setMessage(`インポート完了: 作成 ${result.created}, 失敗 ${result.failed}.`);
           if (result.errors && result.errors.length > 0) {
             console.error('Import errors:', result.errors);
-            // Optionally display errors in the UI
+            // Optionally display errors in the UI for more detail
           }
-        } else {
-          throw new Error(result.message || 'インポートに失敗しました。');
+
+        } catch (error) {
+          console.error('Fetch error:', error);
+          if (error instanceof TypeError && error.message === 'Failed to fetch') {
+            setMessage('エラー: Cloud Functionへの接続に失敗しました。URLが正しいか、関数がデプロイされているか確認してください。(REACT_APP_IMPORT_USERS_URL)');
+          } else {
+            setMessage(`エラー: ${error.message}`);
+          }
         }
       };
 
