@@ -1,19 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-function LearningFlashcard({ words, onBack }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  
+  const backgroundColor = useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]);
+
+  // ▼▼▼ 「続きから」機能のための修正 ▼▼▼
+  // 学習画面を途中で閉じた（アンマウントされた）場合に、現在の進捗を自動保存する
+  useEffect(() => {
+    return () => {
+      // セッションが最後まで終わっていない場合のみ保存
+      if (currentIndex < words.length - 1 && sessionInfo) {
+        const sessionData = {
+          ...sessionInfo,
+          index: currentIndex,
+        };
+        localStorage.setItem('lastLearningSession', JSON.stringify(sessionData));
+        console.log('学習進捗を保存しました:', sessionData);
+      }
+    };
+  }, [currentIndex, words, sessionInfo]);
+  // ▲▲▲ 修正完了 ▲▲▲
+
   const goToNextCard = () => {
     setIsFlipped(false);
     x.set(0);
     if (words.length > 0) {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
+      if (currentIndex < words.length - 1) {
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      } else {
+        // 最後のカードなら正常終了
+        handleBack();
+      }
     }
   };
   
@@ -21,14 +44,18 @@ function LearningFlashcard({ words, onBack }) {
     setIsFlipped(false);
     x.set(0);
     if (words.length > 0) {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + words.length) % words.length);
+      if (currentIndex > 0) {
+        setCurrentIndex(prevIndex => prevIndex - 1);
+      }
     }
   };
 
   const handleDragEnd = (event, info) => {
     if (info.offset.x < -100) { // 左にスワイプ（不正解）
       const currentWord = words[currentIndex];
-      setIncorrectWords(prev => [...prev, currentWord]);
+      if (!incorrectWords.some(w => w.id === currentWord.id)) {
+        setIncorrectWords(prev => [...prev, currentWord]);
+      }
       goToNextCard();
     } else if (info.offset.x > 100) { // 右にスワイプ（正解）
       goToNextCard();
@@ -44,9 +71,13 @@ function LearningFlashcard({ words, onBack }) {
     }
   };
 
+  // ▼▼▼ 「続きから」機能のための修正 ▼▼▼
+  // 正常に終了した場合（戻るボタンを押した時）は、保存されたセッション情報を削除する
   const handleBack = () => {
+    localStorage.removeItem('lastLearningSession');
     onBack(incorrectWords);
   };
+  // ▲▲▲ 修正完了 ▲▲▲
 
   if (!words || words.length === 0) {
     return (
@@ -76,10 +107,10 @@ function LearningFlashcard({ words, onBack }) {
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ duration: 0.4 }}
         >
-          <motion.div className="card-face card-front" style={{ backgroundColor: useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]) }}>
+          <motion.div className="card-face card-front" style={{ backgroundColor }}>
             <p id="card-front-text">{currentWord?.word}</p>
           </motion.div>
-          <motion.div className="card-face card-back" style={{ backgroundColor: useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]) }}>
+          <motion.div className="card-face card-back" style={{ backgroundColor }}>
             <h3 id="card-back-word">{currentWord?.word}</h3>
             <p id="card-back-meaning">{currentWord?.meaning}</p>
             <hr />
@@ -89,7 +120,7 @@ function LearningFlashcard({ words, onBack }) {
         </motion.div>
       </div>
       <div className="card-navigation">
-        <button onClick={goToPrevCard}>＜ 前へ</button>
+        <button onClick={goToPrevCard} disabled={currentIndex === 0}>＜ 前へ</button>
         <div className="card-counter">{currentIndex + 1} / {words.length}</div>
         <button onClick={goToNextCard}>次へ ＞</button>
       </div>
@@ -97,5 +128,5 @@ function LearningFlashcard({ words, onBack }) {
   );
 }
 
-// この行がエラーを解決します！
 export default LearningFlashcard;
+
