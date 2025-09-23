@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-// ▼▼▼ 修正点 ▼▼▼
-// initialIndexとsessionInfoをpropsで受け取る
 function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
-  // initialIndexを使って、前回終了したカードから開始できるようにする
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  // ▲▲▲ 修正点 ▲▲▲
-
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
 
@@ -15,29 +10,33 @@ function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
   const backgroundColor = useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]);
 
-  // ▼▼▼ 修正点 ▼▼▼
-  // この学習ページを離れる（アンマウントされる）時に、現在の進捗を保存する
+  // ▼▼▼ 「続きから」機能のための修正 ▼▼▼
+  // 学習画面を途中で閉じた（アンマウントされた）場合に、現在の進捗を自動保存する
   useEffect(() => {
     return () => {
-      // セッション情報と現在のカード番号をlocalStorageに保存
-      if (words.length > 0 && sessionInfo) {
+      // セッションが最後まで終わっていない場合のみ保存
+      if (currentIndex < words.length - 1 && sessionInfo) {
         const sessionData = {
           ...sessionInfo,
           index: currentIndex,
-          wordCount: words.length
         };
         localStorage.setItem('lastLearningSession', JSON.stringify(sessionData));
+        console.log('学習進捗を保存しました:', sessionData);
       }
     };
-  }, [currentIndex, words.length, sessionInfo]);
-  // ▲▲▲ 修正点 ▲▲▲
-
+  }, [currentIndex, words, sessionInfo]);
+  // ▲▲▲ 修正完了 ▲▲▲
 
   const goToNextCard = () => {
     setIsFlipped(false);
     x.set(0);
     if (words.length > 0) {
-      setCurrentIndex((prevIndex) => (prevIndex + 1));
+      if (currentIndex < words.length - 1) {
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      } else {
+        // 最後のカードなら正常終了
+        handleBack();
+      }
     }
   };
   
@@ -45,14 +44,15 @@ function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
     setIsFlipped(false);
     x.set(0);
     if (words.length > 0) {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + words.length) % words.length);
+      if (currentIndex > 0) {
+        setCurrentIndex(prevIndex => prevIndex - 1);
+      }
     }
   };
 
   const handleDragEnd = (event, info) => {
     if (info.offset.x < -100) { // 左にスワイプ（不正解）
       const currentWord = words[currentIndex];
-      // 重複しないように不正解リストに追加
       if (!incorrectWords.some(w => w.id === currentWord.id)) {
         setIncorrectWords(prev => [...prev, currentWord]);
       }
@@ -71,18 +71,23 @@ function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
     }
   };
 
+  // ▼▼▼ 「続きから」機能のための修正 ▼▼▼
+  // 正常に終了した場合（戻るボタンを押した時）は、保存されたセッション情報を削除する
   const handleBack = () => {
-    // 終了時は前回セッション情報をクリア
     localStorage.removeItem('lastLearningSession');
     onBack(incorrectWords);
   };
-  
-  // 最後のカードまで到達したら自動的に終了
-  if (currentIndex >= words.length) {
-    handleBack();
-    return null;
-  }
+  // ▲▲▲ 修正完了 ▲▲▲
 
+  if (!words || words.length === 0) {
+    return (
+      <div>
+        <p>学習する単語がありません。</p>
+        <button onClick={handleBack} className="back-btn">← 範囲選択に戻る</button>
+      </div>
+    );
+  }
+  
   const currentWord = words[currentIndex];
 
   return (
@@ -124,3 +129,4 @@ function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo }) {
 }
 
 export default LearningFlashcard;
+
