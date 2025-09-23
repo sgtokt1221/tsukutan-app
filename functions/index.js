@@ -1,13 +1,37 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const cors = require("cors")({ origin: true });
+const cors = require("cors");
+
+// It is strongly recommended to specify the production URL in an environment variable
+// and add it to the list of allowed origins.
+// e.g., const productionUrl = functions.config().cors.origin;
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5000", // Default for Firebase Hosting emulator
+  "https://your-actual-project-id.web.app", // TODO: Replace with your actual project's URL
+  "https://your-actual-project-id.firebaseapp.com", // TODO: Replace with your actual project's URL
+];
+
+const corsHandler = cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+});
 const { parse } = require("csv-parse/sync");
 
 admin.initializeApp();
 const db = admin.firestore();
 
 exports.importUsers = functions.region("asia-northeast1").https(async (req, res) => {
-  cors(req, res, async () => {
+  corsHandler(req, res, async () => {
     if (req.method !== "POST") {
       return res.status(405).send("Method Not Allowed");
     }
