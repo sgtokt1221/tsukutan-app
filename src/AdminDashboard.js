@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, query, orderBy } from 'firebase/firestore';
 
+// A simple spinner component
+const Spinner = () => (
+  <div className="spinner-container">
+    <div className="spinner"></div>
+  </div>
+);
+
 function AdminDashboard() {
   const [csvFile, setCsvFile] = useState(null);
   const [message, setMessage] = useState('');
@@ -14,9 +21,11 @@ function AdminDashboard() {
 
   useEffect(() => {
     const fetchStudents = async () => {
+      setIsFetchingStudents(true);
       try {
         const usersCollectionRef = collection(db, 'users');
-        const querySnapshot = await getDocs(usersCollectionRef);
+        const q = query(usersCollectionRef, orderBy("name"));
+        const querySnapshot = await getDocs(q);
         const studentList = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
@@ -24,6 +33,7 @@ function AdminDashboard() {
         setStudents(studentList);
       } catch (error) {
         console.error("Error fetching students: ", error);
+        setMessage("生徒リストの読み込みに失敗しました。");
       } finally {
         setIsFetchingStudents(false);
       }
@@ -33,30 +43,24 @@ function AdminDashboard() {
   }, []);
 
   const handleStudentSelect = async (student) => {
-    if (selectedStudent?.id === student.id) {
-      setSelectedStudent(null); // Toggle off if clicking the same student
-      return;
-    }
-
     setSelectedStudent(student);
     setIsFetchingDetails(true);
     setStudentDetails({ logs: [], reviewWords: [] });
 
     try {
-      // Fetch logs
       const logsColRef = collection(db, 'users', student.id, 'logs');
       const logsQuery = query(logsColRef, orderBy("timestamp", "desc"));
       const logsSnapshot = await getDocs(logsQuery);
-      const logs = logsSnapshot.docs.map(d => d.data());
+      const logs = logsSnapshot.docs.map(d => ({...d.data(), id: d.id}));
 
-      // Fetch review words
       const reviewWordsColRef = collection(db, 'users', student.id, 'reviewWords');
       const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
-      const reviewWords = reviewWordsSnapshot.docs.map(d => d.data());
+      const reviewWords = reviewWordsSnapshot.docs.map(d => ({...d.data(), id: d.id}));
 
       setStudentDetails({ logs, reviewWords });
     } catch (error) {
       console.error("Error fetching student details:", error);
+      setMessage("生徒詳細の読み込みに失敗しました。");
     } finally {
       setIsFetchingDetails(false);
     }
@@ -80,44 +84,40 @@ function AdminDashboard() {
       const fileReader = new FileReader();
       fileReader.onload = async (event) => {
         const csvData = event.target.result;
-
         const idToken = await auth.currentUser.getIdToken();
         const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
         if (!functionUrl) {
-          throw new Error("Cloud Function URL is not configured. Please set REACT_APP_IMPORT_USERS_URL in your environment.");
+          throw new Error("Cloud FunctionのURLが設定されていません。");
         }
 
-        const response = await fetch(functionUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain',
-            'Authorization': `Bearer ${idToken}`
-          },
-          body: csvData
-        });
+        try {
+          const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${idToken}` },
+            body: csvData
+          });
 
-        const result = await response.json();
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.message || `HTTPエラー: ${response.status}`);
+          }
 
-        if (response.ok) {
           setMessage(`インポート完了: 作成 ${result.created}, 失敗 ${result.failed}.`);
           if (result.errors && result.errors.length > 0) {
             console.error('Import errors:', result.errors);
-            // Optionally display errors in the UI
           }
-        } else {
-          throw new Error(result.message || 'インポートに失敗しました。');
+        } catch (error) {
+          console.error('Fetch error:', error);
+          if (error.message.includes('Failed to fetch')) {
+             setMessage('エラー: Cloud Functionへの接続に失敗しました。URLやCORSの設定を確認してください。');
+          } else {
+            setMessage(`エラー: ${error.message}`);
+          }
         }
       };
-
-      fileReader.onerror = () => {
-        throw new Error('ファイルの読み込みに失敗しました。');
-      };
-
-      fileReader.readAsText(csvFile);
-
+      fileReader.readAsText(csvFile, 'UTF-8');
     } catch (error) {
       setMessage(`エラー: ${error.message}`);
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -127,6 +127,59 @@ function AdminDashboard() {
     auth.signOut();
   };
 
+  const renderContent = () => {
+    if (!selectedStudent) {
+      return (
+        <div className="admin-card">
+          <h3>ユーザーインポート</h3>
+          <p>A列にユーザー名、B列に4桁のIDを記載したCSVファイルをアップロードしてください。</p>
+          <div className="import-controls">
+            <input type="file" id="csv-upload" accept=".csv" onChange={handleFileChange} />
+            <label htmlFor="csv-upload" className="file-upload-btn">{csvFile ? csvFile.name : 'ファイルを選択'}</label>
+            <button onClick={handleImport} disabled={isLoading} className="import-btn">
+              {isLoading ? <Spinner /> : 'インポート実行'}
+            </button>
+          </div>
+          {message && <p className="message-box">{message}</p>}
+        </div>
+      );
+    }
+
+    return (
+      <div className="admin-card">
+        <h3>{selectedStudent.name} (ID: {selectedStudent.studentId})</h3>
+        {isFetchingDetails ? <Spinner /> : (
+          <div className="student-details-grid">
+            <div className="detail-card">
+              <h4>復習リスト ({studentDetails.reviewWords.length}単語)</h4>
+              {studentDetails.reviewWords.length > 0 ? (
+                <ul>
+                  {studentDetails.reviewWords.map(word => (
+                    <li key={word.id}>{word.word}: {word.meaning}</li>
+                  ))}
+                </ul>
+              ) : <p>復習リストは空です。</p>}
+            </div>
+            <div className="detail-card">
+              <h4>学習ログ ({studentDetails.logs.length}件)</h4>
+              {studentDetails.logs.length > 0 ? (
+                <ul>
+                  {studentDetails.logs.map((log) => (
+                    <li key={log.id}>
+                      {new Date(log.timestamp.seconds * 1000).toLocaleString()}: 
+                      「{log.textbookId}」の {log.filterType === 'level' ? `レベル${log.filterValue}` : log.filterValue}
+                      を {log.index}単語まで学習
+                    </li>
+                  ))}
+                </ul>
+              ) : <p>学習ログはありません。</p>}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+  
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -136,64 +189,31 @@ function AdminDashboard() {
           <button onClick={handleLogout} className="logout-btn">ログアウト</button>
         </div>
       </header>
-      <main className="admin-main">
-        <section className="admin-section">
-          <h3>ユーザーインポート</h3>
-          <p>A列にユーザー名、B列に4桁のIDを記載したCSVファイルをアップロードしてください。</p>
-          <input type="file" accept=".csv" onChange={handleFileChange} />
-          <button onClick={handleImport} disabled={isLoading}>
-            {isLoading ? '処理中...' : 'インポート実行'}
-          </button>
-          {message && <p>{message}</p>}
-        </section>
-        <section className="admin-section">
-          <h3>生徒一覧</h3>
-          {isFetchingStudents ? (
-            <p>生徒データを読み込み中...</p>
-          ) : (
+      <div className="admin-layout">
+        <aside className="admin-sidebar">
+          <div className="sidebar-header">
+             <h4>生徒一覧</h4>
+             <button onClick={() => setSelectedStudent(null)} className="show-import-btn">＋ ユーザーインポート</button>
+          </div>
+          {isFetchingStudents ? <Spinner /> : (
             <div className="student-list">
               {students.map(student => (
-                <div key={student.id}>
-                  <div className="student-list-item" onClick={() => handleStudentSelect(student)}>
-                    <strong>{student.name}</strong> (ID: {student.studentId})
-                  </div>
-                  {selectedStudent?.id === student.id && (
-                    <div className="student-details">
-                      {isFetchingDetails ? (
-                        <p>詳細を読み込み中...</p>
-                      ) : (
-                        <>
-                          <h4>復習リスト ({studentDetails.reviewWords.length}単語)</h4>
-                          {studentDetails.reviewWords.length > 0 ? (
-                            <ul>
-                              {studentDetails.reviewWords.map(word => (
-                                <li key={word.id}>{word.word}: {word.meaning}</li>
-                              ))}
-                            </ul>
-                          ) : <p>復習リストは空です。</p>}
-
-                          <h4>学習ログ</h4>
-                          {studentDetails.logs.length > 0 ? (
-                            <ul>
-                              {studentDetails.logs.map((log, index) => (
-                                <li key={index}>
-                                  {log.timestamp.toDate().toLocaleString()}:
-                                  「{log.textbookId}」の {log.filterType === 'level' ? `レベル${log.filterValue}` : log.filterValue}
-                                  を {log.index}単語まで学習 (ステータス: {log.status})
-                                </li>
-                              ))}
-                            </ul>
-                          ) : <p>学習ログはありません。</p>}
-                        </>
-                      )}
-                    </div>
-                  )}
+                <div 
+                  key={student.id} 
+                  className={`student-list-item ${selectedStudent?.id === student.id ? 'active' : ''}`}
+                  onClick={() => handleStudentSelect(student)}
+                >
+                  <strong>{student.name}</strong>
+                  <span>ID: {student.studentId}</span>
                 </div>
               ))}
             </div>
           )}
-        </section>
-      </main>
+        </aside>
+        <main className="admin-content">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 }
