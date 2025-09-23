@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Firebase service account key
+serviceAccountKey.json
+serviceAccountKey.json
+
+# Firebase config
+src/firebaseConfig.js

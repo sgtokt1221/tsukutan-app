@@ -1,93 +1,94 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-function ReviewFlashcard({ words, onBack, onUpdateReviewWords }) {
+// LearningFlashcard.jsの構造を参考に、ReviewFlashcardを全面的に修正
+function ReviewFlashcard({ words, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [sessionWords, setSessionWords] = useState(words);
+  const [wordsToKeep, setWordsToKeep] = useState(words);
 
+  const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const x = useMotionValue(0); // for horizontal movement if any
-  const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  
-  // Change background color based on vertical drag
-  const backgroundColor = useTransform(y, [-150, 0, 150], ["#fef08a", "#ffffff", "#ffffff"]);
 
-  useEffect(() => {
-    setSessionWords(words);
-  }, [words]);
+  // xの動き（横スワイプ）に基づいて回転を制御
+  const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
+
+  // xとyの動き（スワイプ方向）に基づいて背景色を決定
+  const backgroundColor = useTransform(
+    [x, y],
+    ([latestX, latestY]) => {
+      const isVerticalDrag = Math.abs(latestY) > Math.abs(latestX);
+      if (isVerticalDrag && latestY < -50) return "#facc15"; // 黄色 (完全に覚えた)
+      if (!isVerticalDrag && latestX < -50) return "#ef4444"; // 赤 (まだ)
+      if (!isVerticalDrag && latestX > 50) return "#4ade80"; // 緑 (覚えた)
+      return "#ffffff"; // デフォルトは白
+    }
+  );
 
   const goToNextCard = () => {
-    setIsFlipped(false);
-    y.set(0);
-    x.set(0);
-    if (sessionWords.length > 0) {
-      setCurrentIndex((prevIndex) => (prevIndex + 1));
-    }
-  };
-  
-  const handleDragEnd = (event, info) => {
-    if (info.offset.y < -100) { // 上にスワイプ
-      const removedWord = sessionWords[currentIndex];
-      
-      // Update parent state
-      onUpdateReviewWords(removedWord);
-      
-      // Update local state for the current session
-      const newSessionWords = sessionWords.filter(w => w.id !== removedWord.id);
-      setSessionWords(newSessionWords);
-
-      // Reset card position but don't change index immediately
-      y.set(0);
+    if (currentIndex < words.length - 1) {
+      setCurrentIndex(prevIndex => prevIndex + 1);
+      setIsFlipped(false);
       x.set(0);
-
-      // If we removed the last card in the list, we might need to handle the index
-      if (currentIndex >= newSessionWords.length && newSessionWords.length > 0) {
-        setCurrentIndex(newSessionWords.length - 1);
-      }
-
-    } else if (info.offset.x > 100 || info.offset.x < -100) {
-        // Allow normal left/right swipe to go to next card without removing
-        goToNextCard();
+      y.set(0);
     } else {
-      // Snap back if not dragged far enough
-      y.set(0);
-      x.set(0);
+      handleBack();
     }
   };
-  
+
+  const handleDragEnd = (event, info) => {
+    const swipeThreshold = 100;
+    const currentWord = words[currentIndex];
+
+    // 上スワイプ（完全に覚えた）の時だけ、復習リストから削除
+    if (info.offset.y < -swipeThreshold) {
+      setWordsToKeep(prevWords => prevWords.filter(w => w.id !== currentWord.id));
+      goToNextCard();
+    } 
+    // 左右のスワイプでは、リストからは削除せず、ただ次のカードへ進む
+    else if (Math.abs(info.offset.x) > swipeThreshold) {
+      goToNextCard();
+    }
+  };
+
   const handleTap = () => {
     setIsFlipped(!isFlipped);
-    if (!isFlipped && sessionWords.length > 0 && sessionWords[currentIndex]) {
-      const utterance = new SpeechSynthesisUtterance(sessionWords[currentIndex].word);
+    if (!isFlipped && words.length > 0) {
+      const utterance = new SpeechSynthesisUtterance(words[currentIndex].word);
       utterance.lang = 'en-US';
       window.speechSynthesis.speak(utterance);
     }
   };
-
-  if (!sessionWords || sessionWords.length === 0 || currentIndex >= sessionWords.length) {
+  
+  const handleBack = () => {
+    onBack(wordsToKeep);
+  };
+  
+  if (!words || words.length === 0) {
     return (
-      <div>
-        <p>復習する単語はもうありません。</p>
-        <button onClick={onBack} className="back-btn">← メインメニューに戻る</button>
+      <div className="flashcard-container">
+        <p>復習する単語はありません。</p>
+        <button onClick={() => onBack([])} className="back-btn">戻る</button>
       </div>
     );
   }
   
-  const currentWord = sessionWords[currentIndex];
+  const currentWord = words[currentIndex];
 
   return (
     <>
-      <div className="learning-header">
-        <button onClick={onBack} className="back-btn">← メインメニューに戻る</button>
+      <div className="test-header">
+        <h3>復習モード</h3>
+        <p>右/左：次の単語へ / 上：完全に覚えた（リストから削除）</p>
       </div>
       <div id="flashcard-container">
+        {/* ▼▼▼ この部分の構造をLearningFlashcardと完全に一致させました ▼▼▼ */}
         <motion.div
-          key={currentWord.id}
+          key={currentIndex}
           id="flashcard"
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          style={{ y, x, rotate }}
+          style={{ x, y, rotate }} // yの動きもdragできるように
           onDragEnd={handleDragEnd}
           onTap={handleTap}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
@@ -104,11 +105,12 @@ function ReviewFlashcard({ words, onBack, onUpdateReviewWords }) {
             <p className="example-text-ja">{currentWord?.exampleJa}</p>
           </motion.div>
         </motion.div>
+        {/* ▲▲▲ 修正完了 ▲▲▲ */}
       </div>
       <div className="card-navigation">
-        <div className="card-counter">{currentIndex + 1} / {sessionWords.length}</div>
+        <button onClick={handleBack} className="back-btn small-btn">終了</button>
+        <div className="card-counter">{currentIndex + 1} / {words.length}</div>
       </div>
-       <p className="review-instruction">上にスワイプしてリストから削除</p>
     </>
   );
 }
