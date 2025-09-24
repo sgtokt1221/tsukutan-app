@@ -104,7 +104,6 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     // ▼▼▼【修正】元のコードのJSX構造を完全に復元▼▼▼
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
       <div className="test-header">
-        <button onClick={handleBackButtonClick} className="back-btn">← 終了</button>
         <h3>新規学習</h3>
       </div>
       
@@ -135,6 +134,10 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       
       <div className="card-navigation">
         <div className="card-counter">{currentIndex + 1} / {shuffledWords.length}</div>
+      </div>
+
+      <div className="footer-container">
+        <button onClick={handleBackButtonClick} className="exit-button-footer">学習を終了する</button>
       </div>
     </div>
   );

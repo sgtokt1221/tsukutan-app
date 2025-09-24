@@ -116,9 +116,8 @@ function ReviewFlashcard({ words, onBack }) {
   const currentWord = sessionWords[currentIndex];
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
       <div className="test-header">
-        <button onClick={onBack} className="back-btn">← 終了</button>
         <h3>復習モード</h3>
       </div>
       <div id="flashcard-container">
@@ -148,7 +147,10 @@ function ReviewFlashcard({ words, onBack }) {
       <div className="card-navigation">
         <div className="card-counter">{currentIndex + 1} / {sessionWords.length}</div>
       </div>
-    </>
+      <div className="footer-container">
+        <button onClick={onBack} className="exit-button-footer">復習を終了する</button>
+      </div>
+    </div>
   );
 }
 
