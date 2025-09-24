@@ -74,9 +74,9 @@ function App() {
           
           <Route path="/admin-dashboard" element={userRole === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
           
-          <Route path="/student-dashboard" element={userRole === 'student' && isGoalSet ? <StudentDashboard /> : <Navigate to="/" />} />
+          <Route path="/student-dashboard" element={userRole === 'student' ? <StudentDashboard /> : <Navigate to="/" />} />
           
-          <Route path="/set-goal" element={userRole === 'student' && !isGoalSet ? <GoalSetter /> : <Navigate to="/" />} />
+          <Route path="/set-goal" element={userRole === 'student' ? <GoalSetter /> : <Navigate to="/" />} />
 
         </Routes>
       </div>

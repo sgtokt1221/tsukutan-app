@@ -3,6 +3,8 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebaseConfig';
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { updateUserWordProgress } from './logic/reviewLogic';
+import { updateProgressPercentage } from './logic/progressLogic'; // ★インポート
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -20,8 +22,8 @@ const textbooks = {
   'target-1900': 'ターゲット1900'
 };
 
-export default function VocabularyCheckTest() {
-  const [allWords, setAllWords] = useState([]);
+export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete }) {
+  const [allWords, setAllWords] = useState(passedWords || []);
   const [stage, setStage] = useState(1);
   const [currentLevel, setCurrentLevel] = useState(4);
   const [currentQuestions, setCurrentQuestions] = useState([]);
@@ -38,30 +40,32 @@ export default function VocabularyCheckTest() {
   const cardColor = useTransform(x, [-100, 0, 100], ["#fee2e2", "#ffffff", "#dcfce7"]);
 
   useEffect(() => {
-    const fetchAllWords = async () => {
-      setLoading(true);
-      try {
-        let combinedWords = [];
-        const promises = Object.keys(textbooks).map(id => 
-          getDocs(collection(db, 'textbooks', id, 'words'))
-        );
-        const snapshots = await Promise.all(promises);
-        snapshots.forEach(snapshot => {
-          const wordsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          combinedWords = [...combinedWords, ...wordsData];
-        });
-        const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.word, item])).values());
-        // 意味のフィールド名が `meaning` または `japanese` の両方に対応
-        const validWords = uniqueWords.filter(
-          word => word && word.word && (word.meaning || word.japanese)
-        );
-        setAllWords(validWords);
-      } catch (error) {
-        console.error("全単語の読み込みに失敗しました:", error);
-      }
-    };
-    fetchAllWords();
-  }, []);
+    // passedWords があればそれを使う、なければフェッチする（フォールバック）
+    if (!passedWords || passedWords.length === 0) {
+      const fetchAllWords = async () => {
+        setLoading(true);
+        try {
+          let combinedWords = [];
+          const promises = Object.keys(textbooks).map(id => 
+            getDocs(collection(db, 'textbooks', id, 'words'))
+          );
+          const snapshots = await Promise.all(promises);
+          snapshots.forEach(snapshot => {
+            const wordsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            combinedWords = [...combinedWords, ...wordsData];
+          });
+          const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.word, item])).values());
+          const validWords = uniqueWords.filter(
+            word => word && word.word && (word.meaning || word.japanese)
+          );
+          setAllWords(validWords);
+        } catch (error) {
+          console.error("全単語の読み込みに失敗しました:", error);
+        }
+      };
+      fetchAllWords();
+    }
+  }, [passedWords]);
 
   useEffect(() => {
     const setupStage = (level) => {
@@ -88,7 +92,15 @@ export default function VocabularyCheckTest() {
 
   const handleDragEnd = (event, info) => {
     if (Math.abs(info.offset.x) < 50) return;
-    const isCorrect = info.offset.x > 0; // 右スワイプを「わかる」
+    const isCorrect = info.offset.x > 0;
+    const currentWord = currentQuestions[questionIndex];
+    const user = auth.currentUser;
+
+    // ★不正解の場合、復習リストに追加
+    if (!isCorrect && user && currentWord) {
+      updateUserWordProgress(user.uid, currentWord, false);
+    }
+
     const newScore = score + (isCorrect ? 1 : 0);
     if (questionIndex < currentQuestions.length - 1) {
       setScore(newScore);
@@ -123,8 +135,17 @@ export default function VocabularyCheckTest() {
           'progress.currentVocabulary': estimatedVocabulary,
           'progress.lastCheckedAt': serverTimestamp(),
         }, { merge: true });
-        alert(`テスト完了！\nあなたの単語レベル: ${finalUserLevel}\n推定語彙数: 約${estimatedVocabulary}語`);
-        navigate('/');
+
+        // ★進捗率を更新
+        await updateProgressPercentage(user.uid);
+        
+        if (onTestComplete) {
+          onTestComplete(finalUserLevel);
+        } else {
+          alert(`テスト完了！\nあなたの単語レベル: ${finalUserLevel}\n推定語彙数: 約${estimatedVocabulary}語`);
+          navigate('/');
+        }
+
       } catch (error) {
         console.error("テスト結果の保存に失敗しました: ", error);
         alert("テスト結果の保存に失敗しました。");
