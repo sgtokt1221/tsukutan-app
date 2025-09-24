@@ -14,36 +14,89 @@ const textbooks = {
  * ユーザーの学習計画を計算し、その日の学習タスク（新規・復習）を生成します。
  */
 export const generateDailyPlan = async (userData, userId) => {
+  // --- 既存のロジック ---
   const neededWordsCount = await estimateNeededWords(userData);
-
   const targetDateStr = userData.goal?.targetDate;
   if (!targetDateStr) {
-    console.log("目標日が設定されていないため、計画を生成できません。");
     return { newWords: [], reviewWords: [] };
   }
-
   const today = new Date();
   const targetDate = new Date(targetDateStr);
   const remainingDays = Math.max(1, Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24)));
-  
   const dailyNewWordsQuota = Math.ceil(neededWordsCount / remainingDays);
 
-  // 今日の復習単語を取得
-  const reviewWords = await getReviewWords(userId);
-
-  // 新規単語を選ぶ際に、現在学習中（復習リストにある全単語）の単語をすべて除外する
   const allReviewWordsSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
   const learnedWordIds = new Set(allReviewWordsSnapshot.docs.map(doc => doc.id));
-
-  const userLevel = userData.level || 1; // ユーザーレベルがなければ1を仮定
+  const userLevel = userData.level || 1;
   const newWords = await getNewWords(userId, dailyNewWordsQuota, userLevel, learnedWordIds);
 
-  console.log(`残り日数: ${remainingDays}, 今日の新規ノルマ: ${dailyNewWordsQuota}語, 取得した新規単語数: ${newWords.length}語`);
+  // --- 新規ロジック：隣接レベルの単語を追加 ---
+  let adjacentWords = [];
+  if (userData.goal && userData.goal.targets && userData.goal.targets.length > 0) {
+    adjacentWords = await getAdjacentLevelWords(userData.goal.targets, learnedWordIds);
+  }
+
+  // --- 復習単語の結合 ---
+  const scheduledReviewWords = await getReviewWords(userId);
   
+  // adjacentWordsがscheduledReviewWordsに既に含まれていないことを確認
+  const scheduledIds = new Set(scheduledReviewWords.map(w => w.id));
+  const uniqueAdjacentWords = adjacentWords.filter(w => !scheduledIds.has(w.id));
+  
+  const finalReviewWords = [...scheduledReviewWords, ...uniqueAdjacentWords];
+
   return {
     newWords: newWords,
-    reviewWords: reviewWords,
+    reviewWords: finalReviewWords,
   };
+};
+
+/**
+ * ★新規追加：目標の隣接（下位）レベルから未学習の単語を取得します
+ */
+const getAdjacentLevelWords = async (targets, learnedWordIds) => {
+  const ADJACENT_WORDS_QUOTA = 10;
+  try {
+    // 1. マスターデータから全目標を取得
+    const goalsMasterRef = collection(db, 'goalsMaster');
+    const goalsSnapshot = await getDocs(goalsMasterRef);
+    const goalsMasterData = goalsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // 2. ユーザーの目標の最大レベルを特定
+    let maxGoalLevel = 0;
+    targets.forEach(target => {
+      const masterGoal = goalsMasterData.find(g => g.id === target.goalId);
+      if (masterGoal && masterGoal.level > maxGoalLevel) {
+        maxGoalLevel = masterGoal.level;
+      }
+    });
+
+    if (maxGoalLevel <= 1) return [];
+
+    // 3. 隣接レベル（目標-1）の単語を取得
+    const adjacentLevel = maxGoalLevel - 1;
+    let candidateWords = [];
+    const promises = Object.keys(textbooks).map(id => 
+      getDocs(query(collection(db, 'textbooks', id, 'words'), where("level", "==", adjacentLevel)))
+    );
+    const snapshots = await Promise.all(promises);
+
+    snapshots.forEach(snapshot => {
+      snapshot.forEach(doc => {
+        if (!learnedWordIds.has(doc.id)) {
+          candidateWords.push({ id: doc.id, ...doc.data(), isAdjacent: true }); // 復習単語だとわかるようにフラグを立てる
+        }
+      });
+    });
+
+    // 4. ランダムに10個選択
+    candidateWords.sort(() => Math.random() - 0.5);
+    return candidateWords.slice(0, ADJACENT_WORDS_QUOTA);
+
+  } catch (error) {
+    console.error("隣接レベル単語の取得エラー:", error);
+    return [];
+  }
 };
 
 /**

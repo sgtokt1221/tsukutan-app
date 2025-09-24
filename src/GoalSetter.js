@@ -3,6 +3,7 @@ import { db, auth } from './firebaseConfig';
 // ▼▼▼ getDoc を追加 ▼▼▼
 import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { updateProgressPercentage } from './logic/progressLogic';
 
 export default function GoalSetter() {
   const [goals, setGoals] = useState({});
@@ -81,12 +82,15 @@ export default function GoalSetter() {
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       try {
-        // updateDoc を使用することで、ドキュメント全体を上書きせず goal フィールドのみを更新
         await updateDoc(userDocRef, {
           'goal.targets': selectedGoals,
           'goal.targetDate': targetDate,
           'goal.isSet': true,
-        });
+        }, { merge: true }); // isSetを確実に上書きするためにmerge:trueを追加
+
+        // ★進捗率を更新
+        await updateProgressPercentage(user.uid);
+
         alert('目標が設定されました！');
         navigate('/');
       } catch (error) {

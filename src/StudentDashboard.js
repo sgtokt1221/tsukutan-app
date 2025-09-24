@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, getDoc, setDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
@@ -68,45 +68,49 @@ export default function StudentDashboard() {
   
   const navigate = useNavigate();
 
-  // --- 既存のuseEffectをベースに、新機能のロジックを追加 ---
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (auth.currentUser) {
-        const uid = auth.currentUser.uid;
-        const userDocRef = doc(db, 'users', uid);
-        const userDoc = await getDoc(userDocRef);
+  const refreshDashboardData = useCallback(async () => {
+    setLoading(true);
+    if (auth.currentUser) {
+      const uid = auth.currentUser.uid;
+      const userDocRef = doc(db, 'users', uid);
+      const userDoc = await getDoc(userDocRef);
 
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setUserData(data);
-          setTestResultLevel(data.level || 0);
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        setUserData(data);
+        setTestResultLevel(data.level || 0);
+        
+        const plan = await generateDailyPlan(data, uid);
+        setDailyPlan(plan);
+
+        if (data.progress && data.progress.lastCheckedAt) {
+          const lastCheckedDate = data.progress.lastCheckedAt.toDate();
+          const today = new Date();
+          const diffTime = Math.abs(today - lastCheckedDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
           
-          const plan = await generateDailyPlan(data, uid);
-          setDailyPlan(plan);
-
-          if (data.progress && data.progress.lastCheckedAt) {
-            const lastCheckedDate = data.progress.lastCheckedAt.toDate();
-            const today = new Date();
-            const diffTime = Math.abs(today - lastCheckedDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays > 7) { setShowRetestPrompt(true); }
-          }
-
-          const reviewWordsColRef = collection(db, 'users', uid, 'reviewWords');
-          const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
-          setReviewWords(reviewWordsSnapshot.docs.map(d => d.data()));
-          
-          const logsColRef = collection(db, 'users', uid, 'logs');
-          const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
-          const logSnapshot = await getDocs(q);
-          if (!logSnapshot.empty) { setLastSession(logSnapshot.docs[0].data()); }
+          if (diffDays > 7) { setShowRetestPrompt(true); }
+        } else {
+          setShowRetestPrompt(false);
         }
+
+        const reviewWordsColRef = collection(db, 'users', uid, 'reviewWords');
+        const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
+        setReviewWords(reviewWordsSnapshot.docs.map(d => d.data()));
+        
+        const logsColRef = collection(db, 'users', uid, 'logs');
+        const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
+        const logSnapshot = await getDocs(q);
+        if (!logSnapshot.empty) { setLastSession(logSnapshot.docs[0].data()); }
+        else { setLastSession(null); }
       }
-      setLoading(false);
-    };
-    fetchUserData();
+    }
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    refreshDashboardData();
+  }, [refreshDashboardData]);
 
   // --- 既存の関数を、省略せずに完全に維持 ---
   const resumeLearning = async () => {
@@ -152,18 +156,16 @@ export default function StudentDashboard() {
   };
   
   const handleLearningBack = (incorrectWords) => {
-    if (auth.currentUser) {
+    if (auth.currentUser && incorrectWords.length > 0) {
       const uid = auth.currentUser.uid;
-      incorrectWords.forEach(word => {
-        // 新しい復習ロジックを呼び出す
-        addWordToReview(uid, word);
+      const promises = incorrectWords.map(word => addWordToReview(uid, word));
+      Promise.all(promises).then(() => {
+        refreshDashboardData(); // データ更新
       });
-      // UIを更新するために、reviewWordsステートにも追加
-      setReviewWords(prev => [...prev, ...incorrectWords]);
     }
     setLastSession(null);
     setViewMode('select');
-    setSelectionMode('main'); // フィルター選択画面ではなくメインメニューに戻る
+    setSelectionMode('main');
   };
 
   const handleSelectTextbook = async (textbookId) => {
@@ -199,36 +201,14 @@ export default function StudentDashboard() {
     } finally { setLoading(false); }
   };
 
-  const handleTestComplete = async (finalLevel) => {
+  const handleTestComplete = (finalLevel) => {
     setTestResultLevel(finalLevel);
-    if (auth.currentUser) {
-      try {
-        const userDocRef = doc(db, 'users', auth.currentUser.uid);
-        await setDoc(userDocRef, { level: finalLevel }, { merge: true });
-      } catch (error) {
-        console.error("テスト結果の保存に失敗しました:", error);
-      }
-    }
+    refreshDashboardData(); // データ更新
     setViewMode('result');
   };
 
-  // handleReviewCompleteは、単にダッシュボードに戻る機能だけにする
   const handleReviewComplete = () => {
-    // dailyPlanを再生成して、復習が終わった単語がリストから消えている状態を反映
-    const fetchUserData = async () => {
-      if (auth.currentUser) {
-        const uid = auth.currentUser.uid;
-        const userDocRef = doc(db, 'users', uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setUserData(data);
-          const plan = await generateDailyPlan(data, uid);
-          setDailyPlan(plan);
-        }
-      }
-    };
-    fetchUserData();
+    refreshDashboardData(); // データ更新
     setViewMode('select');
     setSelectionMode('main');
   };
@@ -283,7 +263,7 @@ export default function StudentDashboard() {
       case 'review':
         return <ReviewFlashcard words={reviewWords} onBack={handleReviewComplete} />;
       case 'test':
-        return <VocabularyCheckTest allWords={testWords} onTestComplete={handleTestComplete} />;
+        return <VocabularyCheckTest passedWords={testWords} onTestComplete={handleTestComplete} />;
       case 'result':
         return <TestResult level={testResultLevel} onRestart={() => setViewMode('select')} />;
       case 'select':
