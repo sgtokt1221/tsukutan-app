@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from './firebaseConfig';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+// ▼▼▼ getDoc を追加 ▼▼▼
+import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 export default function GoalSetter() {
@@ -11,13 +12,15 @@ export default function GoalSetter() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // ▼▼▼ ここから修正 ▼▼▼
   useEffect(() => {
-    const fetchGoals = async () => {
+    const fetchData = async () => {
       try {
+        // 1. マスターデータの目標リストを取得
         const goalsCollection = collection(db, 'goalsMaster');
         const goalsSnapshot = await getDocs(goalsCollection);
         if (goalsSnapshot.empty) {
-          throw new Error("目標データが見つかりません。FirebaseコンソールからgoalsMasterコレクションにデータを登録してください。");
+          throw new Error("目標データが見つかりません。");
         }
         const goalsList = goalsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
@@ -33,14 +36,32 @@ export default function GoalSetter() {
         }, {});
 
         setGoals(groupedGoals);
+
+        // 2. ログイン中のユーザーの現在の目標設定を読み込む
+        const user = auth.currentUser;
+        if (user) {
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists() && userDoc.data().goal) {
+            const userGoal = userDoc.data().goal;
+            // 既存の設定があればStateにセットする
+            if (userGoal.targets) {
+              setSelectedGoals(userGoal.targets);
+            }
+            if (userGoal.targetDate) {
+              setTargetDate(userGoal.targetDate);
+            }
+          }
+        }
       } catch (err) {
-        console.error("目標リストの読み込みに失敗しました:", err);
+        console.error("データの読み込みに失敗しました:", err);
         setError(err.message);
       }
       setLoading(false);
     };
-    fetchGoals();
+    fetchData();
   }, []);
+  // ▲▲▲ ここまで修正 ▲▲▲
 
   const handleGoalChange = (goal) => {
     setSelectedGoals(prev => 
@@ -60,6 +81,7 @@ export default function GoalSetter() {
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       try {
+        // updateDoc を使用することで、ドキュメント全体を上書きせず goal フィールドのみを更新
         await updateDoc(userDocRef, {
           'goal.targets': selectedGoals,
           'goal.targetDate': targetDate,
@@ -80,6 +102,7 @@ export default function GoalSetter() {
   return (
     <div className="goal-setter-container">
       <form onSubmit={handleSubmit} className="goal-form card-style">
+        {/* 以下、JSX部分は変更なし */}
         <h2>学習目標を設定</h2>
         <p className="form-description">達成したい目標と期限を決めましょう。</p>
         

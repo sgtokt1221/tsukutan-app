@@ -2,22 +2,25 @@ import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
 import { collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore';
 
+// ▼▼▼【修正点1】テキストブックの定義を追加▼▼▼
+// どのテキストブックから単語を探すかを定義します
+const textbooks = {
+  'osaka-koukou-nyuushi': '大阪府公立入試英単語',
+  'target-1900': 'ターゲット1900'
+};
+// ▲▲▲▲▲▲
+
 /**
  * ユーザーの学習計画を計算し、その日の学習タスク（新規・復習）を生成します。
- * @param {object} userData - Firestoreから取得したユーザーのドキュメントデータ
- * @param {string} userId - ログインしているユーザーのID
- * @returns {Promise<object>} 今日の学習タスクリスト { newWords: [], reviewWords: [] }
  */
 export const generateDailyPlan = async (userData, userId) => {
   const neededWordsCount = await estimateNeededWords(userData);
 
-  // ▼▼▼ 【バグ修正】 'userData.goal' が存在しない場合でも安全に処理する ▼▼▼
   const targetDateStr = userData.goal?.targetDate;
   if (!targetDateStr) {
     console.log("目標日が設定されていないため、計画を生成できません。");
-    return { newWords: [], reviewWords: [] }; // 目標日がなければ空の計画を返す
+    return { newWords: [], reviewWords: [] };
   }
-  // ▲▲▲ 修正完了 ▲▲▲
 
   const today = new Date();
   const targetDate = new Date(targetDateStr);
@@ -25,10 +28,11 @@ export const generateDailyPlan = async (userData, userId) => {
   
   const dailyNewWordsQuota = Math.ceil(neededWordsCount / remainingDays);
 
-  const newWords = await getNewWords(userId, dailyNewWordsQuota, userData.progress?.currentVocabulary || 0);
+  const currentVocab = userData.progress?.currentVocabulary || 0;
+  const newWords = await getNewWords(userId, dailyNewWordsQuota, currentVocab);
   const reviewWords = await getReviewWords(userId);
 
-  console.log(`残り日数: ${remainingDays}, 今日の新規ノルマ: ${dailyNewWordsQuota}語`);
+  console.log(`残り日数: ${remainingDays}, 今日の新規ノルマ: ${dailyNewWordsQuota}語, 取得した新規単語数: ${newWords.length}語`);
   
   return {
     newWords: newWords,
@@ -39,31 +43,52 @@ export const generateDailyPlan = async (userData, userId) => {
 /**
  * まだ学習していない単語の中から、新規学習対象を取得します。
  */
+// ▼▼▼【修正点2】getNewWords関数を全面的に修正▼▼▼
 const getNewWords = async (userId, quota, currentVocabulary) => {
-  // ... (この関数は変更なし)
+  if (quota <= 0) return []; // ノルマが0なら何もしない
+
   try {
-    const allWordsCollection = collection(db, 'words');
-    const q = query(allWordsCollection, orderBy('level'), limit(quota + 20));
-    const querySnapshot = await getDocs(q);
-    const words = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    return words.slice(0, quota);
+    let combinedWords = [];
+    // 定義されたすべてのテキストブックから単語を並行して取得
+    const promises = Object.keys(textbooks).map(id => 
+      getDocs(collection(db, 'textbooks', id, 'words'))
+    );
+    const snapshots = await Promise.all(promises);
+
+    snapshots.forEach(snapshot => {
+      const wordsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      combinedWords = [...combinedWords, ...wordsData];
+    });
+
+    // 重要: 将来的には、ここでユーザーが既に学習した単語を除外する処理が必要です。
+    // 現時点では、全ての単語を対象とします。
+
+    // レベル順に並び替え
+    combinedWords.sort((a, b) => (a.level || 99) - (b.level || 99));
+
+    // ユーザーの現在の語彙レベルに応じて、学習開始位置を調整
+    // (例: 語彙数が1000なら、簡単な最初の1000語はスキップする)
+    const startIndex = Math.min(currentVocabulary, combinedWords.length);
+    
+    return combinedWords.slice(startIndex, startIndex + quota);
+
   } catch (error) {
     console.error("新規単語の取得エラー:", error);
     return [];
   }
 };
+// ▲▲▲▲▲▲
 
 /**
  * 忘却曲線に基づき、今日復習すべき単語のリストを取得します。
  */
 const getReviewWords = async (userId) => {
-  // ... (この関数は変更なし)
   const today = new Date();
   try {
-    const userWordsCollection = collection(db, 'userWords');
+    // このコレクション名は 'userWords' で正しいか確認してください
+    const userWordsCollection = collection(db, 'users', userId, 'reviewWords');
     const q = query(
       userWordsCollection, 
-      where("userId", "==", userId), 
       where("nextReviewDate", "<=", today),
       orderBy("nextReviewDate")
     );
