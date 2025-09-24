@@ -28,9 +28,15 @@ export const generateDailyPlan = async (userData, userId) => {
   
   const dailyNewWordsQuota = Math.ceil(neededWordsCount / remainingDays);
 
-  const currentVocab = userData.progress?.currentVocabulary || 0;
-  const newWords = await getNewWords(userId, dailyNewWordsQuota, currentVocab);
+  // 今日の復習単語を取得
   const reviewWords = await getReviewWords(userId);
+
+  // 新規単語を選ぶ際に、現在学習中（復習リストにある全単語）の単語をすべて除外する
+  const allReviewWordsSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
+  const learnedWordIds = new Set(allReviewWordsSnapshot.docs.map(doc => doc.id));
+
+  const userLevel = userData.level || 1; // ユーザーレベルがなければ1を仮定
+  const newWords = await getNewWords(userId, dailyNewWordsQuota, userLevel, learnedWordIds);
 
   console.log(`残り日数: ${remainingDays}, 今日の新規ノルマ: ${dailyNewWordsQuota}語, 取得した新規単語数: ${newWords.length}語`);
   
@@ -41,43 +47,40 @@ export const generateDailyPlan = async (userData, userId) => {
 };
 
 /**
- * まだ学習していない単語の中から、新規学習対象を取得します。
+ * ユーザーのレベルに基づき、まだ学習していない新規単語を取得します。
  */
-// ▼▼▼【修正点2】getNewWords関数を全面的に修正▼▼▼
-const getNewWords = async (userId, quota, currentVocabulary) => {
-  if (quota <= 0) return []; // ノルマが0なら何もしない
+const getNewWords = async (userId, quota, userLevel, learnedWordIds) => {
+  if (quota <= 0) return [];
 
   try {
-    let combinedWords = [];
-    // 定義されたすべてのテキストブックから単語を並行して取得
+    // ユーザーの現在のレベルと次のレベルの単語を対象とする
+    const targetLevels = [userLevel, userLevel + 1].filter(l => l <= 10);
+
+    let candidateWords = [];
     const promises = Object.keys(textbooks).map(id => 
-      getDocs(collection(db, 'textbooks', id, 'words'))
+      getDocs(query(collection(db, 'textbooks', id, 'words'), where("level", "in", targetLevels)))
     );
     const snapshots = await Promise.all(promises);
 
     snapshots.forEach(snapshot => {
-      const wordsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      combinedWords = [...combinedWords, ...wordsData];
+      snapshot.docs.forEach(doc => {
+        // 既に学習リスト（復習リスト）にある単語は除外
+        if (!learnedWordIds.has(doc.id)) {
+          candidateWords.push({ id: doc.id, ...doc.data() });
+        }
+      });
     });
 
-    // 重要: 将来的には、ここでユーザーが既に学習した単語を除外する処理が必要です。
-    // 現時点では、全ての単語を対象とします。
-
-    // レベル順に並び替え
-    combinedWords.sort((a, b) => (a.level || 99) - (b.level || 99));
-
-    // ユーザーの現在の語彙レベルに応じて、学習開始位置を調整
-    // (例: 語彙数が1000なら、簡単な最初の1000語はスキップする)
-    const startIndex = Math.min(currentVocabulary, combinedWords.length);
+    // 候補の中からランダムにシャッフルして、ノルマ数だけ選択
+    candidateWords.sort(() => Math.random() - 0.5);
     
-    return combinedWords.slice(startIndex, startIndex + quota);
+    return candidateWords.slice(0, quota);
 
   } catch (error) {
     console.error("新規単語の取得エラー:", error);
     return [];
   }
 };
-// ▲▲▲▲▲▲
 
 /**
  * 忘却曲線に基づき、今日復習すべき単語のリストを取得します。

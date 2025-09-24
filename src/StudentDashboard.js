@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
-import { collection, getDocs, doc, getDoc, setDoc, writeBatch, deleteDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
 import { generateDailyPlan } from './logic/learningPlanner';
+import { addWordToReview } from './logic/reviewLogic';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
@@ -150,26 +151,19 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
   
-  const handleLearningBack = async (incorrectWords) => {
+  const handleLearningBack = (incorrectWords) => {
     if (auth.currentUser) {
       const uid = auth.currentUser.uid;
-      setLastSession(null);
-      if (incorrectWords && incorrectWords.length > 0) {
-        const batch = writeBatch(db);
-        const newReviewWords = [...reviewWords];
-        incorrectWords.forEach(word => {
-          if (!newReviewWords.some(rw => rw.id === word.id)) {
-            newReviewWords.push(word);
-            const reviewWordRef = doc(db, 'users', uid, 'reviewWords', word.id);
-            batch.set(reviewWordRef, word);
-          }
-        });
-        await batch.commit();
-        setReviewWords(newReviewWords);
-      }
+      incorrectWords.forEach(word => {
+        // 新しい復習ロジックを呼び出す
+        addWordToReview(uid, word);
+      });
+      // UIを更新するために、reviewWordsステートにも追加
+      setReviewWords(prev => [...prev, ...incorrectWords]);
     }
+    setLastSession(null);
     setViewMode('select');
-    setSelectionMode('filter');
+    setSelectionMode('main'); // フィルター選択画面ではなくメインメニューに戻る
   };
 
   const handleSelectTextbook = async (textbookId) => {
@@ -217,27 +211,24 @@ export default function StudentDashboard() {
     }
     setViewMode('result');
   };
-  
-  const startReview = () => {
-    setViewMode('review');
-  };
 
-  const handleReviewComplete = async (remainingWords) => {
-    if (auth.currentUser) {
-      const uid = auth.currentUser.uid;
-      const originalWordIds = reviewWords.map(w => w.id);
-      const remainingWordIds = remainingWords.map(w => w.id);
-      const completedWordIds = originalWordIds.filter(id => !remainingWordIds.includes(id));
-      if (completedWordIds.length > 0) {
-        const batch = writeBatch(db);
-        completedWordIds.forEach(wordId => {
-          const reviewWordRef = doc(db, 'users', uid, 'reviewWords', wordId);
-          batch.delete(reviewWordRef);
-        });
-        await batch.commit();
+  // handleReviewCompleteは、単にダッシュボードに戻る機能だけにする
+  const handleReviewComplete = () => {
+    // dailyPlanを再生成して、復習が終わった単語がリストから消えている状態を反映
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const uid = auth.currentUser.uid;
+        const userDocRef = doc(db, 'users', uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setUserData(data);
+          const plan = await generateDailyPlan(data, uid);
+          setDailyPlan(plan);
+        }
       }
-    }
-    setReviewWords(remainingWords);
+    };
+    fetchUserData();
     setViewMode('select');
     setSelectionMode('main');
   };
@@ -310,30 +301,43 @@ export default function StudentDashboard() {
               </div>
             )}
             
-            <div className="card-style">
+            <div className="card-style dashboard-summary-card">
               <div className="goal-display">
                 <FaBullseye className="goal-icon" />
                 <span>目標: {userData?.goal?.targets?.map(t => t.displayName).join(', ') || '未設定'}</span>
                 <button onClick={() => navigate('/set-goal')} className="edit-goal-btn"><FaPen /></button>
               </div>
-              <h2 className="section-title">ゴールまでの進捗</h2>
-              <div className="progress-bar-container"><div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div></div>
+              
+              <h3 className="summary-subtitle">ゴールまでの進捗</h3>
+              <div className="progress-bar-container">
+                <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
+              </div>
               <span className="progress-label">{progressPercentage}%</span>
 
-              <h2 className="section-title" style={{marginTop: '2rem'}}>今日のタスク</h2>
-             <div className="task-cards-container">
+              <hr className="divider" />
+
+              <h3 className="summary-subtitle">今日のタスク</h3>
+              <div className="task-cards-container">
                   <div className="task-card" onClick={startDailyNewWords}>
                       <FaBook className="task-icon new-word-icon" />
-                      <div className="task-info"><p>新規単語</p><span>{dailyPlan.newWords.length}語</span></div>
+                      <div className="task-info">
+                        <p>新規単語</p>
+                        <span>{dailyPlan.newWords.length}語</span>
+                      </div>
                   </div>
                   <div className="task-card" onClick={startDailyReviewWords}>
                       <FaSyncAlt className="task-icon review-word-icon" />
-                      <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}語</span></div>
+                      <div className="task-info">
+                        <p>復習単語</p>
+                        <span>{dailyPlan.reviewWords.length}語</span>
+                      </div>
                   </div>
               </div>
             </div>
 
             <div className="card-style">
+              <LevelBadge level={testResultLevel} />
+              <h2 className="section-title">自由学習メニュー</h2>
               {selectionMode === 'filter' && selectedTextbookId ? (
                 <div className="selection-container">
                   <div className="filter-header">
@@ -359,12 +363,9 @@ export default function StudentDashboard() {
                 </div>
               ) : (
                 <div className="selection-container main-menu">
-                  <LevelBadge level={testResultLevel} />
-                  <h2 className="section-title">自由学習メニュー</h2>
                   {lastSession && <button className="main-selection-card resume-card" onClick={resumeLearning}>前回の続きから...</button>}
                   <button className="main-selection-card" onClick={startCheckTest}>単語力チェックテスト</button>
                   {Object.entries(textbooks).map(([id, name]) => ( <button key={id} className="main-selection-card" onClick={() => handleSelectTextbook(id)}>{name}</button> ))}
-                  <button className="main-selection-card" onClick={startReview} disabled={reviewWords.length === 0}>復習モード ({reviewWords.length}語)</button>
                 </div>
               )}
             </div>
