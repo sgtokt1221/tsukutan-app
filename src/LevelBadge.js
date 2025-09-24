@@ -14,9 +14,22 @@ const levelDescriptions = {
   10:{ label: "ネイティブ", equivalent: "ネイティブレベル" }
 };
 
-function LevelBadge({ level }) {
-  // レベルが未判定の場合は何も表示しない
-  if (!level || level === 0 || !levelDescriptions[level]) {
+function LevelBadge({ level, type = 'full' }) {
+  const hasLevel = level && level > 0 && levelDescriptions[level];
+
+  if (type === 'header') {
+    if (!hasLevel) return null; // ヘッダーではレベルがない場合は何も表示しない
+
+    const { label } = levelDescriptions[level];
+    return (
+      <span className="header-level-badge">
+        {label}
+      </span>
+    );
+  }
+
+  // --- デフォルトの 'full' 表示 ---
+  if (!hasLevel) {
     return (
       <div className="level-badge-placeholder">
         <p>単語力チェックテストでレベルを診断しよう！</p>

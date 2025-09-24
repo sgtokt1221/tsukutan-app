@@ -1,36 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const PrintableQuiz = ({ words, studentName, onCancel }) => {
   const [numQuestions, setNumQuestions] = useState(10);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [isQuizGenerated, setIsQuizGenerated] = useState(false);
 
-  useEffect(() => {
-    if (isQuizGenerated) {
-      const handleAfterPrint = () => {
-        setIsQuizGenerated(false); // Reset state after printing
-      };
-
-      window.addEventListener('afterprint', handleAfterPrint);
-      
-      // Use a timeout to ensure the DOM is painted before printing
-      const timer = setTimeout(() => {
-        window.print();
-      }, 100);
-      
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('afterprint', handleAfterPrint);
-      };
-    }
-  }, [isQuizGenerated]);
-
-  const handleGenerateQuiz = () => {
+  const handleGenerateAndPrint = () => {
     const maxQuestions = Math.min(numQuestions, words.length);
     const shuffled = [...words].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, maxQuestions);
+    
+    // 1. Set the state to render the printable content
     setQuizQuestions(selected);
-    setIsQuizGenerated(true); // This will trigger the useEffect
+    setIsQuizGenerated(true);
+
+    // 2. Use a timeout to allow React to re-render the component
+    setTimeout(() => {
+      // 3. Trigger the browser's print dialog
+      window.print();
+      
+      // 4. Reset the state after printing so the modal is usable again
+      setIsQuizGenerated(false);
+    }, 200); // 200ms delay to be safe
   };
 
   return (
@@ -49,7 +40,7 @@ const PrintableQuiz = ({ words, studentName, onCancel }) => {
               min="1"
               max={words.length}
             />
-            <button onClick={handleGenerateQuiz} disabled={words.length === 0}>
+            <button onClick={handleGenerateAndPrint} disabled={words.length === 0}>
               テストを生成して印刷
             </button>
           </div>

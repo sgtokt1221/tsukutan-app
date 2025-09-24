@@ -68,49 +68,79 @@ export default function StudentDashboard() {
   
   const navigate = useNavigate();
 
-  const refreshDashboardData = useCallback(async () => {
-    setLoading(true);
-    if (auth.currentUser) {
-      const uid = auth.currentUser.uid;
-      const userDocRef = doc(db, 'users', uid);
-      const userDoc = await getDoc(userDocRef);
+  const refreshDashboardData = useCallback(async (uid) => {
+    const userDocRef = doc(db, 'users', uid);
+    const userDoc = await getDoc(userDocRef);
 
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        setUserData(data);
-        setTestResultLevel(data.level || 0);
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      setUserData(data);
+      setTestResultLevel(data.level || 0);
+      
+      const plan = await generateDailyPlan(data, uid);
+      setDailyPlan(plan);
+
+      if (data.progress && data.progress.lastCheckedAt) {
+        const lastCheckedDate = data.progress.lastCheckedAt.toDate();
+        const today = new Date();
+        const diffTime = Math.abs(today - lastCheckedDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
-        const plan = await generateDailyPlan(data, uid);
-        setDailyPlan(plan);
-
-        if (data.progress && data.progress.lastCheckedAt) {
-          const lastCheckedDate = data.progress.lastCheckedAt.toDate();
-          const today = new Date();
-          const diffTime = Math.abs(today - lastCheckedDate);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          
-          if (diffDays > 7) { setShowRetestPrompt(true); }
-        } else {
-          setShowRetestPrompt(false);
-        }
-
-        const reviewWordsColRef = collection(db, 'users', uid, 'reviewWords');
-        const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
-        setReviewWords(reviewWordsSnapshot.docs.map(d => d.data()));
-        
-        const logsColRef = collection(db, 'users', uid, 'logs');
-        const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
-        const logSnapshot = await getDocs(q);
-        if (!logSnapshot.empty) { setLastSession(logSnapshot.docs[0].data()); }
-        else { setLastSession(null); }
+        if (diffDays > 7) { setShowRetestPrompt(true); }
+      } else {
+        setShowRetestPrompt(false);
       }
+
+      const reviewWordsColRef = collection(db, 'users', uid, 'reviewWords');
+      const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
+      setReviewWords(reviewWordsSnapshot.docs.map(d => d.data()));
+      
+      const logsColRef = collection(db, 'users', uid, 'logs');
+      const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
+      const logSnapshot = await getDocs(q);
+      if (!logSnapshot.empty) { setLastSession(logSnapshot.docs[0].data()); }
+      else { setLastSession(null); }
+    } else {
+      // If user document doesn't exist, they are a new user.
+      setUserData({ level: 0 }); // Set minimal user data to trigger redirect
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
-    refreshDashboardData();
+    setLoading(true);
+    if (auth.currentUser) {
+      refreshDashboardData(auth.currentUser.uid).finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
   }, [refreshDashboardData]);
+
+  // New user redirection logic
+  useEffect(() => {
+    // Check if userData is loaded and if the user has no level (is new)
+    if (userData && (userData.level === 0 || !userData.level)) {
+      // Avoid redirecting if they are already on the test/result page
+      if (viewMode !== 'test' && viewMode !== 'result') {
+        // Pre-fetch test words before showing the test view
+        const fetchTestWords = async () => {
+          try {
+            let combinedWords = [];
+            for (const id of Object.keys(textbooks)) {
+              const wordsSnapshot = await getDocs(collection(db, 'textbooks', id, 'words'));
+              const wordsData = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+              combinedWords = [...combinedWords, ...wordsData];
+            }
+            const uniqueWords = Array.from(new Map(combinedWords.map(word => [word.word, word])).values());
+            setTestWords(uniqueWords);
+            setViewMode('test');
+          } catch (error) {
+            console.error("全単語データの取得に失敗しました:", error);
+          }
+        };
+        fetchTestWords();
+      }
+    }
+  }, [userData, viewMode]);
 
   // --- 既存の関数を、省略せずに完全に維持 ---
   const resumeLearning = async () => {
@@ -269,6 +299,8 @@ export default function StudentDashboard() {
       case 'select':
       default:
         const progressPercentage = userData?.progress?.percentage || 0;
+        const hasTakenTest = testResultLevel > 0;
+
         return (
           <>
             {showRetestPrompt && (
@@ -313,10 +345,20 @@ export default function StudentDashboard() {
                       </div>
                   </div>
               </div>
+
+              {!hasTakenTest && (
+                <>
+                  <hr className="divider" />
+                  <div className="vocab-test-promo" onClick={startCheckTest}>
+                    <h4>単語力チェックテスト</h4>
+                    <p>まずは現在の実力を測定して、学習計画を最適化しましょう！</p>
+                    <button className="promo-button">テストを受ける</button>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="card-style">
-              <LevelBadge level={testResultLevel} />
               <h2 className="section-title">自由学習メニュー</h2>
               {selectionMode === 'filter' && selectedTextbookId ? (
                 <div className="selection-container">
@@ -344,7 +386,6 @@ export default function StudentDashboard() {
               ) : (
                 <div className="selection-container main-menu">
                   {lastSession && <button className="main-selection-card resume-card" onClick={resumeLearning}>前回の続きから...</button>}
-                  <button className="main-selection-card" onClick={startCheckTest}>単語力チェックテスト</button>
                   {Object.entries(textbooks).map(([id, name]) => ( <button key={id} className="main-selection-card" onClick={() => handleSelectTextbook(id)}>{name}</button> ))}
                 </div>
               )}
@@ -359,7 +400,12 @@ export default function StudentDashboard() {
       <header className="dashboard-header">
         <h2>つくたん</h2>
         <div className="user-info">
-          {auth.currentUser && <span>{auth.currentUser.email}</span>}
+          {userData && (
+            <div className="user-name-badge">
+              <span>{userData.name}</span>
+              <LevelBadge level={testResultLevel} type="header" />
+            </div>
+          )}
           <button onClick={handleLogout} className="logout-btn">ログアウト</button>
         </div>
       </header>
