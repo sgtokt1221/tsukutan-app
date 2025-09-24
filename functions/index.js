@@ -8,8 +8,8 @@ const cors = require("cors");
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5000", // Default for Firebase Hosting emulator
-  "https://your-actual-project-id.web.app", // TODO: Replace with your actual project's URL
-  "https://your-actual-project-id.firebaseapp.com", // TODO: Replace with your actual project's URL
+  "https://tsukutan-58b3f.web.app", // Your project's URL
+  "https://tsukutan-58b3f.firebaseapp.com", // Your project's URL
 ];
 
 const corsHandler = cors({
@@ -88,10 +88,28 @@ exports.importUsers = functions.region("asia-northeast1").https(async (req, res)
             displayName: username,
           });
 
+          // Firestoreに保存するユーザー情報に新しいフィールドを追加
           await db.collection("users").doc(userRecord.uid).set({
             name: username,
             studentId: studentId,
-            level: 0, // Initial level
+            level: 0,
+            
+            // ▼▼▼▼▼ ここから下が修正・追加した箇所です ▼▼▼▼▼
+            goal: {
+              targetExam: null,
+              targetDate: null,
+              isSet: false,
+            },
+            learningState: {
+              dailyNewWords: 10, // ユーザーごとの学習計画の初期値
+              dailyReviewWords: 30, // ユーザーごとの学習計画の初期値
+            },
+            progress: {
+              percentage: 0,
+              currentVocabulary: 0,
+              lastCheckedAt: null,
+            },
+            // ▲▲▲▲▲ ここまで ▲▲▲▲▲
           });
 
           createdCount++;
