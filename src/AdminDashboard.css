@@ -321,6 +321,10 @@
     color: white;
     cursor: pointer;
   }
+
+  .quiz-modal-overlay.printing {
+    visibility: hidden;
+  }
   
   @media print {
     body * {
