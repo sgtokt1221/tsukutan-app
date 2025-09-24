@@ -186,13 +186,10 @@ export default function StudentDashboard() {
   };
   
   const handleLearningBack = (incorrectWords) => {
-    if (auth.currentUser && incorrectWords.length > 0) {
-      const uid = auth.currentUser.uid;
-      const promises = incorrectWords.map(word => addWordToReview(uid, word));
-      Promise.all(promises).then(() => {
-        refreshDashboardData(); // データ更新
-      });
-    }
+    // The logic for adding incorrect words to review is now handled
+    // in real-time within LearningFlashcard via updateUserWordProgress.
+    // This function just needs to handle the view change and data refresh.
+    refreshDashboardData(auth.currentUser.uid);
     setLastSession(null);
     setViewMode('select');
     setSelectionMode('main');
@@ -233,12 +230,16 @@ export default function StudentDashboard() {
 
   const handleTestComplete = (finalLevel) => {
     setTestResultLevel(finalLevel);
-    refreshDashboardData(); // データ更新
+    if (auth.currentUser) {
+      refreshDashboardData(auth.currentUser.uid);
+    }
     setViewMode('result');
   };
 
   const handleReviewComplete = () => {
-    refreshDashboardData(); // データ更新
+    if (auth.currentUser) {
+      refreshDashboardData(auth.currentUser.uid);
+    }
     setViewMode('select');
     setSelectionMode('main');
   };
