@@ -21,14 +21,36 @@ function ReviewFlashcard({ words, onBack }) {
 
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const cardColor = useTransform(
-    x,
-    [-100, 0, 100],
-    ["#ef4444", "#ffffff", "#4ade80"],
-  );
-  const masterColor = useTransform(
-    y,
-    [-100, 0],
-    ["#facc15", "#ffffff"]
+    [x, y],
+    ([latestX, latestY]) => {
+      if (latestY < -40) {
+        return "#facc15"; // Yellow for swipe up
+      }
+      // Interpolate between red, white, and green for horizontal swipe
+      const xRange = [-100, 0, 100];
+      const colorRange = ["#ef4444", "#ffffff", "#4ade80"];
+      
+      const N = colorRange.length;
+      const xAsNumber = typeof latestX === 'number' ? latestX : 0;
+
+      if (xAsNumber <= xRange[0]) return colorRange[0];
+      if (xAsNumber >= xRange[N - 1]) return colorRange[N - 1];
+
+      let i = 0;
+      while (xAsNumber > xRange[i+1]) i++;
+      
+      const range = xRange[i+1] - xRange[i];
+      const proportion = (xAsNumber - xRange[i]) / range;
+
+      const fromColor = colorRange[i];
+      const toColor = colorRange[i+1];
+
+      const r = Math.round(parseInt(fromColor.slice(1, 3), 16) * (1 - proportion) + parseInt(toColor.slice(1, 3), 16) * proportion);
+      const g = Math.round(parseInt(fromColor.slice(3, 5), 16) * (1 - proportion) + parseInt(toColor.slice(3, 5), 16) * proportion);
+      const b = Math.round(parseInt(fromColor.slice(5, 7), 16) * (1 - proportion) + parseInt(toColor.slice(5, 7), 16) * proportion);
+      
+      return `rgb(${r}, ${g}, ${b})`;
+    }
   );
 
   const handleDragEnd = useCallback((event, info) => {
@@ -105,13 +127,13 @@ function ReviewFlashcard({ words, onBack }) {
           id="flashcard"
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          style={{ x, y, rotate, backgroundColor: masterColor }}
+          style={{ x, y, rotate, backgroundColor: cardColor }}
           onDragEnd={handleDragEnd}
           onTap={handleTap}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="card-face card-front">
+          <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             <p id="card-front-text">{currentWord?.word}</p>
           </div>
           <div className="card-face card-back">

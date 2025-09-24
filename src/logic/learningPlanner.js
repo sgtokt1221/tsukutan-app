@@ -13,33 +13,63 @@ const textbooks = {
 /**
  * ユーザーの学習計画を計算し、その日の学習タスク（新規・復習）を生成します。
  */
+// 学習時間に関する定数
+const DAILY_LEARNING_GOAL_MINUTES = 30; // 1日の学習目標時間（分）
+const SECONDS_PER_NEW_WORD = 60;      // 新規単語1つあたりの学習時間（秒）
+const SECONDS_PER_REVIEW_WORD = 15;   // 復習単語1つあたりの学習時間（秒）
+
 export const generateDailyPlan = async (userData, userId) => {
-  // --- 既存のロジック ---
   const neededWordsCount = await estimateNeededWords(userData);
   const targetDateStr = userData.goal?.targetDate;
+
   if (!targetDateStr) {
     return { newWords: [], reviewWords: [] };
   }
-  const today = new Date();
-  const targetDate = new Date(targetDateStr);
-  const remainingDays = Math.max(1, Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24)));
-  const dailyNewWordsQuota = Math.ceil(neededWordsCount / remainingDays);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 1. 学習完了期限を計算（目標日の1ヶ月前）
+  const targetDate = new Date(targetDateStr);
+  const learningDeadline = new Date(targetDate);
+  learningDeadline.setMonth(learningDeadline.getMonth() - 1);
+
+  // 期限が過去の場合は目標日を期限とする
+  if (learningDeadline < today) {
+    learningDeadline.setTime(targetDate.getTime());
+  }
+
+  const remainingDays = Math.max(1, Math.ceil((learningDeadline - today) / (1000 * 60 * 60 * 24)));
+  
+  // 2. 2種類のノルマを計算
+  // a) 期限内に終えるためのノルマ
+  const deadlineBasedNewWordQuota = Math.ceil(neededWordsCount / remainingDays);
+
+  // b) 30分の時間制限に基づいたノルマ
+  const scheduledReviewWords = await getReviewWords(userId); // 今日の復習単語を先に取得
+  const reviewTimeInSeconds = scheduledReviewWords.length * SECONDS_PER_REVIEW_WORD;
+  const dailyGoalInSeconds = DAILY_LEARNING_GOAL_MINUTES * 60;
+  const remainingTimeForNewWords = Math.max(0, dailyGoalInSeconds - reviewTimeInSeconds);
+  const timeBasedNewWordQuota = Math.floor(remainingTimeForNewWords / SECONDS_PER_NEW_WORD);
+
+  // 3. 最終的な新規単語ノルマを決定（両方の制約を満たすため、少ない方を採用）
+  const finalNewWordsQuota = Math.min(deadlineBasedNewWordQuota, timeBasedNewWordQuota);
+
+  // 4. 単語リストを作成
   const allReviewWordsSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
   const learnedWordIds = new Set(allReviewWordsSnapshot.docs.map(doc => doc.id));
   const userLevel = userData.level || 1;
-  const newWords = await getNewWords(userId, dailyNewWordsQuota, userLevel, learnedWordIds);
+  
+  const newWords = await getNewWords(userId, finalNewWordsQuota, userLevel, learnedWordIds);
 
-  // --- 新規ロジック：隣接レベルの単語を追加 ---
+  // 5. 隣接レベルの単語を復習リストに追加（元のロジックを維持）
   let adjacentWords = [];
   if (userData.goal && userData.goal.targets && userData.goal.targets.length > 0) {
-    adjacentWords = await getAdjacentLevelWords(userData.goal.targets, learnedWordIds);
+    // getAdjacentLevelWords には、既に学習済みの単語IDセットを渡す
+    const currentLearnedIds = new Set([...learnedWordIds, ...newWords.map(w => w.id)]);
+    adjacentWords = await getAdjacentLevelWords(userData.goal.targets, currentLearnedIds);
   }
-
-  // --- 復習単語の結合 ---
-  const scheduledReviewWords = await getReviewWords(userId);
   
-  // adjacentWordsがscheduledReviewWordsに既に含まれていないことを確認
   const scheduledIds = new Set(scheduledReviewWords.map(w => w.id));
   const uniqueAdjacentWords = adjacentWords.filter(w => !scheduledIds.has(w.id));
   
