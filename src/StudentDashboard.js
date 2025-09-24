@@ -259,6 +259,31 @@ export default function StudentDashboard() {
 
   if (loading) return <div className="loading-container"><p>読み込み中...</p></div>;
 
+  const startDailyNewWords = () => {
+    if (!dailyPlan.newWords || dailyPlan.newWords.length === 0) {
+      alert('今日の新規学習単語はありません。');
+      return;
+    }
+    setLearningWords(dailyPlan.newWords);
+    // '今日のタスク'からの学習であることを示すセッション情報を設定
+    setCurrentSessionInfo({
+      textbookId: 'daily_plan', // 特定のテキストブックに依存しないことを示す
+      filterType: 'daily_new',
+      filterValue: new Date().toISOString().slice(0, 10) // 今日の日付
+    });
+    setViewMode('learn');
+  };
+
+  const startDailyReviewWords = () => {
+    if (!dailyPlan.reviewWords || dailyPlan.reviewWords.length === 0) {
+      alert('今日の復習単語はありません。');
+      return;
+    }
+    // dailyPlanから取得した復習単語をセット
+    setReviewWords(dailyPlan.reviewWords);
+    setViewMode('review');
+  };
+
   // --- 【UI刷新】ここから下の表示部分を全面的に再設計 ---
   const renderContent = () => {
     switch (viewMode) {
@@ -296,12 +321,12 @@ export default function StudentDashboard() {
               <span className="progress-label">{progressPercentage}%</span>
 
               <h2 className="section-title" style={{marginTop: '2rem'}}>今日のタスク</h2>
-              <div className="task-cards-container">
-                  <div className="task-card" onClick={() => { setLearningWords(dailyPlan.newWords); setViewMode('learn'); }}>
+             <div className="task-cards-container">
+                  <div className="task-card" onClick={startDailyNewWords}>
                       <FaBook className="task-icon new-word-icon" />
                       <div className="task-info"><p>新規単語</p><span>{dailyPlan.newWords.length}語</span></div>
                   </div>
-                  <div className="task-card" onClick={() => { setReviewWords(dailyPlan.reviewWords); setViewMode('review'); }}>
+                  <div className="task-card" onClick={startDailyReviewWords}>
                       <FaSyncAlt className="task-icon review-word-icon" />
                       <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}語</span></div>
                   </div>

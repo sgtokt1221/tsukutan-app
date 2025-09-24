@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebaseConfig';
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
-// 既存のshuffleArray関数はそのまま使用
+// 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -14,8 +14,14 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-function VocabularyCheckTest() {
-  const [allWords, setAllWords] = useState([]); // Firestoreから読み込んだ全単語
+// どのテキストブックから単語を探すかを定義
+const textbooks = {
+  'osaka-koukou-nyuushi': '大阪府公立入試英単語',
+  'target-1900': 'ターゲット1900'
+};
+
+export default function VocabularyCheckTest() {
+  const [allWords, setAllWords] = useState([]);
   const [stage, setStage] = useState(1);
   const [currentLevel, setCurrentLevel] = useState(4);
   const [currentQuestions, setCurrentQuestions] = useState([]);
@@ -25,51 +31,55 @@ function VocabularyCheckTest() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // framer-motionのロジックはそのまま
+  // Framer Motion の設定
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  const cardColor = useTransform(x, [-100, 0, 100], ["#ef4444", "#ffffff", "#4ade80"]);
+  const rotate = useTransform(x, [-200, 200], [-25, 25]);
+  // ▼▼▼【修正点1】スワイプ時の背景色アニメーションを再設定▼▼▼
+  const cardColor = useTransform(x, [-100, 0, 100], ["#fee2e2", "#ffffff", "#dcfce7"]);
 
-  // ▼▼▼ 修正点：Firestoreから全単語を読み込む ▼▼▼
   useEffect(() => {
     const fetchAllWords = async () => {
       setLoading(true);
       try {
-        const wordsCollection = collection(db, 'words');
-        const wordsSnapshot = await getDocs(wordsCollection);
-        const wordsList = wordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAllWords(wordsList);
+        let combinedWords = [];
+        const promises = Object.keys(textbooks).map(id => 
+          getDocs(collection(db, 'textbooks', id, 'words'))
+        );
+        const snapshots = await Promise.all(promises);
+        snapshots.forEach(snapshot => {
+          const wordsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          combinedWords = [...combinedWords, ...wordsData];
+        });
+        const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.word, item])).values());
+        // 意味のフィールド名が `meaning` または `japanese` の両方に対応
+        const validWords = uniqueWords.filter(
+          word => word && word.word && (word.meaning || word.japanese)
+        );
+        setAllWords(validWords);
       } catch (error) {
-        console.error("Error fetching all words:", error);
+        console.error("全単語の読み込みに失敗しました:", error);
       }
-      setLoading(false);
     };
     fetchAllWords();
   }, []);
-  // ▲▲▲ 修正完了 ▲▲▲
 
-  // ステージ設定ロジックはあなたのものをベースに
   useEffect(() => {
     const setupStage = (level) => {
       const QUESTIONS_PER_STAGE = 20;
-      let filteredWords = allWords.filter(word => word.level === level);
-
+      // データ型が文字列でも数値でも比較できるよう '==' を使用
+      let filteredWords = allWords.filter(word => word.level == level);
+      
       if (filteredWords.length < QUESTIONS_PER_STAGE) {
         const needed = QUESTIONS_PER_STAGE - filteredWords.length;
-        const nearbyWords = allWords.filter(
-          word => word.level === level - 1 || word.level === level + 1
-        );
+        const nearbyWords = allWords.filter(word => Math.abs(word.level - level) === 1);
         filteredWords.push(...shuffleArray(nearbyWords).slice(0, needed));
       }
-      
-      const shuffled = shuffleArray(filteredWords);
-      setCurrentQuestions(shuffled.slice(0, QUESTIONS_PER_STAGE));
+      setCurrentQuestions(shuffleArray(filteredWords).slice(0, QUESTIONS_PER_STAGE));
       setQuestionIndex(0);
       setScore(0);
       setIsFlipped(false);
       x.set(0);
     };
-    
     if (allWords.length > 0) {
       setLoading(false);
       setupStage(currentLevel);
@@ -78,60 +88,49 @@ function VocabularyCheckTest() {
 
   const handleDragEnd = (event, info) => {
     if (Math.abs(info.offset.x) < 50) return;
-    
-    const isCorrect = info.offset.x > 100;
+    const isCorrect = info.offset.x > 0; // 右スワイプを「わかる」
     const newScore = score + (isCorrect ? 1 : 0);
-
     if (questionIndex < currentQuestions.length - 1) {
       setScore(newScore);
       setQuestionIndex(prev => prev + 1);
       setIsFlipped(false);
       x.set(0);
     } else {
-      // ステージの最後の問題なら評価へ
       evaluateStage(newScore);
     }
   };
 
   const evaluateStage = (finalScore) => {
     let nextLevel = currentLevel;
-    if (finalScore >= 16) { nextLevel = Math.min(10, currentLevel + 1); }
-    else if (finalScore <= 8) { nextLevel = Math.max(1, currentLevel - 1); }
-
+    if (finalScore >= 16) nextLevel = Math.min(10, currentLevel + 1);
+    else if (finalScore <= 8) nextLevel = Math.max(1, currentLevel - 1);
     if (stage < 5) {
       setCurrentLevel(nextLevel);
       setStage(stage + 1);
     } else {
-      // ▼▼▼ 修正点：最終ステージ完了後、結果をFirestoreに保存 ▼▼▼
       finishTestAndSave(nextLevel);
     }
   };
-
+  
   const finishTestAndSave = async (finalUserLevel) => {
-    // 最終レベルから推定語彙数を計算（各レベルの単語数を足し上げる）
-    let estimatedVocabulary = 0;
-    for (let i = 1; i <= finalUserLevel; i++) {
-        estimatedVocabulary += allWords.filter(w => w.level === i).length;
-    }
-    
+    let estimatedVocabulary = allWords.filter(w => w.level <= finalUserLevel).length;
     const user = auth.currentUser;
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       try {
         await updateDoc(userDocRef, {
+          level: finalUserLevel,
           'progress.currentVocabulary': estimatedVocabulary,
           'progress.lastCheckedAt': serverTimestamp(),
-        });
+        }, { merge: true });
+        alert(`テスト完了！\nあなたの単語レベル: ${finalUserLevel}\n推定語彙数: 約${estimatedVocabulary}語`);
+        navigate('/');
       } catch (error) {
-        console.error("Error updating user progress: ", error);
+        console.error("テスト結果の保存に失敗しました: ", error);
         alert("テスト結果の保存に失敗しました。");
       }
     }
-    // TODO: 結果表示ページへの遷移
-    alert(`あなたの現在の単語レベルは ${finalUserLevel}、推定語彙数は約 ${estimatedVocabulary} 語です！`);
-    navigate('/student-dashboard'); // とりあえずダッシュボードに戻る
   };
-  // ▲▲▲ 修正完了 ▲▲▲
 
   const handleTap = () => {
     setIsFlipped(!isFlipped);
@@ -142,7 +141,9 @@ function VocabularyCheckTest() {
     }
   };
 
-  if (loading || currentQuestions.length === 0) return <div className="loading-container"><p>テスト問題を準備中...</p></div>;
+  if (loading || currentQuestions.length === 0) {
+    return <div className="loading-container"><p>テスト問題を準備中...</p></div>;
+  }
 
   const currentWord = currentQuestions[questionIndex];
 
@@ -150,37 +151,48 @@ function VocabularyCheckTest() {
     <>
       <div className="test-header">
         <h3>単語力チェックテスト (ステージ {stage} / 5)</h3>
-        <p>カードをタップでめくり、右にスワイプで「わかる」、左で「わからない」</p>
+        <p>わかる→右へスワイプ / わからない→左へスワイプ</p>
       </div>
+
       <div id="flashcard-container">
         <motion.div
           key={`${stage}-${questionIndex}`}
           id="flashcard"
           drag="x"
-          dragConstraints={{ left: 0, right: 0, top:0, bottom:0 }}
+          dragConstraints={{ left: 0, right: 0 }}
           style={{ x, rotate, backgroundColor: cardColor }}
           onDragEnd={handleDragEnd}
           onTap={handleTap}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="card-face card-front">
+          {/* ▼▼▼【修正点1】カード表面の背景を透明にし、親の色が見えるようにする▼▼▼ */}
+          <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             <p id="card-front-text">{currentWord?.word}</p>
           </div>
+          
+          {/* ▼▼▼【修正点2】カード裏面の表示形式を元の完全な状態に復元▼▼▼ */}
           <div className="card-face card-back">
             <h3 id="card-back-word">{currentWord?.word}</h3>
-            <p id="card-back-meaning">{currentWord?.meaning}</p>
-            <hr />
+            {/* meaningとjapaneseの両方に対応 */}
+            <p id="card-back-meaning">{currentWord?.meaning || currentWord?.japanese}</p>
+            {/* exampleとexampleJaが存在する場合のみhrと例文を表示 */}
+            {(currentWord?.example || currentWord?.exampleJa) && <hr />}
             <p className="example-text">{currentWord?.example}</p>
             <p className="example-text-ja">{currentWord?.exampleJa}</p>
           </div>
         </motion.div>
       </div>
+
       <div className="card-navigation">
         <div className="card-counter">{questionIndex + 1} / {currentQuestions.length}</div>
+      </div>
+      
+      <div className="swipe-instructions">
+        <span>← わからない</span>
+        <span>タップで意味表示</span>
+        <span>わかる →</span>
       </div>
     </>
   );
 }
-
-export default VocabularyCheckTest;
