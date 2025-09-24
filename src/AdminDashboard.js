@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, query, orderBy } from 'firebase/firestore';
+import ProgressLamp from './ProgressLamp';
+import PrintableQuiz from './PrintableQuiz';
+import './AdminDashboard.css';
 
 // A simple spinner component
 const Spinner = () => (
@@ -18,6 +21,7 @@ function AdminDashboard() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentDetails, setStudentDetails] = useState({ logs: [], reviewWords: [] });
   const [isFetchingDetails, setIsFetchingDetails] = useState(false);
+  const [isQuizModalOpen, setQuizModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -145,36 +149,71 @@ function AdminDashboard() {
       );
     }
 
+    const getCurrentLevel = () => {
+      if (!studentDetails.logs || studentDetails.logs.length === 0) {
+        return "N/A";
+      }
+      const lastLog = studentDetails.logs[0]; // Logs are sorted by timestamp desc
+      if (lastLog.filterType === 'level') {
+        return `レベル ${lastLog.filterValue}`;
+      }
+      return lastLog.filterValue;
+    };
+
+    const progress = selectedStudent.progress || {};
+    const { currentVocabulary = 0, targetVocabulary = 0 } = progress;
+
     return (
       <div className="admin-card">
         <h3>{selectedStudent.name} (ID: {selectedStudent.studentId})</h3>
         {isFetchingDetails ? <Spinner /> : (
-          <div className="student-details-grid">
-            <div className="detail-card">
-              <h4>復習リスト ({studentDetails.reviewWords.length}単語)</h4>
-              {studentDetails.reviewWords.length > 0 ? (
-                <ul>
-                  {studentDetails.reviewWords.map(word => (
-                    <li key={word.id}>{word.word}: {word.meaning}</li>
-                  ))}
-                </ul>
-              ) : <p>復習リストは空です。</p>}
+          <>
+            <div className="student-stats-container">
+              <div className="stat-item">
+                <strong>現在のレベル</strong>
+                <span>{getCurrentLevel()}</span>
+              </div>
+              <div className="stat-item">
+                <strong>学習目標</strong>
+                <span>{currentVocabulary} / {targetVocabulary} 単語</span>
+              </div>
             </div>
-            <div className="detail-card">
-              <h4>学習ログ ({studentDetails.logs.length}件)</h4>
-              {studentDetails.logs.length > 0 ? (
-                <ul>
-                  {studentDetails.logs.map((log) => (
-                    <li key={log.id}>
-                      {new Date(log.timestamp.seconds * 1000).toLocaleString()}: 
-                      「{log.textbookId}」の {log.filterType === 'level' ? `レベル${log.filterValue}` : log.filterValue}
-                      を {log.index}単語まで学習
-                    </li>
-                  ))}
-                </ul>
-              ) : <p>学習ログはありません。</p>}
+            <div className="student-details-grid">
+              <div className="detail-card">
+                <div className="card-header">
+                  <h4>復習リスト ({studentDetails.reviewWords.length}単語)</h4>
+                  <button 
+                    onClick={() => setQuizModalOpen(true)} 
+                    disabled={studentDetails.reviewWords.length === 0}
+                    className="create-quiz-btn"
+                  >
+                    テスト作成
+                  </button>
+                </div>
+                {studentDetails.reviewWords.length > 0 ? (
+                  <ul>
+                    {studentDetails.reviewWords.map(word => (
+                      <li key={word.id}>{word.word}: {word.meaning}</li>
+                    ))}
+                  </ul>
+                ) : <p>復習リストは空です。</p>}
+              </div>
+              <div className="detail-card">
+                <h4>学習ログ ({studentDetails.logs.length}件)</h4>
+                {studentDetails.logs.length > 0 ? (
+                  <ul>
+                    {studentDetails.logs.map((log) => (
+                      <li key={log.id}>
+                        {new Date(log.timestamp.seconds * 1000).toLocaleString()}:
+                        「{log.textbookId}」の {log.filterType === 'level' ? `レベル${log.filterValue}` : log.filterValue}
+                        を {log.index}単語まで学習
+                      </li>
+                    ))}
+                  </ul>
+                ) : <p>学習ログはありません。</p>}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     );
@@ -198,13 +237,16 @@ function AdminDashboard() {
           {isFetchingStudents ? <Spinner /> : (
             <div className="student-list">
               {students.map(student => (
-                <div 
-                  key={student.id} 
+                <div
+                  key={student.id}
                   className={`student-list-item ${selectedStudent?.id === student.id ? 'active' : ''}`}
                   onClick={() => handleStudentSelect(student)}
                 >
-                  <strong>{student.name}</strong>
-                  <span>ID: {student.studentId}</span>
+                  <div className="student-info">
+                    <strong>{student.name}</strong>
+                    <span>ID: {student.studentId}</span>
+                  </div>
+                  <ProgressLamp percentage={student.progress?.percentage} />
                 </div>
               ))}
             </div>
@@ -214,6 +256,13 @@ function AdminDashboard() {
           {renderContent()}
         </main>
       </div>
+      {isQuizModalOpen && (
+        <PrintableQuiz 
+          words={studentDetails.reviewWords}
+          studentName={selectedStudent.name}
+          onCancel={() => setQuizModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
