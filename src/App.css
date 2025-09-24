@@ -155,6 +155,22 @@ body {
 }
 
 /* ===== StudentDashboard固有のスタイル ===== */
+.dashboard-summary-card {
+  border: 1px solid var(--primary-color);
+}
+.summary-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+}
+.divider {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+}
 .section-title {
   font-size: 1.2rem;
   font-weight: 700;
@@ -191,7 +207,8 @@ body {
 .progress-label { display: block; text-align: right; margin-top: 0.5rem; font-weight: bold; color: var(--text-color); }
 
 .task-cards-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.task-card { background-color: #f8fafc; padding: 1rem; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #e5e7eb; }
+.task-card { background-color: #f8fafc; padding: 1rem; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #e5e7eb; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.task-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .task-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 .new-word-icon { color: #3b82f6; }
 .review-word-icon { color: #f59e0b; }
