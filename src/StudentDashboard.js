@@ -387,7 +387,12 @@ export default function StudentDashboard() {
               ) : (
                 <div className="selection-container main-menu">
                   {lastSession && <button className="main-selection-card resume-card" onClick={resumeLearning}>前回の続きから...</button>}
-                  {Object.entries(textbooks).map(([id, name]) => ( <button key={id} className="main-selection-card" onClick={() => handleSelectTextbook(id)}>{name}</button> ))}
+                  {Object.entries(textbooks).map(([id, name]) => ( <button key={id} className="main-selection-card" onClick={() => handleSelectTextbook(id)}>{name}</button>))}
+                  {hasTakenTest && (
+                    <button className="main-selection-card retest-button" onClick={startCheckTest}>
+                      <FaSyncAlt /> 単語力再テスト
+                    </button>
+                  )}
                 </div>
               )}
             </div>
