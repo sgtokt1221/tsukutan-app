@@ -21,11 +21,12 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-export default function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo, onSaveLog }) {
+export default function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
   const [shuffledWords, setShuffledWords] = useState([]);
+  const [hasCompletedOnce, setHasCompletedOnce] = useState(false);
   
   const auth = getAuth();
   const userId = auth.currentUser ? auth.currentUser.uid : null;
@@ -60,10 +61,20 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       setIsFlipped(false);
       x.set(0);
     } else {
-      const finalIncorrectWords = isCorrect ? incorrectWords : [...incorrectWords, currentWord];
-      onBack(finalIncorrectWords);
+      // 最初の1周完了時のみコールバックを呼ぶ
+      if (!hasCompletedOnce) {
+        if (onFirstCompletion) {
+          onFirstCompletion();
+        }
+        setHasCompletedOnce(true);
+      }
+      // 自動でリスタート
+      setShuffledWords(shuffleArray(shuffledWords));
+      setCurrentIndex(0);
+      setIsFlipped(false);
+      x.set(0);
     }
-  }, [currentIndex, shuffledWords, incorrectWords, onBack, x, userId]);
+  }, [currentIndex, shuffledWords, incorrectWords, onBack, x, userId, hasCompletedOnce, onFirstCompletion]);
 
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
@@ -137,7 +148,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       </div>
 
       <div className="footer-container">
-        <button onClick={handleBackButtonClick} className="exit-button-footer">学習を終了する</button>
+        <button onClick={handleBackButtonClick} className="exit-button-footer">セッションを終了</button>
       </div>
     </div>
   );

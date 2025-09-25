@@ -63,7 +63,7 @@ export default function StudentDashboard() {
   
   // --- 新機能用のState ---
   const [userData, setUserData] = useState(null);
-  const [dailyPlan, setDailyPlan] = useState({ newWords: [], reviewWords: [] });
+  const [dailyPlan, setDailyPlan] = useState({ newWords: [], reviewWords: [], extraNewWords: [] });
   const [showRetestPrompt, setShowRetestPrompt] = useState(false);
   
   const navigate = useNavigate();
@@ -185,10 +185,17 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
   
+  const markDailyTaskAsCompleted = async (userId) => {
+    try {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const docRef = doc(db, 'users', userId, 'dailyCompletion', todayStr);
+      await setDoc(docRef, { completedAt: new Date() });
+    } catch (error) {
+      console.error("デイリータスク完了記録エラー:", error);
+    }
+  };
+
   const handleLearningBack = (incorrectWords) => {
-    // The logic for adding incorrect words to review is now handled
-    // in real-time within LearningFlashcard via updateUserWordProgress.
-    // This function just needs to handle the view change and data refresh.
     refreshDashboardData(auth.currentUser.uid);
     setLastSession(null);
     setViewMode('select');
@@ -261,17 +268,16 @@ export default function StudentDashboard() {
 
   if (loading) return <div className="loading-container"><p>読み込み中...</p></div>;
 
-  const startDailyNewWords = () => {
-    if (!dailyPlan.newWords || dailyPlan.newWords.length === 0) {
-      alert('今日の新規学習単語はありません。');
+  const startDailyTask = (words, taskType = 'daily_new') => {
+    if (!words || words.length === 0) {
+      alert('学習する単語がありません。');
       return;
     }
-    setLearningWords(dailyPlan.newWords);
-    // '今日のタスク'からの学習であることを示すセッション情報を設定
+    setLearningWords(words);
     setCurrentSessionInfo({
-      textbookId: 'daily_plan', // 特定のテキストブックに依存しないことを示す
-      filterType: 'daily_new',
-      filterValue: new Date().toISOString().slice(0, 10) // 今日の日付
+      textbookId: 'daily_plan',
+      filterType: taskType,
+      filterValue: new Date().toISOString().slice(0, 10)
     });
     setViewMode('learn');
   };
@@ -290,7 +296,12 @@ export default function StudentDashboard() {
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
-        return <LearningFlashcard words={learningWords} onBack={handleLearningBack} initialIndex={initialLearnIndex} sessionInfo={currentSessionInfo} onSaveLog={handleSaveLog}/>;
+        const handleFirstCompletion = () => {
+          if (currentSessionInfo?.filterType === 'daily_new') {
+            markDailyTaskAsCompleted(auth.currentUser.uid);
+          }
+        };
+        return <LearningFlashcard words={learningWords} onBack={handleLearningBack} initialIndex={initialLearnIndex} sessionInfo={currentSessionInfo} onSaveLog={handleSaveLog} onFirstCompletion={handleFirstCompletion} />;
       case 'review':
         return <ReviewFlashcard words={reviewWords} onBack={handleReviewComplete} />;
       case 'test':
@@ -331,13 +342,24 @@ export default function StudentDashboard() {
 
               <h3 className="summary-subtitle">今日のタスク</h3>
               <div className="task-cards-container">
-                  <div className="task-card" onClick={startDailyNewWords}>
+                  {dailyPlan.newWords && dailyPlan.newWords.length > 0 ? (
+                    <div className="task-card" onClick={() => startDailyTask(dailyPlan.newWords, 'daily_new')}>
                       <FaBook className="task-icon new-word-icon" />
                       <div className="task-info">
                         <p>新規単語</p>
                         <span>{dailyPlan.newWords.length}語</span>
                       </div>
-                  </div>
+                    </div>
+                  ) : (dailyPlan.extraNewWords && dailyPlan.extraNewWords.length > 0 &&
+                    <div className="task-card extra-task-card" onClick={() => startDailyTask(dailyPlan.extraNewWords, 'daily_extra')}>
+                      <FaBook className="task-icon new-word-icon" />
+                      <div className="task-info">
+                        <p>巻いちゃう？</p>
+                        <span>{dailyPlan.extraNewWords.length}語</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="task-card" onClick={startDailyReviewWords}>
                       <FaSyncAlt className="task-icon review-word-icon" />
                       <div className="task-info">
