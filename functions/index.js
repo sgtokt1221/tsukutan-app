@@ -110,16 +110,14 @@ exports.generateStoryFromWords = onRequest(
         return res.status(204).send('');
       }
 
-      // --- onRequest形式への変更に伴う認証とリクエスト処理 ---
+      // --- 認証とリクエストの基本検証 ---
       if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
       }
-
       const idToken = req.headers.authorization?.split('Bearer ')[1];
       if (!idToken) {
         return res.status(403).json({ error: 'Unauthorized: No token provided.' });
       }
-
       let decodedToken;
       try {
         decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -127,49 +125,110 @@ exports.generateStoryFromWords = onRequest(
         logger.error("Error verifying auth token:", error);
         return res.status(403).json({ error: 'Unauthorized: Invalid token.' });
       }
-
       const userId = decodedToken.uid;
       const { words } = req.body;
-      // --- ここまで ---
-
-      if (!words || words.length === 0) {
-        return res.status(400).json({ error: 'Bad Request: Word list is empty.' });
+      if (!words || !Array.isArray(words) || words.length === 0) {
+        return res.status(400).json({ error: 'Bad Request: Word list is empty or invalid.' });
       }
 
-      const userDocRef = admin.firestore().collection('users').doc(userId);
+      // --- ユーザーデータ取得と生成制限チェック ---
+      const userDocRef = db.collection('users').doc(userId);
       const userDoc = await userDocRef.get();
+      if (!userDoc.exists) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
       const userData = userDoc.data();
-
-      if (userData && userData.lastStoryGeneration) {
-        const lastGenDate = userData.lastStoryGeneration.toDate();
-        const now = new Date();
-        if (lastGenDate.getFullYear() === now.getFullYear() && lastGenDate.getMonth() === now.getMonth()) {
-          return res.status(429).json({ error: 'Too Many Requests: This feature can only be used once a month.' });
-        }
+      const yearMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+      const storyDocRef = db.collection('users').doc(userId).collection('generatedStories').doc(yearMonth);
+      const storyDoc = await storyDocRef.get();
+      if (storyDoc.exists) {
+        logger.info(`Story for ${userId} in ${yearMonth} already exists.`);
+        return res.status(429).json({ 
+          error: 'A story for this month has already been generated.',
+          ...storyDoc.data()
+        });
       }
 
+      // --- AIによるストーリー生成 ---
       try {
-        const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
-        const model = 'gemini-1.5-flash';
-        const generativeModel = vertex_ai.getGenerativeModel({ model });
+        const userLevel = userData.level || 3;
+        const levelDescriptions = {
+          1: "a very beginner level (CEFR A1)", 2: "a beginner level (CEFR A1)",
+          3: "an elementary level (CEFR A2)", 4: "a pre-intermediate level (CEFR A2)",
+          5: "an intermediate level (CEFR B1)", 6: "an upper-intermediate level (CEFR B1-B2)",
+          7: "an advanced level (CEFR B2)", 8: "a very advanced level (CEFR C1)",
+          9: "a near-native level (CEFR C1+)", 10: "a native level (CEFR C2)"
+        };
+        const levelDescription = levelDescriptions[userLevel] || levelDescriptions[3];
         const wordList = words.map(w => w.word).join(', ');
-        const prompt = `Please write a short, simple, and interesting story for an English learner, using all of the following words: ${wordList}. The story should be around 150-200 words.`;
 
+        const jsonSchema = {
+          type: "object",
+          properties: {
+            story: {
+              type: "string",
+              description: "The generated story, as a single block of plain text without any markdown or formatting symbols."
+            },
+            unusedWords: {
+              type: "array",
+              description: "An array of words from the provided list that could not be logically included in the story. This should be an empty array if all words were used.",
+              items: {
+                type: "string"
+              }
+            }
+          },
+          required: ["story", "unusedWords"]
+        };
+
+        const prompt = `
+You are an expert in creating educational materials for English language learners.
+Your task is to write a coherent and logical short story for a student at ${levelDescription}.
+
+Please adhere to the following rules:
+1.  **Use all of the following words**: ${wordList}.
+2.  **Story requirements**: The story must be logical, coherent, and interesting. It should be between 150 and 200 words.
+3.  **Output format**: The output must be a single, valid JSON object that conforms to the following schema. Do not output any text or markdown before or after the JSON object.
+    \`\`\`json
+    ${JSON.stringify(jsonSchema, null, 2)}
+    \`\`\`
+4.  If you cannot logically include a word, add it to the "unusedWords" array. If all words are used, the array must be empty.
+`;
+
+        const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+        const generativeModel = vertex_ai.getGenerativeModel({
+          model: 'gemini-2.0-flash-001', // Using stable version
+          generationConfig: {
+            responseMimeType: 'application/json',
+          },
+        });
+        
         const resp = await generativeModel.generateContent(prompt);
         logger.info("Full response from Gemini:", JSON.stringify(resp, null, 2));
 
-        const candidates = resp.response?.candidates;
-        if (!candidates || candidates.length === 0) {
+        const candidate = resp.response?.candidates?.[0];
+        if (!candidate || !candidate.content || !candidate.content.parts || !candidate.content.parts[0].text) {
           const finishReason = resp.response?.finishReason;
           const safetyRatings = resp.response?.safetyRatings;
-          logger.error("Story generation failed. No candidates returned.", { finishReason, safetyRatings });
-          return res.status(500).json({ error: 'AI could not generate a story. This may be due to inappropriate words or other issues.' });
+          logger.error("Story generation failed. Invalid response structure from AI.", { finishReason, safetyRatings, candidate });
+          throw new HttpsError('internal', 'AI returned an invalid response structure.');
+        }
+        
+        let resultData;
+        const responseJsonText = candidate.content.parts[0].text;
+        try {
+            resultData = JSON.parse(responseJsonText);
+            logger.info("Successfully parsed AI response.", { resultData });
+        } catch (e) {
+            logger.error("Failed to parse AI response as JSON.", { responseText: responseJsonText, error: e });
+            throw new HttpsError('internal', 'AI returned a non-JSON response, preventing story generation.');
         }
 
-        const story = candidates[0]?.content?.parts?.[0]?.text;
-        if (!story) {
-          logger.error("Story generation failed. Could not extract text from candidate.", { candidate: candidates[0] });
-          return res.status(500).json({ error: 'Failed to generate story from AI response.' });
+        const story = resultData.story;
+        const unusedWords = resultData.unusedWords || [];
+
+        if (!story || typeof story !== 'string') {
+          logger.error("Story generation failed. Could not extract valid story text from JSON response.", { resultData });
+          throw new HttpsError('internal', 'Failed to generate a valid story from the AI response.');
         }
 
         const translationClient = new TranslationServiceClient();
@@ -182,21 +241,25 @@ exports.generateStoryFromWords = onRequest(
           sourceLanguageCode: 'en',
           targetLanguageCode: 'ja',
         };
-
         const [translateResponse] = await translationClient.translateText(translateRequest);
-        const translation = translateResponse.translations[0].translatedText;
+        const translation = translateResponse.translations[0]?.translatedText || '';
 
-        await userDocRef.set({
-            lastStoryGeneration: admin.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-        
-        // --- 成功時のレスポンス ---
-        return res.status(200).json({ story, translation });
+        const storyDataToSave = {
+          story,
+          translation,
+          words,
+          unusedWords,
+          createdAt: admin.firestore.FieldValue.serverTimestamp()
+        };
+        await storyDocRef.set(storyDataToSave);
+
+        return res.status(200).json(storyDataToSave);
 
       } catch (error) {
-        logger.error("Gemini story generation failed:", error);
-        // --- 失敗時のレスポンス ---
-        return res.status(500).json({ error: 'Internal Server Error: Failed to generate story. Please try again later.' });
+        logger.error("Gemini story generation failed with error:", error);
+        const message = error instanceof HttpsError ? error.message : 'Internal Server Error: Failed to generate story. Please try again later.';
+        const code = error instanceof HttpsError ? error.code : 'internal';
+        return res.status(500).json({ error: message, code: code });
       }
     });
   }
