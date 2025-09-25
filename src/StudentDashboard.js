@@ -61,13 +61,33 @@ export default function StudentDashboard() {
   const [dailyPlan, setDailyPlan] = useState({ newWords: [], reviewWords: [], extraNewWords: [] });
   const [showRetestPrompt, setShowRetestPrompt] = useState(false);
   
-  // ▼▼▼ ストーリー生成用のState (★重複を削除し、整理しました) ▼▼▼
+  // ▼▼▼ ストーリー生成用のState ▼▼▼
   const [isGeneratingStory, setIsGeneratingStory] = useState(false);
-  const [generatedStory, setGeneratedStory] = useState("");
-  const [translatedStory, setTranslatedStory] = useState("");
-  const [showStoryModal, setShowStoryModal] = useState(false);
+  const [monthlyStory, setMonthlyStory] = useState(null);
+  const [pastStories, setPastStories] = useState([]);
+  const [storiesLoading, setStoriesLoading] = useState(true);
   
   const navigate = useNavigate();
+
+  const fetchStories = useCallback(async (uid) => {
+    setStoriesLoading(true);
+    try {
+        const storiesColRef = collection(db, 'users', uid, 'generatedStories');
+        const q = query(storiesColRef, orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const stories = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setPastStories(stories);
+
+        const yearMonth = new Date().toISOString().slice(0, 7);
+        const currentMonthStory = stories.find(story => story.id === yearMonth);
+        setMonthlyStory(currentMonthStory || null);
+
+    } catch (error) {
+        console.error("Error fetching stories:", error);
+    } finally {
+        setStoriesLoading(false);
+    }
+  }, []);
 
   // --- データ取得・更新ロジック (変更なし) ---
   const refreshDashboardData = useCallback(async (uid) => {
@@ -110,13 +130,16 @@ export default function StudentDashboard() {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         setLoading(true);
-        refreshDashboardData(user.uid).finally(() => setLoading(false));
+        Promise.all([
+          refreshDashboardData(user.uid),
+          fetchStories(user.uid)
+        ]).finally(() => setLoading(false));
       } else {
         navigate('/login');
       }
     });
     return () => unsubscribe();
-  }, [refreshDashboardData, navigate]);
+  }, [refreshDashboardData, navigate, fetchStories]);
   
   // --- イベントハンドラ (既存のものは変更なし) ---
   const handleLogout = () => auth.signOut().then(() => navigate('/login'));
@@ -226,7 +249,6 @@ export default function StudentDashboard() {
     setViewMode('review');
   };
 
-  // ▼▼▼ ★★★ AIストーリー生成関数 (onRequest版) ★★★ ▼▼▼
   const handleGenerateStory = async () => {
     const wordsToUse = dailyPlan.reviewWords;
     if (!wordsToUse || wordsToUse.length === 0) {
@@ -234,17 +256,12 @@ export default function StudentDashboard() {
       return;
     }
     setIsGeneratingStory(true);
-    setGeneratedStory(""); // 前回のをクリア
-    setTranslatedStory(""); // 前回のをクリア
 
     try {
       const user = auth.currentUser;
-      if (!user) {
-        throw new Error("ログインしていません。");
-      }
-      const idToken = await user.getIdToken();
+      if (!user) throw new Error("ログインしていません。");
 
-      // Firebase FunctionsのURL (環境変数から取得するのが望ましいが、ここではハードコード)
+      const idToken = await user.getIdToken();
       const functionUrl = 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/generateStoryFromWords';
 
       const response = await fetch(functionUrl, {
@@ -257,26 +274,33 @@ export default function StudentDashboard() {
       });
 
       if (!response.ok) {
-        // エラーレスポンスをJSONとして解析試行
-        let errorData = {};
+        let errorMsg = `ストーリーの生成に失敗しました (HTTP ${response.status})。`;
         try {
-          errorData = await response.json();
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMsg = errorData.error;
+          }
+          if (response.status === 429 && errorData.story) {
+            const existingStory = { id: new Date().toISOString().slice(0, 7), ...errorData };
+            setMonthlyStory(existingStory);
+            alert('今月のストーリーは既に生成されています。');
+            return;
+          }
         } catch (e) {
-          // JSONパースに失敗した場合 (CORSエラーなど)
-          throw new Error(`サーバーエラーが発生しました (HTTP ${response.status})。時間をおいて再度お試しください。`);
+          console.error("Could not parse error response as JSON.", e);
+          errorMsg = "サーバーで予期せぬエラーが発生しました。しばらくしてからもう一度お試しください。";
         }
-        // バックエンドからのエラーメッセージを優先して表示
-        throw new Error(errorData.error || `ストーリーの生成に失敗しました (HTTP ${response.status})`);
+        throw new Error(errorMsg);
       }
 
-      const result = await response.json();
-      setGeneratedStory(result.story);
-      setTranslatedStory(result.translation);
-      setShowStoryModal(true);
+      const resultData = await response.json();
+      const newStory = { id: new Date().toISOString().slice(0, 7), ...resultData };
+      setMonthlyStory(newStory);
+      setPastStories(prevStories => [newStory, ...prevStories.filter(s => s.id !== newStory.id)]);
 
     } catch (error) {
       console.error("ストーリー生成エラー:", error);
-      alert(error.message); // エラーメッセージをユーザーに表示
+      alert(error.message);
     } finally {
       setIsGeneratingStory(false);
     }
@@ -304,7 +328,36 @@ export default function StudentDashboard() {
       case 'select':
       default:
         const progressPercentage = userData?.progress?.percentage || 0;
-        const isStoryUsedThisMonth = userData?.lastStoryGeneration && new Date().getMonth() === userData.lastStoryGeneration.toDate().getMonth();
+
+        const StoryDisplay = ({ storyData }) => {
+            if (!storyData) return null;
+            const { story, translation, unusedWords, words } = storyData;
+            return (
+              <div className="story-display" style={{ marginTop: '1.5rem' }}>
+                <div className="story-english">
+                  <h4 style={{ color: 'var(--primary-color)' }}>Your Story</h4>
+                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{story}</p>
+                </div>
+                <hr style={{ margin: '1.5rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
+                <div className="story-japanese">
+                  <h4 style={{ color: 'var(--primary-color)' }}>和訳</h4>
+                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{translation}</p>
+                </div>
+                {unusedWords && unusedWords.length > 0 && (
+                  <div className="unused-words" style={{ marginTop: '1rem' }}>
+                    <h5 style={{ color: '#ef4444' }}>論理的に使用できなかった単語</h5>
+                    <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {unusedWords.map((word, index) => (
+                        <li key={index} style={{ background: '#fee2e2', color: '#991b1b', padding: '2px 8px', borderRadius: '9999px', fontSize: '0.8rem' }}>
+                          {word}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+        };
 
         return (
           <>
@@ -344,39 +397,53 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ▼▼▼ AIストーリー生成機能のUI ▼▼▼ */}
             <div className="card-style">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <FaMagic style={{ color: 'var(--primary-color)' }}/>
-                <h2 className="section-title" style={{ borderBottom: 'none', marginBottom: 0 }}>AIストーリーメーカー</h2>
+                <h2 className="section-title" style={{ borderBottom: 'none', marginBottom: 0 }}>君が世界最も嫌いな長文</h2>
               </div>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '0.5rem 0 1.5rem 0' }}>
-                今日の復習単語を使って、AIがオリジナルの短文と和訳を作成します。（月に1回まで）
-              </p>
+              
+              {storiesLoading ? (
+                <div className="loading-container" style={{height: '100px'}}><div className="spinner"></div></div>
+              ) : monthlyStory ? (
+                <>
+                  <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '0.5rem 0 1rem 0' }}>
+                    今月の長文です。何度も音読して完璧にしましょう。
+                  </p>
+                  <StoryDisplay storyData={monthlyStory} />
+                </>
+              ) : (
+                <>
+                  <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '0.5rem 0 1.5rem 0' }}>
+                    今日の復習単語を使って、AIがオリジナルの短文と和訳を作成します。（月に1回まで）
+                  </p>
+                  <button 
+                    onClick={handleGenerateStory} 
+                    disabled={isGeneratingStory}
+                    className="login-btn"
+                  >
+                    {isGeneratingStory ? '生成中...' : 'ストーリーを生成する'}
+                  </button>
+                </>
+              )}
+            </div>
 
-              <button 
-                onClick={handleGenerateStory} 
-                disabled={isGeneratingStory || isStoryUsedThisMonth}
-                className="login-btn"
-              >
-                {isGeneratingStory ? '生成中...' : (isStoryUsedThisMonth ? '今月は使用済みです' : 'ストーリーを生成する')}
-              </button>
-
-              {isGeneratingStory && <div className="loading-container" style={{height: '100px'}}><div className="spinner"></div></div>}
-
-            {generatedStory && (
-  <div className="story-display" style={{ marginTop: '1.5rem' }}>
-    <div className="story-english">
-      <h4 style={{ color: 'var(--primary-color)' }}>Generated Story</h4>
-      <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{generatedStory}</p>
-    </div>
-    <hr style={{ margin: '1.5rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
-    <div className="story-japanese">
-      <h4 style={{ color: 'var(--primary-color)' }}>和訳</h4>
-      <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{translatedStory}</p>
-    </div>
-  </div>
-)}
+            <div className="card-style">
+              <h2 className="section-title">過去の長文一覧</h2>
+              {storiesLoading ? (
+                  <div className="loading-container" style={{height: '50px'}}><div className="spinner"></div></div>
+              ) : pastStories.length > 0 ? (
+                  <div className="past-stories-list">
+                      {pastStories.map(story => (
+                          <details key={story.id} className="past-story-item">
+                              <summary>{story.id} の長文</summary>
+                              <StoryDisplay storyData={story} />
+                          </details>
+                      ))}
+                  </div>
+              ) : (
+                  <p style={{ color: '#64748b', fontSize: '0.9rem' }}>過去に生成されたストーリーはありません。</p>
+              )}
             </div>
 
             <div className="card-style">
