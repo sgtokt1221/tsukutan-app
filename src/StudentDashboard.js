@@ -226,33 +226,59 @@ export default function StudentDashboard() {
     setViewMode('review');
   };
 
-  // ▼▼▼ ★★★ AIストーリー生成関数 (最終確定版) ★★★ ▼▼▼
+  // ▼▼▼ ★★★ AIストーリー生成関数 (onRequest版) ★★★ ▼▼▼
   const handleGenerateStory = async () => {
-    // UIの説明文に合わせて「今日の復習単語」を使うように修正
-    const wordsToUse = dailyPlan.reviewWords; 
-    
+    const wordsToUse = dailyPlan.reviewWords;
     if (!wordsToUse || wordsToUse.length === 0) {
       alert("ストーリーを生成するための復習単語がありません。");
       return;
     }
-    setIsGeneratingStory(true); 
-    try {
-      const functions = getFunctions(getApp(), 'us-central1');
-      const generateStoryFromWords = httpsCallable(functions, 'generateStoryFromWords');
-      
-      // バックエンドに復習単語リストを送信
-      const result = await generateStoryFromWords({ words: wordsToUse });
+    setIsGeneratingStory(true);
+    setGeneratedStory(""); // 前回のをクリア
+    setTranslatedStory(""); // 前回のをクリア
 
-      setGeneratedStory(result.data.story);
-      setTranslatedStory(result.data.translation);
-      setShowStoryModal(true); // 結果を表示（モーダル表示のロジックは別途必要です）
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("ログインしていません。");
+      }
+      const idToken = await user.getIdToken();
+
+      // Firebase FunctionsのURL (環境変数から取得するのが望ましいが、ここではハードコード)
+      const functionUrl = 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/generateStoryFromWords';
+
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ words: wordsToUse }),
+      });
+
+      if (!response.ok) {
+        // エラーレスポンスをJSONとして解析試行
+        let errorData = {};
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // JSONパースに失敗した場合 (CORSエラーなど)
+          throw new Error(`サーバーエラーが発生しました (HTTP ${response.status})。時間をおいて再度お試しください。`);
+        }
+        // バックエンドからのエラーメッセージを優先して表示
+        throw new Error(errorData.error || `ストーリーの生成に失敗しました (HTTP ${response.status})`);
+      }
+
+      const result = await response.json();
+      setGeneratedStory(result.story);
+      setTranslatedStory(result.translation);
+      setShowStoryModal(true);
 
     } catch (error) {
       console.error("ストーリー生成エラー:", error);
-      const errorMessage = error.message || 'ストーリーの生成に失敗しました。時間をおいて再度お試しください。';
-      alert(errorMessage);
+      alert(error.message); // エラーメッセージをユーザーに表示
     } finally {
-      setIsGeneratingStory(false); 
+      setIsGeneratingStory(false);
     }
   };
   

@@ -16,8 +16,11 @@ const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 // ユーザー一括インポート機能 (変更なし)
 //==============================================================================
 exports.importUsers = onRequest(
-  // ▼▼▼ リージョンを us-central1 に変更 ▼▼▼
-  { region: "us-central1", memory: "256MiB" },
+  {
+    region: "us-central1",
+    memory: "256MiB",
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
   (req, res) => {
     cors(req, res, async () => {
       if (req.method !== "POST") {
@@ -90,66 +93,111 @@ exports.importUsers = onRequest(
 //==============================================================================
 // AIストーリー生成機能 (Gemini版)
 //==============================================================================
-exports.generateStoryFromWords = onCall(
-  // ▼▼▼ リージョンを us-central1 に変更 ▼▼▼
-  { region: 'us-central1', timeoutSeconds: 120, memory: '256MiB' },
-  async (request) => {
-    if (!request.auth) {
-      throw new HttpsError('unauthenticated', 'この機能を利用するにはログインが必要です。');
-    }
-    const userId = request.auth.uid;
-    const words = request.data.words;
-    if (!words || words.length === 0) {
-      throw new HttpsError('invalid-argument', '単語リストが空です。');
-    }
-    const userDocRef = admin.firestore().collection('users').doc(userId);
-    const userDoc = await userDocRef.get();
-    const userData = userDoc.data();
-    if (userData && userData.lastStoryGeneration) {
-      const lastGenDate = userData.lastStoryGeneration.toDate();
-      const now = new Date();
-      if (lastGenDate.getFullYear() === now.getFullYear() && lastGenDate.getMonth() === now.getMonth()) {
-        throw new HttpsError('resource-exhausted', 'この機能は月に1回まで利用できます。');
-      }
-    }
-    try {
-      // ▼▼▼ Gemini呼び出し元のリージョンも us-central1 に変更 ▼▼▼
-      const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
-      const model = 'gemini-pro';
-      const generativeModel = vertex_ai.getGenerativeModel({ model });
-
-      const wordList = words.map(w => w.word).join(', ');
-      const prompt = `Please write a short, simple, and interesting story for an English learner, using all of the following words: ${wordList}. The story should be around 150-200 words.`;
-
-      const resp = await generativeModel.generateContent(prompt);
-      const story = resp.response.candidates[0].content.parts[0].text;
-      if (!story) {
-        throw new HttpsError('internal', 'AIによるストーリー生成に失敗しました。');
+exports.generateStoryFromWords = onRequest(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 120,
+    memory: '256MiB',
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  (req, res) => {
+    cors(req, res, async () => {
+      // プリフライトリクエスト(OPTIONS)にCORSヘッダーを付けて返す
+      if (req.method === 'OPTIONS') {
+        res.set('Access-Control-Allow-Methods', 'POST');
+        res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+        res.set('Access-Control-Max-Age', '3600');
+        return res.status(204).send('');
       }
 
-      const translationClient = new TranslationServiceClient();
-      const projectId = process.env.GCLOUD_PROJECT;
-      const location = 'global'; // 翻訳APIは 'global' のままでOK
+      // --- onRequest形式への変更に伴う認証とリクエスト処理 ---
+      if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method Not Allowed' });
+      }
 
-      const translateRequest = {
-        parent: `projects/${projectId}/locations/${location}`,
-        contents: [story],
-        mimeType: 'text/plain',
-        sourceLanguageCode: 'en',
-        targetLanguageCode: 'ja',
-      };
+      const idToken = req.headers.authorization?.split('Bearer ')[1];
+      if (!idToken) {
+        return res.status(403).json({ error: 'Unauthorized: No token provided.' });
+      }
 
-      const [translateResponse] = await translationClient.translateText(translateRequest);
-      const translation = translateResponse.translations[0].translatedText;
+      let decodedToken;
+      try {
+        decodedToken = await admin.auth().verifyIdToken(idToken);
+      } catch (error) {
+        logger.error("Error verifying auth token:", error);
+        return res.status(403).json({ error: 'Unauthorized: Invalid token.' });
+      }
 
-      await userDocRef.set({
-          lastStoryGeneration: admin.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
+      const userId = decodedToken.uid;
+      const { words } = req.body;
+      // --- ここまで ---
 
-      return { story, translation };
-    } catch (error) {
-      logger.error("Gemini story generation failed:", error);
-      throw new HttpsError('internal', 'ストーリーの生成に失敗しました。時間をおいて再度お試しください。');
-    }
+      if (!words || words.length === 0) {
+        return res.status(400).json({ error: 'Bad Request: Word list is empty.' });
+      }
+
+      const userDocRef = admin.firestore().collection('users').doc(userId);
+      const userDoc = await userDocRef.get();
+      const userData = userDoc.data();
+
+      if (userData && userData.lastStoryGeneration) {
+        const lastGenDate = userData.lastStoryGeneration.toDate();
+        const now = new Date();
+        if (lastGenDate.getFullYear() === now.getFullYear() && lastGenDate.getMonth() === now.getMonth()) {
+          return res.status(429).json({ error: 'Too Many Requests: This feature can only be used once a month.' });
+        }
+      }
+
+      try {
+        const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+        const model = 'gemini-1.5-flash';
+        const generativeModel = vertex_ai.getGenerativeModel({ model });
+        const wordList = words.map(w => w.word).join(', ');
+        const prompt = `Please write a short, simple, and interesting story for an English learner, using all of the following words: ${wordList}. The story should be around 150-200 words.`;
+
+        const resp = await generativeModel.generateContent(prompt);
+        logger.info("Full response from Gemini:", JSON.stringify(resp, null, 2));
+
+        const candidates = resp.response?.candidates;
+        if (!candidates || candidates.length === 0) {
+          const finishReason = resp.response?.finishReason;
+          const safetyRatings = resp.response?.safetyRatings;
+          logger.error("Story generation failed. No candidates returned.", { finishReason, safetyRatings });
+          return res.status(500).json({ error: 'AI could not generate a story. This may be due to inappropriate words or other issues.' });
+        }
+
+        const story = candidates[0]?.content?.parts?.[0]?.text;
+        if (!story) {
+          logger.error("Story generation failed. Could not extract text from candidate.", { candidate: candidates[0] });
+          return res.status(500).json({ error: 'Failed to generate story from AI response.' });
+        }
+
+        const translationClient = new TranslationServiceClient();
+        const projectId = process.env.GCLOUD_PROJECT;
+        const location = 'global';
+        const translateRequest = {
+          parent: `projects/${projectId}/locations/${location}`,
+          contents: [story],
+          mimeType: 'text/plain',
+          sourceLanguageCode: 'en',
+          targetLanguageCode: 'ja',
+        };
+
+        const [translateResponse] = await translationClient.translateText(translateRequest);
+        const translation = translateResponse.translations[0].translatedText;
+
+        await userDocRef.set({
+            lastStoryGeneration: admin.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        
+        // --- 成功時のレスポンス ---
+        return res.status(200).json({ story, translation });
+
+      } catch (error) {
+        logger.error("Gemini story generation failed:", error);
+        // --- 失敗時のレスポンス ---
+        return res.status(500).json({ error: 'Internal Server Error: Failed to generate story. Please try again later.' });
+      }
+    });
   }
 );
