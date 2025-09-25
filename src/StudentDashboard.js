@@ -257,7 +257,7 @@ export default function StudentDashboard() {
     }
     setIsGeneratingStory(true);
 
-    try {
+    const callGenerateApi = async (words) => {
       const user = auth.currentUser;
       if (!user) throw new Error("ログインしていません。");
 
@@ -270,7 +270,7 @@ export default function StudentDashboard() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ words: wordsToUse }),
+        body: JSON.stringify({ words }),
       });
 
       if (!response.ok) {
@@ -280,27 +280,61 @@ export default function StudentDashboard() {
           if (errorData.error) {
             errorMsg = errorData.error;
           }
-          if (response.status === 429 && errorData.story) {
-            const existingStory = { id: new Date().toISOString().slice(0, 7), ...errorData };
-            setMonthlyStory(existingStory);
-            alert('今月のストーリーは既に生成されています。');
-            return;
+          if (response.status === 429 && (errorData.story || errorData.story1)) {
+             const err = new Error('今月のストーリーは既に生成されています。');
+             err.isRateLimit = true;
+             err.existingStory = { id: new Date().toISOString().slice(0, 7), ...errorData };
+             throw err;
           }
         } catch (e) {
+           if (e.isRateLimit) throw e;
           console.error("Could not parse error response as JSON.", e);
           errorMsg = "サーバーで予期せぬエラーが発生しました。しばらくしてからもう一度お試しください。";
         }
         throw new Error(errorMsg);
       }
+      return response.json();
+    };
 
-      const resultData = await response.json();
-      const newStory = { id: new Date().toISOString().slice(0, 7), ...resultData };
+    try {
+      // First generation
+      const result1 = await callGenerateApi(wordsToUse);
+
+      let finalStoryData = {
+        story1: result1.story,
+        translation1: result1.translation,
+        story2: null,
+        translation2: null,
+        unusedWords: result1.unusedWords,
+        words: wordsToUse,
+      };
+
+      // Second generation if there are unused words
+      if (result1.unusedWords && result1.unusedWords.length > 0) {
+        const wordsForSecondAttempt = result1.unusedWords
+          .map(wordStr => wordsToUse.find(w => w.word === wordStr))
+          .filter(Boolean); // Filter out any null/undefined entries
+
+        if (wordsForSecondAttempt.length > 0) {
+            const result2 = await callGenerateApi(wordsForSecondAttempt);
+            finalStoryData.story2 = result2.story;
+            finalStoryData.translation2 = result2.translation;
+            finalStoryData.unusedWords = result2.unusedWords;
+        }
+      }
+
+      const newStory = { id: new Date().toISOString().slice(0, 7), ...finalStoryData };
       setMonthlyStory(newStory);
       setPastStories(prevStories => [newStory, ...prevStories.filter(s => s.id !== newStory.id)]);
 
     } catch (error) {
-      console.error("ストーリー生成エラー:", error);
-      alert(error.message);
+      if (error.isRateLimit) {
+        setMonthlyStory(error.existingStory);
+        alert(error.message);
+      } else {
+        console.error("ストーリー生成エラー:", error);
+        alert(error.message);
+      }
     } finally {
       setIsGeneratingStory(false);
     }
@@ -331,31 +365,67 @@ export default function StudentDashboard() {
 
         const StoryDisplay = ({ storyData }) => {
             if (!storyData) return null;
-            const { story, translation, unusedWords, words } = storyData;
+
+            // デフォルトのstory/translationもstory1/translation1として扱う
+            const { story1, translation1, story2, translation2, unusedWords } = {
+                story1: storyData.story1 || storyData.story,
+                translation1: storyData.translation1 || storyData.translation,
+                ...storyData
+            };
+
+            const InterleavedText = ({ story, translation, title }) => {
+                if (!story || !translation) return null;
+
+                const englishSentences = story.match(/[^.!?]+[.!?]+/g) || [story];
+                const japaneseSentences = translation.match(/[^。！？]+[。！？]+/g) || [translation];
+                const maxLength = Math.max(englishSentences.length, japaneseSentences.length);
+                const interleaved = [];
+
+                for (let i = 0; i < maxLength; i++) {
+                    if (englishSentences[i]) {
+                        interleaved.push({ type: 'en', text: englishSentences[i].trim() });
+                    }
+                    if (japaneseSentences[i]) {
+                        interleaved.push({ type: 'ja', text: japaneseSentences[i].trim() });
+                    }
+                }
+
+                return (
+                    <div style={{ marginBottom: '2rem' }}>
+                        <h4 style={{ color: 'var(--primary-color)', borderBottom: '2px solid var(--primary-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>{title}</h4>
+                        {interleaved.map((item, index) => (
+                            <p key={index} lang={item.type === 'ja' ? 'ja' : 'en'} style={{
+                                background: item.type === 'ja' ? '#f3f4f6' : 'transparent',
+                                padding: '0.5rem',
+                                borderRadius: '4px',
+                                margin: '0.5rem 0',
+                                lineHeight: '1.7',
+                            }}>
+                                {item.text}
+                            </p>
+                        ))}
+                    </div>
+                );
+            };
+
             return (
-              <div className="story-display" style={{ marginTop: '1.5rem' }}>
-                <div className="story-english">
-                  <h4 style={{ color: 'var(--primary-color)' }}>Your Story</h4>
-                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{story}</p>
+                <div className="story-display" style={{ marginTop: '1.5rem' }}>
+                    <InterleavedText story={story1} translation={translation1} title="一つ目の長文" />
+                    {story2 && <InterleavedText story={story2} translation={translation2} title="二つ目の長文" />}
+
+                    {unusedWords && unusedWords.length > 0 && (
+                        <div className="unused-words" style={{ marginTop: '1rem' }}>
+                            <h5 style={{ color: '#ef4444' }}>論理的に使用できなかった単語</h5>
+                            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                {unusedWords.map((word, index) => (
+                                    <li key={index} style={{ background: '#fee2e2', color: '#991b1b', padding: '2px 8px', borderRadius: '9999px', fontSize: '0.8rem' }}>
+                                        {typeof word === 'object' ? word.word : word}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
-                <hr style={{ margin: '1.5rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
-                <div className="story-japanese">
-                  <h4 style={{ color: 'var(--primary-color)' }}>和訳</h4>
-                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{translation}</p>
-                </div>
-                {unusedWords && unusedWords.length > 0 && (
-                  <div className="unused-words" style={{ marginTop: '1rem' }}>
-                    <h5 style={{ color: '#ef4444' }}>論理的に使用できなかった単語</h5>
-                    <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {unusedWords.map((word, index) => (
-                        <li key={index} style={{ background: '#fee2e2', color: '#991b1b', padding: '2px 8px', borderRadius: '9999px', fontSize: '0.8rem' }}>
-                          {word}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
             );
         };
 
@@ -400,7 +470,7 @@ export default function StudentDashboard() {
             <div className="card-style">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <FaMagic style={{ color: 'var(--primary-color)' }}/>
-                <h2 className="section-title" style={{ borderBottom: 'none', marginBottom: 0 }}>君が世界最も嫌いな長文</h2>
+                <h2 className="section-title" style={{ borderBottom: 'none', marginBottom: 0 }}>君が世界で最も嫌いな長文</h2>
               </div>
               
               {storiesLoading ? (
