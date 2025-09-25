@@ -209,6 +209,22 @@ body {
 .task-cards-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .task-card { background-color: #f8fafc; padding: 1rem; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #e5e7eb; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .task-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+/* ▼▼▼【修正点5】「巻いちゃう？」カードのスタイルを追加▼▼▼ */
+.extra-task-card {
+  background: linear-gradient(135deg, #6EE7B7, #3B82F6);
+  color: #ffffff;
+}
+.extra-task-card .task-info p,
+.extra-task-card .task-info span {
+  color: #ffffff;
+}
+.extra-task-card .task-icon {
+  color: #ffffff;
+  opacity: 0.8;
+}
+/* ▲▲▲▲▲▲ */
+
 .task-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 .new-word-icon { color: #3b82f6; }
 .review-word-icon { color: #f59e0b; }

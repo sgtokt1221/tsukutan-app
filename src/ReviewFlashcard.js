@@ -86,14 +86,17 @@ function ReviewFlashcard({ words, onBack }) {
     if (currentIndex < sessionWords.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      onBack();
+      // 自動でリスタート
+      setSessionWords(words); // 元の単語リストで再設定
+      setCurrentIndex(0);
+      setIsFlipped(false);
     }
     
     // カードの位置をリセット
     x.set(0);
     y.set(0);
 
-  }, [currentIndex, sessionWords, onBack, x, y, userId]);
+  }, [currentIndex, sessionWords, x, y, userId, words]);
 
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
@@ -148,7 +151,7 @@ function ReviewFlashcard({ words, onBack }) {
         <div className="card-counter">{currentIndex + 1} / {sessionWords.length}</div>
       </div>
       <div className="footer-container">
-        <button onClick={onBack} className="exit-button-footer">復習を終了する</button>
+        <button onClick={onBack} className="exit-button-footer">セッションを終了</button>
       </div>
     </div>
   );

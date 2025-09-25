@@ -60,13 +60,17 @@ export const generateDailyPlan = async (userData, userId) => {
   const learnedWordIds = new Set(allReviewWordsSnapshot.docs.map(doc => doc.id));
   const userLevel = userData.level || 1;
   
-  const newWords = await getNewWords(userId, finalNewWordsQuota, userLevel, learnedWordIds);
+  const { words: newWords, remainingCandidates } = await getNewWords(userId, finalNewWordsQuota, userLevel, learnedWordIds);
+
+  // ▼▼▼【修正点2】追加学習用の単語（巻いちゃう？分）を取得▼▼▼
+  const EXTRA_WORDS_QUOTA = 10; // 追加で学習する単語数
+  const extraNewWords = remainingCandidates.slice(0, EXTRA_WORDS_QUOTA);
+  // ▲▲▲▲▲▲
 
   // 5. 隣接レベルの単語を復習リストに追加（元のロジックを維持）
   let adjacentWords = [];
   if (userData.goal && userData.goal.targets && userData.goal.targets.length > 0) {
-    // getAdjacentLevelWords には、既に学習済みの単語IDセットを渡す
-    const currentLearnedIds = new Set([...learnedWordIds, ...newWords.map(w => w.id)]);
+    const currentLearnedIds = new Set([...learnedWordIds, ...newWords.map(w => w.id), ...extraNewWords.map(w => w.id)]);
     adjacentWords = await getAdjacentLevelWords(userData.goal.targets, currentLearnedIds);
   }
   
@@ -75,9 +79,11 @@ export const generateDailyPlan = async (userData, userId) => {
   
   const finalReviewWords = [...scheduledReviewWords, ...uniqueAdjacentWords];
 
+  // ▼▼▼【修正点3】戻り値に追加の単語リストを含める▼▼▼
   return {
     newWords: newWords,
     reviewWords: finalReviewWords,
+    extraNewWords: extraNewWords,
   };
 };
 
@@ -133,7 +139,7 @@ const getAdjacentLevelWords = async (targets, learnedWordIds) => {
  * ユーザーのレベルに基づき、まだ学習していない新規単語を取得します。
  */
 const getNewWords = async (userId, quota, userLevel, learnedWordIds) => {
-  if (quota <= 0) return [];
+  if (quota < 0) quota = 0; // クォータが負にならないようにする
 
   try {
     // ユーザーの現在のレベルと次のレベルの単語を対象とする
@@ -154,14 +160,22 @@ const getNewWords = async (userId, quota, userLevel, learnedWordIds) => {
       });
     });
 
-    // 候補の中からランダムにシャッフルして、ノルマ数だけ選択
+    // 候補の中からランダムにシャッフル
     candidateWords.sort(() => Math.random() - 0.5);
     
-    return candidateWords.slice(0, quota);
+    // ▼▼▼【修正点4】戻り値をオブジェクトに変更▼▼▼
+    const selectedWords = candidateWords.slice(0, quota);
+    const remainingCandidates = candidateWords.slice(quota);
+    
+    return {
+      words: selectedWords,
+      remainingCandidates: remainingCandidates
+    };
+    // ▲▲▲▲▲▲
 
   } catch (error) {
     console.error("新規単語の取得エラー:", error);
-    return [];
+    return { words: [], remainingCandidates: [] };
   }
 };
 
