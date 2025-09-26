@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, query, orderBy, getDoc } from 'firebase/firestore';
+import Papa from 'papaparse';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import ProgressLamp from './ProgressLamp';
@@ -174,36 +175,63 @@ function AdminDashboard() {
     setMessage('');
   };
 
-  const handleImport = async () => {
+  const handleImport = () => {
     if (!csvFile) {
       setMessage('CSVファイルを選択してください。');
       return;
     }
     setIsImporting(true);
-    setMessage('ユーザーをインポート中...');
-    try {
-      const csvData = await csvFile.text();
-      const idToken = await auth.currentUser.getIdToken();
-      const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
+    setMessage('CSVファイルを解析中...');
 
-      if (!functionUrl) throw new Error("Cloud FunctionのURLが設定されていません。");
+    Papa.parse(csvFile, {
+      encoding: "Shift-JIS",
+      complete: async (results) => {
+        try {
+          setMessage('ユーザーをインポート中...');
+          const rows = results.data;
+          // Filter out empty rows and header rows (assuming first 3 are headers)
+          const dataRows = rows.slice(3).filter(row => row.length > 1 && row.some(cell => cell && cell.trim() !== ''));
 
-      const response = await fetch(functionUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${idToken}` },
-        body: csvData
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || `HTTPエラー: ${response.status}`);
+          if (dataRows.length === 0) {
+            throw new Error("CSVに有効なデータ行が見つかりませんでした。");
+          }
 
-      setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
-      if (result.errors?.length > 0) console.error('Import errors:', result.errors);
-    } catch (error) {
-      console.error('Import process error:', error);
-      setMessage(`エラー: ${error.message}`);
-    } finally {
-      setIsImporting(false);
-    }
+          const idToken = await auth.currentUser.getIdToken();
+          const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
+          if (!functionUrl) throw new Error("Cloud FunctionのURLが設定されていません。");
+
+          const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`
+            },
+            body: JSON.stringify({ users: dataRows }) // Send parsed data as JSON
+          });
+
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.error || `HTTPエラー: ${response.status}`);
+          }
+
+          setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
+          if (result.errors && result.errors.length > 0) {
+            console.error('Import errors:', result.errors);
+            setMessage(prev => prev + ` 詳細なエラー: ${result.errors.join(', ')}`);
+          }
+        } catch (error) {
+          console.error('Import process error:', error);
+          setMessage(`エラー: ${error.message}`);
+        } finally {
+          setIsImporting(false);
+        }
+      },
+      error: (err) => {
+        console.error('CSV parsing error:', err);
+        setMessage(`CSVファイルの解析に失敗しました: ${err.message}`);
+        setIsImporting(false);
+      }
+    });
   };
 
   const handleLogout = () => auth.signOut();
