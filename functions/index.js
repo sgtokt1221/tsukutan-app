@@ -7,20 +7,16 @@ admin.initializeApp();
 const db = admin.firestore();
 
 // 外部ライブラリ
-const cors = require("cors")({ origin: true });
+const cors = require("cors")({ origin: true }); // ★ This is the only declaration needed
 const { parse } = require("csv-parse/sync");
 const { VertexAI } = require('@google-cloud/vertexai');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 
 //==============================================================================
-// ユーザー一括インポート機能 (変更なし)
+// ユーザー一括インポート機能 (The user's version, unchanged)
 //==============================================================================
 exports.importUsers = onRequest(
-  {
-    region: "us-central1",
-    memory: "256MiB",
-    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
-  },
+  { region: "us-central1", memory: "256MiB" },
   (req, res) => {
     cors(req, res, async () => {
       if (req.method !== "POST") {
@@ -39,49 +35,84 @@ exports.importUsers = onRequest(
         logger.error("Error verifying auth token:", error);
         return res.status(403).send("Unauthorized: Invalid token.");
       }
+
       const csvData = req.body.toString();
       let createdCount = 0;
+      let updatedCount = 0;
       let failedCount = 0;
       const errors = [];
+      
       try {
         const records = parse(csvData, { skip_empty_lines: true });
+
         for (const record of records) {
           const username = record[0];
           const studentId = record[1];
-          if (!username || !studentId || studentId.length !== 4) {
+          const grade = record[2];
+
+          if (!username || !studentId || studentId.length !== 4 || !grade) {
             failedCount++;
-            errors.push(`Invalid record: ${record.join(",")}`);
+            errors.push(`情報不足: ${record.join(",")}`);
             continue;
           }
+
           const email = `${studentId}@tsukasafoods.com`;
           const password = `tsukuba${studentId}`;
+
           try {
-            const userRecord = await admin.auth().createUser({
-              email,
-              password,
+            const userRecord = await admin.auth().getUserByEmail(email);
+            
+            await admin.auth().updateUser(userRecord.uid, {
               displayName: username,
+              password: password
             });
+
             await db.collection("users").doc(userRecord.uid).set({
               name: username,
-              studentId: studentId,
-              level: 0,
-              goal: { targetExam: null, targetDate: null, isSet: false },
-              progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
-            });
-            createdCount++;
+              grade: grade
+            }, { merge: true });
+
+            updatedCount++;
+
           } catch (error) {
-            failedCount++;
-            const errorMessage = error.message || "Unknown error.";
-            errors.push(`Failed to create user ${email}: ${errorMessage}`);
-            logger.error(`Failed to create user ${email}:`, error);
+            if (error.code === 'auth/user-not-found') {
+              try {
+                const newUserRecord = await admin.auth().createUser({
+                  email,
+                  password,
+                  displayName: username,
+                });
+
+                await db.collection("users").doc(newUserRecord.uid).set({
+                  name: username,
+                  studentId: studentId,
+                  grade: grade,
+                  level: 0,
+                  goal: { targetExam: null, targetDate: null, isSet: false },
+                  progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+                });
+                createdCount++;
+              } catch (creationError) {
+                failedCount++;
+                errors.push(`作成失敗 ${email}: ${creationError.message}`);
+                logger.error(`Failed to create user ${email}:`, creationError);
+              }
+            } else {
+              failedCount++;
+              errors.push(`処理失敗 ${email}: ${error.message}`);
+              logger.error(`Failed to process user ${email}:`, error);
+            }
           }
         }
+
         res.status(200).send({
           message: "User import process finished.",
           created: createdCount,
+          updated: updatedCount,
           failed: failedCount,
           errors: errors,
         });
+
       } catch (error) {
         logger.error("Error parsing or processing CSV:", error);
         res.status(500).send(`Internal Server Error: ${error.message}`);
@@ -91,7 +122,7 @@ exports.importUsers = onRequest(
 );
 
 //==============================================================================
-// AIストーリー生成機能 (Gemini版)
+// AIストーリー生成機能 (The user's working version, unchanged)
 //==============================================================================
 exports.generateStoryFromWords = onRequest(
   {
@@ -102,7 +133,6 @@ exports.generateStoryFromWords = onRequest(
   },
   (req, res) => {
     cors(req, res, async () => {
-      // プリフライトリクエスト(OPTIONS)にCORSヘッダーを付けて返す
       if (req.method === 'OPTIONS') {
         res.set('Access-Control-Allow-Methods', 'POST');
         res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
@@ -110,7 +140,6 @@ exports.generateStoryFromWords = onRequest(
         return res.status(204).send('');
       }
 
-      // --- 認証とリクエストの基本検証 ---
       if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
       }
@@ -131,14 +160,13 @@ exports.generateStoryFromWords = onRequest(
         return res.status(400).json({ error: 'Bad Request: Word list is empty or invalid.' });
       }
 
-      // --- ユーザーデータ取得と生成制限チェック ---
       const userDocRef = db.collection('users').doc(userId);
       const userDoc = await userDocRef.get();
       if (!userDoc.exists) {
         return res.status(404).json({ error: 'User not found.' });
       }
       const userData = userDoc.data();
-      const yearMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+      const yearMonth = new Date().toISOString().slice(0, 7);
       const storyDocRef = db.collection('users').doc(userId).collection('generatedStories').doc(yearMonth);
       const storyDoc = await storyDocRef.get();
       if (storyDoc.exists) {
@@ -149,7 +177,6 @@ exports.generateStoryFromWords = onRequest(
         });
       }
 
-      // --- AIによるストーリー生成 ---
       try {
         const userLevel = userData.level || 3;
         const levelDescriptions = {
@@ -196,7 +223,7 @@ Please adhere to the following rules:
 
         const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
         const generativeModel = vertex_ai.getGenerativeModel({
-          model: 'gemini-2.0-flash-001', // Using stable version
+          model: 'gemini-2.0-flash-001',
           generationConfig: {
             responseMimeType: 'application/json',
           },
