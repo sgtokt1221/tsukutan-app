@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/functions/node_modules  # ← この行を追加
 /.pnp
 .pnp.js
 
