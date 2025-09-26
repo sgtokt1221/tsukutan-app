@@ -19,6 +19,14 @@ exports.importUsers = onRequest(
   { region: "us-central1", memory: "256MiB" },
   (req, res) => {
     cors(req, res, async () => {
+      // Handle preflight requests for CORS, copied from the working generateStoryFromWords function
+      if (req.method === 'OPTIONS') {
+        res.set('Access-Control-Allow-Methods', 'POST');
+        res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+        res.set('Access-Control-Max-Age', '3600');
+        return res.status(204).send('');
+      }
+
       if (req.method !== "POST") {
         return res.status(405).send("Method Not Allowed");
       }

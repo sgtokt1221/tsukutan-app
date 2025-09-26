@@ -7,18 +7,18 @@ import ProgressLamp from './ProgressLamp';
 import PrintableQuiz from './PrintableQuiz';
 import './AdminDashboard.css';
 
-// Chart.jsのコンポーネントを登録
+// Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// --- 定数 ---
+// --- Constants ---
 const GRADE_ORDER = ['小学生', '中１', '中２', '中３', '高１', '高２', '高３'];
 
-// --- 子コンポーネント ---
+// --- Sub-components ---
 
-// ローディングスピナー
+// Loading Spinner
 const Spinner = () => <div className="spinner-container"><div className="spinner"></div></div>;
 
-// 各学年の統計情報を表示するカード
+// Grade Analytics Card Component
 const GradeAnalyticsCard = ({ grade, data }) => {
   if (!data || data.total === 0) {
     return (
@@ -40,7 +40,7 @@ const GradeAnalyticsCard = ({ grade, data }) => {
     }],
   };
   const chartOptions = { responsive: true, plugins: { legend: { display: false } } };
-  
+
   const topPerformers = [...students]
     .sort((a, b) => (b.progress?.percentage || 0) - (a.progress?.percentage || 0))
     .slice(0, 3);
@@ -73,10 +73,10 @@ const GradeAnalyticsCard = ({ grade, data }) => {
 };
 
 
-// --- メインコンポーネント ---
+// --- Main AdminDashboard Component ---
 
 function AdminDashboard() {
-  // --- State宣言 ---
+  // --- State Declarations ---
   const [view, setView] = useState('analytics'); // 'analytics', 'studentDetails', 'import'
   const [students, setStudents] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -84,35 +84,33 @@ function AdminDashboard() {
   const [studentDetails, setStudentDetails] = useState({ logs: [], reviewWords: [] });
   const [csvFile, setCsvFile] = useState(null);
   const [message, setMessage] = useState('');
-  
-  // ローディングState
+
+  // Loading States
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingDetails, setIsFetchingDetails] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  
-  // モーダルState
+
+  // Modal State
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
 
-  // --- データ取得 ---
+  // --- Data Fetching ---
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        // 全生徒の基本情報を取得
         const usersCollectionRef = collection(db, 'users');
         const q = query(usersCollectionRef, orderBy("name"));
         const usersSnapshot = await getDocs(q);
         const studentList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setStudents(studentList);
 
-        // 分析データを生成
         const todayStr = new Date().toISOString().slice(0, 10);
         const studentWithCompletion = await Promise.all(studentList.map(async (student) => {
           const completionDocRef = doc(db, 'users', student.id, 'dailyCompletion', todayStr);
           const completionDoc = await getDoc(completionDocRef);
           return { ...student, completedToday: completionDoc.exists() };
         }));
-        
+
         const dataByGrade = studentWithCompletion.reduce((acc, student) => {
           const grade = student.grade || '学年未設定';
           if (!acc[grade]) {
@@ -123,9 +121,8 @@ function AdminDashboard() {
           acc[grade].students.push(student);
           return acc;
         }, {});
-        
-        setAnalyticsData(dataByGrade);
 
+        setAnalyticsData(dataByGrade);
       } catch (error) {
         console.error("Error fetching initial data: ", error);
         setMessage("データの読み込みに失敗しました。");
@@ -136,14 +133,13 @@ function AdminDashboard() {
     fetchInitialData();
   }, []);
 
-  // --- イベントハンドラ ---
+  // --- Event Handlers ---
 
   const handleSelectStudent = async (student) => {
     setSelectedStudent(student);
     setView('studentDetails');
     setIsFetchingDetails(true);
     setStudentDetails({ logs: [], reviewWords: [] });
-
     try {
       const logsColRef = collection(db, 'users', student.id, 'logs');
       const logsQuery = query(logsColRef, orderBy("timestamp", "desc"));
@@ -162,7 +158,7 @@ function AdminDashboard() {
       setIsFetchingDetails(false);
     }
   };
-  
+
   const handleShowAnalytics = () => {
     setSelectedStudent(null);
     setView('analytics');
@@ -178,54 +174,41 @@ function AdminDashboard() {
     setMessage('');
   };
 
-const handleImport = async () => {
+  const handleImport = async () => {
     if (!csvFile) {
       setMessage('CSVファイルを選択してください。');
       return;
     }
-    // ★isImportingを使うように変数名を修正（以前のコードとの整合性のため）
-    setIsImporting(true); 
+    setIsImporting(true);
     setMessage('ユーザーをインポート中...');
     try {
-      // ▼▼▼ ファイル読み込みを、より安定した .text() 方式に変更 ▼▼▼
       const csvData = await csvFile.text();
       const idToken = await auth.currentUser.getIdToken();
       const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
-      
-      if (!functionUrl) {
-        throw new Error("Cloud FunctionのURLが設定されていません。");
-      }
+
+      if (!functionUrl) throw new Error("Cloud FunctionのURLが設定されていません。");
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${idToken}` },
         body: csvData
       });
-
       const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || `HTTPエラー: ${response.status}`);
-      }
-      
-      // ★更新件数も表示できるようにメッセージを修正
+      if (!response.ok) throw new Error(result.message || `HTTPエラー: ${response.status}`);
+
       setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
-
-      if (result.errors && result.errors.length > 0) {
-        console.error('Import errors:', result.errors);
-      }
-
+      if (result.errors?.length > 0) console.error('Import errors:', result.errors);
     } catch (error) {
       console.error('Import process error:', error);
       setMessage(`エラー: ${error.message}`);
     } finally {
-      // ★isImportingを使うように変数名を修正
-      setIsImporting(false); 
+      setIsImporting(false);
     }
   };
 
   const handleLogout = () => auth.signOut();
-  
-  // --- レンダリング ---
+
+  // --- Render Logic ---
 
   const renderContent = () => {
     if (isLoading) return <Spinner />;
@@ -243,7 +226,7 @@ const handleImport = async () => {
             )}
           </div>
         );
-      
+
       case 'import':
         return (
           <div className="admin-card">
@@ -306,12 +289,12 @@ const handleImport = async () => {
             )}
           </div>
         );
-      
+
       default:
         return null;
     }
   };
-  
+
   return (
     <div className="dashboard-container admin-container">
       <header className="dashboard-header">
