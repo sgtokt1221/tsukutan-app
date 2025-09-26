@@ -7,131 +7,122 @@ admin.initializeApp();
 const db = admin.firestore();
 
 // 外部ライブラリ
-const cors = require("cors")({ origin: true }); // ★ This is the only declaration needed
-const { parse } = require("csv-parse/sync");
+const express = require('express');
+const cors = require('cors');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 
 //==============================================================================
-// ユーザー一括インポート機能 (The user's version, unchanged)
+// ユーザー一括インポート機能 (Express.js + JSONベース)
 //==============================================================================
-exports.importUsers = onRequest(
-  { region: "us-central1", memory: "256MiB" },
-  (req, res) => {
-    cors(req, res, async () => {
-      // Handle preflight requests for CORS, copied from the working generateStoryFromWords function
-      if (req.method === 'OPTIONS') {
-        res.set('Access-Control-Allow-Methods', 'POST');
-        res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
-        res.set('Access-Control-Max-Age', '3600');
-        return res.status(204).send('');
+const importUsersApp = express();
+// CORSミドルウェアを適用
+importUsersApp.use(cors({ origin: true }));
+
+importUsersApp.post('/', async (req, res) => {
+  // 認証
+  const idToken = req.get("Authorization")?.split("Bearer ")[1];
+  if (!idToken) {
+    return res.status(403).json({error: "Unauthorized: No token provided."});
+  }
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    if (decodedToken.email !== "tsukasafoods@gmail.com") {
+      return res.status(403).json({error: "Forbidden: Not an admin user."});
+    }
+  } catch (error) {
+    logger.error("Error verifying auth token:", error);
+    return res.status(403).json({error: "Unauthorized: Invalid token."});
+  }
+
+  // ビジネスロジック
+  try {
+    const { users } = req.body;
+    if (!users || !Array.isArray(users)) {
+      return res.status(400).json({ error: "Bad Request: 'users' array not provided."});
+    }
+    
+    let createdCount = 0;
+    let updatedCount = 0;
+    let failedCount = 0;
+    const errors = [];
+
+    // 各行の処理を並列実行
+    const promises = users.map(async (record) => {
+      const username = record[0];
+      const studentId = record[1];
+      const grade = record[2];
+
+      if (!username || !studentId || studentId.length !== 4 || !grade) {
+        failedCount++;
+        errors.push(`情報不足: ${record.join(",")}`);
+        return;
       }
 
-      if (req.method !== "POST") {
-        return res.status(405).send("Method Not Allowed");
-      }
-      const idToken = req.get("Authorization")?.split("Bearer ")[1];
-      if (!idToken) {
-        return res.status(403).send("Unauthorized: No token provided.");
-      }
+      const email = `${studentId}@tsukasafoods.com`;
+      const password = `tsukuba${studentId}`;
+
       try {
-        const decodedToken = await admin.auth().verifyIdToken(idToken);
-        if (decodedToken.email !== "tsukasafoods@gmail.com") {
-          return res.status(403).send("Forbidden: Not an admin user.");
-        }
-      } catch (error) {
-        logger.error("Error verifying auth token:", error);
-        return res.status(403).send("Unauthorized: Invalid token.");
-      }
-
-      const csvData = req.body.toString();
-      let createdCount = 0;
-      let updatedCount = 0;
-      let failedCount = 0;
-      const errors = [];
-      
-      try {
-        const records = parse(csvData, { skip_empty_lines: true });
-
-        for (const record of records) {
-          const username = record[0];
-          const studentId = record[1];
-          const grade = record[2];
-
-          if (!username || !studentId || studentId.length !== 4 || !grade) {
-            failedCount++;
-            errors.push(`情報不足: ${record.join(",")}`);
-            continue;
-          }
-
-          const email = `${studentId}@tsukasafoods.com`;
-          const password = `tsukuba${studentId}`;
-
-          try {
-            const userRecord = await admin.auth().getUserByEmail(email);
-            
-            await admin.auth().updateUser(userRecord.uid, {
-              displayName: username,
-              password: password
-            });
-
-            await db.collection("users").doc(userRecord.uid).set({
-              name: username,
-              grade: grade
-            }, { merge: true });
-
-            updatedCount++;
-
-          } catch (error) {
-            if (error.code === 'auth/user-not-found') {
-              try {
-                const newUserRecord = await admin.auth().createUser({
-                  email,
-                  password,
-                  displayName: username,
-                });
-
-                await db.collection("users").doc(newUserRecord.uid).set({
-                  name: username,
-                  studentId: studentId,
-                  grade: grade,
-                  level: 0,
-                  goal: { targetExam: null, targetDate: null, isSet: false },
-                  progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
-                });
-                createdCount++;
-              } catch (creationError) {
-                failedCount++;
-                errors.push(`作成失敗 ${email}: ${creationError.message}`);
-                logger.error(`Failed to create user ${email}:`, creationError);
-              }
-            } else {
-              failedCount++;
-              errors.push(`処理失敗 ${email}: ${error.message}`);
-              logger.error(`Failed to process user ${email}:`, error);
-            }
-          }
-        }
-
-        res.status(200).send({
-          message: "User import process finished.",
-          created: createdCount,
-          updated: updatedCount,
-          failed: failedCount,
-          errors: errors,
+        const userRecord = await admin.auth().getUserByEmail(email);
+        // 既存ユーザーの更新
+        await admin.auth().updateUser(userRecord.uid, {
+          displayName: username,
+          password: password,
         });
-
+        await db.collection("users").doc(userRecord.uid).set({ name: username, grade: grade }, { merge: true });
+        updatedCount++;
       } catch (error) {
-        logger.error("Error parsing or processing CSV:", error);
-        res.status(500).send(`Internal Server Error: ${error.message}`);
+        if (error.code === 'auth/user-not-found') {
+          // 新規ユーザーの作成
+          try {
+            const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
+            await db.collection("users").doc(newUserRecord.uid).set({
+              name: username,
+              studentId: studentId,
+              grade: grade,
+              level: 0,
+              goal: { targetExam: null, targetDate: null, isSet: false },
+              progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+            });
+            createdCount++;
+          } catch (creationError) {
+            failedCount++;
+            errors.push(`作成失敗 ${email}: ${creationError.message}`);
+          }
+        } else {
+          failedCount++;
+          errors.push(`処理失敗 ${email}: ${error.message}`);
+        }
       }
     });
+    
+    await Promise.all(promises);
+
+    return res.status(200).json({
+      message: "User import process finished.",
+      created: createdCount,
+      updated: updatedCount,
+      failed: failedCount,
+      errors: errors,
+    });
+  } catch (error) {
+    logger.error("Error processing users:", error);
+    return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
+});
+
+// Firebase FunctionsのエンドポイントとしてExpressアプリをエクスポート
+exports.importUsers = onRequest(
+  { region: "us-central1", memory: "256MiB" },
+  importUsersApp
 );
+
 
 //==============================================================================
 // AIストーリー生成機能 (The user's working version, unchanged)
 //==============================================================================
+const corsForStory = cors({origin: true});
+
 exports.generateStoryFromWords = onRequest(
   {
     region: 'us-central1',
@@ -140,7 +131,8 @@ exports.generateStoryFromWords = onRequest(
     serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
   },
   (req, res) => {
-    cors(req, res, async () => {
+    corsForStory(req, res, async () => {
+      // 正常に動作していたため、この関数のCORS処理は変更しない
       if (req.method === 'OPTIONS') {
         res.set('Access-Control-Allow-Methods', 'POST');
         res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
