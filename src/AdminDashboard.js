@@ -193,22 +193,16 @@ function AdminDashboard() {
           throw new Error('Cloud FunctionのURLが設定されていません。');
         }
 
-        // Convert file to base64
-        const arrayBuffer = e.target.result;
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+        // シンプルなFormDataでファイルを送信
+        const formData = new FormData();
+        formData.append('file', csvFile);
 
         const response = await fetch(functionUrl, {
           method: 'POST',
-          mode: 'cors',
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify({
-            fileName: csvFile.name,
-            fileData: base64,
-            mimeType: csvFile.type
-          }),
+          body: formData,
         });
 
         const responseText = await response.text();
