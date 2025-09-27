@@ -174,70 +174,51 @@ function AdminDashboard() {
     setMessage('');
   };
 
-  const handleImport = () => {
+  const [importErrors, setImportErrors] = useState([]);
+
+  const handleImport = async () => {
     if (!csvFile) {
       setMessage('CSVファイルを選択してください。');
       return;
     }
     setIsImporting(true);
-    setMessage('CSVファイルを処理中...');
+    setMessage('インポート処理を実行中...');
+    setImportErrors([]); // Reset errors on new import
 
-    const reader = new FileReader();
+    try {
+      const idToken = await auth.currentUser.getIdToken();
+      const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
 
-    reader.onload = async (e) => {
-      try {
-        setMessage('サーバーにアップロード中...');
-        const idToken = await auth.currentUser.getIdToken();
-        const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
-        if (!functionUrl) {
-          throw new Error('Cloud FunctionのURLが設定されていません。');
-        }
+      const formData = new FormData();
+      formData.append('file', csvFile);
 
-        // シンプルなFormDataでファイルを送信
-        const formData = new FormData();
-        formData.append('file', csvFile);
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${idToken}` },
+        body: formData,
+      });
 
-        const response = await fetch(functionUrl, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: formData,
-        });
+      const result = await response.json();
 
-        const responseText = await response.text();
-        if (!response.ok) {
-          // Attempt to parse error as JSON, but fall back to text
-          let errorMessage = responseText;
-          try {
-            const errorJson = JSON.parse(responseText);
-            errorMessage = errorJson.error || responseText;
-          } catch (jsonError) {
-            // It's not JSON, use the text as is
-          }
-          throw new Error(errorMessage || `HTTPエラー: ${response.status}`);
-        }
-        
-        const result = JSON.parse(responseText);
-        setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
+      if (!response.ok) {
+        // Use the detailed errors from the backend response if available
+        const errorMessage = result.error || `HTTPエラー: ${response.status}`;
+        setMessage(`エラー: ${errorMessage}`);
         if (result.errors && result.errors.length > 0) {
-          console.error('Import errors:', result.errors);
-          setMessage(prev => prev + ` 詳細なエラー: ${result.errors.join(', ')}`);
+          setImportErrors(result.errors);
         }
-      } catch (error) {
-        console.error('Import process error:', error);
-        setMessage(`エラー: ${error.message}`);
-      } finally {
-        setIsImporting(false);
+      } else {
+        setMessage(`インポート完了: ${result.message || ''} (作成: ${result.created}, 更新: ${result.updated}, 失敗: ${result.failed})`);
+        if (result.errors && result.errors.length > 0) {
+          setImportErrors(result.errors);
+        }
       }
-    };
-
-    reader.onerror = () => {
-      setMessage('ファイルの読み込みに失敗しました。');
+    } catch (error) {
+      console.error('Import process error:', error);
+      setMessage(`予期せぬエラーが発生しました: ${error.message}`);
+    } finally {
       setIsImporting(false);
-    };
-
-    reader.readAsArrayBuffer(csvFile);
+    }
   };
 
   const handleLogout = () => auth.signOut();
@@ -273,7 +254,17 @@ function AdminDashboard() {
                 {isImporting ? '処理中...' : 'インポート実行'}
               </button>
             </div>
-            {message && <p className="message-box">{message}</p>}
+            {message && <p className={`message-box ${importErrors.length > 0 ? 'message-box-error' : 'message-box-success'}`}>{message}</p>}
+            {importErrors.length > 0 && (
+              <div className="import-errors">
+                <h4>エラー詳細:</h4>
+                <ul>
+                  {importErrors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         );
 
