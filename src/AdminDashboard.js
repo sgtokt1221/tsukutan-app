@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, query, orderBy, getDoc } from 'firebase/firestore';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -11,7 +11,53 @@ import './AdminDashboard.css';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 // --- Constants ---
-const GRADE_ORDER = ['小学生', '中１', '中２', '中３', '高１', '高２', '高３'];
+const GRADE_GROUPS = [
+  { label: '小学生' },
+  { label: '中１' },
+  { label: '中２' },
+  { label: '中３' },
+  { label: '高１' },
+  { label: '高２' },
+  { label: '高３' },
+];
+
+const GRADE_ORDER = GRADE_GROUPS.map(group => group.label);
+const GRADE_SELECT_OPTIONS = ['小1','小2','小3','小4','小5','小6','中1','中2','中3','高1','高2','高3'];
+
+const convertFullWidthDigits = (value = '') =>
+  value.replace(/[０-９]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0));
+
+const toFullWidthNumber = (digit) => {
+  const map = ['０','１','２','３','４','５','６','７','８','９'];
+  return map[digit] || digit;
+};
+
+const formatGradeLabel = (prefix, digit) => `${prefix}${toFullWidthNumber(digit)}`;
+
+const mapGradeToGroup = (grade) => {
+  if (!grade) return null;
+
+  let normalized = convertFullWidthDigits(String(grade))
+    .replace(/\s+/g, '')
+    .toUpperCase();
+
+  // 小学生 (小1〜小6など)
+  if (/^小[1-6]$/.test(normalized) || /^小学[1-6]年?生?$/.test(normalized) || normalized === '小学生') {
+    return '小学生';
+  }
+
+  const juniorMatch = normalized.match(/^中([1-3])$/) || normalized.match(/^中学([1-3])年?生?$/);
+  if (juniorMatch) {
+    return formatGradeLabel('中', juniorMatch[1]);
+  }
+
+  const seniorMatch = normalized.match(/^高([1-3])$/) || normalized.match(/^高校([1-3])年?生?$/);
+  if (seniorMatch) {
+    return formatGradeLabel('高', seniorMatch[1]);
+  }
+
+  return null;
+};
 
 // --- Sub-components ---
 
@@ -19,7 +65,7 @@ const GRADE_ORDER = ['小学生', '中１', '中２', '中３', '高１', '高�
 const Spinner = () => <div className="spinner-container"><div className="spinner"></div></div>;
 
 // Grade Analytics Card Component
-const GradeAnalyticsCard = ({ grade, data }) => {
+const GradeAnalyticsCard = ({ grade, data, onAnalyze }) => {
   if (!data || data.total === 0) {
     return (
       <div className="analytics-card">
@@ -67,6 +113,11 @@ const GradeAnalyticsCard = ({ grade, data }) => {
             </ol>
           ) : <p>データがありません。</p>}
         </div>
+        <div className="analytics-actions">
+          <button className="analyse-btn" onClick={() => onAnalyze?.(grade)}>
+            学年の詳細分析
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -80,10 +131,19 @@ function AdminDashboard() {
   const [view, setView] = useState('analytics'); // 'analytics', 'studentDetails', 'import'
   const [students, setStudents] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(null);
+  const [selectedGrade, setSelectedGrade] = useState(null);
+  const [gradeInsight, setGradeInsight] = useState(null);
+  const [unassignedStudents, setUnassignedStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentDetails, setStudentDetails] = useState({ logs: [], reviewWords: [] });
   const [csvFile, setCsvFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [isCreatingStudent, setIsCreatingStudent] = useState(false);
+  const [createStudentError, setCreateStudentError] = useState('');
+  const [createStudentSuccess, setCreateStudentSuccess] = useState('');
+  const [createForm, setCreateForm] = useState({ studentId: '', name: '', grade: '小1' });
+  const [isDeletingStudent, setIsDeletingStudent] = useState(false);
 
   // Loading States
   const [isLoading, setIsLoading] = useState(true);
@@ -94,8 +154,7 @@ function AdminDashboard() {
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
 
   // --- Data Fetching ---
-  useEffect(() => {
-    const fetchInitialData = async () => {
+  const fetchInitialData = useCallback(async () => {
       setIsLoading(true);
       try {
         const usersCollectionRef = collection(db, 'users');
@@ -108,30 +167,52 @@ function AdminDashboard() {
         const studentWithCompletion = await Promise.all(studentList.map(async (student) => {
           const completionDocRef = doc(db, 'users', student.id, 'dailyCompletion', todayStr);
           const completionDoc = await getDoc(completionDocRef);
-          return { ...student, completedToday: completionDoc.exists() };
+          // progress がないときは扱いやすいよう初期値を設定
+          const progress = student.progress || {};
+          return {
+            ...student,
+            completedToday: completionDoc.exists(),
+            progress: {
+              percentage: progress.percentage || 0,
+              currentVocabulary: progress.currentVocabulary || 0,
+              targetVocabulary: progress.targetVocabulary || 0,
+            },
+          };
         }));
 
-        const dataByGrade = studentWithCompletion.reduce((acc, student) => {
-          const grade = student.grade || '学年未設定';
-          if (!acc[grade]) {
-            acc[grade] = { total: 0, completed: 0, students: [] };
-          }
-          acc[grade].total++;
-          if (student.completedToday) acc[grade].completed++;
-          acc[grade].students.push(student);
+        const groupedData = GRADE_GROUPS.reduce((acc, group) => {
+          acc[group.label] = { total: 0, completed: 0, students: [] };
           return acc;
         }, {});
+        const unassigned = [];
 
-        setAnalyticsData(dataByGrade);
+        studentWithCompletion.forEach(student => {
+          const group = mapGradeToGroup(student.grade);
+          if (!group) {
+            unassigned.push(student);
+            return;
+          }
+          if (!groupedData[group]) {
+            groupedData[group] = { total: 0, completed: 0, students: [] };
+          }
+          groupedData[group].total++;
+          if (student.completedToday) groupedData[group].completed++;
+          groupedData[group].students.push(student);
+        });
+
+        setAnalyticsData(groupedData);
+        setUnassignedStudents(unassigned);
       } catch (error) {
         console.error("Error fetching initial data: ", error);
         setMessage("データの読み込みに失敗しました。");
       } finally {
         setIsLoading(false);
       }
-    };
-    fetchInitialData();
   }, []);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   // --- Event Handlers ---
 
@@ -189,16 +270,33 @@ function AdminDashboard() {
       const idToken = await auth.currentUser.getIdToken();
       const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
 
-      const formData = new FormData();
-      formData.append('file', csvFile);
+      const arrayBuffer = await csvFile.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      const base64Data = window.btoa(binary);
 
       const response = await fetch(functionUrl, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${idToken}` },
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          fileName: csvFile.name,
+          fileData: base64Data,
+        }),
       });
 
-      const result = await response.json();
+      const responseText = await response.text();
+      let result;
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        throw new Error(responseText || 'サーバーからの応答を解析できませんでした。');
+      }
 
       if (!response.ok) {
         // Use the detailed errors from the backend response if available
@@ -221,6 +319,133 @@ function AdminDashboard() {
     }
   };
 
+  const handleAnalyzeGrade = (grade) => {
+    if (!analyticsData || !analyticsData[grade]) {
+      setGradeInsight(null);
+      setSelectedGrade(grade);
+      return;
+    }
+
+    const data = analyticsData[grade];
+    const total = data.total || 0;
+    const completed = data.completed || 0;
+    const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    const topPerformers = [...data.students]
+      .filter((student) => student.progress && typeof student.progress.percentage === 'number')
+      .sort((a, b) => (b.progress.percentage || 0) - (a.progress.percentage || 0))
+      .slice(0, 5);
+
+    const strugglingStudents = [...data.students]
+      .filter((student) => (student.progress?.percentage || 0) < 30)
+      .sort((a, b) => (a.progress?.percentage || 0) - (b.progress?.percentage || 0))
+      .slice(0, 5);
+
+    const averageProgress = total > 0
+      ? Math.round(
+          data.students.reduce((acc, student) => acc + (student.progress?.percentage || 0), 0) / total
+        )
+      : 0;
+
+    setSelectedGrade(grade);
+    setGradeInsight({
+      grade,
+      total,
+      completed,
+      completionRate,
+      averageProgress,
+      topPerformers,
+      strugglingStudents,
+    });
+  };
+
+  const manageStudentsUrl = process.env.REACT_APP_MANAGE_STUDENTS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/manageStudents';
+
+  const handleCreateStudentSubmit = async (e) => {
+    e.preventDefault();
+    setCreateStudentError('');
+    setCreateStudentSuccess('');
+
+    const trimmedId = createForm.studentId.trim();
+    if (!/^\d{4}$/.test(trimmedId)) {
+      setCreateStudentError('IDは4桁の数字で入力してください。');
+      return;
+    }
+    if (!createForm.name.trim()) {
+      setCreateStudentError('氏名を入力してください。');
+      return;
+    }
+
+    try {
+      setIsCreatingStudent(true);
+      const idToken = await auth.currentUser.getIdToken();
+      const response = await fetch(manageStudentsUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          studentId: trimmedId,
+          name: createForm.name.trim(),
+          grade: createForm.grade,
+        }),
+      });
+
+      const responseText = await response.text();
+      const result = responseText ? JSON.parse(responseText) : {};
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTPエラー: ${response.status}`);
+      }
+
+      setCreateStudentSuccess('生徒を登録しました。初期パスワードは tsukuba + ID です。');
+      setCreateForm({ studentId: '', name: '', grade: '小1' });
+      await fetchInitialData();
+      setCreateModalOpen(false);
+    } catch (error) {
+      console.error('Create student error:', error);
+      setCreateStudentError(error.message);
+    } finally {
+      setIsCreatingStudent(false);
+    }
+  };
+
+  const handleDeleteStudent = async () => {
+    if (!selectedStudent || isDeletingStudent) return;
+
+    const confirmed = window.confirm(`${selectedStudent.name} を完全に削除します。復元はできません。続行しますか？`);
+    if (!confirmed) return;
+
+    try {
+      setIsDeletingStudent(true);
+      const idToken = await auth.currentUser.getIdToken();
+      const response = await fetch(`${manageStudentsUrl}/${selectedStudent.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      const responseText = await response.text();
+      const result = responseText ? JSON.parse(responseText) : {};
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTPエラー: ${response.status}`);
+      }
+
+      setMessage(`${selectedStudent.name} を削除しました。`);
+      setSelectedStudent(null);
+      setView('analytics');
+      await fetchInitialData();
+    } catch (error) {
+      console.error('Delete student error:', error);
+      setMessage(`削除に失敗しました: ${error.message}`);
+    } finally {
+      setIsDeletingStudent(false);
+    }
+  };
+
   const handleLogout = () => auth.signOut();
 
   // --- Render Logic ---
@@ -231,13 +456,97 @@ function AdminDashboard() {
     switch(view) {
       case 'analytics':
         return (
-          <div className="analytics-grid">
-            {GRADE_ORDER.map(grade => (
-              analyticsData && analyticsData[grade] &&
-              <GradeAnalyticsCard key={grade} grade={grade} data={analyticsData[grade]} />
-            ))}
-            {analyticsData && analyticsData['学年未設定'] && (
-               <GradeAnalyticsCard key="学年未設定" grade="学年未設定" data={analyticsData['学年未設定']} />
+          <div className="analytics-view">
+            <div className="analytics-grid">
+              {GRADE_ORDER.map(grade => (
+                analyticsData && analyticsData[grade] &&
+                <GradeAnalyticsCard
+                  key={grade}
+                  grade={grade}
+                  data={analyticsData[grade]}
+                  onAnalyze={handleAnalyzeGrade}
+                />
+              ))}
+              {analyticsData && analyticsData['学年未設定'] && (
+                 <GradeAnalyticsCard
+                  key="学年未設定"
+                  grade="学年未設定"
+                  data={analyticsData['学年未設定']}
+                  onAnalyze={handleAnalyzeGrade}
+                />
+              )}
+            </div>
+            {selectedGrade && (
+              <div className="grade-insight-panel">
+                <h3>{selectedGrade} の分析結果</h3>
+                {gradeInsight ? (
+                  <div className="grade-insight-content">
+                    <div className="insight-metrics">
+                      <div className="metric-card">
+                        <h4>総人数</h4>
+                        <p>{gradeInsight.total} 人</p>
+                      </div>
+                        <div className="metric-card">
+                        <h4>ノルマ達成</h4>
+                        <p>{gradeInsight.completed} 人 ({gradeInsight.completionRate}%)</p>
+                      </div>
+                      <div className="metric-card">
+                        <h4>平均進捗率</h4>
+                        <p>{gradeInsight.averageProgress}%</p>
+                      </div>
+                    </div>
+                    <div className="insight-lists">
+                      <div className="insight-list">
+                        <h4>成績優秀者 TOP5</h4>
+                        {gradeInsight.topPerformers.length > 0 ? (
+                          <ol>
+                            {gradeInsight.topPerformers.map(student => (
+                              <li key={student.id}>
+                                <span className="student-name">{student.name}</span>
+                                <span className="student-score">{student.progress?.percentage || 0}%</span>
+                              </li>
+                            ))}
+                          </ol>
+                        ) : <p>該当者なし</p>}
+                      </div>
+                      <div className="insight-list">
+                        <h4>要フォロー（進捗30%未満）</h4>
+                        {gradeInsight.strugglingStudents.length > 0 ? (
+                          <ol>
+                            {gradeInsight.strugglingStudents.map(student => (
+                              <li key={student.id}>
+                                <span className="student-name">{student.name}</span>
+                                <span className="student-score">{student.progress?.percentage || 0}%</span>
+                              </li>
+                            ))}
+                          </ol>
+                        ) : <p>該当者なし</p>}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p>学年のカードで「学年の詳細分析」を押してください。</p>
+                )}
+              </div>
+            )}
+            {unassignedStudents.length > 0 && (
+              <div className="grade-insight-panel warning-panel">
+                <h3>学年が未設定または判別不能の生徒</h3>
+                <p>
+                  CSV の学年列が空欄または想定外の表記のため、自動分類できませんでした。
+                  CSV を修正し再インポートしてください。
+                </p>
+                <ul>
+                  {unassignedStudents.slice(0, 10).map(student => (
+                    <li key={student.id}>
+                      {student.name || '氏名未設定'}（ID: {student.studentId || '不明'} / 学年: {student.grade || '未設定'}）
+                    </li>
+                  ))}
+                </ul>
+                {unassignedStudents.length > 10 && (
+                  <p>... 他 {unassignedStudents.length - 10} 名</p>
+                )}
+              </div>
             )}
           </div>
         );
@@ -310,6 +619,11 @@ function AdminDashboard() {
                     </div>
                   </div>
                 </div>
+                <div className="delete-student-section">
+                  <button className="delete-student-btn" onClick={handleDeleteStudent} disabled={isDeletingStudent}>
+                    {isDeletingStudent ? '削除中...' : 'この生徒を完全に削除する'}
+                  </button>
+                </div>
               </>
             )}
           </div>
@@ -333,9 +647,10 @@ function AdminDashboard() {
         <aside className="admin-sidebar">
           <div className="sidebar-header">
              <h4>生徒一覧</h4>
-             <div>
-                <button onClick={handleShowAnalytics} className="sidebar-nav-btn">分析</button>
+            <div>
+               <button onClick={handleShowAnalytics} className="sidebar-nav-btn">分析</button>
                 <button onClick={handleShowImport} className="sidebar-nav-btn">インポート</button>
+                <button onClick={() => { setCreateStudentError(''); setCreateStudentSuccess(''); setCreateModalOpen(true); }} className="sidebar-nav-btn primary">生徒登録</button>
              </div>
           </div>
           {isLoading ? <Spinner /> : (
@@ -358,6 +673,55 @@ function AdminDashboard() {
       </div>
       {isQuizModalOpen && selectedStudent && (
         <PrintableQuiz words={studentDetails.reviewWords} studentName={selectedStudent.name} onCancel={() => setQuizModalOpen(false)} />
+      )}
+      {isCreateModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>生徒の簡易登録</h3>
+            <form onSubmit={handleCreateStudentSubmit} className="create-student-form">
+              <label>
+                4桁ID
+                <input
+                  type="text"
+                  value={createForm.studentId}
+                  onChange={(e) => setCreateForm(prev => ({ ...prev, studentId: e.target.value }))}
+                  maxLength={4}
+                  pattern="\d{4}"
+                  required
+                />
+              </label>
+              <label>
+                氏名
+                <input
+                  type="text"
+                  value={createForm.name}
+                  onChange={(e) => setCreateForm(prev => ({ ...prev, name: e.target.value }))}
+                  required
+                />
+              </label>
+              <label>
+                学年
+                <select
+                  value={createForm.grade}
+                  onChange={(e) => setCreateForm(prev => ({ ...prev, grade: e.target.value }))}
+                >
+                  {GRADE_SELECT_OPTIONS.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </label>
+              {createStudentError && <p className="form-error">{createStudentError}</p>}
+              {createStudentSuccess && <p className="form-success">{createStudentSuccess}</p>}
+              <div className="modal-actions">
+                <button type="button" onClick={() => setCreateModalOpen(false)} className="modal-cancel">キャンセル</button>
+                <button type="submit" className="modal-submit" disabled={isCreatingStudent}>
+                  {isCreatingStudent ? '登録中...' : '登録する'}
+                </button>
+              </div>
+              <p className="form-note">初期パスワードは tsukuba + ID です。</p>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

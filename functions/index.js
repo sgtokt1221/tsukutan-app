@@ -9,9 +9,9 @@ const db = admin.firestore();
 // 外部ライブラリ
 const express = require('express');
 const cors = require('cors');
-const busboy = require('busboy');
 const iconv = require('iconv-lite');
 const Papa = require('papaparse');
+const fetch = require('node-fetch');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 
@@ -20,123 +20,181 @@ const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 //==============================================================================
 const importUsersApp = express();
 importUsersApp.use(cors({ origin: true }));
+importUsersApp.use(express.json({ limit: '10mb' }));
+
+const manageStudentsApp = express();
+manageStudentsApp.use(cors({ origin: true }));
+manageStudentsApp.use(express.json({ limit: '1mb' }));
+
+const verifyAdmin = async (req) => {
+  const idToken = req.get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    throw new HttpsError('unauthenticated', 'Authorization header is missing.');
+  }
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+  if (decodedToken.email !== 'tsukasafoods@gmail.com') {
+    throw new HttpsError('permission-denied', 'You do not have permission to perform this action.');
+  }
+  return decodedToken;
+};
 
 importUsersApp.post('/', async (req, res) => {
   try {
-    // 認証
-    const idToken = req.get("Authorization")?.split("Bearer ")[1];
-    if (!idToken) {
-      return res.status(403).json({error: "Unauthorized: No token provided."});
+    await verifyAdmin(req);
+
+    const { fileName, fileData } = req.body || {};
+    if (!fileData) {
+      return res.status(400).json({ error: 'No file data provided.' });
     }
-    
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    if (decodedToken.email !== "tsukasafoods@gmail.com") {
-      return res.status(403).json({error: "Forbidden: Not an admin user."});
-    }
-    
-    // シンプルなFormData処理
-    const bb = busboy({ headers: req.headers });
-    const fileBuffers = [];
-    let fileName = '';
 
-    bb.on('file', (name, file, info) => {
-      fileName = info.filename;
-      file.on('data', (data) => {
-        fileBuffers.push(data);
-      });
-    });
+    // リセット処理: 既存ユーザーを削除
+    const existingUsersSnapshot = await db.collection('users').get();
+    const deleteBatch = db.batch();
+    const authUsersToDelete = [];
 
-    bb.on('finish', async () => {
-      try {
-        if (fileBuffers.length === 0) {
-          return res.status(400).json({ error: 'No file uploaded.' });
-        }
-        
-        const fileBuffer = Buffer.concat(fileBuffers);
-        
-        // 文字コードをShift-JISからUTF-8へ変換
-        const decodedCsv = iconv.decode(fileBuffer, 'shift-jis');
-        
-        // CSVをパースし、ヘッダー行の可能性を考慮してフィルタリング
-        const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
-        const users = parseResult.data.filter(row => {
-          if (!row || row.length === 0) return false;
-          const studentId = row[0];
-          // 生徒IDが3桁または4桁の数字である行のみを有効なデータとして扱う
-          return /^\d{3,4}$/.test(studentId);
-        });
-
-        if (users.length === 0) {
-          return res.status(400).json({ error: 'CSVに有効なデータ行が見つかりませんでした。' });
-        }
-
-        // シンプルな順次処理
-        let createdCount = 0;
-        let updatedCount = 0;
-        let failedCount = 0;
-        const errors = [];
-
-        for (const record of users) {
-          let studentId = record[0];
-          const username = record[1];
-          const grade = record[2];
-
-          if (studentId && studentId.length === 3) {
-            studentId = studentId.padStart(4, '0');
-          }
-
-          if (!username || !studentId || studentId.length !== 4 || !grade) {
-            failedCount++;
-            errors.push(`情報不足: ${record.join(",")}`);
-            continue;
-          }
-
-          const email = `${studentId}@tsukasafoods.com`;
-          const password = `tsukuba${studentId}`;
-
-          try {
-            // 既存ユーザーをチェック
-            try {
-              const userRecord = await admin.auth().getUserByEmail(email);
-              await admin.auth().updateUser(userRecord.uid, { displayName: username, password: password });
-              await db.collection("users").doc(userRecord.uid).set({ name: username, grade: grade }, { merge: true });
-              updatedCount++;
-            } catch (error) {
-              if (error.code === 'auth/user-not-found') {
-                // 新規ユーザー作成
-                const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
-                await db.collection("users").doc(newUserRecord.uid).set({
-                  name: username, studentId: studentId, grade: grade, level: 0,
-                  goal: { targetExam: null, targetDate: null, isSet: false },
-                  progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
-                });
-                createdCount++;
-              } else {
-                throw error;
-              }
-            }
-          } catch (error) {
-            failedCount++;
-            errors.push(`処理失敗 ${email}: ${error.message}`);
-          }
-        }
-
-        return res.status(200).json({
-          message: "User import process finished.",
-          created: createdCount, updated: updatedCount, failed: failedCount, errors: errors,
-        });
-
-      } catch (error) {
-        logger.error("Error processing users:", error);
-        return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+    existingUsersSnapshot.forEach((docSnapshot) => {
+      const data = docSnapshot.data();
+      const docRef = db.collection('users').doc(docSnapshot.id);
+      deleteBatch.delete(docRef);
+      if (data.studentId) {
+        const email = `${data.studentId}@tsukasafoods.com`;
+        authUsersToDelete.push(email);
       }
     });
 
-    req.pipe(bb);
+    await deleteBatch.commit();
 
+    for (const email of authUsersToDelete) {
+      try {
+        const existingAuthUser = await admin.auth().getUserByEmail(email);
+        await admin.auth().deleteUser(existingAuthUser.uid);
+      } catch (deleteError) {
+        if (deleteError.code !== 'auth/user-not-found') {
+          logger.warn(`Failed to delete auth user ${email}: ${deleteError.message}`);
+        }
+      }
+    }
+
+    const fileBuffer = Buffer.from(fileData, 'base64');
+
+    let decodedCsv = '';
+    try {
+      decodedCsv = iconv.decode(fileBuffer, 'shift_jis');
+      if (decodedCsv.includes('�')) {
+        // 文字化けが多い場合は UTF-8 と判断してフォールバック
+        decodedCsv = fileBuffer.toString('utf8');
+      }
+    } catch (decodeError) {
+      decodedCsv = fileBuffer.toString('utf8');
+    }
+
+    const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
+    // ヘッダーを検出（「ID」「氏名」「学年」）
+    let dataRows = parseResult.data;
+    const headerRow = dataRows[0].map(cell => String(cell || '').trim());
+    const hasHeader = headerRow.includes('ID') && headerRow.includes('氏名');
+
+    if (hasHeader) {
+      const idIndex = headerRow.indexOf('ID');
+      const nameIndex = headerRow.indexOf('氏名');
+      const gradeIndex = headerRow.indexOf('学年');
+      dataRows = dataRows.slice(1).map(row => [row[idIndex], row[nameIndex], row[gradeIndex]]);
+    } else {
+      // 古い形式（ヘッダーなし）: 先頭3行をスキップ
+      dataRows = dataRows.slice(3);
+    }
+
+    const users = dataRows.filter((row) => row && row.length > 1 && row.some((cell) => cell && String(cell).trim() !== ''));
+
+    if (users.length === 0) {
+      return res.status(400).json({ error: 'CSVに有効なデータ行が見つかりませんでした。' });
+    }
+
+    let createdCount = 0;
+    let updatedCount = 0;
+    let failedCount = 0;
+    const errors = [];
+
+    for (const record of users) {
+      const rawStudentId = record[0];
+      const rawName = record[1];
+      const rawGrade = record[2];
+
+      if (rawStudentId == null && rawName == null && rawGrade == null) {
+        continue;
+      }
+
+      let studentId = String(rawStudentId || '').trim();
+      const username = String(rawName || '').trim();
+      let grade = String(rawGrade || '').trim();
+
+      if (!/^\d{3,4}$/.test(studentId)) {
+        failedCount++;
+        errors.push(`IDが不正: ${record.join(',')}`);
+        continue;
+      }
+      if (studentId.length === 3) studentId = studentId.padStart(4, '0');
+      if (!username) {
+        failedCount++;
+        errors.push(`氏名が空: ${record.join(',')}`);
+        continue;
+      }
+      if (!grade) {
+        errors.push(`学年が空: ${record.join(',')}`);
+        failedCount++;
+        continue;
+      }
+
+      // 学年文字列をトリムし、全角→半角変換・大文字統一などが必要ならここで実施
+      grade = grade.replace(/\s+/g, '');
+
+      const email = `${studentId}@tsukasafoods.com`;
+      const password = `tsukuba${studentId}`;
+
+      try {
+        const userRecord = await admin.auth().getUserByEmail(email).catch((e) => {
+          if (e.code === 'auth/user-not-found') return null;
+          throw e;
+        });
+
+        if (userRecord) {
+          await admin.auth().updateUser(userRecord.uid, { displayName: username, password });
+          await db.collection('users').doc(userRecord.uid).set({
+            name: username,
+            grade,
+            studentId,
+          }, { merge: true });
+          updatedCount++;
+        } else {
+          const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
+          await db.collection('users').doc(newUserRecord.uid).set({
+            name: username,
+            studentId,
+            grade,
+            level: 0,
+            goal: { targetExam: null, targetDate: null, isSet: false },
+            progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+          });
+          createdCount++;
+        }
+      } catch (err) {
+        failedCount++;
+        errors.push(`処理失敗 ${email}: ${err.message}`);
+        logger.error('[Import] Error processing ${email}:', err);
+      }
+    }
+
+    return res.status(200).json({
+      message: 'User import process finished.',
+      created: createdCount,
+      updated: updatedCount,
+      failed: failedCount,
+      errors,
+    });
   } catch (error) {
-    logger.error("Error processing request:", error);
-    return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+    const statusCode = error.statusCode || 500;
+    logger.error('User import failed:', { errorMessage: error.message, errorStack: error.stack });
+    return res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
   }
 });
 
@@ -146,11 +204,113 @@ exports.importUsers = onRequest(
     region: "us-central1", 
     memory: "512MiB",
     timeoutSeconds: 300,
-    maxInstances: 10
+    maxInstances: 10,
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
   },
   importUsersApp
 );
 
+manageStudentsApp.post('/', async (req, res) => {
+  try {
+    await verifyAdmin(req);
+    const { studentId, name, grade } = req.body || {};
+
+    if (!studentId || !/^[0-9]{4}$/.test(studentId)) {
+      throw new HttpsError('invalid-argument', 'studentId must be a 4-digit string');
+    }
+    if (!name || typeof name !== 'string') {
+      throw new HttpsError('invalid-argument', 'name is required');
+    }
+    if (!grade || typeof grade !== 'string') {
+      throw new HttpsError('invalid-argument', 'grade is required');
+    }
+
+    const trimmedId = studentId.trim();
+    const email = `${trimmedId}@tsukasafoods.com`;
+    const password = `tsukuba${trimmedId}`;
+
+    const newUserRecord = await admin.auth().createUser({ email, password, displayName: name.trim() });
+    await db.collection('users').doc(newUserRecord.uid).set({
+      name: name.trim(),
+      studentId: trimmedId,
+      grade: grade.trim(),
+      level: 0,
+      goal: { targetExam: null, targetDate: null, isSet: false },
+      progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+    });
+
+    return res.status(201).json({ message: 'Student created', uid: newUserRecord.uid });
+  } catch (error) {
+    const code = error instanceof HttpsError ? error.code : 'internal';
+    const message = error instanceof HttpsError ? error.message : (error.message || 'Internal error');
+    logger.error('Create student failed:', error);
+    return res.status(code === 'internal' ? 500 : 400).json({ error: message });
+  }
+});
+
+const deleteUserDataRecursively = async (docRef) => {
+  const collections = await docRef.listCollections();
+  for (const collectionRef of collections) {
+    const snapshot = await collectionRef.get();
+    const batch = db.batch();
+    snapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+    await Promise.all(snapshot.docs.map((doc) => deleteUserDataRecursively(doc.ref)));
+  }
+  await docRef.delete();
+};
+
+manageStudentsApp.delete('/:uid', async (req, res) => {
+  try {
+    await verifyAdmin(req);
+    const { uid } = req.params;
+    if (!uid) {
+      throw new HttpsError('invalid-argument', 'UID is required');
+    }
+
+    const userDocRef = db.collection('users').doc(uid);
+    const docSnapshot = await userDocRef.get();
+
+    if (!docSnapshot.exists) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const data = docSnapshot.data();
+    const email = data?.studentId ? `${data.studentId}@tsukasafoods.com` : null;
+
+    await deleteUserDataRecursively(userDocRef);
+
+    if (email) {
+      try {
+        const userRecord = await admin.auth().getUserByEmail(email);
+        await admin.auth().deleteUser(userRecord.uid);
+      } catch (authError) {
+        if (authError.code !== 'auth/user-not-found') {
+          throw authError;
+        }
+      }
+    }
+
+    return res.status(200).json({ message: 'Student deleted' });
+  } catch (error) {
+    const code = error instanceof HttpsError ? error.code : 'internal';
+    const message = error instanceof HttpsError ? error.message : (error.message || 'Internal error');
+    logger.error('Delete student failed:', error);
+    return res.status(code === 'internal' ? 500 : 400).json({ error: message });
+  }
+});
+
+exports.manageStudents = onRequest(
+  {
+    region: "us-central1",
+    memory: "256MiB",
+    timeoutSeconds: 120,
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  manageStudentsApp
+);
 
 //==============================================================================
 // AIストーリー生成機能 (The user's working version, unchanged)
