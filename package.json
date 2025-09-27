@@ -9,6 +9,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.5.0",
+    "encoding-japanese": "^2.2.0",
     "firebase": "^12.3.0",
     "firebase-admin": "^13.5.0",
     "framer-motion": "^12.23.16",

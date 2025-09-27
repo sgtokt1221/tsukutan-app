@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
 import { collection, getDocs, doc, query, orderBy, getDoc } from 'firebase/firestore';
-import Papa from 'papaparse';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import ProgressLamp from './ProgressLamp';
@@ -175,48 +174,76 @@ function AdminDashboard() {
     setMessage('');
   };
 
-  const handleImport = async () => {
+  const handleImport = () => {
     if (!csvFile) {
       setMessage('CSVファイルを選択してください。');
       return;
     }
     setIsImporting(true);
-    setMessage('サーバーにアップロード中...');
+    setMessage('CSVファイルを処理中...');
 
-    try {
-      const idToken = await auth.currentUser.getIdToken();
-      const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
-      if (!functionUrl) throw new Error("Cloud FunctionのURLが設定されていません。");
+    const reader = new FileReader();
 
-      const formData = new FormData();
-      formData.append('file', csvFile);
+    reader.onload = async (e) => {
+      try {
+        setMessage('サーバーにアップロード中...');
+        const idToken = await auth.currentUser.getIdToken();
+        const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
+        if (!functionUrl) {
+          throw new Error('Cloud FunctionのURLが設定されていません。');
+        }
 
-      const response = await fetch(functionUrl, {
-        method: 'POST',
-        headers: {
-          // 'Content-Type' is intentionally left out; the browser will set
-          // it to 'multipart/form-data' with the correct boundary.
-          'Authorization': `Bearer ${idToken}`
-        },
-        body: formData
-      });
+        // Convert file to base64
+        const arrayBuffer = e.target.result;
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.error || `HTTPエラー: ${response.status}`);
+        const response = await fetch(functionUrl, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            fileName: csvFile.name,
+            fileData: base64,
+            mimeType: csvFile.type
+          }),
+        });
+
+        const responseText = await response.text();
+        if (!response.ok) {
+          // Attempt to parse error as JSON, but fall back to text
+          let errorMessage = responseText;
+          try {
+            const errorJson = JSON.parse(responseText);
+            errorMessage = errorJson.error || responseText;
+          } catch (jsonError) {
+            // It's not JSON, use the text as is
+          }
+          throw new Error(errorMessage || `HTTPエラー: ${response.status}`);
+        }
+        
+        const result = JSON.parse(responseText);
+        setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
+        if (result.errors && result.errors.length > 0) {
+          console.error('Import errors:', result.errors);
+          setMessage(prev => prev + ` 詳細なエラー: ${result.errors.join(', ')}`);
+        }
+      } catch (error) {
+        console.error('Import process error:', error);
+        setMessage(`エラー: ${error.message}`);
+      } finally {
+        setIsImporting(false);
       }
+    };
 
-      setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
-      if (result.errors && result.errors.length > 0) {
-        console.error('Import errors:', result.errors);
-        setMessage(prev => prev + ` 詳細なエラー: ${result.errors.join(', ')}`);
-      }
-    } catch (error) {
-      console.error('Import process error:', error);
-      setMessage(`エラー: ${error.message}`);
-    } finally {
+    reader.onerror = () => {
+      setMessage('ファイルの読み込みに失敗しました。');
       setIsImporting(false);
-    }
+    };
+
+    reader.readAsArrayBuffer(csvFile);
   };
 
   const handleLogout = () => auth.signOut();

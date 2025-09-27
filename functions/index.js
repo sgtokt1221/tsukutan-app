@@ -20,7 +20,20 @@ const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 //==============================================================================
 const importUsersApp = express();
 // CORSミドルウェアを適用 (OPTIONSリクエストの処理を含む)
-importUsersApp.use(cors({ origin: true }));
+importUsersApp.use(cors({ 
+  origin: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// OPTIONSリクエストの明示的な処理
+importUsersApp.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.status(200).end();
+});
 
 importUsersApp.post('/', (req, res) => {
   // 認証
@@ -29,32 +42,25 @@ importUsersApp.post('/', (req, res) => {
     return res.status(403).json({error: "Unauthorized: No token provided."});
   }
   admin.auth().verifyIdToken(idToken)
-    .then(decodedToken => {
+    .then(async (decodedToken) => {
       if (decodedToken.email !== "tsukasafoods@gmail.com") {
         throw new Error("Forbidden: Not an admin user.");
       }
       
-      const bb = busboy({ headers: req.headers });
-      const fileBuffers = [];
-
-      bb.on('file', (name, file, info) => {
-        const { mimeType } = info;
-        if (mimeType !== 'text/csv' && mimeType !== 'application/vnd.ms-excel') {
-            return res.status(400).json({ error: `Unsupported file type: ${mimeType}. Please upload a CSV file.` });
-        }
-        file.on('data', (data) => {
-            fileBuffers.push(data);
-        }).on('close', () => {
-            logger.info('File upload finished.');
-        });
-      });
-
-      bb.on('finish', async () => {
-        try {
-          if (fileBuffers.length === 0) {
-            return res.status(400).json({ error: 'No file uploaded.' });
+      try {
+        // Check if request is JSON (base64) or multipart form
+        if (req.headers['content-type']?.includes('application/json')) {
+          // Handle base64 encoded file
+          const { fileName, fileData, mimeType } = req.body;
+          
+          if (!fileName || !fileData) {
+            return res.status(400).json({ error: 'Missing fileName or fileData in request body.' });
           }
-          const fileBuffer = Buffer.concat(fileBuffers);
+          
+          logger.info(`Received base64 file: ${fileName}, mimeType: ${mimeType}`);
+          
+          // Convert base64 to buffer
+          const fileBuffer = Buffer.from(fileData, 'base64');
           // 文字コードをShift-JISからUTF-8へ変換
           const decodedCsv = iconv.decode(fileBuffer, 'shift-jis');
           
@@ -71,9 +77,27 @@ importUsersApp.post('/', (req, res) => {
           let updatedCount = 0;
           let failedCount = 0;
           const errors = [];
-          const BATCH_SIZE = 10;
-          const DELAY_MS = 1000;
+          const BATCH_SIZE = 2;
+          const DELAY_MS = 5000;
+          const MAX_RETRIES = 3;
+          const RETRY_DELAY = 10000;
           const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+          // Retry function for Firebase Auth operations
+          const retryAuthOperation = async (operation, maxRetries = MAX_RETRIES) => {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+              try {
+                return await operation();
+              } catch (error) {
+                if (error.code === 'auth/internal-error' && attempt < maxRetries) {
+                  logger.info(`Auth operation failed, retrying in ${RETRY_DELAY}ms (attempt ${attempt}/${maxRetries})`);
+                  await sleep(RETRY_DELAY);
+                  continue;
+                }
+                throw error;
+              }
+            }
+          };
 
           for (let i = 0; i < users.length; i += BATCH_SIZE) {
             const batch = users.slice(i, i + BATCH_SIZE);
@@ -96,14 +120,14 @@ importUsersApp.post('/', (req, res) => {
               const password = `tsukuba${studentId}`;
 
               try {
-                const userRecord = await admin.auth().getUserByEmail(email);
-                await admin.auth().updateUser(userRecord.uid, { displayName: username, password: password });
+                const userRecord = await retryAuthOperation(() => admin.auth().getUserByEmail(email));
+                await retryAuthOperation(() => admin.auth().updateUser(userRecord.uid, { displayName: username, password: password }));
                 await db.collection("users").doc(userRecord.uid).set({ name: username, grade: grade }, { merge: true });
                 updatedCount++;
               } catch (error) {
                 if (error.code === 'auth/user-not-found') {
                   try {
-                    const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
+                    const newUserRecord = await retryAuthOperation(() => admin.auth().createUser({ email, password, displayName: username }));
                     await db.collection("users").doc(newUserRecord.uid).set({
                       name: username, studentId: studentId, grade: grade, level: 0,
                       goal: { targetExam: null, targetDate: null, isSet: false },
@@ -112,11 +136,29 @@ importUsersApp.post('/', (req, res) => {
                     createdCount++;
                   } catch (creationError) {
                     failedCount++;
-                    errors.push(`作成失敗 ${email}: ${creationError.message}`);
+                    // Extract meaningful error message
+                    let errorMessage = creationError.message;
+                    if (creationError.code) {
+                      errorMessage = `${creationError.code}: ${creationError.message}`;
+                    }
+                    // Truncate very long error messages
+                    if (errorMessage.length > 200) {
+                      errorMessage = errorMessage.substring(0, 200) + '...';
+                    }
+                    errors.push(`作成失敗 ${email}: ${errorMessage}`);
                   }
                 } else {
                   failedCount++;
-                  errors.push(`処理失敗 ${email}: ${error.message}`);
+                  // Extract meaningful error message
+                  let errorMessage = error.message;
+                  if (error.code) {
+                    errorMessage = `${error.code}: ${error.message}`;
+                  }
+                  // Truncate very long error messages
+                  if (errorMessage.length > 200) {
+                    errorMessage = errorMessage.substring(0, 200) + '...';
+                  }
+                  errors.push(`処理失敗 ${email}: ${errorMessage}`);
                 }
               }
             });
@@ -130,14 +172,179 @@ importUsersApp.post('/', (req, res) => {
             message: "User import process finished.",
             created: createdCount, updated: updatedCount, failed: failedCount, errors: errors,
           });
+        } else {
+          // Fallback to multipart form handling (for backward compatibility)
+          const bb = busboy({ 
+            headers: req.headers,
+            limits: {
+              fileSize: 10 * 1024 * 1024, // 10MB limit
+            }
+          });
+          const fileBuffers = [];
+          let fileReceived = false;
 
-        } catch (error) {
-          logger.error("Error processing users:", error);
-          return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+          bb.on('file', (name, file, info) => {
+            logger.info(`File received: ${name}, mimeType: ${info.mimeType}`);
+            fileReceived = true;
+            const { mimeType } = info;
+            logger.info(`File mimeType: ${mimeType}`);
+            // Accept various CSV mime types
+            const allowedMimeTypes = [
+              'text/csv',
+              'application/vnd.ms-excel',
+              'application/csv',
+              'text/plain',
+              'application/octet-stream'
+            ];
+            if (!allowedMimeTypes.includes(mimeType)) {
+                return res.status(400).json({ error: `Unsupported file type: ${mimeType}. Please upload a CSV file.` });
+            }
+            file.on('data', (data) => {
+                fileBuffers.push(data);
+            }).on('close', () => {
+                logger.info('File upload finished.');
+            }).on('error', (err) => {
+                logger.error('File stream error:', err);
+            });
+          });
+
+          bb.on('error', (err) => {
+            logger.error('Busboy error:', err);
+            return res.status(400).json({ error: `File upload error: ${err.message}` });
+          });
+
+          bb.on('finish', async () => {
+            try {
+              logger.info(`Finish event triggered. File received: ${fileReceived}, Buffers: ${fileBuffers.length}`);
+              if (!fileReceived || fileBuffers.length === 0) {
+                return res.status(400).json({ error: 'No file uploaded.' });
+              }
+              const fileBuffer = Buffer.concat(fileBuffers);
+              // 文字コードをShift-JISからUTF-8へ変換
+              const decodedCsv = iconv.decode(fileBuffer, 'shift-jis');
+              
+              // CSVをパース
+              const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
+              const users = parseResult.data.slice(3).filter(row => row.length > 1 && row.some(cell => cell && cell.trim() !== ''));
+
+              if (users.length === 0) {
+                return res.status(400).json({ error: 'CSVに有効なデータ行が見つかりませんでした。' });
+              }
+
+              // バッチ処理
+              let createdCount = 0;
+              let updatedCount = 0;
+              let failedCount = 0;
+              const errors = [];
+              const BATCH_SIZE = 2;
+              const DELAY_MS = 5000;
+              const MAX_RETRIES = 3;
+              const RETRY_DELAY = 10000;
+              const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+              // Retry function for Firebase Auth operations
+              const retryAuthOperation = async (operation, maxRetries = MAX_RETRIES) => {
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                  try {
+                    return await operation();
+                  } catch (error) {
+                    if (error.code === 'auth/internal-error' && attempt < maxRetries) {
+                      logger.info(`Auth operation failed, retrying in ${RETRY_DELAY}ms (attempt ${attempt}/${maxRetries})`);
+                      await sleep(RETRY_DELAY);
+                      continue;
+                    }
+                    throw error;
+                  }
+                }
+              };
+
+              for (let i = 0; i < users.length; i += BATCH_SIZE) {
+                const batch = users.slice(i, i + BATCH_SIZE);
+                const promises = batch.map(async (record) => {
+                  let studentId = record[0];
+                  const username = record[1];
+                  const grade = record[2];
+
+                  if (studentId && studentId.length === 3) {
+                    studentId = studentId.padStart(4, '0');
+                  }
+
+                  if (!username || !studentId || studentId.length !== 4 || !grade) {
+                    failedCount++;
+                    errors.push(`情報不足: ${record.join(",")}`);
+                    return;
+                  }
+
+                  const email = `${studentId}@tsukasafoods.com`;
+                  const password = `tsukuba${studentId}`;
+
+                  try {
+                    const userRecord = await retryAuthOperation(() => admin.auth().getUserByEmail(email));
+                    await retryAuthOperation(() => admin.auth().updateUser(userRecord.uid, { displayName: username, password: password }));
+                    await db.collection("users").doc(userRecord.uid).set({ name: username, grade: grade }, { merge: true });
+                    updatedCount++;
+                  } catch (error) {
+                    if (error.code === 'auth/user-not-found') {
+                      try {
+                        const newUserRecord = await retryAuthOperation(() => admin.auth().createUser({ email, password, displayName: username }));
+                        await db.collection("users").doc(newUserRecord.uid).set({
+                          name: username, studentId: studentId, grade: grade, level: 0,
+                          goal: { targetExam: null, targetDate: null, isSet: false },
+                          progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+                        });
+                        createdCount++;
+                      } catch (creationError) {
+                        failedCount++;
+                        // Extract meaningful error message
+                        let errorMessage = creationError.message;
+                        if (creationError.code) {
+                          errorMessage = `${creationError.code}: ${creationError.message}`;
+                        }
+                        // Truncate very long error messages
+                        if (errorMessage.length > 200) {
+                          errorMessage = errorMessage.substring(0, 200) + '...';
+                        }
+                        errors.push(`作成失敗 ${email}: ${errorMessage}`);
+                      }
+                    } else {
+                      failedCount++;
+                      // Extract meaningful error message
+                      let errorMessage = error.message;
+                      if (error.code) {
+                        errorMessage = `${error.code}: ${error.message}`;
+                      }
+                      // Truncate very long error messages
+                      if (errorMessage.length > 200) {
+                        errorMessage = errorMessage.substring(0, 200) + '...';
+                      }
+                      errors.push(`処理失敗 ${email}: ${errorMessage}`);
+                    }
+                  }
+                });
+                await Promise.all(promises);
+                if (i + BATCH_SIZE < users.length) {
+                  await sleep(DELAY_MS);
+                }
+              }
+
+              return res.status(200).json({
+                message: "User import process finished.",
+                created: createdCount, updated: updatedCount, failed: failedCount, errors: errors,
+              });
+
+            } catch (error) {
+              logger.error("Error processing users:", error);
+              return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+            }
+          });
+          
+          req.pipe(bb);
         }
-      });
-      
-      req.pipe(bb);
+
+      } catch (error) {
+        logger.error("Error processing request:", error);
+        return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+      }
 
     })
     .catch(error => {
@@ -148,7 +355,12 @@ importUsersApp.post('/', (req, res) => {
 
 // Firebase FunctionsのエンドポイントとしてExpressアプリをエクスポート
 exports.importUsers = onRequest(
-  { region: "us-central1", memory: "256MiB" },
+  { 
+    region: "us-central1", 
+    memory: "512MiB",
+    timeoutSeconds: 300,
+    maxInstances: 10
+  },
   importUsersApp
 );
 
