@@ -175,63 +175,48 @@ function AdminDashboard() {
     setMessage('');
   };
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (!csvFile) {
       setMessage('CSVファイルを選択してください。');
       return;
     }
     setIsImporting(true);
-    setMessage('CSVファイルを解析中...');
+    setMessage('サーバーにアップロード中...');
 
-    Papa.parse(csvFile, {
-      encoding: "Shift-JIS",
-      complete: async (results) => {
-        try {
-          setMessage('ユーザーをインポート中...');
-          const rows = results.data;
-          // Filter out empty rows and header rows (assuming first 3 are headers)
-          const dataRows = rows.slice(3).filter(row => row.length > 1 && row.some(cell => cell && cell.trim() !== ''));
+    try {
+      const idToken = await auth.currentUser.getIdToken();
+      const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
+      if (!functionUrl) throw new Error("Cloud FunctionのURLが設定されていません。");
 
-          if (dataRows.length === 0) {
-            throw new Error("CSVに有効なデータ行が見つかりませんでした。");
-          }
+      const formData = new FormData();
+      formData.append('file', csvFile);
 
-          const idToken = await auth.currentUser.getIdToken();
-          const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL;
-          if (!functionUrl) throw new Error("Cloud FunctionのURLが設定されていません。");
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          // 'Content-Type' is intentionally left out; the browser will set
+          // it to 'multipart/form-data' with the correct boundary.
+          'Authorization': `Bearer ${idToken}`
+        },
+        body: formData
+      });
 
-          const response = await fetch(functionUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${idToken}`
-            },
-            body: JSON.stringify({ users: dataRows }) // Send parsed data as JSON
-          });
-
-          const result = await response.json();
-          if (!response.ok) {
-            throw new Error(result.error || `HTTPエラー: ${response.status}`);
-          }
-
-          setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
-          if (result.errors && result.errors.length > 0) {
-            console.error('Import errors:', result.errors);
-            setMessage(prev => prev + ` 詳細なエラー: ${result.errors.join(', ')}`);
-          }
-        } catch (error) {
-          console.error('Import process error:', error);
-          setMessage(`エラー: ${error.message}`);
-        } finally {
-          setIsImporting(false);
-        }
-      },
-      error: (err) => {
-        console.error('CSV parsing error:', err);
-        setMessage(`CSVファイルの解析に失敗しました: ${err.message}`);
-        setIsImporting(false);
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || `HTTPエラー: ${response.status}`);
       }
-    });
+
+      setMessage(`インポート完了: 新規作成 ${result.created || 0}, 更新 ${result.updated || 0}, 失敗 ${result.failed || 0}.`);
+      if (result.errors && result.errors.length > 0) {
+        console.error('Import errors:', result.errors);
+        setMessage(prev => prev + ` 詳細なエラー: ${result.errors.join(', ')}`);
+      }
+    } catch (error) {
+      console.error('Import process error:', error);
+      setMessage(`エラー: ${error.message}`);
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   const handleLogout = () => auth.signOut();
@@ -259,7 +244,7 @@ function AdminDashboard() {
         return (
           <div className="admin-card">
             <h3>ユーザーインポート</h3>
-            <p>A列にユーザー名、B列に4桁のID、C列に学年を記載したCSVファイルをアップロードしてください。</p>
+            <p>A列に4桁のID、B列にユーザー名、C列に学年を記載したCSVファイルをアップロードしてください。</p>
             <div className="import-controls">
               <input type="file" id="csv-upload" accept=".csv" onChange={handleFileChange} />
               <label htmlFor="csv-upload" className="file-upload-btn">{csvFile ? csvFile.name : 'ファイルを選択'}</label>

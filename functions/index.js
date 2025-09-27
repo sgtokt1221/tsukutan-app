@@ -9,106 +9,141 @@ const db = admin.firestore();
 // 外部ライブラリ
 const express = require('express');
 const cors = require('cors');
+const busboy = require('busboy');
+const iconv = require('iconv-lite');
+const Papa = require('papaparse');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 
 //==============================================================================
-// ユーザー一括インポート機能 (Express.js + JSONベース)
+// ユーザー一括インポート機能 (ファイルアップロードベース)
 //==============================================================================
 const importUsersApp = express();
-// CORSミドルウェアを適用
+// CORSミドルウェアを適用 (OPTIONSリクエストの処理を含む)
 importUsersApp.use(cors({ origin: true }));
 
-importUsersApp.post('/', async (req, res) => {
+importUsersApp.post('/', (req, res) => {
   // 認証
   const idToken = req.get("Authorization")?.split("Bearer ")[1];
   if (!idToken) {
     return res.status(403).json({error: "Unauthorized: No token provided."});
   }
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    if (decodedToken.email !== "tsukasafoods@gmail.com") {
-      return res.status(403).json({error: "Forbidden: Not an admin user."});
-    }
-  } catch (error) {
-    logger.error("Error verifying auth token:", error);
-    return res.status(403).json({error: "Unauthorized: Invalid token."});
-  }
-
-  // ビジネスロジック
-  try {
-    const { users } = req.body;
-    if (!users || !Array.isArray(users)) {
-      return res.status(400).json({ error: "Bad Request: 'users' array not provided."});
-    }
-    
-    let createdCount = 0;
-    let updatedCount = 0;
-    let failedCount = 0;
-    const errors = [];
-
-    // 各行の処理を並列実行
-    const promises = users.map(async (record) => {
-      const username = record[0];
-      const studentId = record[1];
-      const grade = record[2];
-
-      if (!username || !studentId || studentId.length !== 4 || !grade) {
-        failedCount++;
-        errors.push(`情報不足: ${record.join(",")}`);
-        return;
+  admin.auth().verifyIdToken(idToken)
+    .then(decodedToken => {
+      if (decodedToken.email !== "tsukasafoods@gmail.com") {
+        throw new Error("Forbidden: Not an admin user.");
       }
+      
+      const bb = busboy({ headers: req.headers });
+      const fileBuffers = [];
 
-      const email = `${studentId}@tsukasafoods.com`;
-      const password = `tsukuba${studentId}`;
-
-      try {
-        const userRecord = await admin.auth().getUserByEmail(email);
-        // 既存ユーザーの更新
-        await admin.auth().updateUser(userRecord.uid, {
-          displayName: username,
-          password: password,
-        });
-        await db.collection("users").doc(userRecord.uid).set({ name: username, grade: grade }, { merge: true });
-        updatedCount++;
-      } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-          // 新規ユーザーの作成
-          try {
-            const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
-            await db.collection("users").doc(newUserRecord.uid).set({
-              name: username,
-              studentId: studentId,
-              grade: grade,
-              level: 0,
-              goal: { targetExam: null, targetDate: null, isSet: false },
-              progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
-            });
-            createdCount++;
-          } catch (creationError) {
-            failedCount++;
-            errors.push(`作成失敗 ${email}: ${creationError.message}`);
-          }
-        } else {
-          failedCount++;
-          errors.push(`処理失敗 ${email}: ${error.message}`);
+      bb.on('file', (name, file, info) => {
+        const { mimeType } = info;
+        if (mimeType !== 'text/csv' && mimeType !== 'application/vnd.ms-excel') {
+            return res.status(400).json({ error: `Unsupported file type: ${mimeType}. Please upload a CSV file.` });
         }
-      }
-    });
-    
-    await Promise.all(promises);
+        file.on('data', (data) => {
+            fileBuffers.push(data);
+        }).on('close', () => {
+            logger.info('File upload finished.');
+        });
+      });
 
-    return res.status(200).json({
-      message: "User import process finished.",
-      created: createdCount,
-      updated: updatedCount,
-      failed: failedCount,
-      errors: errors,
+      bb.on('finish', async () => {
+        try {
+          if (fileBuffers.length === 0) {
+            return res.status(400).json({ error: 'No file uploaded.' });
+          }
+          const fileBuffer = Buffer.concat(fileBuffers);
+          // 文字コードをShift-JISからUTF-8へ変換
+          const decodedCsv = iconv.decode(fileBuffer, 'shift-jis');
+          
+          // CSVをパース
+          const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
+          const users = parseResult.data.slice(3).filter(row => row.length > 1 && row.some(cell => cell && cell.trim() !== ''));
+
+          if (users.length === 0) {
+            return res.status(400).json({ error: 'CSVに有効なデータ行が見つかりませんでした。' });
+          }
+
+          // バッチ処理
+          let createdCount = 0;
+          let updatedCount = 0;
+          let failedCount = 0;
+          const errors = [];
+          const BATCH_SIZE = 10;
+          const DELAY_MS = 1000;
+          const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+          for (let i = 0; i < users.length; i += BATCH_SIZE) {
+            const batch = users.slice(i, i + BATCH_SIZE);
+            const promises = batch.map(async (record) => {
+              let studentId = record[0];
+              const username = record[1];
+              const grade = record[2];
+
+              if (studentId && studentId.length === 3) {
+                studentId = studentId.padStart(4, '0');
+              }
+
+              if (!username || !studentId || studentId.length !== 4 || !grade) {
+                failedCount++;
+                errors.push(`情報不足: ${record.join(",")}`);
+                return;
+              }
+
+              const email = `${studentId}@tsukasafoods.com`;
+              const password = `tsukuba${studentId}`;
+
+              try {
+                const userRecord = await admin.auth().getUserByEmail(email);
+                await admin.auth().updateUser(userRecord.uid, { displayName: username, password: password });
+                await db.collection("users").doc(userRecord.uid).set({ name: username, grade: grade }, { merge: true });
+                updatedCount++;
+              } catch (error) {
+                if (error.code === 'auth/user-not-found') {
+                  try {
+                    const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
+                    await db.collection("users").doc(newUserRecord.uid).set({
+                      name: username, studentId: studentId, grade: grade, level: 0,
+                      goal: { targetExam: null, targetDate: null, isSet: false },
+                      progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+                    });
+                    createdCount++;
+                  } catch (creationError) {
+                    failedCount++;
+                    errors.push(`作成失敗 ${email}: ${creationError.message}`);
+                  }
+                } else {
+                  failedCount++;
+                  errors.push(`処理失敗 ${email}: ${error.message}`);
+                }
+              }
+            });
+            await Promise.all(promises);
+            if (i + BATCH_SIZE < users.length) {
+              await sleep(DELAY_MS);
+            }
+          }
+
+          return res.status(200).json({
+            message: "User import process finished.",
+            created: createdCount, updated: updatedCount, failed: failedCount, errors: errors,
+          });
+
+        } catch (error) {
+          logger.error("Error processing users:", error);
+          return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+        }
+      });
+      
+      req.pipe(bb);
+
+    })
+    .catch(error => {
+      logger.error("Error verifying auth token:", error);
+      return res.status(403).json({error: `Unauthorized: ${error.message}`});
     });
-  } catch (error) {
-    logger.error("Error processing users:", error);
-    return res.status(500).json({ error: `Internal Server Error: ${error.message}` });
-  }
 });
 
 // Firebase FunctionsのエンドポイントとしてExpressアプリをエクスポート
