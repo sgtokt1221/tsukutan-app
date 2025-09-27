@@ -57,9 +57,14 @@ importUsersApp.post('/', async (req, res) => {
         // 文字コードをShift-JISからUTF-8へ変換
         const decodedCsv = iconv.decode(fileBuffer, 'shift-jis');
         
-        // CSVをパース（ヘッダーなし、最初の3行をスキップ）
+        // CSVをパースし、ヘッダー行の可能性を考慮してフィルタリング
         const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
-        const users = parseResult.data.slice(3).filter(row => row.length > 1 && row.some(cell => cell && cell.trim() !== ''));
+        const users = parseResult.data.filter(row => {
+          if (!row || row.length === 0) return false;
+          const studentId = row[0];
+          // 生徒IDが3桁または4桁の数字である行のみを有効なデータとして扱う
+          return /^\d{3,4}$/.test(studentId);
+        });
 
         if (users.length === 0) {
           return res.status(400).json({ error: 'CSVに有効なデータ行が見つかりませんでした。' });
