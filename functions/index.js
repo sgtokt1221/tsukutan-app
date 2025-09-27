@@ -19,8 +19,6 @@ const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 // ユーザー一括インポート機能 (シンプル版)
 //==============================================================================
 const importUsersApp = express();
-
-// シンプルなCORS設定
 importUsersApp.use(cors({ origin: true }));
 
 importUsersApp.post('/', async (req, res) => {
@@ -59,7 +57,7 @@ importUsersApp.post('/', async (req, res) => {
         // 文字コードをShift-JISからUTF-8へ変換
         const decodedCsv = iconv.decode(fileBuffer, 'shift-jis');
         
-        // CSVをパース
+        // CSVをパース（ヘッダーなし、最初の3行をスキップ）
         const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
         const users = parseResult.data.slice(3).filter(row => row.length > 1 && row.some(cell => cell && cell.trim() !== ''));
 
