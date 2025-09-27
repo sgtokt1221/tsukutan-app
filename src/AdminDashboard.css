@@ -121,6 +121,134 @@
   overflow-y: auto;
 }
 
+.analytics-view {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  flex: 2;
+}
+
+.grade-insight-panel {
+  flex: 1;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 1.5rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+
+.warning-panel {
+  border: 1px solid #fbbf24;
+  background-color: #fffbeb;
+}
+
+.grade-insight-panel h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.grade-insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.insight-metrics {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metric-card {
+  flex: 1;
+  min-width: 150px;
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.metric-card h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.metric-card p {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.insight-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.insight-list {
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+.insight-list h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.insight-list ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.insight-list li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.insight-list li .student-name {
+  font-weight: 600;
+}
+
+.insight-list li .student-score {
+  color: #64748b;
+}
+
+.analytics-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.analyse-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #14b8a6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.analyse-btn:hover {
+  background-color: #0f766e;
+}
+
 .admin-card {
   background-color: white;
   padding: 1.5rem;
