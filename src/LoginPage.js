@@ -1,51 +1,78 @@
 import React, { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig.js';
-import { signInWithEmailAndPassword } from "firebase/auth";
 
 function LoginPage() {
   const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleLogin = async () => {
     if (!studentId || !password) {
       alert('IDとパスワードを入力してください。');
       return;
     }
-    // If studentId contains '@', treat it as a full email. Otherwise, append domain.
+
     const email = studentId.includes('@') ? studentId : `${studentId}@tsukasafoods.com`;
+
     try {
+      setIsProcessing(true);
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      alert(`ログインに失敗しました。IDまたはパスワードが間違っています。`);
-      console.error("Login error:", error);
+      console.error('Login error:', error);
+      alert('ログインに失敗しました。IDまたはパスワードを確認してください。');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1 className="logo-title">つくたん</h1>
-        <div className="input-group">
-          <label>ID</label>
+    <div className="login-screen">
+      <div className="login-hero">
+        <div className="hero-pill">毎日の英語習慣を支える</div>
+        <h1 className="hero-title">
+          つくたん
+          <span>TSUKUTAN</span>
+        </h1>
+        <p className="hero-caption">
+          単語学習・復習・ゴール設定をひとつのアプリで。
+        </p>
+      </div>
+
+      <div className="login-card">
+        <div className="input-stack">
+          <label className="input-label">生徒ID / メールアドレス</label>
           <input
             type="text"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            placeholder="IDまたはメールアドレス"
+            placeholder="例: 1203 或いは name@example.com"
+            autoComplete="username"
           />
         </div>
-        <div className="input-group">
-          <label>パスワード</label>
+
+        <div className="input-stack">
+          <label className="input-label">パスワード</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="先生から指定されたパスワード"
+            autoComplete="current-password"
           />
         </div>
-        <button className="login-btn" onClick={handleLogin}>
-          ログイン
+
+        <button
+          className="primary-action"
+          onClick={handleLogin}
+          disabled={isProcessing}
+        >
+          {isProcessing ? 'ログイン中...' : 'ログイン'}
         </button>
+
+        <p className="helper-text">
+          ログインで困ったら、先生にお問い合わせください。
+        </p>
       </div>
     </div>
   );

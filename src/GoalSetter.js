@@ -1,51 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { db, auth } from './firebaseConfig';
-// ▼▼▼ getDoc を追加 ▼▼▼
-import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { auth, db } from './firebaseConfig';
+import { collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { updateProgressPercentage } from './logic/progressLogic';
 
-export default function GoalSetter() {
+export default function GoalSetter({ onGoalSet, onGoalReset }) {
   const [goals, setGoals] = useState({});
   const [selectedGoals, setSelectedGoals] = useState([]);
   const [targetDate, setTargetDate] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  // ▼▼▼ ここから修正 ▼▼▼
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. マスターデータの目標リストを取得
         const goalsCollection = collection(db, 'goalsMaster');
         const goalsSnapshot = await getDocs(goalsCollection);
-        if (goalsSnapshot.empty) {
-          throw new Error("目標データが見つかりません。");
-        }
-        const goalsList = goalsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
-        const groupedGoals = goalsList.reduce((acc, goal) => {
+
+        const convertedGoals = {};
+        goalsSnapshot.forEach(goalDoc => {
+          const goalData = goalDoc.data();
+          convertedGoals[goalDoc.id] = goalData;
+        });
+
+        const groupedGoals = Object.entries(convertedGoals).reduce((acc, [goalId, goalData]) => {
           let category = 'その他';
-          if (goal.id.startsWith('eiken')) category = '英検';
-          else if (goal.id.startsWith('hs')) category = '高校入試';
-          else if (goal.id.startsWith('uni')) category = '大学入試';
-          
+          if (goalId.startsWith('eiken')) category = '英検';
+          else if (goalId.startsWith('hs')) category = '高校入試';
+          else if (goalId.startsWith('uni')) category = '大学入試';
+
           if (!acc[category]) acc[category] = [];
-          acc[category].push(goal);
+          acc[category].push({ goalId, ...goalData });
           return acc;
         }, {});
 
+        Object.values(groupedGoals).forEach(goalList => {
+          goalList.sort((a, b) => (a.requiredVocabulary || 0) - (b.requiredVocabulary || 0));
+        });
+
         setGoals(groupedGoals);
 
-        // 2. ログイン中のユーザーの現在の目標設定を読み込む
         const user = auth.currentUser;
         if (user) {
           const userDocRef = doc(db, 'users', user.uid);
           const userDoc = await getDoc(userDocRef);
           if (userDoc.exists() && userDoc.data().goal) {
             const userGoal = userDoc.data().goal;
-            // 既存の設定があればStateにセットする
             if (userGoal.targets) {
               setSelectedGoals(userGoal.targets);
             }
@@ -55,20 +54,19 @@ export default function GoalSetter() {
           }
         }
       } catch (err) {
-        console.error("データの読み込みに失敗しました:", err);
+        console.error('データの読み込みに失敗しました:', err);
         setError(err.message);
       }
       setLoading(false);
     };
     fetchData();
   }, []);
-  // ▲▲▲ ここまで修正 ▲▲▲
 
-  const handleGoalChange = (goal) => {
-    setSelectedGoals(prev => 
-      prev.some(g => g.goalId === goal.id)
-        ? prev.filter(g => g.goalId !== goal.id)
-        : [...prev, { goalId: goal.id, displayName: goal.displayName }]
+  const toggleGoalSelection = (goal) => {
+    setSelectedGoals(prev =>
+      prev.some(g => g.goalId === goal.goalId)
+        ? prev.filter(g => g.goalId !== goal.goalId)
+        : [...prev, { goalId: goal.goalId, displayName: goal.displayName }]
     );
   };
 
@@ -78,75 +76,106 @@ export default function GoalSetter() {
       alert('目標と達成日を両方選択してください。');
       return;
     }
+
     const user = auth.currentUser;
-    if (user) {
-      const userDocRef = doc(db, 'users', user.uid);
-      try {
-        await updateDoc(userDocRef, {
-          'goal.targets': selectedGoals,
-          'goal.targetDate': targetDate,
-          'goal.isSet': true,
-        }, { merge: true }); // isSetを確実に上書きするためにmerge:trueを追加
+    if (!user) return;
 
-        // ★進捗率を更新
-        await updateProgressPercentage(user.uid);
+    const userDocRef = doc(db, 'users', user.uid);
+    try {
+      await updateDoc(userDocRef, {
+        'goal.targets': selectedGoals,
+        'goal.targetDate': targetDate,
+        'goal.isSet': true,
+      }, { merge: true });
 
-        alert('目標が設定されました！');
-        navigate('/');
-      } catch (error) {
-        console.error("目標の設定に失敗しました: ", error);
-        alert('目標の設定に失敗しました。');
-      }
+      await updateProgressPercentage(user.uid);
+      alert('目標が設定されました！');
+      if (onGoalSet) onGoalSet();
+    } catch (err) {
+      console.error('目標設定に失敗しました:', err);
+      alert('目標の設定に失敗しました。');
     }
   };
 
-  if (loading) return <div className="loading-container"><p>目標を読み込んでいます...</p></div>;
-  if (error) return <div className="loading-container"><p>エラー: {error}</p></div>;
+  const handleReset = async () => {
+    if (!window.confirm('現在の目標をリセットしてもよろしいですか？')) return;
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        goal: {
+          targets: [],
+          targetDate: null,
+          isSet: false,
+        }
+      }, { merge: true });
+      setSelectedGoals([]);
+      setTargetDate('');
+      if (onGoalReset) onGoalReset();
+    } catch (err) {
+      console.error('目標のリセットに失敗しました:', err);
+      alert('目標のリセットに失敗しました。');
+    }
+  };
+
+  if (loading) {
+    return <div className="loading-placeholder">読み込み中...</div>;
+  }
+
+  if (error) {
+    return <div className="error-banner">{error}</div>;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="goal-setter-container">
-      <form onSubmit={handleSubmit} className="goal-form card-style">
-        {/* 以下、JSX部分は変更なし */}
-        <h2>学習目標を設定</h2>
-        <p className="form-description">達成したい目標と期限を決めましょう。</p>
-        
-        <div className="goals-selection">
-          {Object.entries(goals).map(([category, items]) => (
-            <div key={category} className="goal-category">
-              <h3 className="category-title">{category}</h3>
-              {items.sort((a, b) => a.requiredVocabulary - b.requiredVocabulary).map(goal => (
-                <label key={goal.id} className="goal-option">
-                  <input 
-                    type="checkbox"
-                    checked={selectedGoals.some(g => g.goalId === goal.id)}
-                    onChange={() => handleGoalChange(goal)}
-                  />
-                  <span className="checkbox-custom"></span>
-                  <div className="goal-text">
-                    <span className="goal-name">{goal.displayName}</span>
-                    <span className="goal-desc">{goal.description}</span>
-                  </div>
-                </label>
-              ))}
-            </div>
-          ))}
-        </div>
-        
-        <div className="date-picker-section">
-          <h3 className="category-title">達成目標日</h3>
-          <input 
-            type="date"
-            className="date-input"
-            value={targetDate}
-            onChange={(e) => setTargetDate(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="submit-goal-btn" disabled={selectedGoals.length === 0 || !targetDate}>
-          学習を始める
+    <form className="goal-screen" onSubmit={handleSubmit}>
+      <header className="goal-hero">
+        <h1>ゴールを決めよう</h1>
+        <p>目標と達成日を登録すると、学習プランが自動で作成されます。</p>
+        <button type="button" className="ghost-button" onClick={handleReset}>
+          目標をリセットする
         </button>
-      </form>
-    </div>
+      </header>
+
+      <section className="section-card">
+        <h2 className="section-title">達成日を設定</h2>
+        <input
+          type="date"
+          min={today}
+          value={targetDate}
+          onChange={(e) => setTargetDate(e.target.value)}
+        />
+      </section>
+
+      {Object.entries(goals).map(([category, goalList]) => (
+        <section className="section-card" key={category}>
+          <div className="tile-header">
+            <h2 className="section-title">{category}</h2>
+          </div>
+          <div className="goal-options">
+            {goalList.map(goal => {
+              const isActive = selectedGoals.some(g => g.goalId === goal.goalId);
+              return (
+                <button
+                  type="button"
+                  key={goal.goalId}
+                  className={`goal-chip ${isActive ? 'selected' : ''}`}
+                  onClick={() => toggleGoalSelection(goal)}
+                >
+                  <span className="goal-name">{goal.displayName}</span>
+                  <span className="goal-desc">目安: {(goal.requiredVocabulary || 0).toLocaleString()}語</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+
+      <footer className="goal-footer">
+        <button type="submit" className="primary-action">目標を設定する</button>
+      </footer>
+    </form>
   );
-};
+}

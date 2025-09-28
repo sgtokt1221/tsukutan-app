@@ -1,5 +1,6 @@
 import { db } from '../firebaseConfig';
 import { doc, setDoc, getDoc, updateDoc, deleteDoc, runTransaction } from 'firebase/firestore';
+import { logStudyEvent } from './studyLogger';
 
 /**
  * 新しい単語を復習リストに追加します。
@@ -26,6 +27,12 @@ export const addWordToReview = async (userId, word) => {
     console.log(`単語 "${word.word}" を復習リストに追加しました。`);
     // ★キャッシュにも追加
     await addWordToDailyCache(userId, newReviewWord);
+    await logStudyEvent(userId, {
+      word: newReviewWord.word,
+      wordId: newReviewWord.id,
+      sessionType: 'review',
+      action: 'added',
+    });
   } catch (error) {
     console.error('復習リストへの単語追加に失敗しました:', error);
   }
@@ -95,6 +102,14 @@ export const updateUserWordProgress = async (userId, word, isCorrect) => {
     if (!isCorrect) {
       await addWordToDailyCache(userId, { ...wordData, id: word.id });
     }
+    await logStudyEvent(userId, {
+      word: word.word,
+      wordId: word.id,
+      sessionType: 'review',
+      correct: isCorrect,
+      interval,
+      repetitions,
+    });
 
   } catch (error) {
     console.error('単語の進捗更新に失敗しました:', error);
@@ -161,6 +176,11 @@ export const removeWordFromReview = async (userId, wordId) => {
       }
     });
     console.log(`単語(ID: ${wordId})が正常に削除されました。`);
+    await logStudyEvent(userId, {
+      wordId,
+      sessionType: 'review',
+      action: 'graduated',
+    });
   } catch (error) {
     console.error("単語の完全削除(トランザクション)に失敗しました:", error);
   }

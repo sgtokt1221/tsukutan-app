@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
+import { logStudyEvent } from './logic/studyLogger';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック（仮のインポート）
 // ※logic/reviewLogic.js が実際に存在し、この関数がエクスポートされている必要があります
@@ -25,6 +26,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
+  const [correctlyLearnedWords, setCorrectlyLearnedWords] = useState(new Set());
   const [shuffledWords, setShuffledWords] = useState([]);
   const [hasCompletedOnce, setHasCompletedOnce] = useState(false);
   
@@ -50,9 +52,18 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
     if (userId && currentWord) {
       updateUserWordProgress(userId, currentWord, isCorrect);
+      logStudyEvent(userId, {
+        word: currentWord.word,
+        wordId: currentWord.id,
+        sessionType: 'new',
+        correct: isCorrect,
+        sourceMode: sessionInfo?.mode || 'learning',
+      });
     }
 
-    if (!isCorrect) {
+    if (isCorrect) {
+      setCorrectlyLearnedWords(prev => new Set(prev).add(currentWord.id));
+    } else {
       setIncorrectWords(prev => [...prev, currentWord]);
     }
 
@@ -68,11 +79,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         }
         setHasCompletedOnce(true);
       }
-      // 自動でリスタート
-      setShuffledWords(shuffleArray(shuffledWords));
-      setCurrentIndex(0);
-      setIsFlipped(false);
-      x.set(0);
+      // セッションを終了する
+      handleBackButtonClick();
     }
   }, [currentIndex, shuffledWords, incorrectWords, onBack, x, userId, hasCompletedOnce, onFirstCompletion]);
 
@@ -84,6 +92,13 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       window.speechSynthesis.speak(utterance);
     }
   }, [isFlipped, currentIndex, shuffledWords]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex === 0) return;
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
+    setIsFlipped(false);
+    x.set(0);
+  }, [currentIndex, x]);
 
   const handleBackButtonClick = () => {
     const sessionEndTime = new Date();
@@ -97,14 +112,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       };
       onSaveLog(logData);
     }
-    onBack(incorrectWords);
+    onBack(incorrectWords, correctlyLearnedWords.size);
   };
 
   if (shuffledWords.length === 0) {
     return (
       <div className="card-style">
         <p>学習する単語がありません。</p>
-        <button onClick={() => onBack([])} className="back-btn">戻る</button>
+        <button onClick={() => onBack([], 0)} className="back-btn">戻る</button>
       </div>
     );
   }
@@ -133,7 +148,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             <p id="card-front-text">{currentWord?.word}</p>
           </div>
-          <div className="card-face card-back">
+          <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word}</h3>
             <p id="card-back-meaning">{currentWord?.japanese || currentWord?.meaning}</p>
             {(currentWord?.example || currentWord?.exampleJa) && <hr />}
@@ -148,7 +163,10 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       </div>
 
       <div className="footer-container">
-        <button onClick={handleBackButtonClick} className="exit-button-footer">セッションを終了</button>
+        <div className="flashcard-footer">
+          <button onClick={handlePrev} className="back-action" disabled={currentIndex === 0}>1つ戻る</button>
+          <button onClick={handleBackButtonClick} className="back-action">戻る</button>
+        </div>
       </div>
     </div>
   );

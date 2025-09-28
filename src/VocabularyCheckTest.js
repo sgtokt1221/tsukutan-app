@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebaseConfig';
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { updateUserWordProgress } from './logic/reviewLogic';
+import { logStudyEvent } from './logic/studyLogger';
 import { updateProgressPercentage } from './logic/progressLogic'; // ★インポート
 
 // 配列をシャッフルするヘルパー関数
@@ -19,7 +20,7 @@ const shuffleArray = (array) => {
 // どのテキストブックから単語を探すかを定義
 const textbooks = {
   'osaka-koukou-nyuushi': '大阪府公立入試英単語',
-  'target-1900': 'ターゲット1900'
+  'highschool-english': '高校英語'
 };
 
 export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete }) {
@@ -97,9 +98,26 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     const user = auth.currentUser;
 
     // ★不正解の場合、復習リストに追加
-    if (!isCorrect && user && currentWord) {
-      updateUserWordProgress(user.uid, currentWord, false);
-    }
+  if (!isCorrect && user && currentWord) {
+    updateUserWordProgress(user.uid, currentWord, false);
+    logStudyEvent(user.uid, {
+      word: currentWord.word,
+      wordId: currentWord.id,
+      sessionType: 'placement',
+      correct: false,
+      stage,
+      level: currentLevel,
+    });
+  } else if (isCorrect && user && currentWord) {
+    logStudyEvent(user.uid, {
+      word: currentWord.word,
+      wordId: currentWord.id,
+      sessionType: 'placement',
+      correct: true,
+      stage,
+      level: currentLevel,
+    });
+  }
 
     const newScore = score + (isCorrect ? 1 : 0);
     if (questionIndex < currentQuestions.length - 1) {
@@ -162,6 +180,13 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     }
   };
 
+  const handlePrevQuestion = () => {
+    if (questionIndex === 0) return;
+    setQuestionIndex(prev => Math.max(0, prev - 1));
+    setIsFlipped(false);
+    x.set(0);
+  };
+
   if (loading || currentQuestions.length === 0) {
     return <div className="loading-container"><p>テスト問題を準備中...</p></div>;
   }
@@ -193,7 +218,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
           </div>
           
           {/* ▼▼▼【修正点2】カード裏面の表示形式を元の完全な状態に復元▼▼▼ */}
-          <div className="card-face card-back">
+          <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word}</h3>
             {/* meaningとjapaneseの両方に対応 */}
             <p id="card-back-meaning">{currentWord?.meaning || currentWord?.japanese}</p>
@@ -207,6 +232,13 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
 
       <div className="card-navigation">
         <div className="card-counter">{questionIndex + 1} / {currentQuestions.length}</div>
+      </div>
+      
+      <div className="footer-container">
+        <div className="flashcard-footer">
+          <button onClick={handlePrevQuestion} className="back-action" disabled={questionIndex === 0}>1つ戻る</button>
+          <button onClick={() => navigate('/student-dashboard')} className="back-action">戻る</button>
+        </div>
       </div>
       
       <div className="swipe-instructions">
