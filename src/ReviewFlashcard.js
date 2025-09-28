@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { updateUserWordProgress, removeWordFromReview } from './logic/reviewLogic';
+import { logStudyEvent } from './logic/studyLogger';
 import { getAuth } from 'firebase/auth';
 
 function ReviewFlashcard({ words, onBack }) {
@@ -62,6 +63,12 @@ function ReviewFlashcard({ words, onBack }) {
       const currentWord = sessionWords[currentIndex];
       if (userId && currentWord) {
         removeWordFromReview(userId, currentWord.id);
+        logStudyEvent(userId, {
+          word: currentWord.word,
+          wordId: currentWord.id,
+          sessionType: 'review',
+          action: 'graduate',
+        });
         // UIから即時削除
         const newSessionWords = sessionWords.filter(w => w.id !== currentWord.id);
         setSessionWords(newSessionWords);
@@ -79,6 +86,12 @@ function ReviewFlashcard({ words, onBack }) {
       const currentWord = sessionWords[currentIndex];
       if (userId && currentWord) {
         updateUserWordProgress(userId, currentWord, isCorrect);
+        logStudyEvent(userId, {
+          word: currentWord.word,
+          wordId: currentWord.id,
+          sessionType: 'review',
+          correct: isCorrect,
+        });
       }
     }
     
@@ -106,6 +119,14 @@ function ReviewFlashcard({ words, onBack }) {
       window.speechSynthesis.speak(utterance);
     }
   }, [isFlipped, currentIndex, sessionWords]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex === 0) return;
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
+    setIsFlipped(false);
+    x.set(0);
+    y.set(0);
+  }, [currentIndex, x, y]);
 
   if (!sessionWords || sessionWords.length === 0) {
     return (
@@ -138,7 +159,7 @@ function ReviewFlashcard({ words, onBack }) {
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             <p id="card-front-text">{currentWord?.word}</p>
           </div>
-          <div className="card-face card-back">
+          <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word}</h3>
             <p id="card-back-meaning">{currentWord?.meaning}</p>
             <hr />
@@ -151,7 +172,10 @@ function ReviewFlashcard({ words, onBack }) {
         <div className="card-counter">{currentIndex + 1} / {sessionWords.length}</div>
       </div>
       <div className="footer-container">
-        <button onClick={onBack} className="exit-button-footer">セッションを終了</button>
+        <div className="flashcard-footer">
+          <button onClick={handlePrev} className="back-action" disabled={currentIndex === 0}>1つ戻る</button>
+          <button onClick={onBack} className="back-action">戻る</button>
+        </div>
       </div>
     </div>
   );

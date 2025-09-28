@@ -3,10 +3,10 @@ const fs = require('fs');
 
 // ▼▼▼ ここで設定を変更 ▼▼▼
 // 1. アップロードしたいファイル名を選ぶ
-const JSON_FILE_PATH = './target1900.json'; // ★「target1900.json」を指定
+const JSON_FILE_PATH = './highschool.json'; // ★「highschool.json」を指定
 
 // 2. アップロード先のコレクション名を決める
-const COLLECTION_NAME = 'target-1900'; // ★「target-1900」を指定
+const COLLECTION_NAME = 'highschool-english'; // ★高校英語のコレクションを指定
 // ▲▲▲ ここまで ▲▲▲
 
 

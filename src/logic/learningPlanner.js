@@ -1,12 +1,20 @@
 import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
 import { collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore';
+import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowledgeAnalysis';
 
 // ▼▼▼【修正点1】テキストブックの定義を追加▼▼▼
 // どのテキストブックから単語を探すかを定義します
 const textbooks = {
   'osaka-koukou-nyuushi': '大阪府公立入試英単語',
-  'target-1900': 'ターゲット1900'
+  'highschool-english': '高校英語',
+  'eiken-5': '英検5級',
+  'eiken-4': '英検4級',
+  'eiken-3': '英検3級',
+  'eiken-pre2': '英検準2級',
+  'eiken-2': '英検2級',
+  'eiken-pre1': '英検準1級',
+  'eiken-1': '英検1級'
 };
 // ▲▲▲▲▲▲
 
@@ -17,13 +25,51 @@ const textbooks = {
 const DAILY_LEARNING_GOAL_MINUTES = 30; // 1日の学習目標時間（分）
 const SECONDS_PER_NEW_WORD = 60;      // 新規単語1つあたりの学習時間（秒）
 const SECONDS_PER_REVIEW_WORD = 15;   // 復習単語1つあたりの学習時間（秒）
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+const toDateSafe = (possibleTimestamp) => {
+  if (!possibleTimestamp) return null;
+  return typeof possibleTimestamp.toDate === 'function'
+    ? possibleTimestamp.toDate()
+    : new Date(possibleTimestamp);
+};
+
+const enrichReviewWord = (word, today) => {
+  const lastReviewed = toDateSafe(word.lastReviewed);
+  const nextReviewDate = toDateSafe(word.nextReviewDate);
+
+  const daysSinceLast = lastReviewed ? Math.max(0, (today - lastReviewed) / MS_PER_DAY) : null;
+  const daysUntilNext = nextReviewDate ? (nextReviewDate - today) / MS_PER_DAY : null;
+  const interval = word.interval || 1;
+
+  const overdueFactor = daysUntilNext != null ? Math.max(0, -daysUntilNext) : 0;
+  const forgettingRatio = daysSinceLast != null ? daysSinceLast / Math.max(1, interval) : 0;
+  const forgettingScore = forgettingRatio + overdueFactor;
+
+  return {
+    ...word,
+    lastReviewed,
+    nextReviewDate,
+    daysSinceLast,
+    daysUntilNext,
+    forgettingScore,
+    isOverdue: overdueFactor > 0,
+  };
+};
 
 export const generateDailyPlan = async (userData, userId) => {
   const neededWordsCount = await estimateNeededWords(userData);
   const targetDateStr = userData.goal?.targetDate;
 
   if (!targetDateStr) {
-    return { newWords: [], reviewWords: [] };
+    return {
+      newWords: [],
+      reviewWords: [],
+      extraNewWords: [],
+      dailyTarget: 0,
+      remainingDays: 0,
+      remainingWords: 0,
+    };
   }
 
   const today = new Date();
@@ -45,46 +91,92 @@ export const generateDailyPlan = async (userData, userId) => {
   // a) 期限内に終えるためのノルマ
   const deadlineBasedNewWordQuota = Math.ceil(neededWordsCount / remainingDays);
 
-  // b) 30分の時間制限に基づいたノルマ
-  const scheduledReviewWords = await getReviewWords(userId); // 今日の復習単語を先に取得
-  const reviewTimeInSeconds = scheduledReviewWords.length * SECONDS_PER_REVIEW_WORD;
-  const dailyGoalInSeconds = DAILY_LEARNING_GOAL_MINUTES * 60;
-  const remainingTimeForNewWords = Math.max(0, dailyGoalInSeconds - reviewTimeInSeconds);
-  const timeBasedNewWordQuota = Math.floor(remainingTimeForNewWords / SECONDS_PER_NEW_WORD);
+  // b) 締め切りベースのノルマをデフォルトとする
+  const finalNewWordsQuota = deadlineBasedNewWordQuota;
 
-  // 3. 最終的な新規単語ノルマを決定（両方の制約を満たすため、少ない方を採用）
-  const finalNewWordsQuota = Math.min(deadlineBasedNewWordQuota, timeBasedNewWordQuota);
-
-  // 4. 単語リストを作成
-  const allReviewWordsSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
-  const learnedWordIds = new Set(allReviewWordsSnapshot.docs.map(doc => doc.id));
+  // 3. 単語リストを作成
+  const reviewSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
+  const existingReviewEntries = reviewSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const enrichedReviewEntries = existingReviewEntries.map(word => enrichReviewWord(word, today));
+  const learnedWordIds = new Set(enrichedReviewEntries.map(word => word.id));
   const userLevel = userData.level || 1;
   
   const { words: newWords, remainingCandidates } = await getNewWords(userId, finalNewWordsQuota, userLevel, learnedWordIds);
 
-  // ▼▼▼【修正点2】追加学習用の単語（巻いちゃう？分）を取得▼▼▼
-  const EXTRA_WORDS_QUOTA = 10; // 追加で学習する単語数
-  const extraNewWords = remainingCandidates.slice(0, EXTRA_WORDS_QUOTA);
-  // ▲▲▲▲▲▲
+  // 4. 追加学習用の単語（巻いちゃう？分）を取得
+  // 時間ベースのノルマを計算し、もし時間に余裕があれば追加学習を提案する
+  const scheduledReviewWords = await getReviewWords(userId, enrichedReviewEntries); // 今日の復習単語
+  const reviewTimeInSeconds = scheduledReviewWords.length * SECONDS_PER_REVIEW_WORD;
+  const dailyGoalInSeconds = DAILY_LEARNING_GOAL_MINUTES * 60;
+  const remainingTimeForNewWords = Math.max(0, dailyGoalInSeconds - (finalNewWordsQuota * SECONDS_PER_NEW_WORD) - reviewTimeInSeconds);
+  const extraWordsQuota = Math.floor(remainingTimeForNewWords / SECONDS_PER_NEW_WORD);
+  const extraNewWords = remainingCandidates.slice(0, extraWordsQuota > 0 ? extraWordsQuota : 0);
 
-  // 5. 隣接レベルの単語を復習リストに追加（元のロジックを維持）
+  // 5. 復習単語リストを最終化
+  // a) 忘却防止のため、習得済みの単語をいくつか含める
+  const scheduledIds = new Set(scheduledReviewWords.map(w => w.id));
+  const masteredWords = await getRandomMasteredWords(userId, scheduledIds);
+  
+  // b) 隣接レベルの単語を追加
   let adjacentWords = [];
   if (userData.goal && userData.goal.targets && userData.goal.targets.length > 0) {
     const currentLearnedIds = new Set([...learnedWordIds, ...newWords.map(w => w.id), ...extraNewWords.map(w => w.id)]);
     adjacentWords = await getAdjacentLevelWords(userData.goal.targets, currentLearnedIds);
   }
-  
-  const scheduledIds = new Set(scheduledReviewWords.map(w => w.id));
   const uniqueAdjacentWords = adjacentWords.filter(w => !scheduledIds.has(w.id));
   
-  const finalReviewWords = [...scheduledReviewWords, ...uniqueAdjacentWords];
+  // c) 全てを結合
+  const finalReviewWords = [...scheduledReviewWords, ...masteredWords, ...uniqueAdjacentWords];
 
-  // ▼▼▼【修正点3】戻り値に追加の単語リストを含める▼▼▼
+  const knowledgeMap = await computeKnowledgeMap(userId);
+  const themeGroups = buildThemeGroups([...newWords, ...extraNewWords, ...finalReviewWords]);
+  const knowledgeHints = getKnowledgeGaps(themeGroups, knowledgeMap).slice(0, 3);
+
   return {
     newWords: newWords,
     reviewWords: finalReviewWords,
     extraNewWords: extraNewWords,
+    dailyTarget: deadlineBasedNewWordQuota,
+    remainingDays,
+    remainingWords: neededWordsCount,
+    knowledgeHints,
   };
+};
+
+/**
+ * ★新規追加：忘却防止のため、習得済みの単語からランダムでいくつか取得します。
+ * @param {string} userId ユーザーID
+ * @param {Set<string>} excludedIds 除外する単語IDのセット
+ * @returns {Promise<object[]>}
+ */
+const getRandomMasteredWords = async (userId, excludedIds) => {
+  const MASTERED_WORDS_QUOTA = 3; // 1日に復習する習得済み単語の数
+  const MASTERED_REPETITIONS = 5; // 習得済みと見なす復習回数
+  
+  try {
+    const userWordsCollection = collection(db, 'users', userId, 'reviewWords');
+    const q = query(
+      userWordsCollection, 
+      where("repetitions", ">=", MASTERED_REPETITIONS)
+    );
+    const querySnapshot = await getDocs(q);
+
+    const masteredWords = [];
+    querySnapshot.forEach(doc => {
+      // 今日の復習リストに既に含まれている単語は除外
+      if (!excludedIds.has(doc.id)) {
+        masteredWords.push({ id: doc.id, ...doc.data(), isMastered: true }); // 習得済み単語だとわかるようにフラグを立てる
+      }
+    });
+
+    // ランダムにシャッフルして、定数で定義した数だけ返す
+    masteredWords.sort(() => Math.random() - 0.5);
+    return masteredWords.slice(0, MASTERED_WORDS_QUOTA);
+
+  } catch (error) {
+    console.error("習得済み単語の取得エラー:", error);
+    return [];
+  }
 };
 
 /**
@@ -182,18 +274,28 @@ const getNewWords = async (userId, quota, userLevel, learnedWordIds) => {
 /**
  * 忘却曲線に基づき、今日復習すべき単語のリストを取得します。
  */
-const getReviewWords = async (userId) => {
+const getReviewWords = async (userId, enrichedReviewEntries) => {
   const today = new Date();
   try {
-    // このコレクション名は 'userWords' で正しいか確認してください
-    const userWordsCollection = collection(db, 'users', userId, 'reviewWords');
-    const q = query(
-      userWordsCollection, 
-      where("nextReviewDate", "<=", today),
-      orderBy("nextReviewDate")
-    );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const overdue = enrichedReviewEntries.filter(entry => entry.daysUntilNext != null && entry.daysUntilNext <= 0);
+    const highForget = enrichedReviewEntries
+      .filter(entry => entry.daysSinceLast != null)
+      .filter(entry => entry.daysSinceLast >= Math.max(3, entry.interval || 1))
+      .filter(entry => !overdue.some(o => o.id === entry.id));
+
+    const merged = [...overdue, ...highForget];
+    const uniqueMap = new Map();
+    merged.forEach(entry => {
+      const existing = uniqueMap.get(entry.id);
+      if (!existing || (entry.forgettingScore || 0) > (existing.forgettingScore || 0)) {
+        uniqueMap.set(entry.id, entry);
+      }
+    });
+
+    const sorted = Array.from(uniqueMap.values())
+      .sort((a, b) => (b.forgettingScore || 0) - (a.forgettingScore || 0));
+
+    return sorted;
   } catch (error) {
     console.error("復習単語の取得エラー:", error);
     return [];

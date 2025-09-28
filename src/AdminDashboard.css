@@ -413,6 +413,31 @@ margin-bottom: 0.25rem;
   font-weight: bold;
 }
 
+.okawari-card {
+  background: linear-gradient(135deg, #fef08a, #facc15); /* Yellow gradient */
+  color: #a16207; /* Dark yellow text */
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #facc15;
+}
+
+.okawari-icon {
+  color: #ca8a04;
+}
+
+.okawari-label {
+  position: absolute;
+  top: 5px;
+  right: -30px;
+  background-color: #ef4444; /* Red */
+  color: white;
+  padding: 2px 30px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;

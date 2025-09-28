@@ -1,39 +1,52 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 // ▼▼▼ Firebaseの初期化とFunctionsを呼び出すためのインポートを修正 ▼▼▼
 import { getApp } from "firebase/app"; 
 import { getFunctions, httpsCallable } from "firebase/functions";
-import { collection, getDocs, doc, getDoc, setDoc, addDoc, query, orderBy, limit } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc, addDoc, query, orderBy, limit, updateDoc, increment, where } from "firebase/firestore";
 
 // 既存のコンポーネントとロジックのインポート
 import { generateDailyPlan } from './logic/learningPlanner';
 import { addWordToReview } from './logic/reviewLogic';
+import { updateProgressPercentage } from './logic/progressLogic';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
+import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './logic/knowledgeAnalysis';
 
 // アイコンのインポート
 import { FaBook, FaSyncAlt, FaBullseye, FaExclamationTriangle, FaPen, FaMagic } from 'react-icons/fa';
 
 // 既存の定数やヘルパー関数（すべて維持）
 const textbooks = {
-  'osaka-kouhou-nyuushi': '大阪府公立入試英単語',
-  'target-1900': 'ターゲット1900'
+  'osaka-koukou-nyuushi': '大阪府公立入試英単語',
+  'highschool-english': '高校英語'
 };
+const freeStudyOptions = [
+  { id: 'osaka-koukou-nyuushi', label: '大阪府公立入試英単語', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4] },
+  { id: 'highschool-english', label: '高校英語', textbooks: ['highschool-english'], levels: [4, 5, 6, 7, 8, 9, 10] },
+  { id: 'eiken-5', label: '英検5級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1] },
+  { id: 'eiken-4', label: '英検4級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2] },
+  { id: 'eiken-3', label: '英検3級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3] },
+  { id: 'eiken-pre2', label: '英検準2級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4] },
+  { id: 'eiken-2', label: '英検2級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4, 5, 6] },
+  { id: 'eiken-pre1', label: '英検準1級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4, 5, 6, 7] },
+  { id: 'eiken-1', label: '英検1級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
+];
 const levelDescriptions = {
-    1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1" },
-    2: { label: "中学標準", equivalent: "英検4級 / A1" },
-    3: { label: "中学卒業", equivalent: "英検3級 / A2" },
-    4: { label: "高校基礎", equivalent: "英検準2級 / A2" },
-    5: { label: "高校標準", equivalent: "英検2級 / B1" },
-    6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2" },
-    7: { label: "大学中級", equivalent: "英検準1級 / B2" },
-    8: { label: "大学上級", equivalent: "英検1級 / C1" },
-    9: { label: "超上級", equivalent: "英検1級+" },
-    10:{ label: "ネイティブ", equivalent: "ネイティブレベル" }
+    1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1", wordsRequired: 600 },
+    2: { label: "中学標準", equivalent: "英検4級 / A1", wordsRequired: 1300 },
+    3: { label: "中学卒業", equivalent: "英検3級 / A2", wordsRequired: 2100 },
+    4: { label: "高校基礎", equivalent: "英検準2級 / A2", wordsRequired: 3600 },
+    5: { label: "高校標準", equivalent: "英検2級 / B1", wordsRequired: 5100 },
+    6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2", wordsRequired: 6000 },
+    7: { label: "大学中級", equivalent: "英検準1級 / B2", wordsRequired: 8000 },
+    8: { label: "大学上級", equivalent: "英検1級 / C1", wordsRequired: 10000 },
+    9: { label: "超上級", equivalent: "英検1級+", wordsRequired: 12000 },
+    10:{ label: "ネイティブ", equivalent: "ネイティブレベル", wordsRequired: 15000 }
 };
 const posMap = {
   '名詞': '名', '動詞': '動', '形容詞': '形', '副詞': '副', '代名詞': '代',
@@ -41,6 +54,65 @@ const posMap = {
   '助動詞': '助'
 };
 const posDisplayOrder = Object.keys(posMap);
+
+const THEME_DEFINITIONS = [
+  {
+    id: 'seeing',
+    label: '見る',
+    keywords: ['see', 'watch', 'look', 'view', 'glance', 'observe', 'glimpse', 'peek', 'stare', 'scan', 'survey', '見', '視', '観', '眺']
+  },
+  {
+    id: 'opinion',
+    label: '意見・考える',
+    keywords: ['think', 'believe', 'opine', 'suppose', 'consider', 'reckon', 'idea', '意見', '考', '思']
+  },
+  {
+    id: 'emotion',
+    label: '感情',
+    keywords: ['love', 'like', 'admire', 'hate', 'dislike', 'fear', 'worry', 'enjoy', 'emotion', '感情', '好き', '嫌', '恐']
+  },
+  {
+    id: 'movement',
+    label: '移動',
+    keywords: ['go', 'come', 'move', 'travel', 'run', 'walk', 'ride', 'fly', 'depart', 'arrive', '移動', '進', '歩']
+  },
+  {
+    id: 'effort',
+    label: '学ぶ・努力',
+    keywords: ['study', 'learn', 'practice', 'train', 'review', 'prepare', '努力', '学ぶ', '練習', '復習']
+  },
+];
+
+const buildSemanticGroups = (words) => {
+  const groups = {};
+  if (!Array.isArray(words)) return groups;
+
+  words.forEach((word) => {
+    const surface = (word.word || '').toLowerCase();
+    const combinedMeaning = [word.meaning, word.japanese]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    THEME_DEFINITIONS.forEach((theme) => {
+      const matchesTheme = theme.keywords.some((keyword) => {
+        const normalized = keyword.toLowerCase();
+        return surface.includes(normalized) || combinedMeaning.includes(normalized);
+      });
+
+      if (matchesTheme) {
+        if (!groups[theme.id]) {
+          groups[theme.id] = { label: theme.label, words: [] };
+        }
+        if (!groups[theme.id].words.some((entry) => entry.id === word.id)) {
+          groups[theme.id].words.push(word);
+        }
+      }
+    });
+  });
+
+  return groups;
+};
 
 export default function StudentDashboard() {
   // --- State宣言 ---
@@ -60,6 +132,9 @@ export default function StudentDashboard() {
   const [userData, setUserData] = useState(null);
   const [dailyPlan, setDailyPlan] = useState({ newWords: [], reviewWords: [], extraNewWords: [] });
   const [showRetestPrompt, setShowRetestPrompt] = useState(false);
+  const [isDailyTaskCompleted, setIsDailyTaskCompleted] = useState(false);
+  const [currentLearningMode, setCurrentLearningMode] = useState(null); // 'daily', 'extra', 'free'
+  const [paceSuggestion, setPaceSuggestion] = useState(null);
   
   // ▼▼▼ ストーリー生成用のState ▼▼▼
   const [isGeneratingStory, setIsGeneratingStory] = useState(false);
@@ -68,6 +143,82 @@ export default function StudentDashboard() {
   const [storiesLoading, setStoriesLoading] = useState(true);
   
   const navigate = useNavigate();
+  const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
+
+  const scheduleMetrics = useMemo(() => {
+    if (!userData?.goal?.targetDate) return null;
+    const targetVocabulary = userData?.progress?.targetVocabulary;
+    if (!targetVocabulary || targetVocabulary <= 0) {
+      return {
+        targetVocabulary: 0,
+        mastered: userData?.progress?.currentVocabulary || 0,
+        remainingWords: 0,
+        remainingDays: 0,
+        recommendedPerDay: dailyPlan?.dailyTarget || 0,
+        todaysPlan: dailyPlan?.newWords?.length || 0,
+        status: 'completed',
+        deadlineLabel: '-'
+      };
+    }
+
+    const mastered = userData?.progress?.currentVocabulary || 0;
+    const remainingWords = Math.max(0, targetVocabulary - mastered);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const targetDate = new Date(userData.goal.targetDate);
+    targetDate.setHours(0, 0, 0, 0);
+
+    const deadline = new Date(targetDate);
+    deadline.setMonth(deadline.getMonth() - 1);
+    if (deadline < today) {
+      deadline.setTime(targetDate.getTime());
+    }
+
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const remainingDaysRaw = Math.ceil((deadline - today) / msPerDay);
+    const remainingDays = Number.isFinite(remainingDaysRaw) ? Math.max(1, remainingDaysRaw) : 1;
+
+    const recommendedPerDay = Math.max(1, Math.ceil(remainingWords / remainingDays));
+    const todaysPlan = dailyPlan?.newWords?.length || 0;
+
+    let status = 'ontrack';
+    if (remainingWords === 0) {
+      status = 'completed';
+    } else if (todaysPlan < recommendedPerDay * 0.9) {
+      status = 'behind';
+    } else if (todaysPlan >= recommendedPerDay * 1.3) {
+      status = 'ahead';
+    }
+
+    const deadlineLabel = `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, '0')}-${String(deadline.getDate()).padStart(2, '0')}`;
+
+    return {
+      targetVocabulary,
+      mastered,
+      remainingWords,
+      remainingDays,
+      recommendedPerDay,
+      todaysPlan,
+      status,
+      deadlineLabel,
+    };
+  }, [userData, dailyPlan]);
+
+  const outstandingSummary = useMemo(() => {
+    const newWordCount = dailyPlan?.newWords?.length || 0;
+    const reviewCount = dailyPlan?.reviewWords?.length || 0;
+    const hasOutstandingNew = !isDailyTaskCompleted && newWordCount > 0;
+    const hasOutstandingReview = reviewCount > 0;
+    return {
+      show: hasOutstandingNew || hasOutstandingReview,
+      newWordCount,
+      reviewCount,
+      hasOutstandingNew,
+      hasOutstandingReview,
+    };
+  }, [dailyPlan, isDailyTaskCompleted]);
 
   const fetchStories = useCallback(async (uid) => {
     setStoriesLoading(true);
@@ -102,6 +253,65 @@ export default function StudentDashboard() {
         
         const plan = await generateDailyPlan(data, uid);
         setDailyPlan(plan);
+
+        // Check for daily completion
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const dailyCompletionDocRef = doc(db, 'users', uid, 'dailyCompletion', todayStr);
+        const dailyCompletionDoc = await getDoc(dailyCompletionDocRef);
+        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
+
+        // Pace analysis from recent logs (過去5日)
+        const lookbackDate = new Date();
+        lookbackDate.setDate(lookbackDate.getDate() - 5);
+
+        try {
+          const logsRef = collection(db, 'users', uid, 'logs');
+          const logsSnapshot = await getDocs(
+            query(
+              logsRef,
+              where('timestamp', '>=', lookbackDate),
+              orderBy('timestamp', 'desc')
+            )
+          );
+
+          const dailyNewMap = new Map();
+
+          logsSnapshot.forEach((logDoc) => {
+            const logData = logDoc.data();
+            if (!logData) return;
+            const ts = logData.timestamp?.toDate?.();
+            if (!ts) return;
+            const dayKey = ts.toISOString().slice(0, 10);
+
+            if (logData.sessionType === 'new' && logData.wordId) {
+              const entry = dailyNewMap.get(dayKey) || new Set();
+              entry.add(logData.wordId);
+              dailyNewMap.set(dayKey, entry);
+            }
+          });
+
+          const daysTracked = dailyNewMap.size || 1;
+          const totalLearned = Array.from(dailyNewMap.values()).reduce((sum, set) => sum + set.size, 0);
+          const averageNewPerDay = totalLearned / daysTracked;
+
+          const recommended = plan?.dailyTarget || 0;
+          let status = 'neutral';
+          if (recommended > 0) {
+            if (averageNewPerDay >= recommended * 1.2) status = 'ahead';
+            else if (averageNewPerDay <= recommended * 0.8) status = 'behind';
+            else status = 'ontrack';
+          }
+
+          setPaceSuggestion({
+            average: Number(averageNewPerDay.toFixed(1)),
+            recommended,
+            status,
+            daysTracked,
+          });
+        } catch (paceError) {
+          console.error('Failed to compute pace suggestion:', paceError);
+          setPaceSuggestion(null);
+        }
 
         if (data.progress && data.progress.lastCheckedAt) {
           const lastCheckedDate = data.progress.lastCheckedAt.toDate();
@@ -176,18 +386,38 @@ export default function StudentDashboard() {
         const todayStr = new Date().toISOString().slice(0, 10);
         const docRef = doc(db, 'users', userId, 'dailyCompletion', todayStr);
         await setDoc(docRef, { completedAt: new Date() });
+        setIsDailyTaskCompleted(true);
       } catch (error) {
         console.error("Error marking daily task as completed:", error);
       }
   };
 
-  const handleLearningBack = (incorrectWords) => {
-    if (incorrectWords && incorrectWords.length > 0 && auth.currentUser) {
+  const handleLearningBack = async (incorrectWords, newlyLearnedCount) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Handle incorrect words
+    if (incorrectWords && incorrectWords.length > 0) {
       incorrectWords.forEach(word => {
-        addWordToReview(auth.currentUser.uid, word);
+        addWordToReview(user.uid, word);
       });
     }
-    refreshDashboardData(auth.currentUser.uid);
+
+    // Update vocabulary count and progress if new words were learned
+    if (newlyLearnedCount > 0) {
+      const userDocRef = doc(db, 'users', user.uid);
+      try {
+        await updateDoc(userDocRef, {
+          'progress.currentVocabulary': increment(newlyLearnedCount)
+        });
+        await updateProgressPercentage(user.uid);
+      } catch (error) {
+        console.error("Failed to update vocabulary count and progress:", error);
+      }
+    }
+
+    // Refresh dashboard data and reset view
+    refreshDashboardData(user.uid);
     setViewMode('select');
     setSelectionMode('main');
   };
@@ -203,8 +433,32 @@ export default function StudentDashboard() {
     setLoading(true);
     setSelectedTextbookId(textbookId);
     try {
-        const wordsSnapshot = await getDocs(collection(db, 'textbooks', textbookId, 'words'));
-        setAllWords(wordsSnapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+        const option = freeStudyOptions.find(opt => opt.id === textbookId);
+        const targetTextbookIds = option?.textbooks || [textbookId];
+
+        let combinedWords = [];
+        for (const id of targetTextbookIds) {
+          const snapshot = await getDocs(collection(db, 'textbooks', id, 'words'));
+          combinedWords.push(...snapshot.docs.map(d => ({ id: d.id, sourceTextbook: id, ...d.data() })));
+        }
+
+        let filteredWords = combinedWords;
+        if (option?.levels?.length) {
+          filteredWords = filteredWords.filter(word => option.levels.includes(word.level));
+        }
+
+        if (option?.topics?.length && filteredWords[0]?.topic !== undefined) {
+          filteredWords = filteredWords.filter(word => option.topics.includes(word.topic));
+        }
+
+        setAllWords(filteredWords);
+        if (filteredWords.length === 0) {
+          alert('このメニューには該当する単語がまだ登録されていません。別のメニューを選んでください。');
+          setSelectionMode('main');
+          setSelectedTextbookId(null);
+          setAllWords([]);
+          return;
+        }
         setSelectionMode('filter');
     } catch (error) {
         console.error("Error fetching textbook words:", error);
@@ -221,12 +475,16 @@ export default function StudentDashboard() {
 
   const startLearning = (filterType, value) => {
     let filtered = [];
-    if (filterType === 'level') {
+  if (filterType === 'level') {
         filtered = allWords.filter(word => word.level === value);
     } else if (filterType === 'pos') {
         const posAbbr = posMap[value] || value;
         filtered = allWords.filter(word => word.partOfSpeech.includes(posAbbr));
+  } else if (filterType === 'theme') {
+    const group = themeGroups[value];
+    filtered = group ? group.words : [];
     }
+    setCurrentLearningMode('free');
     setLearningWords(filtered);
     setViewMode('learn');
   };
@@ -236,7 +494,18 @@ export default function StudentDashboard() {
       alert('今日の新規単語はありません。');
       return;
     }
+    setCurrentLearningMode('daily');
     setLearningWords(dailyPlan.newWords);
+    setViewMode('learn');
+  };
+
+  const startExtraNewWords = () => {
+    if (!dailyPlan.extraNewWords || dailyPlan.extraNewWords.length === 0) {
+      alert('追加の単語はありません。お疲れ様でした！');
+      return;
+    }
+    setCurrentLearningMode('extra');
+    setLearningWords(dailyPlan.extraNewWords);
     setViewMode('learn');
   };
 
@@ -351,7 +620,7 @@ export default function StudentDashboard() {
         return <LearningFlashcard 
                   words={learningWords} 
                   onBack={handleLearningBack}
-                  onFirstCompletion={() => markDailyTaskAsCompleted(auth.currentUser.uid)}
+                  onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
                 />;
       case 'review':
         return <ReviewFlashcard words={dailyPlan.reviewWords} onBack={handleReviewComplete} />;
@@ -431,35 +700,79 @@ export default function StudentDashboard() {
 
         return (
           <>
-            {showRetestPrompt && (
-              <div className="card-style retest-prompt" onClick={startCheckTest}>
-                <FaExclamationTriangle className="retest-icon" />
-                <div className="retest-text">
-                  <h4>学習計画を最適化！</h4>
-                  <p>実力テストを受けて、あなたにぴったりの学習プランを作成しましょう。</p>
+            <div className="section-card">
+              <div className="dashboard-header">
+                <div>
+                  <p className="header-overline">こんにちは</p>
+                  <h2 className="header-title">{userData?.name || '学習者'}</h2>
+                </div>
+                <LevelBadge level={testResultLevel} type="header" />
+              </div>
+
+              <div className="progress-widget">
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${progressPercentage}%` }} />
+                </div>
+                <div className="progress-caption">
+                  <span>{progressPercentage}% 達成</span>
+                  <span>総語彙 {userData?.progress?.targetVocabulary?.toLocaleString?.() || '-'} 語中 {userData?.progress?.currentVocabulary?.toLocaleString?.() || 0} 語</span>
                 </div>
               </div>
-            )}
-            
-            <div className="card-style">
-               <div className="goal-display">
-                 <FaBullseye className="goal-icon" />
-                 <span>目標: {userData?.goal?.targets?.map(t => t.displayName).join(', ') || '未設定'}</span>
-                 <button onClick={() => navigate('/set-goal')} className="edit-goal-btn"><FaPen /></button>
-               </div>
-               <div className="progress-bar-container">
-                 <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
-               </div>
-               <span className="progress-label">{progressPercentage}%</span>
+
+              <button
+                className="ghost-button"
+                style={{ alignSelf: 'flex-start', marginTop: '12px' }}
+                onClick={() => navigate('/set-goal')}
+              >
+                目標を再設定する
+              </button>
+
+              <div className={`schedule-banner ${scheduleMetrics?.status}`}>
+                {scheduleMetrics ? (
+                  <>
+                    <div>
+                      <h4>締切: {scheduleMetrics.deadlineLabel}</h4>
+                      <p>残り {scheduleMetrics.remainingWords.toLocaleString()} 語 / {scheduleMetrics.remainingDays} 日</p>
+                    </div>
+                    <div className="schedule-math">
+                      <span>推奨 {scheduleMetrics.recommendedPerDay} 語/日</span>
+                      <span>今日 {scheduleMetrics.todaysPlan} 語</span>
+                    </div>
+                  </>
+                ) : (
+                  <p>目標または締切が未設定です。</p>
+                )}
+              </div>
+
+              {showRetestPrompt && (
+                <div className="alert-card warning" onClick={startCheckTest}>
+                  <FaExclamationTriangle />
+                  <div>
+                    <strong>学習計画を最適化！</strong>
+                    <p>しばらく実力テストを受けていません。更新して最適プランを作りましょう。</p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="card-style">
-              <h2 className="section-title">今日のタスク</h2>
+            <div className="section-card">
+              <h3 className="section-title">今日のタスク</h3>
                <div className="task-cards-container">
-                  <div className="task-card" onClick={startDailyNewWords}>
-                      <FaBook className="task-icon new-word-icon" />
-                      <div className="task-info"><p>新規単語</p><span>{dailyPlan.newWords.length}</span></div>
-                  </div>
+                  {isDailyTaskCompleted ? (
+                    <div className="task-card okawari-card" onClick={startExtraNewWords}>
+                      <FaMagic className="task-icon okawari-icon" />
+                      <div className="task-info">
+                        <p>おかわり</p>
+                        <span>{dailyPlan.extraNewWords.length}</span>
+                      </div>
+                      <div className="okawari-label">スケジュール巻いてます！</div>
+                    </div>
+                  ) : (
+                    <div className="task-card" onClick={startDailyNewWords}>
+                        <FaBook className="task-icon new-word-icon" />
+                        <div className="task-info"><p>新規単語</p><span>{dailyPlan.newWords.length}</span></div>
+                    </div>
+                  )}
                   <div className="task-card" onClick={startDailyReviewWords}>
                       <FaSyncAlt className="task-icon review-word-icon" />
                       <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}</span></div>
@@ -467,34 +780,73 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            <div className="card-style">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <FaMagic style={{ color: 'var(--primary-color)' }}/>
-                <h2 className="section-title" style={{ borderBottom: 'none', marginBottom: 0 }}>君が世界で最も嫌いな長文</h2>
+            {outstandingSummary.show && (
+              <div className="alert-card info">
+                <div className="alert-pill">
+                  今日やること
+                </div>
+                <div className="alert-body">
+                  {outstandingSummary.hasOutstandingNew && (
+                    <p>新規単語がまだ {outstandingSummary.newWordCount} 語残っています。</p>
+                  )}
+                  {outstandingSummary.hasOutstandingReview && (
+                    <p>復習単語は {outstandingSummary.reviewCount} 語。忘れる前にチェックしましょう。</p>
+                  )}
+                  {!outstandingSummary.hasOutstandingNew && !outstandingSummary.hasOutstandingReview && (
+                    <p>本日の必須タスクは完了しました！おかわり学習でさらに前倒しできます。</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {paceSuggestion && paceSuggestion.recommended > 0 && (
+              <div className={`alert-card ${paceSuggestion.status === 'behind' ? 'warning' : 'info'}`}>
+                <div className="alert-body">
+                  <strong>学習ペース</strong>
+                  <p>
+                    直近 {paceSuggestion.daysTracked} 日の平均: {paceSuggestion.average.toFixed(1)} 語 / 推奨 {paceSuggestion.recommended} 語
+                  </p>
+                  {paceSuggestion.status === 'ahead' && (
+                    <p>順調です！余裕があれば「おかわり学習」でさらに前倒ししましょう。</p>
+                  )}
+                  {paceSuggestion.status === 'behind' && (
+                    <p>少し遅れ気味です。まずは今日の新規単語を優先的に進めてみましょう。</p>
+                  )}
+                  {paceSuggestion.status === 'ontrack' && (
+                    <p>ペースはほぼ目標どおりです。この調子で進めましょう！</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div className="card-style story-card">
+              <div className="story-card-header">
+                <div className="story-card-title">
+                  <FaMagic className="story-card-icon" />
+                  <h2>君が世界で最も嫌いな長文</h2>
+                </div>
+                <button 
+                  onClick={handleGenerateStory} 
+                  disabled={isGeneratingStory}
+                  className="story-generate-btn"
+                >
+                  {isGeneratingStory ? '生成中...' : 'ストーリーを生成'}
+                </button>
               </div>
               
               {storiesLoading ? (
                 <div className="loading-container" style={{height: '100px'}}><div className="spinner"></div></div>
               ) : monthlyStory ? (
                 <>
-                  <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '0.5rem 0 1rem 0' }}>
+                  <p className="story-subtitle">
                     今月の長文です。何度も音読して完璧にしましょう。
                   </p>
                   <StoryDisplay storyData={monthlyStory} />
                 </>
               ) : (
-                <>
-                  <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '0.5rem 0 1.5rem 0' }}>
-                    今日の復習単語を使って、AIがオリジナルの短文と和訳を作成します。（月に1回まで）
-                  </p>
-                  <button 
-                    onClick={handleGenerateStory} 
-                    disabled={isGeneratingStory}
-                    className="login-btn"
-                  >
-                    {isGeneratingStory ? '生成中...' : 'ストーリーを生成する'}
-                  </button>
-                </>
+                <p className="story-subtitle">
+                  今日の復習単語を使って、AIがオリジナルの短文と和訳を作成します。（月に1回まで）
+                </p>
               )}
             </div>
 
@@ -516,38 +868,120 @@ export default function StudentDashboard() {
               )}
             </div>
 
-            <div className="card-style">
-              <h2 className="section-title">自由学習メニュー</h2>
-              {selectionMode === 'filter' ? (
-                <div className="selection-container">
-                  <div className="filter-header">
-                    <button onClick={handleBackToMainMenu} className="back-btn">← 教材選択に戻る</button>
-                    <h3>{textbooks[selectedTextbookId]}</h3>
-                  </div>
-                  <div className="filter-tabs">
-                    <button onClick={() => setFilterTab('level')} className={filterTab === 'level' ? 'active' : ''}>レベル別</button>
-                    <button onClick={() => setFilterTab('pos')} className={filterTab === 'pos' ? 'active' : ''}>品詞別</button>
-                  </div>
-                  {filterTab === 'level' && (
-                    <div className="selection-grid">
-                      {Object.entries(levelDescriptions).map(([level, { label }]) => (
-                        <button key={level} className="selection-card" onClick={() => startLearning('level', parseInt(level))}>{label}</button>
-                      ))}
-                    </div>
-                  )}
-                  {filterTab === 'pos' && (
-                     <div className="selection-grid pos-grid">
-                      {posDisplayOrder.map(pos => <button key={pos} className="selection-card pos-card" onClick={() => startLearning('pos', pos)}>{pos}</button>)}
-                    </div>
-                  )}
+            <div className="section-card">
+              <div className="tile-header">
+                <div>
+                  <h3 className="section-title">自由学習メニュー</h3>
+                  <p className="tile-caption">リラックスしながら、気になる教材を選んで学べます。</p>
+                </div>
+                {selectionMode === 'filter' && (
+                  <button className="ghost-button" onClick={handleBackToMainMenu}>
+                    教材選択に戻る
+                  </button>
+                )}
+              </div>
+
+              {selectionMode === 'main' ? (
+                <div className="list-group">
+                  {freeStudyOptions.map(({ id, label }) => (
+                    <button key={id} className="tile-button" onClick={() => handleSelectTextbook(id)}>
+                      <span>{label}</span>
+                      <FaBook />
+                    </button>
+                  ))}
                 </div>
               ) : (
-                <div className="selection-container main-menu">
-                  {lastSession && <button className="main-selection-card resume-card" onClick={() => {/* resumeLearning logic here */}}>前回の続きから...</button>}
-                  {Object.entries(textbooks).map(([id, name]) => ( <button key={id} className="main-selection-card" onClick={() => handleSelectTextbook(id)}>{name}</button>))}
-                </div>
+                <>
+                  <div className="tab-switch">
+                    <button
+                      className={filterTab === 'level' ? 'active' : ''}
+                      onClick={() => setFilterTab('level')}
+                    >
+                      レベル別
+                    </button>
+                    <button
+                      className={filterTab === 'pos' ? 'active' : ''}
+                      onClick={() => setFilterTab('pos')}
+                    >
+                      品詞別
+                    </button>
+                    <button
+                      className={filterTab === 'theme' ? 'active' : ''}
+                      onClick={() => setFilterTab('theme')}
+                    >
+                      意味別
+                    </button>
+                  </div>
+                  <div className="selection-grid">
+                    {filterTab === 'level' && (
+                      Object.entries(levelDescriptions).map(([level, info]) => (
+                        <button
+                          key={level}
+                          className="selection-card"
+                          disabled={!allWords.some(word => word.level === Number(level))}
+                          onClick={() => startLearning('level', Number(level))}
+                        >
+                          <span className="selection-card-level">{info.label}</span>
+                          <span className="selection-card-desc">{info.equivalent}</span>
+                          <span className="selection-card-meta">目安: {info.wordsRequired.toLocaleString()}語</span>
+                        </button>
+                      ))
+                    )}
+                    {filterTab === 'pos' && (
+                      posDisplayOrder.map(pos => (
+                        <button
+                          key={pos}
+                          className="selection-card"
+                          onClick={() => startLearning('pos', pos)}
+                        >
+                          {pos}
+                        </button>
+                      ))
+                    )}
+                    {filterTab === 'theme' && (
+                      Object.entries(themeGroups).map(([themeId, { label }]) => {
+                        const hasWords = (themeGroups[themeId]?.words || []).length > 0;
+                        return (
+                          <button
+                            key={themeId}
+                            className="selection-card"
+                            disabled={!hasWords}
+                            onClick={() => startLearning('theme', themeId)}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                </>
               )}
             </div>
+
+            {dailyPlan?.knowledgeHints && dailyPlan.knowledgeHints.length > 0 && (
+              <div className="section-card">
+                <h3 className="section-title">おすすめテーマ</h3>
+                <div className="knowledge-hints">
+                  {dailyPlan.knowledgeHints.map((hint) => (
+                    <button
+                      key={hint.themeId}
+                      className="knowledge-chip"
+                      onClick={() => {
+                        setSelectionMode('filter');
+                        setFilterTab('theme');
+                        requestAnimationFrame(() => startLearning('theme', hint.themeId));
+                      }}
+                    >
+                      <span className="chip-label">{hint.label}</span>
+                      <span className="chip-meta">復習 {hint.strugglingCount} / 未学習 {hint.pristineCount}</span>
+                      {hint.sampleWords && hint.sampleWords.length > 0 && (
+                        <span className="chip-sample">例: {hint.sampleWords.join(', ')}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         );
     }
