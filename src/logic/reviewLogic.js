@@ -12,11 +12,12 @@ export const addWordToReview = async (userId, word) => {
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', word.id);
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // 時間を正規化
 
   const newReviewWord = {
     ...word,
     lastReviewed: today,
-    nextReviewDate: today, // ★変更: 即時復習対象とする
+    nextReviewDate: today,
     interval: 1, // 次回正解した場合は1日後
     easeFactor: 2.5,
     repetitions: 0,
@@ -62,6 +63,7 @@ export const updateUserWordProgress = async (userId, word, isCorrect) => {
     }
 
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // 時間を正規化
     let { interval, repetitions, easeFactor } = wordData;
 
     if (isCorrect) {

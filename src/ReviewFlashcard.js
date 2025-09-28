@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { updateUserWordProgress, removeWordFromReview } from './logic/reviewLogic';
 import { logStudyEvent } from './logic/studyLogger';
 import { getAuth } from 'firebase/auth';
+import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 
 function ReviewFlashcard({ words, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -173,8 +174,12 @@ function ReviewFlashcard({ words, onBack }) {
       </div>
       <div className="footer-container">
         <div className="flashcard-footer">
-          <button onClick={handlePrev} className="back-action" disabled={currentIndex === 0}>1つ戻る</button>
-          <button onClick={onBack} className="back-action">戻る</button>
+          <button onClick={handlePrev} className="prev-action" disabled={currentIndex === 0}>
+            <FaUndo /> 前の単語
+          </button>
+          <button onClick={onBack} className="back-action">
+            <FaArrowLeft /> ダッシュボードに戻る
+          </button>
         </div>
       </div>
     </div>

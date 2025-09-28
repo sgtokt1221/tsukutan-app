@@ -18,7 +18,7 @@ import LevelBadge from './LevelBadge';
 import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './logic/knowledgeAnalysis';
 
 // アイコンのインポート
-import { FaBook, FaSyncAlt, FaBullseye, FaExclamationTriangle, FaPen, FaMagic } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaBullseye, FaExclamationTriangle, FaPen, FaMagic, FaArrowLeft, FaUndo } from 'react-icons/fa';
 
 // 既存の定数やヘルパー関数（すべて維持）
 const textbooks = {
@@ -608,6 +608,42 @@ export default function StudentDashboard() {
       setIsGeneratingStory(false);
     }
   };
+
+  const handleResetGoal = async () => {
+    if (!window.confirm('現在の目標をリセットして、新しい目標を設定しますか？')) {
+      return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      // Reset goal data in Firestore
+      await updateDoc(doc(db, 'users', user.uid), {
+        goal: {
+          targets: [],
+          targetDate: null,
+          isSet: false,
+        }
+      }, { merge: true });
+
+      // Clear local state
+      setUserData(prev => ({
+        ...prev,
+        goal: {
+          targets: [],
+          targetDate: null,
+          isSet: false,
+        }
+      }));
+
+      // Navigate to goal setting
+      navigate('/set-goal');
+    } catch (error) {
+      console.error('目標リセットエラー:', error);
+      alert('目標のリセットに失敗しました。');
+    }
+  };
   
   // --- レンダリングロジック ---
   if (loading) {
@@ -722,7 +758,7 @@ export default function StudentDashboard() {
               <button
                 className="ghost-button"
                 style={{ alignSelf: 'flex-start', marginTop: '12px' }}
-                onClick={() => navigate('/set-goal')}
+                onClick={handleResetGoal}
               >
                 目標を再設定する
               </button>
