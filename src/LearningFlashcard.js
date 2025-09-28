@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
 import { logStudyEvent } from './logic/studyLogger';
+import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック（仮のインポート）
 // ※logic/reviewLogic.js が実際に存在し、この関数がエクスポートされている必要があります
@@ -164,8 +165,12 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
       <div className="footer-container">
         <div className="flashcard-footer">
-          <button onClick={handlePrev} className="back-action" disabled={currentIndex === 0}>1つ戻る</button>
-          <button onClick={handleBackButtonClick} className="back-action">戻る</button>
+          <button onClick={handlePrev} className="prev-action" disabled={currentIndex === 0}>
+            <FaUndo /> 前の単語
+          </button>
+          <button onClick={handleBackButtonClick} className="back-action">
+            <FaArrowLeft /> ダッシュボードに戻る
+          </button>
         </div>
       </div>
     </div>

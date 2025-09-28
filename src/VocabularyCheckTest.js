@@ -6,6 +6,7 @@ import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/f
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { logStudyEvent } from './logic/studyLogger';
 import { updateProgressPercentage } from './logic/progressLogic'; // ★インポート
+import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -236,8 +237,12 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       
       <div className="footer-container">
         <div className="flashcard-footer">
-          <button onClick={handlePrevQuestion} className="back-action" disabled={questionIndex === 0}>1つ戻る</button>
-          <button onClick={() => navigate('/student-dashboard')} className="back-action">戻る</button>
+          <button onClick={handlePrevQuestion} className="prev-action" disabled={questionIndex === 0}>
+            <FaUndo /> 前の問題
+          </button>
+          <button onClick={() => navigate('/student-dashboard')} className="back-action">
+            <FaArrowLeft /> ダッシュボードに戻る
+          </button>
         </div>
       </div>
       
