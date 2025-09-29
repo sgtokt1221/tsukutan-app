@@ -1,21 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { updateUserWordProgress, removeWordFromReview } from './logic/reviewLogic';
-import { logStudyEvent } from './logic/studyLogger';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 
-function ReviewFlashcard({ words, onBack }) {
+function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionWords, setSessionWords] = useState([]);
+  const [graduatedCount, setGraduatedCount] = useState(0);
 
   const auth = getAuth();
   const userId = auth.currentUser ? auth.currentUser.uid : null;
+  const sessionStartTime = useRef(new Date());
 
   useEffect(() => {
-    setSessionWords(words);
+    // Shuffle words for variety each session
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    setSessionWords(shuffled);
+    setCurrentIndex(0);
+    setGraduatedCount(0);
+    sessionStartTime.current = new Date();
   }, [words]);
 
   const x = useMotionValue(0);
@@ -55,62 +61,61 @@ function ReviewFlashcard({ words, onBack }) {
     }
   );
 
+  const handleBackButtonClick = useCallback(() => {
+    const sessionEndTime = new Date();
+    const durationInSeconds = (sessionEndTime - sessionStartTime.current) / 1000;
+
+    if (onSaveLog && durationInSeconds > 5 && (currentIndex > 0 || graduatedCount > 0)) {
+      onSaveLog({
+        ...sessionInfo,
+        wordsReviewed: currentIndex + 1,
+        wordsGraduated: graduatedCount,
+        durationInSeconds: Math.round(durationInSeconds),
+        timestamp: new Date(),
+      });
+    }
+    
+    onBack();
+  }, [onBack, onSaveLog, sessionInfo, currentIndex, graduatedCount, sessionStartTime]);
+
   const handleDragEnd = useCallback((event, info) => {
     const threshold = 50;
     const swipeUpThreshold = -80;
 
-    // 上スワイプ（卒業）
-    if (info.offset.y < swipeUpThreshold) {
-      const currentWord = sessionWords[currentIndex];
-      if (userId && currentWord) {
-        removeWordFromReview(userId, currentWord.id);
-        logStudyEvent(userId, {
-          word: currentWord.word,
-          wordId: currentWord.id,
-          sessionType: 'review',
-          action: 'graduate',
-        });
-        // UIから即時削除
-        const newSessionWords = sessionWords.filter(w => w.id !== currentWord.id);
-        setSessionWords(newSessionWords);
-        // インデックスがリストの範囲外になるのを防ぐ
-        if (currentIndex >= newSessionWords.length && newSessionWords.length > 0) {
-          setCurrentIndex(newSessionWords.length - 1);
-        }
-      }
-      return;
-    }
+    const currentWord = sessionWords[currentIndex];
+    if (!userId || !currentWord) return;
 
-    // 左右スワイプ（正解・不正解）
-    if (Math.abs(info.offset.x) > threshold) {
+    // Swipe Up (Graduate)
+    if (info.offset.y < swipeUpThreshold) {
+      removeWordFromReview(userId, currentWord.id);
+      setGraduatedCount(prev => prev + 1);
+      
+      const newSessionWords = sessionWords.filter(w => w.id !== currentWord.id);
+      setSessionWords(newSessionWords);
+      
+      if (currentIndex >= newSessionWords.length) {
+        if (newSessionWords.length === 0) {
+          handleBackButtonClick();
+          return;
+        }
+        setCurrentIndex(newSessionWords.length - 1);
+      }
+    }
+    // Left/Right Swipe (Correct/Incorrect)
+    else if (Math.abs(info.offset.x) > threshold) {
       const isCorrect = info.offset.x > 0;
-      const currentWord = sessionWords[currentIndex];
-      if (userId && currentWord) {
-        updateUserWordProgress(userId, currentWord, isCorrect);
-        logStudyEvent(userId, {
-          word: currentWord.word,
-          wordId: currentWord.id,
-          sessionType: 'review',
-          correct: isCorrect,
-        });
+      updateUserWordProgress(userId, currentWord, isCorrect);
+      
+      if (currentIndex < sessionWords.length - 1) {
+        setCurrentIndex(prev => prev + 1);
+      } else {
+        handleBackButtonClick();
       }
     }
     
-    // 次のカードへ
-    if (currentIndex < sessionWords.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-    } else {
-      // 自動でリスタート
-      setSessionWords(words); // 元の単語リストで再設定
-      setCurrentIndex(0);
-      setIsFlipped(false);
-    }
-    
-    // カードの位置をリセット
     x.set(0);
     y.set(0);
-
-  }, [currentIndex, sessionWords, x, y, userId, words]);
+  }, [currentIndex, sessionWords, x, y, userId, handleBackButtonClick]);
 
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
@@ -177,7 +182,7 @@ function ReviewFlashcard({ words, onBack }) {
           <button onClick={handlePrev} className="prev-action" disabled={currentIndex === 0}>
             <FaUndo /> 前の単語
           </button>
-          <button onClick={onBack} className="back-action">
+          <button onClick={handleBackButtonClick} className="back-action">
             <FaArrowLeft /> ダッシュボードに戻る
           </button>
         </div>

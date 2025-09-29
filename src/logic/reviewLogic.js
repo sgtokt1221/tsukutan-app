@@ -28,9 +28,11 @@ export const addWordToReview = async (userId, word) => {
     console.log(`単語 "${word.word}" を復習リストに追加しました。`);
     // ★キャッシュにも追加
     await addWordToDailyCache(userId, newReviewWord);
+    
+    // 学習ログを記録
     await logStudyEvent(userId, {
-      word: newReviewWord.word,
-      wordId: newReviewWord.id,
+      word: word.word,
+      wordId: word.id,
       sessionType: 'review',
       action: 'added',
     });
@@ -104,13 +106,16 @@ export const updateUserWordProgress = async (userId, word, isCorrect) => {
     if (!isCorrect) {
       await addWordToDailyCache(userId, { ...wordData, id: word.id });
     }
+
+    // 学習ログを記録
     await logStudyEvent(userId, {
       word: word.word,
       wordId: word.id,
       sessionType: 'review',
-      correct: isCorrect,
-      interval,
-      repetitions,
+      action: isCorrect ? 'correct' : 'incorrect',
+      repetitions: repetitions,
+      interval: interval,
+      easeFactor: easeFactor,
     });
 
   } catch (error) {
@@ -178,10 +183,12 @@ export const removeWordFromReview = async (userId, wordId) => {
       }
     });
     console.log(`単語(ID: ${wordId})が正常に削除されました。`);
+    
+    // 学習ログを記録
     await logStudyEvent(userId, {
-      wordId,
+      wordId: wordId,
       sessionType: 'review',
-      action: 'graduated',
+      action: 'removed',
     });
   } catch (error) {
     console.error("単語の完全削除(トランザクション)に失敗しました:", error);

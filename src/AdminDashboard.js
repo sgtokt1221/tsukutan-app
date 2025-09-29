@@ -95,23 +95,25 @@ const GradeAnalyticsCard = ({ grade, data, onAnalyze }) => {
     <div className="analytics-card">
       <h3>{grade}</h3>
       <div className="card-content-analytics">
-        <div className="chart-container">
-          <Pie data={chartData} options={chartOptions} />
-          <div className="chart-label"><strong>{completed}</strong> / {total}人</div>
-        </div>
-        <div className="performers-container">
-          <h4>成績優秀者 TOP3</h4>
-          {topPerformers.length > 0 ? (
-            <ol className="performers-list">
-              {topPerformers.map((student, index) => (
-                <li key={student.id}>
-                  <span className="performer-rank">{index + 1}</span>
-                  <span className="performer-name">{student.name}</span>
-                  <span className="performer-score">{student.progress?.percentage || 0}%</span>
-                </li>
-              ))}
-            </ol>
-          ) : <p>データがありません。</p>}
+        <div className="chart-and-performers">
+          <div className="chart-container">
+            <Pie data={chartData} options={chartOptions} />
+            <div className="chart-label"><strong>{completed}</strong> / {total}人</div>
+          </div>
+          <div className="performers-container">
+            <h4>成績優秀者 TOP3</h4>
+            {topPerformers.length > 0 ? (
+              <ol className="performers-list">
+                {topPerformers.map((student, index) => (
+                  <li key={student.id}>
+                    <span className="performer-rank">{index + 1}</span>
+                    <span className="performer-name">{student.name}</span>
+                    <span className="performer-score">{student.progress?.percentage || 0}%</span>
+                  </li>
+                ))}
+              </ol>
+            ) : <p>データがありません。</p>}
+          </div>
         </div>
         <div className="analytics-actions">
           <button className="analyse-btn" onClick={() => onAnalyze?.(grade)}>
@@ -457,28 +459,37 @@ function AdminDashboard() {
       case 'analytics':
         return (
           <div className="analytics-view">
-            <div className="analytics-grid">
-              {GRADE_ORDER.map(grade => (
-                analyticsData && analyticsData[grade] &&
-                <GradeAnalyticsCard
-                  key={grade}
-                  grade={grade}
-                  data={analyticsData[grade]}
-                  onAnalyze={handleAnalyzeGrade}
-                />
-              ))}
-              {analyticsData && analyticsData['学年未設定'] && (
-                 <GradeAnalyticsCard
-                  key="学年未設定"
-                  grade="学年未設定"
-                  data={analyticsData['学年未設定']}
-                  onAnalyze={handleAnalyzeGrade}
-                />
-              )}
-            </div>
-            {selectedGrade && (
+            {!selectedGrade ? (
+              <div className="analytics-grid">
+                {GRADE_ORDER.map(grade => (
+                  analyticsData && analyticsData[grade] &&
+                  <GradeAnalyticsCard
+                    key={grade}
+                    grade={grade}
+                    data={analyticsData[grade]}
+                    onAnalyze={handleAnalyzeGrade}
+                  />
+                ))}
+                {analyticsData && analyticsData['学年未設定'] && (
+                   <GradeAnalyticsCard
+                    key="学年未設定"
+                    grade="学年未設定"
+                    data={analyticsData['学年未設定']}
+                    onAnalyze={handleAnalyzeGrade}
+                  />
+                )}
+              </div>
+            ) : (
               <div className="grade-insight-panel">
-                <h3>{selectedGrade} の分析結果</h3>
+                <div className="insight-header">
+                  <h3>{selectedGrade} の分析結果</h3>
+                  <button 
+                    className="back-to-analytics-btn" 
+                    onClick={() => setSelectedGrade(null)}
+                  >
+                    ← 学年一覧に戻る
+                  </button>
+                </div>
                 {gradeInsight ? (
                   <div className="grade-insight-content">
                     <div className="insight-metrics">
@@ -529,7 +540,7 @@ function AdminDashboard() {
                 )}
               </div>
             )}
-            {unassignedStudents.length > 0 && (
+            {unassignedStudents.length > 0 && !selectedGrade && (
               <div className="grade-insight-panel warning-panel">
                 <h3>学年が未設定または判別不能の生徒</h3>
                 <p>
@@ -599,23 +610,101 @@ function AdminDashboard() {
                     <ul>{studentDetails.reviewWords.map(word => <li key={word.id}>{word.word}: {word.meaning}</li>)}</ul>
                   </div>
                   <div className="detail-card">
-                    <h4>学習ログ ({studentDetails.logs.length}件)</h4>
-                    <div className="log-timeline">
-                      {studentDetails.logs.map(log => {
+                    <h4>学習時間サマリー</h4>
+                    <div className="study-time-summary">
+                      {(() => {
+                        // 学習ログを日付ごとにグループ化して集計
+                        const dailyStats = {};
+                        let totalStudyTime = 0;
+                        let totalWords = 0;
+                        let studyDays = 0;
+
+                        studentDetails.logs.forEach(log => {
                           const logDate = new Date(log.timestamp.seconds * 1000);
-                          return(
-                              <div key={log.id} className="timeline-item">
-                                  <div className="timeline-dot"></div>
-                                  <div className="timeline-content">
-                                      <div className="log-header">
-                                          <span className="log-main-content">「{log.textbookId}」の {log.filterType === 'level' ? `レベル${log.filterValue}` : log.filterValue}</span>
-                                          <span className="log-date">{logDate.toLocaleDateString()} {logDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                      </div>
-                                      <p className="log-progress">{log.index}単語まで学習</p>
-                                  </div>
+                          const dateKey = logDate.toLocaleDateString('ja-JP');
+                          
+                          if (!dailyStats[dateKey]) {
+                            dailyStats[dateKey] = {
+                              date: logDate,
+                              totalTime: 0,
+                              totalWords: 0,
+                              sessions: 0,
+                              textbooks: new Set()
+                            };
+                          }
+
+                          // セッションログ（学習時間あり）の場合
+                          if (log.durationInSeconds !== undefined) {
+                            dailyStats[dateKey].totalTime += log.durationInSeconds;
+                            dailyStats[dateKey].totalWords += (log.index + 1) || 0;
+                            dailyStats[dateKey].sessions += 1;
+                            if (log.textbookId) {
+                              dailyStats[dateKey].textbooks.add(log.textbookId);
+                            }
+                          }
+                        });
+
+                        // 統計を計算
+                        Object.values(dailyStats).forEach(day => {
+                          if (day.totalTime > 0) {
+                            totalStudyTime += day.totalTime;
+                            totalWords += day.totalWords;
+                            studyDays += 1;
+                          }
+                        });
+
+                        const totalMinutes = Math.floor(totalStudyTime / 60);
+                        const totalSeconds = totalStudyTime % 60;
+                        const avgMinutes = studyDays > 0 ? Math.floor((totalStudyTime / studyDays) / 60) : 0;
+                        const avgSeconds = studyDays > 0 ? Math.floor((totalStudyTime / studyDays) % 60) : 0;
+
+                        return (
+                          <div className="study-stats">
+                            <div className="stat-row">
+                              <span className="stat-label">総学習時間:</span>
+                              <span className="stat-value">{totalMinutes > 0 ? `${totalMinutes}分 ` : ''}{totalSeconds}秒</span>
+                            </div>
+                            <div className="stat-row">
+                              <span className="stat-label">学習日数:</span>
+                              <span className="stat-value">{studyDays}日</span>
+                            </div>
+                            <div className="stat-row">
+                              <span className="stat-label">平均学習時間:</span>
+                              <span className="stat-value">{avgMinutes > 0 ? `${avgMinutes}分 ` : ''}{avgSeconds}秒</span>
+                            </div>
+                            <div className="stat-row">
+                              <span className="stat-label">学習単語数:</span>
+                              <span className="stat-value">{totalWords}単語</span>
+                            </div>
+                            {Object.keys(dailyStats).length > 0 && (
+                              <div className="recent-sessions">
+                                <h5>最近の学習記録</h5>
+                                <div className="session-list">
+                                  {Object.entries(dailyStats)
+                                    .sort(([,a], [,b]) => b.date - a.date)
+                                    .slice(0, 5)
+                                    .map(([dateKey, stats]) => {
+                                      const minutes = Math.floor(stats.totalTime / 60);
+                                      const seconds = stats.totalTime % 60;
+                                      const timeText = `${minutes > 0 ? `${minutes}分 ` : ''}${seconds}秒`;
+                                      const textbookList = Array.from(stats.textbooks).join(', ');
+                                      
+                                      return (
+                                        <div key={dateKey} className="session-item">
+                                          <div className="session-date">{dateKey}</div>
+                                          <div className="session-details">
+                                            <span>{timeText} ({stats.totalWords}単語)</span>
+                                            {textbookList && <span className="textbook-info">{textbookList}</span>}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                </div>
                               </div>
-                          );
-                      })}
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>

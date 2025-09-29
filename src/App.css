@@ -8,7 +8,7 @@
 
 body {
   background-color: var(--background-color);
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
   -webkit-font-smoothing: antialiased;
   margin: 0;
 }
@@ -42,8 +42,8 @@ body {
   font-size: 3rem;
   color: var(--primary-color);
   margin: 0 0 30px 0;
-  font-family: 'Yusei Magic', sans-serif;
-  transform: rotate(-2deg);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 900;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 .input-group {
@@ -118,8 +118,8 @@ body {
   margin: 0;
   font-size: 1.5rem;
   color: var(--primary-color);
-  font-family: 'Yusei Magic', sans-serif;
-  transform: rotate(-2deg);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 700;
 }
 .user-info {
   display: flex;
@@ -401,6 +401,13 @@ body {
 .selection-card-level { display: block; font-size: 1rem; font-weight: 600; color: #1f2937; }
 .selection-card-desc { display: block; margin-top: 0.35rem; font-size: 0.85rem; color: #64748b; }
 .selection-card-meta { display: block; margin-top: 0.25rem; font-size: 0.78rem; color: #94a3b8; }
+.selection-card-progress { 
+  display: block; 
+  margin-top: 0.25rem; 
+  font-size: 0.75rem; 
+  color: var(--primary-color); 
+  font-weight: 600; 
+}
 
 /* ===== GoalSetterのスタイル ===== */
 .goal-setter-container { max-width: 500px; margin: 2rem auto; padding: 1rem; }
@@ -465,11 +472,27 @@ body {
 
 #card-front-text, .card-front-text { /* 統合 */
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-color);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  letter-spacing: 0.02em;
 }
-#card-back-word, .card-back-word { font-size: 1.8rem; margin: 0; color: var(--text-color); }
-#card-back-meaning, .card-back-meaning { font-size: 1.2rem; margin-top: 5px; color: var(--text-color); }
+#card-back-word, .card-back-word { 
+  font-size: 1.8rem; 
+  margin: 0; 
+  color: var(--text-color);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+#card-back-meaning, .card-back-meaning { 
+  font-size: 1.2rem; 
+  margin-top: 5px; 
+  color: var(--text-color);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 400;
+  line-height: 1.4;
+}
 
 .swipe-instructions {
   display: flex;
@@ -737,7 +760,16 @@ body {
   margin-top: 0; margin-bottom: 1.5rem; color: var(--primary-color);
   border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; font-size: 1.2rem;
 }
-.card-content-analytics { display: flex; align-items: center; gap: 2rem; }
+.card-content-analytics { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1.5rem; 
+}
+.chart-and-performers {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
 .chart-container { width: 140px; height: 140px; position: relative; flex-shrink: 0; }
 .chart-label {
   position: absolute; top: 50%; left: 50%;
@@ -807,13 +839,21 @@ body {
     cursor: pointer;
     font-weight: 600;
 }
-.import-btn { /* Your existing styles will apply */ }
+.import-btn {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
 input[type="file"] { display: none; }
 
 .App {
   min-height: 100vh;
   background: linear-gradient(160deg, rgba(15, 23, 42, 0.06), rgba(148, 163, 184, 0.08));
-  font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: 'Poppins', 'Zen Maru Gothic', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--text-color);
   display: flex;
   flex-direction: column;
@@ -842,9 +882,11 @@ input[type="file"] { display: none; }
 
 .section-title {
   font-size: clamp(1.1rem, 4vw, 1.35rem);
-  font-weight: 700;
+  font-weight: 600;
   color: #0f172a;
   margin: 0;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  letter-spacing: -0.01em;
 }
 
 .primary-action,
@@ -852,9 +894,9 @@ input[type="file"] { display: none; }
   width: 100%;
   border-radius: 14px;
   padding: clamp(14px, 3.8vw, 16px);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1rem;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -862,6 +904,7 @@ input[type="file"] { display: none; }
   border: none;
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
+  font-family: 'Poppins', sans-serif;
 }
 
 .primary-action {
@@ -918,6 +961,7 @@ input[type="file"] { display: none; }
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   background: linear-gradient(180deg, rgba(14, 116, 144, 0.12), rgba(14, 165, 233, 0.08));
   gap: 24px;
 }
@@ -927,11 +971,13 @@ input[type="file"] { display: none; }
   flex-direction: column;
   gap: 12px;
   color: #0f172a;
+  text-align: center;
+  align-items: center;
 }
 
 .hero-pill {
   display: inline-flex;
-  align-self: flex-start;
+  align-self: center;
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(14, 165, 233, 0.12);
@@ -943,9 +989,10 @@ input[type="file"] { display: none; }
 
 .hero-title {
   font-size: clamp(2.2rem, 14vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   line-height: 1.1;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
 }
 
 .hero-title span {
