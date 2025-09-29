@@ -352,13 +352,95 @@ body {
   font-weight: 600;
 }
 
-.header-level-badge {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  padding: 2px 8px;
-  border-radius: 12px;
+/* Level Badge Styles */
+.dashboard-header .level-badge-container {
+  padding: 1rem;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  width: 100%; /* Ensure it takes full width of the header */
+}
+
+.dashboard-header .level-badge-title {
+  margin: 0 0 0.5rem 0;
   font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.dashboard-header .level-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-header .level-badge-cefr {
+  font-size: 1.2rem;
   font-weight: 700;
+  color: #0f172a;
+}
+
+.dashboard-header .level-badge-label {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.dashboard-header .level-badge-placeholder {
+  padding: 1rem;
+  border-radius: 16px;
+  text-align: center;
+  background-color: rgba(148, 163, 184, 0.1);
+  color: rgba(15, 23, 42, 0.7);
+  width: 100%;
+}
+
+/* Tier 1: Basic */
+.dashboard-header .level-badge-container.tier-1 {
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Tier 2: Bronze/Silver */
+.dashboard-header .level-badge-container.tier-2 {
+  background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+.dashboard-header .tier-2 .level-badge-label {
+  color: #0c4a6e;
+}
+
+/* Tier 3: Gold */
+.dashboard-header .level-badge-container.tier-3 {
+  background: linear-gradient(145deg, #fefce8, #fef9c3);
+  box-shadow: 0 12px 30px rgba(234, 179, 8, 0.2);
+  border: 2px solid #facc15;
+}
+.dashboard-header .tier-3 .level-badge-label {
+  color: #854d0e;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Tier 4: Platinum/Diamond with Animation */
+@keyframes glowing {
+  0% { box-shadow: 0 0 5px #a78bfa, 0 0 10px #a78bfa, 0 0 15px #a78bfa; }
+  50% { box-shadow: 0 0 15px #c4b5fd, 0 0 25px #c4b5fd, 0 0 35px #c4b5fd; }
+  100% { box-shadow: 0 0 5px #a78bfa, 0 0 10px #a78bfa, 0 0 15px #a78bfa; }
+}
+
+.dashboard-header .level-badge-container.tier-4 {
+  background: linear-gradient(145deg, #f5f3ff, #ede9fe);
+  border: 2px solid #a78bfa;
+  animation: glowing 3s infinite ease-in-out;
+}
+.dashboard-header .tier-4 .level-badge-label {
+  background: -webkit-linear-gradient(45deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* 新しい単語力テストプロモーションのスタイル */
