@@ -183,7 +183,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
             <FaUndo /> 前の単語
           </button>
           <button onClick={handleBackButtonClick} className="back-action">
-            <FaArrowLeft /> ダッシュボードに戻る
+            <FaArrowLeft /> 前の画面に戻る
           </button>
         </div>
       </div>
