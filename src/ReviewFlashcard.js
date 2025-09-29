@@ -167,8 +167,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           </div>
           <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word}</h3>
-            <p id="card-back-meaning">{currentWord?.meaning}</p>
-            <hr />
+            <p id="card-back-meaning">{currentWord?.japanese || currentWord?.meaning}</p>
+            {(currentWord?.example || currentWord?.exampleJa) && <hr />}
             <p className="example-text">{currentWord?.example}</p>
             <p className="example-text-ja">{currentWord?.exampleJa}</p>
           </div>
