@@ -26,7 +26,8 @@ function LevelBadge({ level }) {
   }
 
   const { label, equivalent } = levelDescriptions[level];
-  const cefr = equivalent.split(' / ')[1] || '';
+  const totalLevels = Object.keys(levelDescriptions).length;
+  const eikenLevel = equivalent.split(' / ')[0];
 
   // Determine the tier for styling
   let tier = 1;
@@ -40,8 +41,15 @@ function LevelBadge({ level }) {
     <div className={containerClassName}>
       <p className="level-badge-title">現在のあなたのレベル</p>
       <div className="level-badge">
-        <span className="level-badge-cefr">{cefr}</span>
         <span className="level-badge-label">{label}</span>
+        <div className="level-badge-details">
+          <div className="level-badge-numeric">
+            <span className="level-badge-current">{level}</span>
+            <span className="level-badge-separator">/</span>
+            <span className="level-badge-total">{totalLevels}</span>
+          </div>
+          <span className="level-badge-equivalent">{eikenLevel}</span>
+        </div>
       </div>
     </div>
   );

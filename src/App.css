@@ -376,17 +376,46 @@ body {
   justify-content: center;
 }
 
-.dashboard-header .level-badge-cefr {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
 .dashboard-header .level-badge-label {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.2;
+}
+
+.dashboard-header .level-badge-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.dashboard-header .level-badge-numeric {
+  display: flex;
+  align-items: baseline;
+  gap: 0.1rem;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.dashboard-header .level-badge-current {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dashboard-header .level-badge-separator,
+.dashboard-header .level-badge-total {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.dashboard-header .level-badge-equivalent {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.7);
+  background-color: rgba(148, 163, 184, 0.15);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
 }
 
 .dashboard-header .level-badge-placeholder {

@@ -240,38 +240,6 @@ export default function StudentDashboard() {
     }
   }, []);
 
-  // 既存ストーリーの再処理機能
-  const reprocessExistingStories = useCallback(async () => {
-    if (!auth.currentUser) return;
-    
-    const uid = auth.currentUser.uid;
-    try {
-      const storiesColRef = collection(db, 'users', uid, 'generatedStories');
-      const q = query(storiesColRef, orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      
-      const updatePromises = querySnapshot.docs.map(async (doc) => {
-        const storyData = doc.data();
-        // 既存のストーリーデータに再処理フラグを追加
-        await setDoc(doc.ref, {
-          ...storyData,
-          reprocessed: true,
-          reprocessedAt: new Date()
-        }, { merge: true });
-      });
-      
-      await Promise.all(updatePromises);
-      
-      // ストーリーを再取得
-      await fetchStories(uid);
-      alert('既存のストーリーを再処理しました。');
-      
-    } catch (error) {
-      console.error("Error reprocessing stories:", error);
-      alert('ストーリーの再処理に失敗しました。');
-    }
-  }, [auth.currentUser, fetchStories]);
-
   // --- データ取得・更新ロジック (変更なし) ---
   const refreshDashboardData = useCallback(async (uid) => {
     try {
@@ -890,19 +858,8 @@ export default function StudentDashboard() {
                         });
                 };
 
-                // ストーリーデータが古い形式の場合、リアルタイムで再処理
-                let englishSentences, japaneseSentences;
-                
-                if (storyData?.reprocessed) {
-                    // 既に再処理済みの場合は通常の処理
-                    englishSentences = splitEnglishSentences(story);
-                    japaneseSentences = splitJapaneseSentences(translation);
-                } else {
-                    // 古い形式の場合は強制的に再処理
-                    console.log('古い形式のストーリーを再処理中...', { story, translation });
-                    englishSentences = splitEnglishSentences(story);
-                    japaneseSentences = splitJapaneseSentences(translation);
-                }
+                let englishSentences = splitEnglishSentences(story);
+                let japaneseSentences = splitJapaneseSentences(translation);
                 
                 // デバッグ情報（開発時のみ）
                 if (process.env.NODE_ENV === 'development') {
@@ -1109,33 +1066,13 @@ export default function StudentDashboard() {
                   <FaMagic className="story-card-icon" />
                   <h2>君が世界で最も嫌いな長文</h2>
                 </div>
-                <div className="story-buttons">
-                  <button 
-                    onClick={handleGenerateStory} 
-                    disabled={isGeneratingStory}
-                    className="story-generate-btn"
-                  >
-                    {isGeneratingStory ? '生成中...' : 'ストーリーを生成'}
-                  </button>
-                  {pastStories.length > 0 && (
-                    <button 
-                      onClick={reprocessExistingStories}
-                      className="story-reprocess-btn"
-                      style={{
-                        marginLeft: '10px',
-                        padding: '8px 16px',
-                        backgroundColor: '#f59e0b',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem'
-                      }}
-                    >
-                      既存ストーリーを再処理
-                    </button>
-                  )}
-                </div>
+                <button 
+                  onClick={handleGenerateStory} 
+                  disabled={isGeneratingStory}
+                  className="story-generate-btn"
+                >
+                  {isGeneratingStory ? '生成中...' : 'ストーリーを生成'}
+                </button>
               </div>
               
               {storiesLoading ? (

@@ -104,14 +104,56 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     y.set(0);
   }, [currentIndex, shuffledWords, incorrectWords, onBack, x, y, userId, hasCompletedOnce, onFirstCompletion, handleBackButtonClick]);
 
+  const [voices, setVoices] = useState([]);
+  const synthesisRef = useRef(window.speechSynthesis);
+
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = synthesisRef.current.getVoices();
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices);
+      }
+    };
+    
+    loadVoices();
+    synthesisRef.current.onvoiceschanged = loadVoices;
+
+    return () => {
+      synthesisRef.current.onvoiceschanged = null;
+    };
+  }, []);
+
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
-    if (!isFlipped && shuffledWords.length > 0) {
-      const utterance = new SpeechSynthesisUtterance(shuffledWords[currentIndex].word);
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
+    if (!isFlipped && shuffledWords.length > 0 && voices.length > 0) {
+      const wordToSpeak = shuffledWords[currentIndex].word;
+      const utterance = new SpeechSynthesisUtterance(wordToSpeak);
+      
+      // Enhanced voice selection logic
+      const enUsVoices = voices.filter(voice => voice.lang === 'en-US');
+      let selectedVoice = null;
+
+      // Prioritize specific, high-quality voices
+      selectedVoice = enUsVoices.find(voice => voice.name === 'Google US English');
+      if (!selectedVoice) {
+        selectedVoice = enUsVoices.find(voice => voice.default);
+      }
+      if (!selectedVoice) {
+        selectedVoice = enUsVoices[0];
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      } else {
+        // Fallback if no en-US voice is found
+        utterance.lang = 'en-US';
+      }
+      
+      // Cancel any ongoing speech before speaking a new one
+      synthesisRef.current.cancel();
+      synthesisRef.current.speak(utterance);
     }
-  }, [isFlipped, currentIndex, shuffledWords]);
+  }, [isFlipped, currentIndex, shuffledWords, voices]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex === 0) return;
