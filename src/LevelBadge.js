@@ -14,35 +14,30 @@ const levelDescriptions = {
   10:{ label: "ネイティブ", equivalent: "ネイティブレベル", wordsRequired: 15000 }
 };
 
-function LevelBadge({ level, type = 'full' }) {
+function LevelBadge({ level }) {
   const hasLevel = level && level > 0 && levelDescriptions[level];
 
-  if (type === 'header') {
-    if (!hasLevel) return null; // ヘッダーではレベルがない場合は何も表示しない
-
-    const { label } = levelDescriptions[level];
-    return (
-      <span className="header-level-badge">
-        {label}
-      </span>
-    );
-  }
-
-  // --- デフォルトの 'full' 表示 ---
   if (!hasLevel) {
     return (
       <div className="level-badge-placeholder">
-        <p>単語力チェックテストでレベルを診断しよう！</p>
+        <p>単語力チェックテストであなたのレベルを診断します！</p>
       </div>
     );
   }
 
   const { label, equivalent } = levelDescriptions[level];
-  // "英検5級 / Pre-A1" のような文字列から "Pre-A1" の部分だけを抽出
   const cefr = equivalent.split(' / ')[1] || '';
 
+  // Determine the tier for styling
+  let tier = 1;
+  if (level >= 4 && level <= 6) tier = 2;
+  else if (level >= 7 && level <= 8) tier = 3;
+  else if (level >= 9) tier = 4;
+
+  const containerClassName = `level-badge-container tier-${tier}`;
+
   return (
-    <div className="level-badge-container">
+    <div className={containerClassName}>
       <p className="level-badge-title">現在のあなたのレベル</p>
       <div className="level-badge">
         <span className="level-badge-cefr">{cefr}</span>

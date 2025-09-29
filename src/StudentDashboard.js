@@ -892,11 +892,7 @@ export default function StudentDashboard() {
           <>
             <div className="section-card">
               <div className="dashboard-header">
-                <div>
-                  <p className="header-overline">こんにちは</p>
-                  <h2 className="header-title">{userData?.name || '学習者'}</h2>
-                </div>
-                <LevelBadge level={testResultLevel} type="header" />
+                <LevelBadge level={testResultLevel} />
               </div>
 
               <div className="progress-widget">
@@ -907,6 +903,32 @@ export default function StudentDashboard() {
                   <span>{progressPercentage}% 達成</span>
                   <span>総語彙 {userData?.progress?.targetVocabulary?.toLocaleString?.() || '-'} 語中 {userData?.progress?.currentVocabulary?.toLocaleString?.() || 0} 語</span>
                 </div>
+
+                {paceSuggestion && paceSuggestion.recommended > 0 && (
+                  <div className={`pace-advice pace-${paceSuggestion.status}`} style={{marginTop: '12px', padding: '10px', borderRadius: '6px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.9rem'}}>
+                    <p style={{margin: '0', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <span>学習ペース</span>
+                      <span style={{fontWeight: 'normal'}}>
+                        平均 <strong style={{fontSize: '1.1em'}}>{paceSuggestion.average.toFixed(1)}</strong> 語/日 (推奨 {paceSuggestion.recommended} 語)
+                      </span>
+                    </p>
+                    {paceSuggestion.status === 'ahead' && (
+                      <p style={{margin: '4px 0 0', color: '#16a34a', fontSize: '0.85rem'}}>
+                        素晴らしいペースです！「おかわり学習」で更に差をつけましょう。
+                      </p>
+                    )}
+                    {paceSuggestion.status === 'behind' && (
+                      <p style={{margin: '4px 0 0', color: '#dc2626', fontSize: '0.85rem'}}>
+                        少し遅れ気味です。まずは今日のタスクを完了させましょう。
+                      </p>
+                    )}
+                    {paceSuggestion.status === 'ontrack' && (
+                      <p style={{margin: '4px 0 0', color: '#65a30d', fontSize: '0.85rem'}}>
+                        目標通り進んでいます。この調子でいきましょう！
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               <button
@@ -984,26 +1006,6 @@ export default function StudentDashboard() {
                   )}
                   {!outstandingSummary.hasOutstandingNew && !outstandingSummary.hasOutstandingReview && (
                     <p>本日の必須タスクは完了しました！おかわり学習でさらに前倒しできます。</p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {paceSuggestion && paceSuggestion.recommended > 0 && (
-              <div className={`alert-card ${paceSuggestion.status === 'behind' ? 'warning' : 'info'}`}>
-                <div className="alert-body">
-                  <strong>学習ペース</strong>
-                  <p>
-                    直近 {paceSuggestion.daysTracked} 日の平均: {paceSuggestion.average.toFixed(1)} 語 / 推奨 {paceSuggestion.recommended} 語
-                  </p>
-                  {paceSuggestion.status === 'ahead' && (
-                    <p>順調です！余裕があれば「おかわり学習」でさらに前倒ししましょう。</p>
-                  )}
-                  {paceSuggestion.status === 'behind' && (
-                    <p>少し遅れ気味です。まずは今日の新規単語を優先的に進めてみましょう。</p>
-                  )}
-                  {paceSuggestion.status === 'ontrack' && (
-                    <p>ペースはほぼ目標どおりです。この調子で進めましょう！</p>
                   )}
                 </div>
               </div>
@@ -1212,7 +1214,6 @@ export default function StudentDashboard() {
         <h2 className='logo-title' style={{fontSize: '2.5rem'}}>つくたん</h2>
         <div className="user-info">
           {userData && <span>{userData.name}</span>}
-          <LevelBadge level={testResultLevel} />
           <button onClick={handleLogout} className="logout-btn">ログアウト</button>
         </div>
       </header>
