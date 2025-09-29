@@ -110,9 +110,15 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
           isSet: false,
         }
       }, { merge: true });
+      
+      // 状態をリセット
       setSelectedGoals([]);
       setTargetDate('');
+      
+      // 親コンポーネントにリセット完了を通知
       if (onGoalReset) onGoalReset();
+      
+      alert('目標がリセットされました。新しい目標を設定してください。');
     } catch (err) {
       console.error('目標のリセットに失敗しました:', err);
       alert('目標のリセットに失敗しました。');

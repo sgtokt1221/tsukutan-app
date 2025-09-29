@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebaseConfig';
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { updateUserWordProgress } from './logic/reviewLogic';
-import { logStudyEvent } from './logic/studyLogger';
+import { logStudySession } from './logic/studyLogger';
 import { updateProgressPercentage } from './logic/progressLogic'; // ★インポート
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 
@@ -98,27 +98,10 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     const currentWord = currentQuestions[questionIndex];
     const user = auth.currentUser;
 
-    // ★不正解の場合、復習リストに追加
-  if (!isCorrect && user && currentWord) {
-    updateUserWordProgress(user.uid, currentWord, false);
-    logStudyEvent(user.uid, {
-      word: currentWord.word,
-      wordId: currentWord.id,
-      sessionType: 'placement',
-      correct: false,
-      stage,
-      level: currentLevel,
-    });
-  } else if (isCorrect && user && currentWord) {
-    logStudyEvent(user.uid, {
-      word: currentWord.word,
-      wordId: currentWord.id,
-      sessionType: 'placement',
-      correct: true,
-      stage,
-      level: currentLevel,
-    });
-  }
+    // For incorrect answers, add the word to the user's review list.
+    if (!isCorrect && user && currentWord) {
+      updateUserWordProgress(user.uid, currentWord, false);
+    }
 
     const newScore = score + (isCorrect ? 1 : 0);
     if (questionIndex < currentQuestions.length - 1) {
@@ -154,6 +137,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
           'progress.currentVocabulary': estimatedVocabulary,
           'progress.lastCheckedAt': serverTimestamp(),
         }, { merge: true });
+
+        // Log the placement test result as a single session event
+        logStudySession(user.uid, {
+          sessionType: 'placement_test',
+          finalLevel: finalUserLevel,
+          estimatedVocabulary: estimatedVocabulary,
+          timestamp: new Date(),
+        });
 
         // ★進捗率を更新
         await updateProgressPercentage(user.uid);

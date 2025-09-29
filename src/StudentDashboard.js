@@ -2,23 +2,23 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 // ▼▼▼ Firebaseの初期化とFunctionsを呼び出すためのインポートを修正 ▼▼▼
-import { getApp } from "firebase/app"; 
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { collection, getDocs, doc, getDoc, setDoc, addDoc, query, orderBy, limit, updateDoc, increment, where } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, limit, updateDoc, increment, where } from "firebase/firestore";
 
 // 既存のコンポーネントとロジックのインポート
 import { generateDailyPlan } from './logic/learningPlanner';
 import { addWordToReview } from './logic/reviewLogic';
 import { updateProgressPercentage } from './logic/progressLogic';
+import { logStudySession } from './logic/studyLogger';
+import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress, updateAllFreeStudyProgress } from './logic/freeStudyProgress';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
-import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './logic/knowledgeAnalysis';
+// import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './logic/knowledgeAnalysis';
 
 // アイコンのインポート
-import { FaBook, FaSyncAlt, FaBullseye, FaExclamationTriangle, FaPen, FaMagic, FaArrowLeft, FaUndo } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaExclamationTriangle, FaMagic } from 'react-icons/fa';
 
 // 既存の定数やヘルパー関数（すべて維持）
 const textbooks = {
@@ -122,12 +122,9 @@ export default function StudentDashboard() {
   const [selectionMode, setSelectionMode] = useState('main');
   const [testResultLevel, setTestResultLevel] = useState(0);
   const [learningWords, setLearningWords] = useState([]);
-  const [reviewWords, setReviewWords] = useState([]);
   const [filterTab, setFilterTab] = useState('level');
   const [selectedTextbookId, setSelectedTextbookId] = useState(null);
   const [testWords, setTestWords] = useState([]);
-  const [lastSession, setLastSession] = useState(null);
-  const [initialLearnIndex, setInitialLearnIndex] = useState(0);
   const [currentSessionInfo, setCurrentSessionInfo] = useState(null);
   const [userData, setUserData] = useState(null);
   const [dailyPlan, setDailyPlan] = useState({ newWords: [], reviewWords: [], extraNewWords: [] });
@@ -141,6 +138,9 @@ export default function StudentDashboard() {
   const [monthlyStory, setMonthlyStory] = useState(null);
   const [pastStories, setPastStories] = useState([]);
   const [storiesLoading, setStoriesLoading] = useState(true);
+  
+  // ▼▼▼ 自由学習進捗管理用のState ▼▼▼
+  const [freeStudyProgress, setFreeStudyProgress] = useState({});
   
   const navigate = useNavigate();
   const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
@@ -326,7 +326,7 @@ export default function StudentDashboard() {
         const logsColRef = collection(db, 'users', uid, 'logs');
         const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
         const logSnapshot = await getDocs(q);
-        setLastSession(logSnapshot.empty ? null : logSnapshot.docs[0].data());
+        // setLastSession(logSnapshot.empty ? null : logSnapshot.docs[0].data());
       } else {
         console.log("No such document! Redirecting to test.");
         setViewMode('test'); 
@@ -336,13 +336,25 @@ export default function StudentDashboard() {
     }
   }, []);
 
+  // 自由学習進捗を読み込む関数
+  const loadFreeStudyProgress = useCallback(async (uid) => {
+    try {
+      const progress = await getAllFreeStudyProgress(uid);
+      console.log('自由学習進捗読み込み:', progress);
+      setFreeStudyProgress(progress);
+    } catch (error) {
+      console.error('自由学習進捗の読み込みに失敗しました:', error);
+    }
+  }, []);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         setLoading(true);
         Promise.all([
           refreshDashboardData(user.uid),
-          fetchStories(user.uid)
+          fetchStories(user.uid),
+          loadFreeStudyProgress(user.uid)
         ]).finally(() => setLoading(false));
       } else {
         navigate('/login');
@@ -392,6 +404,39 @@ export default function StudentDashboard() {
       }
   };
 
+  const handleSaveLog = async (logData) => {
+    const user = auth.currentUser;
+    if (user) {
+      // 学習ログを保存
+      logStudySession(user.uid, logData);
+      
+      // 自由学習の場合、進捗も保存
+      if (currentLearningMode === 'free' && currentSessionInfo?.filterType === 'level' && selectedTextbookId) {
+        const lastIndex = logData.index || 0;
+        const level = currentSessionInfo.filterValue.replace('レベル', '');
+        
+        console.log('進捗保存:', {
+          userId: user.uid,
+          textbookId: selectedTextbookId,
+          level: level,
+          lastIndex: lastIndex,
+          filterValue: currentSessionInfo.filterValue
+        });
+        
+        await saveFreeStudyProgress(user.uid, selectedTextbookId, level, lastIndex);
+        
+        // ローカル状態も更新
+        const progressKey = `${selectedTextbookId}_${level}`;
+        setFreeStudyProgress(prev => ({
+          ...prev,
+          [progressKey]: lastIndex
+        }));
+        
+        console.log('進捗保存完了:', progressKey, lastIndex);
+      }
+    }
+  };
+
   const handleLearningBack = async (incorrectWords, newlyLearnedCount) => {
     const user = auth.currentUser;
     if (!user) return;
@@ -419,7 +464,13 @@ export default function StudentDashboard() {
     // Refresh dashboard data and reset view
     refreshDashboardData(user.uid);
     setViewMode('select');
-    setSelectionMode('main');
+    
+    // 自由学習モードの場合は教材のレベル別ページに戻る
+    if (currentLearningMode === 'free' && selectedTextbookId) {
+      setSelectionMode('filter');
+    } else {
+      setSelectionMode('main');
+    }
   };
 
   const handleReviewComplete = () => {
@@ -432,26 +483,49 @@ export default function StudentDashboard() {
   const handleSelectTextbook = async (textbookId) => {
     setLoading(true);
     setSelectedTextbookId(textbookId);
+    console.log('教材選択:', textbookId);
+    
     try {
         const option = freeStudyOptions.find(opt => opt.id === textbookId);
         const targetTextbookIds = option?.textbooks || [textbookId];
+        
+        console.log('教材オプション:', option);
+        console.log('対象テキストブックIDs:', targetTextbookIds);
 
         let combinedWords = [];
         for (const id of targetTextbookIds) {
           const snapshot = await getDocs(collection(db, 'textbooks', id, 'words'));
-          combinedWords.push(...snapshot.docs.map(d => ({ id: d.id, sourceTextbook: id, ...d.data() })));
+          const words = snapshot.docs.map(d => ({ id: d.id, sourceTextbook: id, ...d.data() }));
+          combinedWords.push(...words);
+          console.log(`テキストブック ${id} から取得した単語数:`, words.length);
         }
 
         let filteredWords = combinedWords;
         if (option?.levels?.length) {
           filteredWords = filteredWords.filter(word => option.levels.includes(word.level));
+          console.log('レベルフィルタ後:', filteredWords.length);
         }
 
         if (option?.topics?.length && filteredWords[0]?.topic !== undefined) {
           filteredWords = filteredWords.filter(word => option.topics.includes(word.topic));
+          console.log('トピックフィルタ後:', filteredWords.length);
         }
 
+        // 固定順序でソート（教材選択時に一度だけ実行）
+        filteredWords = filteredWords.sort((a, b) => {
+          // レベル順、次に単語順、最後にID順でソート
+          if (a.level !== b.level) {
+            return a.level - b.level;
+          }
+          if (a.word !== b.word) {
+            return a.word.localeCompare(b.word);
+          }
+          return a.id.localeCompare(b.id);
+        });
+
+        console.log('最終的な単語数（固定順序）:', filteredWords.length);
         setAllWords(filteredWords);
+        
         if (filteredWords.length === 0) {
           alert('このメニューには該当する単語がまだ登録されていません。別のメニューを選んでください。');
           setSelectionMode('main');
@@ -462,6 +536,7 @@ export default function StudentDashboard() {
         setSelectionMode('filter');
     } catch (error) {
         console.error("Error fetching textbook words:", error);
+        alert('単語の読み込みに失敗しました。');
     } finally {
         setLoading(false);
     }
@@ -473,17 +548,74 @@ export default function StudentDashboard() {
     setAllWords([]);
   };
 
-  const startLearning = (filterType, value) => {
+  const startLearning = async (filterType, value) => {
     let filtered = [];
-  if (filterType === 'level') {
+    let sessionLabel = '';
+    let startIndex = 0;
+    
+    console.log('学習開始:', {
+      filterType,
+      value,
+      selectedTextbookId,
+      allWordsLength: allWords.length
+    });
+    
+    if (filterType === 'level') {
+        // レベル別学習の場合、allWordsから取得（既に固定順序でソート済み）
         filtered = allWords.filter(word => word.level === value);
+        console.log('allWordsから取得した単語数（固定順序）:', filtered.length);
+        
+        // 前回の進捗を取得
+        if (selectedTextbookId) {
+          startIndex = await getFreeStudyProgress(auth.currentUser.uid, selectedTextbookId, String(value));
+          console.log('進捗取得:', {
+            userId: auth.currentUser.uid,
+            textbookId: selectedTextbookId,
+            level: value,
+            levelString: String(value),
+            startIndex: startIndex,
+            totalWords: filtered.length
+          });
+        }
+        
+        // 単語が見つからない場合の処理
+        if (filtered.length === 0) {
+          console.error('該当レベルの単語が見つかりません:', {
+            filterType,
+            value,
+            selectedTextbookId,
+            allWordsLength: allWords.length
+          });
+          alert(`レベル${value}の単語が見つかりません。別のレベルを選択してください。`);
+          return;
+        }
+        
+        sessionLabel = `レベル${value}`;
     } else if (filterType === 'pos') {
         const posAbbr = posMap[value] || value;
         filtered = allWords.filter(word => word.partOfSpeech.includes(posAbbr));
-  } else if (filterType === 'theme') {
-    const group = themeGroups[value];
-    filtered = group ? group.words : [];
+        sessionLabel = `品詞: ${value}`;
+    } else if (filterType === 'theme') {
+        const group = themeGroups[value];
+        filtered = group ? group.words : [];
+        sessionLabel = `テーマ: ${group?.label || value}`;
     }
+    
+    const textbookLabel = freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId;
+    console.log('セッション情報設定:', {
+      textbookId: textbookLabel,
+      filterType: filterType,
+      filterValue: sessionLabel,
+      startIndex: startIndex,
+      totalWords: filtered.length
+    });
+    
+    setCurrentSessionInfo({
+      textbookId: textbookLabel,
+      filterType: filterType,
+      filterValue: sessionLabel,
+      startIndex: startIndex, // 開始インデックスを追加
+    });
     setCurrentLearningMode('free');
     setLearningWords(filtered);
     setViewMode('learn');
@@ -494,6 +626,11 @@ export default function StudentDashboard() {
       alert('今日の新規単語はありません。');
       return;
     }
+    setCurrentSessionInfo({
+      textbookId: '今日のタスク',
+      filterType: '新規単語',
+      filterValue: `${dailyPlan.newWords.length}語`,
+    });
     setCurrentLearningMode('daily');
     setLearningWords(dailyPlan.newWords);
     setViewMode('learn');
@@ -504,6 +641,11 @@ export default function StudentDashboard() {
       alert('追加の単語はありません。お疲れ様でした！');
       return;
     }
+    setCurrentSessionInfo({
+      textbookId: 'おかわり学習',
+      filterType: '追加単語',
+      filterValue: `${dailyPlan.extraNewWords.length}語`,
+    });
     setCurrentLearningMode('extra');
     setLearningWords(dailyPlan.extraNewWords);
     setViewMode('learn');
@@ -514,7 +656,11 @@ export default function StudentDashboard() {
       alert('今日の復習単語はありません。');
       return;
     }
-    setReviewWords(dailyPlan.reviewWords);
+    setCurrentSessionInfo({
+      textbookId: '今日のタスク',
+      filterType: '復習単語',
+      filterValue: `${dailyPlan.reviewWords.length}語`,
+    });
     setViewMode('review');
   };
 
@@ -653,13 +799,21 @@ export default function StudentDashboard() {
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
-        return <LearningFlashcard 
-                  words={learningWords} 
+        return <LearningFlashcard
+                  words={learningWords}
                   onBack={handleLearningBack}
+                  initialIndex={currentSessionInfo?.startIndex || 0}
+                  onSaveLog={handleSaveLog}
+                  sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
                 />;
       case 'review':
-        return <ReviewFlashcard words={dailyPlan.reviewWords} onBack={handleReviewComplete} />;
+        return <ReviewFlashcard 
+                  words={dailyPlan.reviewWords} 
+                  onBack={handleReviewComplete} 
+                  onSaveLog={handleSaveLog}
+                  sessionInfo={currentSessionInfo}
+                />;
       case 'test':
         return <VocabularyCheckTest allWords={testWords} onTestComplete={handleTestComplete} />;
       case 'result':
@@ -911,9 +1065,21 @@ export default function StudentDashboard() {
                   <p className="tile-caption">リラックスしながら、気になる教材を選んで学べます。</p>
                 </div>
                 {selectionMode === 'filter' && (
-                  <button className="ghost-button" onClick={handleBackToMainMenu}>
-                    教材選択に戻る
-                  </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ 
+                      fontSize: '0.9rem', 
+                      color: 'var(--primary-color)', 
+                      fontWeight: '600',
+                      backgroundColor: 'var(--primary-light)',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.5rem'
+                    }}>
+                      選択中: {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
+                    </span>
+                    <button className="ghost-button" onClick={handleBackToMainMenu}>
+                      教材選択に戻る
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -950,18 +1116,35 @@ export default function StudentDashboard() {
                   </div>
                   <div className="selection-grid">
                     {filterTab === 'level' && (
-                      Object.entries(levelDescriptions).map(([level, info]) => (
-                        <button
-                          key={level}
-                          className="selection-card"
-                          disabled={!allWords.some(word => word.level === Number(level))}
-                          onClick={() => startLearning('level', Number(level))}
-                        >
-                          <span className="selection-card-level">{info.label}</span>
-                          <span className="selection-card-desc">{info.equivalent}</span>
-                          <span className="selection-card-meta">目安: {info.wordsRequired.toLocaleString()}語</span>
-                        </button>
-                      ))
+                      Object.entries(levelDescriptions).map(([level, info]) => {
+                        const levelWords = allWords.filter(word => word.level === Number(level));
+                        const progressKey = `${selectedTextbookId}_${level}`;
+                        const lastIndex = freeStudyProgress[progressKey] || 0;
+                        const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
+                        
+                        console.log('進捗表示:', {
+                          level: level,
+                          progressKey: progressKey,
+                          lastIndex: lastIndex,
+                          totalWords: levelWords.length,
+                          progressText: progressText,
+                          freeStudyProgress: freeStudyProgress
+                        });
+                        
+                        return (
+                          <button
+                            key={level}
+                            className="selection-card"
+                            disabled={!levelWords.length}
+                            onClick={() => startLearning('level', Number(level))}
+                          >
+                            <span className="selection-card-level">{info.label}</span>
+                            <span className="selection-card-desc">{info.equivalent}</span>
+                            <span className="selection-card-meta">目安: {info.wordsRequired.toLocaleString()}語</span>
+                            <span className="selection-card-progress">{progressText}</span>
+                          </button>
+                        );
+                      })
                     )}
                     {filterTab === 'pos' && (
                       posDisplayOrder.map(pos => (
@@ -1026,7 +1209,7 @@ export default function StudentDashboard() {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h2 className='logo-title' style={{fontSize: '1.5rem'}}>つくたん</h2>
+        <h2 className='logo-title' style={{fontSize: '2.5rem'}}>つくたん</h2>
         <div className="user-info">
           {userData && <span>{userData.name}</span>}
           <LevelBadge level={testResultLevel} />

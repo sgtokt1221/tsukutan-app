@@ -1,17 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { logStudyEvent } from './logic/studyLogger';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 
-// 忘却曲線に基づき、単語の習熟度を更新するロジック（仮のインポート）
-// ※logic/reviewLogic.js が実際に存在し、この関数がエクスポートされている必要があります
-// import { updateUserWordProgress } from './logic/reviewLogic';
-
-// スタブ関数：reviewLogicが未実装の場合の代替
-const updateUserWordProgress = (userId, word, isCorrect) => {
-  console.log(`学習記録: User ${userId}, Word ${word.word}, Correct: ${isCorrect}`);
-};
+// 忘却曲線に基づき、単語の習熟度を更新するロジック
+import { updateUserWordProgress } from './logic/reviewLogic';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -36,15 +29,46 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const sessionStartTime = useRef(new Date());
 
   useEffect(() => {
-    setShuffledWords(shuffleArray(words));
+    // 自由学習モード（sessionInfoがある）の場合はシャッフルしない
+    if (sessionInfo) {
+      setShuffledWords(words);
+    } else {
+      setShuffledWords(shuffleArray(words));
+    }
     sessionStartTime.current = new Date();
-  }, [words]);
+  }, [words, sessionInfo]);
+
+  // initialIndexが変更された時にcurrentIndexを更新
+  useEffect(() => {
+    console.log('LearningFlashcard initialIndex変更:', {
+      initialIndex: initialIndex,
+      currentIndex: currentIndex,
+      wordsLength: words.length
+    });
+    setCurrentIndex(initialIndex);
+  }, [initialIndex]);
 
   // Framer Motion の設定
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const cardColor = useTransform(x, [-100, 0, 100], ["#fee2e2", "#ffffff", "#dcfce7"]);
   
+  const handleBackButtonClick = useCallback(() => {
+    const sessionEndTime = new Date();
+    const durationInSeconds = (sessionEndTime - sessionStartTime.current) / 1000;
+
+    if (onSaveLog && durationInSeconds > 10 && currentIndex > 0) {
+      const logData = {
+        ...sessionInfo,
+        index: currentIndex,
+        durationInSeconds: Math.round(durationInSeconds),
+        timestamp: new Date()
+      };
+      onSaveLog(logData);
+    }
+    onBack(incorrectWords, correctlyLearnedWords.size);
+  }, [onSaveLog, sessionInfo, currentIndex, onBack, incorrectWords, correctlyLearnedWords]);
+
   const handleDragEnd = useCallback((event, info) => {
     if (Math.abs(info.offset.x) < 50) return;
     
@@ -52,14 +76,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const currentWord = shuffledWords[currentIndex];
 
     if (userId && currentWord) {
+      // 実際の復習ロジックを使用
       updateUserWordProgress(userId, currentWord, isCorrect);
-      logStudyEvent(userId, {
-        word: currentWord.word,
-        wordId: currentWord.id,
-        sessionType: 'new',
-        correct: isCorrect,
-        sourceMode: sessionInfo?.mode || 'learning',
-      });
     }
 
     if (isCorrect) {
@@ -70,20 +88,17 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
     if (currentIndex < shuffledWords.length - 1) {
       setCurrentIndex(prev => prev + 1);
-      setIsFlipped(false);
-      x.set(0);
     } else {
-      // 最初の1周完了時のみコールバックを呼ぶ
+      // 最後の単語の場合
       if (!hasCompletedOnce) {
+        setHasCompletedOnce(true);
         if (onFirstCompletion) {
           onFirstCompletion();
         }
-        setHasCompletedOnce(true);
       }
-      // セッションを終了する
       handleBackButtonClick();
     }
-  }, [currentIndex, shuffledWords, incorrectWords, onBack, x, userId, hasCompletedOnce, onFirstCompletion]);
+  }, [currentIndex, shuffledWords, incorrectWords, onBack, x, userId, hasCompletedOnce, onFirstCompletion, handleBackButtonClick]);
 
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
@@ -94,31 +109,9 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     }
   }, [isFlipped, currentIndex, shuffledWords]);
 
-  const handlePrev = useCallback(() => {
-    if (currentIndex === 0) return;
-    setCurrentIndex((prev) => Math.max(0, prev - 1));
-    setIsFlipped(false);
-    x.set(0);
-  }, [currentIndex, x]);
-
-  const handleBackButtonClick = () => {
-    const sessionEndTime = new Date();
-    const durationInSeconds = (sessionEndTime - sessionStartTime.current) / 1000;
-
-    if (onSaveLog && durationInSeconds > 10 && currentIndex > 0) {
-      const logData = {
-        ...sessionInfo,
-        index: currentIndex,
-        timestamp: new Date()
-      };
-      onSaveLog(logData);
-    }
-    onBack(incorrectWords, correctlyLearnedWords.size);
-  };
-
   if (shuffledWords.length === 0) {
     return (
-      <div className="card-style">
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <p>学習する単語がありません。</p>
         <button onClick={() => onBack([], 0)} className="back-btn">戻る</button>
       </div>
@@ -126,6 +119,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   }
 
   const currentWord = shuffledWords[currentIndex];
+  
+  // デバッグ情報
+  console.log('LearningFlashcard 現在の状態:', {
+    currentIndex: currentIndex,
+    shuffledWordsLength: shuffledWords.length,
+    currentWord: currentWord?.word,
+    initialIndex: initialIndex
+  });
 
   return (
     // ▼▼▼【修正】元のコードのJSX構造を完全に復元▼▼▼
@@ -134,10 +135,16 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         <h3>新規学習</h3>
       </div>
       
-      <div id="flashcard-container">
+      <div className="progress-bar">
+        <div 
+          className="progress-fill" 
+          style={{ width: `${((currentIndex + 1) / shuffledWords.length) * 100}%` }}
+        ></div>
+      </div>
+      
+      <div className="card-container">
         <motion.div
-          key={currentIndex}
-          id="flashcard"
+          className="flashcard"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           style={{ x, rotate, backgroundColor: cardColor }}
@@ -159,19 +166,20 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         </motion.div>
       </div>
       
-      <div className="card-navigation">
-        <div className="card-counter">{currentIndex + 1} / {shuffledWords.length}</div>
+      <div className="card-actions">
+        <button onClick={() => handleDragEnd(null, { offset: { x: -100 } })} className="action-btn incorrect-btn">
+          <FaUndo /> わからない
+        </button>
+        <button onClick={() => handleDragEnd(null, { offset: { x: 100 } })} className="action-btn correct-btn">
+          わかる <FaUndo style={{ transform: 'scaleX(-1)' }} />
+        </button>
       </div>
-
-      <div className="footer-container">
-        <div className="flashcard-footer">
-          <button onClick={handlePrev} className="prev-action" disabled={currentIndex === 0}>
-            <FaUndo /> 前の単語
-          </button>
-          <button onClick={handleBackButtonClick} className="back-action">
-            <FaArrowLeft /> ダッシュボードに戻る
-          </button>
-        </div>
+      
+      <div className="test-footer">
+        <span className="word-count">{currentIndex + 1} / {shuffledWords.length}</span>
+        <button onClick={handleBackButtonClick} className="back-btn">
+          <FaArrowLeft /> ダッシュボードに戻る
+        </button>
       </div>
     </div>
   );

@@ -57,6 +57,8 @@ function AppContent() {
 
   const handleGoalReset = () => {
     setIsGoalSet(false);
+    // 目標再設定画面に遷移
+    navigate('/set-goal');
   };
 
   if (loading) {
