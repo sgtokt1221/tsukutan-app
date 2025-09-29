@@ -50,6 +50,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // Framer Motion の設定
   const x = useMotionValue(0);
+  const y = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const cardColor = useTransform(x, [-100, 0, 100], ["#fee2e2", "#ffffff", "#dcfce7"]);
   
@@ -98,7 +99,10 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       }
       handleBackButtonClick();
     }
-  }, [currentIndex, shuffledWords, incorrectWords, onBack, x, userId, hasCompletedOnce, onFirstCompletion, handleBackButtonClick]);
+    
+    x.set(0);
+    y.set(0);
+  }, [currentIndex, shuffledWords, incorrectWords, onBack, x, y, userId, hasCompletedOnce, onFirstCompletion, handleBackButtonClick]);
 
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
@@ -109,9 +113,17 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     }
   }, [isFlipped, currentIndex, shuffledWords]);
 
+  const handlePrev = useCallback(() => {
+    if (currentIndex === 0) return;
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
+    setIsFlipped(false);
+    x.set(0);
+    y.set(0);
+  }, [currentIndex, x, y]);
+
   if (shuffledWords.length === 0) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="loading-container">
         <p>学習する単語がありません。</p>
         <button onClick={() => onBack([], 0)} className="back-btn">戻る</button>
       </div>
@@ -129,25 +141,18 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   });
 
   return (
-    // ▼▼▼【修正】元のコードのJSX構造を完全に復元▼▼▼
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
       <div className="test-header">
         <h3>新規学習</h3>
       </div>
       
-      <div className="progress-bar">
-        <div 
-          className="progress-fill" 
-          style={{ width: `${((currentIndex + 1) / shuffledWords.length) * 100}%` }}
-        ></div>
-      </div>
-      
-      <div className="card-container">
+      <div id="flashcard-container">
         <motion.div
-          className="flashcard"
+          key={currentIndex}
+          id="flashcard"
           drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          style={{ x, rotate, backgroundColor: cardColor }}
+          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+          style={{ x, y, rotate, backgroundColor: cardColor }}
           onDragEnd={handleDragEnd}
           onTap={handleTap}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
@@ -166,20 +171,19 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         </motion.div>
       </div>
       
-      <div className="card-actions">
-        <button onClick={() => handleDragEnd(null, { offset: { x: -100 } })} className="action-btn incorrect-btn">
-          <FaUndo /> わからない
-        </button>
-        <button onClick={() => handleDragEnd(null, { offset: { x: 100 } })} className="action-btn correct-btn">
-          わかる <FaUndo style={{ transform: 'scaleX(-1)' }} />
-        </button>
+      <div className="card-navigation">
+        <div className="card-counter">{currentIndex + 1} / {shuffledWords.length}</div>
       </div>
       
-      <div className="test-footer">
-        <span className="word-count">{currentIndex + 1} / {shuffledWords.length}</span>
-        <button onClick={handleBackButtonClick} className="back-btn">
-          <FaArrowLeft /> ダッシュボードに戻る
-        </button>
+      <div className="footer-container">
+        <div className="flashcard-footer">
+          <button onClick={handlePrev} className="prev-action" disabled={currentIndex === 0}>
+            <FaUndo /> 前の単語
+          </button>
+          <button onClick={handleBackButtonClick} className="back-action">
+            <FaArrowLeft /> ダッシュボードに戻る
+          </button>
+        </div>
       </div>
     </div>
   );
