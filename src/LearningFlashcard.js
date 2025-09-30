@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
+import { initialize, speak } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
@@ -27,6 +28,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const auth = getAuth();
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const sessionStartTime = useRef(new Date());
+
+  // 音声合成の初期化
+  useEffect(() => {
+    initialize().catch(error => console.error("Speech initialization failed:", error));
+  }, []);
 
   useEffect(() => {
     // 自由学習モード（sessionInfoがある）の場合はシャッフルしない
@@ -104,56 +110,13 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     y.set(0);
   }, [currentIndex, shuffledWords, incorrectWords, onBack, x, y, userId, hasCompletedOnce, onFirstCompletion, handleBackButtonClick]);
 
-  const [voices, setVoices] = useState([]);
-  const synthesisRef = useRef(window.speechSynthesis);
-
-  useEffect(() => {
-    const loadVoices = () => {
-      const availableVoices = synthesisRef.current.getVoices();
-      if (availableVoices.length > 0) {
-        setVoices(availableVoices);
-      }
-    };
-    
-    loadVoices();
-    synthesisRef.current.onvoiceschanged = loadVoices;
-
-    return () => {
-      synthesisRef.current.onvoiceschanged = null;
-    };
-  }, []);
-
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
-    if (!isFlipped && shuffledWords.length > 0 && voices.length > 0) {
+    if (!isFlipped && shuffledWords.length > 0) {
       const wordToSpeak = shuffledWords[currentIndex].word;
-      const utterance = new SpeechSynthesisUtterance(wordToSpeak);
-      
-      // Enhanced voice selection logic
-      const enUsVoices = voices.filter(voice => voice.lang === 'en-US');
-      let selectedVoice = null;
-
-      // Prioritize specific, high-quality voices
-      selectedVoice = enUsVoices.find(voice => voice.name === 'Google US English');
-      if (!selectedVoice) {
-        selectedVoice = enUsVoices.find(voice => voice.default);
-      }
-      if (!selectedVoice) {
-        selectedVoice = enUsVoices[0];
-      }
-
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-      } else {
-        // Fallback if no en-US voice is found
-        utterance.lang = 'en-US';
-      }
-      
-      // Cancel any ongoing speech before speaking a new one
-      synthesisRef.current.cancel();
-      synthesisRef.current.speak(utterance);
+      speak(wordToSpeak);
     }
-  }, [isFlipped, currentIndex, shuffledWords, voices]);
+  }, [isFlipped, currentIndex, shuffledWords]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex === 0) return;

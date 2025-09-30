@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { updateUserWordProgress, removeWordFromReview } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
+import { initialize, speak } from './logic/speechUtils';
 
 function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,6 +15,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const auth = getAuth();
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const sessionStartTime = useRef(new Date());
+
+  // Initialize speech synthesis
+  useEffect(() => {
+    initialize().catch(error => console.error("Speech initialization failed:", error));
+  }, []);
 
   useEffect(() => {
     // Shuffle words for variety each session
@@ -120,9 +126,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const handleTap = useCallback(() => {
     setIsFlipped(prev => !prev);
     if (!isFlipped && sessionWords.length > 0) {
-      const utterance = new SpeechSynthesisUtterance(sessionWords[currentIndex].word);
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
+      const wordToSpeak = sessionWords[currentIndex].word;
+      speak(wordToSpeak);
     }
   }, [isFlipped, currentIndex, sessionWords]);
 

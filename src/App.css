@@ -1492,3 +1492,388 @@ input[type="file"] { display: none; }
 .flashcard-footer .back-action {
   flex: 1;
 }
+
+/* 診断結果画面のリッチなデザイン */
+.test-result-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.result-hero {
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.result-header {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 32px 24px 24px;
+  text-align: center;
+  position: relative;
+}
+
+.level-badge-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.level-number {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.result-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.result-content {
+  padding: 32px 24px;
+}
+
+.result-main-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 32px 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.result-greeting {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.result-greeting h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px;
+}
+
+.result-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0;
+}
+
+.level-display {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+}
+
+.level-label {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+
+.level-equivalent {
+  font-size: 18px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.progress-section {
+  margin-bottom: 32px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.progress-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.progress-percentage {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.meter-background {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.meter-foreground {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 1.5s ease-out;
+}
+
+.level-description {
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.stat-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.result-actions {
+  text-align: center;
+}
+
+.restart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.restart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.restart-btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 20px;
+}
+
+.btn-text {
+  font-weight: 600;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 640px) {
+  .test-result-container {
+    padding: 16px;
+  }
+  
+  .result-hero {
+    border-radius: 16px;
+  }
+  
+  .result-header {
+    padding: 24px 16px 16px;
+  }
+  
+  .result-content {
+    padding: 24px 16px;
+  }
+  
+  .result-main-card {
+    padding: 24px 16px;
+  }
+  
+  .level-badge-large {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .level-number {
+    font-size: 24px;
+  }
+  
+  .result-title {
+    font-size: 24px;
+  }
+  
+  .level-label {
+    font-size: 28px;
+  }
+  
+  .result-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .restart-btn {
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+}
+
+/* ===== タブバーのスタイル ===== */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  min-width: 80px;
+  font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+}
+
+.tab-item:hover {
+  background: #f3f4f6;
+}
+
+.tab-item.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.tab-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+}
+
+/* タブバーのためにメインコンテンツの下部に余白を追加 */
+.dashboard-container {
+  padding-bottom: 80px; /* タブバーの高さ分の余白 */
+}
+
+/* タブコンテンツのスタイル */
+.story-tab-content,
+.free-study-tab-content {
+  padding: 20px;
+  min-height: calc(100vh - 200px);
+}
+
+/* モバイル対応のタブバー */
+@media (max-width: 768px) {
+  .tab-bar {
+    padding: 6px 0;
+  }
+  
+  .tab-item {
+    padding: 10px 12px;
+    min-width: 70px;
+  }
+  
+  .tab-label {
+    font-size: 0.8rem;
+  }
+  
+  .dashboard-container {
+    padding-bottom: 70px;
+  }
+}
+
+/* スマートフォン対応のタブバー */
+@media (max-width: 480px) {
+  .tab-bar {
+    padding: 4px 0;
+  }
+  
+  .tab-item {
+    padding: 8px 10px;
+    min-width: 60px;
+  }
+  
+  .tab-label {
+    font-size: 0.75rem;
+  }
+  
+  .dashboard-container {
+    padding-bottom: 65px;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 // レベル定義
 const levelDescriptions = {
@@ -24,6 +25,7 @@ const getLevelColor = (level) => {
 
 function TestResult({ level, onRestart }) {
   const [meterWidth, setMeterWidth] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // アニメーションのため、少し遅れて幅を計算
@@ -37,27 +39,93 @@ function TestResult({ level, onRestart }) {
 
   return (
     <div className="test-result-container stylish-result">
-      <h2>診断結果</h2>
-      <div className="result-meter-card">
-        <p className="result-meter-title">あなたの現在の単語レベルは...</p>
-        <h3 className="result-meter-level-label">{label}</h3>
-        <p className="result-meter-equivalent">{equivalent}</p>
-        
-        <div className="meter-background">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="result-hero"
+      >
+        <div className="result-header">
           <motion.div
-            className="meter-foreground"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="level-badge-large"
             style={{ backgroundColor: getLevelColor(level) }}
-            initial={{ width: 0 }}
-            animate={{ width: `${meterWidth}%` }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-          />
+          >
+            <span className="level-number">{level}</span>
+          </motion.div>
+          <h2 className="result-title">診断結果</h2>
         </div>
         
-        <p className="result-meter-level-num">Lv. {level}</p>
-      </div>
-      <button className="restart-btn" onClick={onRestart}>
-        メインメニューに戻る
-      </button>
+        <div className="result-content">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="result-main-card"
+          >
+            <div className="result-greeting">
+              <h3>お疲れ様でした！</h3>
+              <p className="result-subtitle">あなたの現在の単語レベルは...</p>
+            </div>
+            
+            <div className="level-display">
+              <h1 className="level-label">{label}</h1>
+              <p className="level-equivalent">{equivalent}</p>
+            </div>
+            
+            <div className="progress-section">
+              <div className="progress-header">
+                <span className="progress-label">レベル進捗</span>
+                <span className="progress-percentage">{Math.round(meterWidth)}%</span>
+              </div>
+              <div className="meter-background">
+                <motion.div
+                  className="meter-foreground"
+                  style={{ backgroundColor: getLevelColor(level) }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${meterWidth}%` }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                />
+              </div>
+              <p className="level-description">Lv. {level} / 10</p>
+            </div>
+            
+            <div className="result-stats">
+              <div className="stat-item">
+                <div className="stat-icon">📚</div>
+                <div className="stat-content">
+                  <span className="stat-label">推定語彙数</span>
+                  <span className="stat-value">{Math.round((level / 10) * 15000).toLocaleString()}語</span>
+                </div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-icon">🎯</div>
+                <div className="stat-content">
+                  <span className="stat-label">目標達成度</span>
+                  <span className="stat-value">{Math.round(meterWidth)}%</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="result-actions"
+          >
+            <button className="restart-btn" onClick={() => {
+              console.log('TestResult: 前の画面に戻るボタンがクリックされました');
+              window.location.replace('/tsukutan-app/student-dashboard');
+            }}>
+              <span className="btn-icon">🏠</span>
+              <span className="btn-text">ダッシュボードに戻る</span>
+            </button>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 }
