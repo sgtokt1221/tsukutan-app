@@ -46,8 +46,12 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
-    if (isGoalSet && userRole === 'student') {
-      navigate('/student-dashboard');
+    if (userRole === 'student') {
+      if (isGoalSet) {
+        navigate('/student-dashboard');
+      } else {
+        navigate('/set-goal');
+      }
     }
   }, [isGoalSet, userRole, navigate]);
 
@@ -56,8 +60,11 @@ function AppContent() {
   };
 
   const handleGoalReset = () => {
+    console.log('App: 目標リセット処理を開始します');
     setIsGoalSet(false);
+    console.log('App: isGoalSetをfalseに設定しました');
     // 目標再設定画面に遷移
+    console.log('App: 目標設定画面に遷移します');
     navigate('/set-goal');
   };
 

@@ -18,7 +18,7 @@ import LevelBadge from './LevelBadge';
 // import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './logic/knowledgeAnalysis';
 
 // アイコンのインポート
-import { FaBook, FaSyncAlt, FaExclamationTriangle, FaMagic } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaMagic } from 'react-icons/fa';
 
 // 既存の定数やヘルパー関数（すべて維持）
 const textbooks = {
@@ -28,14 +28,15 @@ const textbooks = {
 const freeStudyOptions = [
   { id: 'osaka-koukou-nyuushi', label: '大阪府公立入試英単語', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4] },
   { id: 'highschool-english', label: '高校英語', textbooks: ['highschool-english'], levels: [4, 5, 6, 7, 8, 9, 10] },
-  { id: 'eiken-5', label: '英検5級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1] },
-  { id: 'eiken-4', label: '英検4級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2] },
-  { id: 'eiken-3', label: '英検3級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3] },
-  { id: 'eiken-pre2', label: '英検準2級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4] },
-  { id: 'eiken-2', label: '英検2級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4, 5, 6] },
-  { id: 'eiken-pre1', label: '英検準1級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4, 5, 6, 7] },
-  { id: 'eiken-1', label: '英検1級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'], levels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
+  { id: 'eiken-5', label: '英検5級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] },
+  { id: 'eiken-4', label: '英検4級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] },
+  { id: 'eiken-3', label: '英検3級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] },
+  { id: 'eiken-pre2', label: '英検準2級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] },
+  { id: 'eiken-2', label: '英検2級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] },
+  { id: 'eiken-pre1', label: '英検準1級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] },
+  { id: 'eiken-1', label: '英検1級', textbooks: ['osaka-koukou-nyuushi', 'highschool-english'] }
 ];
+// 通常のレベル定義
 const levelDescriptions = {
     1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1", wordsRequired: 600 },
     2: { label: "中学標準", equivalent: "英検4級 / A1", wordsRequired: 1300 },
@@ -48,12 +49,72 @@ const levelDescriptions = {
     9: { label: "超上級", equivalent: "英検1級+", wordsRequired: 12000 },
     10:{ label: "ネイティブ", equivalent: "ネイティブレベル", wordsRequired: 15000 }
 };
+
+// 英検教材用のレベル定義
+const eikenLevelDescriptions = {
+    1: { label: "英検5級レベル", equivalent: "英検5級相当", wordsRequired: 600 },
+    2: { label: "英検4級レベル", equivalent: "英検4級相当", wordsRequired: 1300 },
+    3: { label: "英検3級レベル", equivalent: "英検3級相当", wordsRequired: 2100 },
+    4: { label: "英検準2級レベル", equivalent: "英検準2級相当", wordsRequired: 3600 },
+    5: { label: "英検2級レベル", equivalent: "英検2級相当", wordsRequired: 5100 },
+    6: { label: "英検準1級レベル", equivalent: "英検準1級相当", wordsRequired: 6000 },
+    7: { label: "英検1級レベル", equivalent: "英検1級相当", wordsRequired: 8000 },
+    8: { label: "上級レベル", equivalent: "英検1級+", wordsRequired: 10000 },
+    9: { label: "最上級レベル", equivalent: "ネイティブ級", wordsRequired: 12000 },
+    10:{ label: "ネイティブレベル", equivalent: "ネイティブ級", wordsRequired: 15000 }
+};
 const posMap = {
   '名詞': '名', '動詞': '動', '形容詞': '形', '副詞': '副', '代名詞': '代',
   '前置詞': '前', '接続詞': '接', '冠詞': '冠', '間投詞': '間', '熟語': '熟語',
   '助動詞': '助'
 };
 const posDisplayOrder = Object.keys(posMap);
+
+// 品詞のラベルと説明
+const posLabels = {
+  '名詞': '名詞',
+  '動詞': '動詞', 
+  '形容詞': '形容詞',
+  '副詞': '副詞',
+  '代名詞': '代名詞',
+  '前置詞': '前置詞',
+  '接続詞': '接続詞',
+  '冠詞': '冠詞',
+  '間投詞': '間投詞',
+  '熟語': '熟語',
+  '助動詞': '助動詞'
+};
+
+const posDescriptions = {
+  '名詞': '物や人を表す単語',
+  '動詞': '動作や状態を表す単語',
+  '形容詞': '名詞を修飾する単語',
+  '副詞': '動詞や形容詞を修飾する単語',
+  '代名詞': '名詞の代わりに使う単語',
+  '前置詞': '名詞の前に置いて関係を表す単語',
+  '接続詞': '文や語句をつなぐ単語',
+  '冠詞': '名詞の前に置く単語',
+  '間投詞': '感情や驚きを表す単語',
+  '熟語': '複数の単語が組み合わさった表現',
+  '助動詞': '動詞の前に置いて意味を補う単語'
+};
+
+// テーマのラベルと説明
+const themeLabels = {
+  'seeing': '見る',
+  'opinion': '意見・考える',
+  'emotion': '感情',
+  'movement': '移動',
+  'effort': '学ぶ・努力'
+};
+
+const themeDescriptions = {
+  'seeing': '視覚に関する単語',
+  'opinion': '思考や意見に関する単語',
+  'emotion': '感情や気持ちに関する単語',
+  'movement': '動きや移動に関する単語',
+  'effort': '学習や努力に関する単語'
+};
 
 const THEME_DEFINITIONS = [
   {
@@ -133,6 +194,9 @@ export default function StudentDashboard() {
   const [currentLearningMode, setCurrentLearningMode] = useState(null); // 'daily', 'extra', 'free'
   const [paceSuggestion, setPaceSuggestion] = useState(null);
   
+  // ▼▼▼ タブバー用のState ▼▼▼
+  const [activeTab, setActiveTab] = useState('home'); // 'home', 'story', 'free-study'
+  
   // ▼▼▼ ストーリー生成用のState ▼▼▼
   const [isGeneratingStory, setIsGeneratingStory] = useState(false);
   const [monthlyStory, setMonthlyStory] = useState(null);
@@ -144,6 +208,22 @@ export default function StudentDashboard() {
   
   const navigate = useNavigate();
   const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
+
+  // 復習単語をハイライトする関数
+  const highlightReviewWords = (text, usedWords) => {
+    if (!usedWords || usedWords.length === 0) {
+      return text;
+    }
+    
+    let highlightedText = text;
+    usedWords.forEach(word => {
+      // 単語の境界を考慮した正規表現で置換
+      const regex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      highlightedText = highlightedText.replace(regex, `<mark style="background-color: #ffeb3b; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${word}</mark>`);
+    });
+    
+    return <span dangerouslySetInnerHTML={{ __html: highlightedText }} />;
+  };
 
   const scheduleMetrics = useMemo(() => {
     if (!userData?.goal?.targetDate) return null;
@@ -226,7 +306,34 @@ export default function StudentDashboard() {
         const storiesColRef = collection(db, 'users', uid, 'generatedStories');
         const q = query(storiesColRef, orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
-        const stories = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const stories = querySnapshot.docs.map(doc => {
+          const storyData = { id: doc.id, ...doc.data() };
+          
+          // createdAtフィールドがFirestoreのTimestampオブジェクトの場合は文字列に変換
+          if (storyData.createdAt && typeof storyData.createdAt === 'object' && storyData.createdAt.seconds) {
+            storyData.createdAt = new Date(storyData.createdAt.seconds * 1000).toLocaleDateString('ja-JP');
+          }
+          
+          // 既存のストーリーにsentences配列がない場合は作成
+          if (!storyData.sentences) {
+            const sentences = [];
+            if (storyData.story1 && storyData.translation1) {
+              sentences.push({
+                english: storyData.story1,
+                japanese: storyData.translation1
+              });
+            }
+            if (storyData.story2 && storyData.translation2) {
+              sentences.push({
+                english: storyData.story2,
+                japanese: storyData.translation2
+              });
+            }
+            storyData.sentences = sentences;
+          }
+          
+          return storyData;
+        });
         setPastStories(stories);
 
         const yearMonth = new Date().toISOString().slice(0, 7);
@@ -235,6 +342,9 @@ export default function StudentDashboard() {
 
     } catch (error) {
         console.error("Error fetching stories:", error);
+        // エラーが発生した場合でも空の配列を設定
+        setPastStories([]);
+        setMonthlyStory(null);
     } finally {
         setStoriesLoading(false);
     }
@@ -500,9 +610,37 @@ export default function StudentDashboard() {
           console.log(`テキストブック ${id} から取得した単語数:`, words.length);
         }
 
-        let filteredWords = combinedWords;
-        if (option?.levels?.length) {
-          filteredWords = filteredWords.filter(word => option.levels.includes(word.level));
+        // 単語の重複を除去（'word'プロパティを基準に）
+        const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.word, item])).values());
+        console.log('重複除去後の単語数:', uniqueWords.length);
+
+        let filteredWords = uniqueWords;
+        
+        // 英検級の場合は完全に独立したフィルタリング
+        if (option.id.startsWith('eiken-')) {
+          // 英検級の識別子を取得（例: 'eiken-5' → 5, 'eiken-pre2' → 'pre2', 'eiken-pre1' → 'pre1'）
+          const levelPart = option.id.split('-')[1];
+          let eikenLevel;
+          if (levelPart === 'pre2') {
+            eikenLevel = 'pre2';
+          } else if (levelPart === 'pre1') {
+            eikenLevel = 'pre1';
+          } else {
+            eikenLevel = parseInt(levelPart);
+          }
+          
+          filteredWords = filteredWords.filter(word => {
+            // eikenLevelsフィールドに該当する級が含まれている場合のみ表示
+            return word.eikenLevels && 
+                   Array.isArray(word.eikenLevels) && 
+                   word.eikenLevels.includes(eikenLevel);
+          });
+          console.log(`英検${eikenLevel}級フィルタ後:`, filteredWords.length);
+        } else if (option?.levels?.length) {
+          // 通常のレベル別の場合は既存のlevelフィールドを使用
+          filteredWords = filteredWords.filter(word => {
+            return option.levels.includes(word.level);
+          });
           console.log('レベルフィルタ後:', filteredWords.length);
         }
 
@@ -738,7 +876,28 @@ export default function StudentDashboard() {
         }
       }
 
-      const newStory = { id: new Date().toISOString().slice(0, 7), ...finalStoryData };
+      // sentences配列を作成
+      const sentences = [];
+      if (finalStoryData.story1 && finalStoryData.translation1) {
+        sentences.push({
+          english: finalStoryData.story1,
+          japanese: finalStoryData.translation1
+        });
+      }
+      if (finalStoryData.story2 && finalStoryData.translation2) {
+        sentences.push({
+          english: finalStoryData.story2,
+          japanese: finalStoryData.translation2
+        });
+      }
+
+      const newStory = { 
+        id: new Date().toISOString().slice(0, 7), 
+        title: '今月の長文',
+        createdAt: new Date().toLocaleDateString('ja-JP'),
+        sentences: sentences,
+        ...finalStoryData 
+      };
       setMonthlyStory(newStory);
       setPastStories(prevStories => [newStory, ...prevStories.filter(s => s.id !== newStory.id)]);
 
@@ -761,17 +920,25 @@ export default function StudentDashboard() {
     }
 
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+      alert('ログインしていません。');
+      return;
+    }
 
     try {
+      console.log('目標をリセットしています...');
+      
       // Reset goal data in Firestore
-      await updateDoc(doc(db, 'users', user.uid), {
+      const userDocRef = doc(db, 'users', user.uid);
+      await updateDoc(userDocRef, {
         goal: {
           targets: [],
           targetDate: null,
           isSet: false,
         }
-      }, { merge: true });
+      });
+
+      console.log('Firestoreの更新が完了しました');
 
       // Clear local state
       setUserData(prev => ({
@@ -783,11 +950,17 @@ export default function StudentDashboard() {
         }
       }));
 
-      // Navigate to goal setting
-      navigate('/set-goal');
+      console.log('ローカル状態の更新が完了しました');
+
+      // Show success message
+      alert('目標がリセットされました。新しい目標を設定してください。');
+
+      // Reload the page to trigger App.js useEffect
+      console.log('ページをリロードして目標設定画面に遷移します');
+      window.location.reload();
     } catch (error) {
       console.error('目標リセットエラー:', error);
-      alert('目標のリセットに失敗しました。');
+      alert(`目標のリセットに失敗しました: ${error.message}`);
     }
   };
   
@@ -817,7 +990,7 @@ export default function StudentDashboard() {
       case 'test':
         return <VocabularyCheckTest allWords={testWords} onTestComplete={handleTestComplete} />;
       case 'result':
-        return <TestResult level={testResultLevel} onRestart={() => setViewMode('select')} />;
+        return <TestResult level={testResultLevel} onRestart={() => {}} />;
       case 'select':
       default:
         const progressPercentage = userData?.progress?.percentage || 0;
@@ -940,9 +1113,90 @@ export default function StudentDashboard() {
         return (
           <>
             <div className="section-card">
-              <div className="dashboard-header">
+              <div className="dashboard-header" style={{ position: 'relative' }}>
                 <LevelBadge level={testResultLevel} />
+                {testResultLevel > 0 && (
+                <button
+                  onClick={startCheckTest}
+                  style={{ 
+                    position: 'absolute',
+                    bottom: '-8px',
+                    right: '-8px',
+                    fontSize: '0.7rem',
+                    padding: '4px 8px',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '12px',
+                    background: '#f8fafc',
+                    color: '#6b7280',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                    fontWeight: '500',
+                    height: '24px',
+                    minWidth: '60px',
+                    justifyContent: 'center',
+                    zIndex: 10,
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.background = '#e5e7eb';
+                    e.target.style.color = '#374151';
+                    e.target.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = '#f8fafc';
+                    e.target.style.color = '#6b7280';
+                    e.target.style.transform = 'scale(1)';
+                  }}
+                >
+                  <FaSyncAlt style={{ fontSize: '0.65rem' }} />
+                  再テスト
+                </button>
+                )}
               </div>
+
+              {/* 学習計画最適化ボタン */}
+              {showRetestPrompt && (
+                <div style={{ 
+                  marginTop: '12px', 
+                  padding: '8px 12px', 
+                  backgroundColor: '#fef3c7', 
+                  border: '1px solid #f59e0b', 
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <div style={{ fontSize: '0.85rem', color: '#92400e' }}>
+                    <span style={{ fontWeight: '500' }}>学習計画を最適化</span>
+                    <span style={{ marginLeft: '8px', opacity: 0.8 }}>しばらく実力テストを受けていません</span>
+                  </div>
+                  <button
+                    onClick={startCheckTest}
+                    style={{
+                      backgroundColor: '#f59e0b',
+                      color: 'white',
+                      border: 'none',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      fontSize: '0.8rem',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.backgroundColor = '#d97706';
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = '#f59e0b';
+                    }}
+                  >
+                    最適化
+                  </button>
+                </div>
+              )}
 
               <div className="progress-widget">
                 <div className="progress-bar">
@@ -1005,15 +1259,6 @@ export default function StudentDashboard() {
                 )}
               </div>
 
-              {showRetestPrompt && (
-                <div className="alert-card warning" onClick={startCheckTest}>
-                  <FaExclamationTriangle />
-                  <div>
-                    <strong>学習計画を最適化！</strong>
-                    <p>しばらく実力テストを受けていません。更新して最適プランを作りましょう。</p>
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="section-card">
@@ -1060,173 +1305,7 @@ export default function StudentDashboard() {
               </div>
             )}
 
-            <div className="card-style story-card">
-              <div className="story-card-header">
-                <div className="story-card-title">
-                  <FaMagic className="story-card-icon" />
-                  <h2>君が世界で最も嫌いな長文</h2>
-                </div>
-                <button 
-                  onClick={handleGenerateStory} 
-                  disabled={isGeneratingStory}
-                  className="story-generate-btn"
-                >
-                  {isGeneratingStory ? '生成中...' : 'ストーリーを生成'}
-                </button>
-              </div>
-              
-              {storiesLoading ? (
-                <div className="loading-container" style={{height: '100px'}}><div className="spinner"></div></div>
-              ) : monthlyStory ? (
-                <>
-                  <p className="story-subtitle">
-                    今月の長文です。何度も音読して完璧にしましょう。
-                  </p>
-                  <StoryDisplay storyData={monthlyStory} />
-                </>
-              ) : (
-                <p className="story-subtitle">
-                  今日の復習単語を使って、AIがオリジナルの短文と和訳を作成します。（月に1回まで）
-                </p>
-              )}
-            </div>
 
-            <div className="card-style">
-              <h2 className="section-title">過去の長文一覧</h2>
-              {storiesLoading ? (
-                  <div className="loading-container" style={{height: '50px'}}><div className="spinner"></div></div>
-              ) : pastStories.length > 0 ? (
-                  <div className="past-stories-list">
-                      {pastStories.map(story => (
-                          <details key={story.id} className="past-story-item">
-                              <summary>{story.id} の長文</summary>
-                              <StoryDisplay storyData={story} />
-                          </details>
-                      ))}
-                  </div>
-              ) : (
-                  <p style={{ color: '#64748b', fontSize: '0.9rem' }}>過去に生成されたストーリーはありません。</p>
-              )}
-            </div>
-
-            <div className="section-card">
-              <div className="tile-header">
-                <div>
-                  <h3 className="section-title">自由学習メニュー</h3>
-                  <p className="tile-caption">リラックスしながら、気になる教材を選んで学べます。</p>
-                </div>
-                {selectionMode === 'filter' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ 
-                      fontSize: '0.9rem', 
-                      color: 'var(--primary-color)', 
-                      fontWeight: '600',
-                      backgroundColor: 'var(--primary-light)',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '0.5rem'
-                    }}>
-                      選択中: {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
-                    </span>
-                    <button className="ghost-button" onClick={handleBackToMainMenu}>
-                      教材選択に戻る
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {selectionMode === 'main' ? (
-                <div className="list-group">
-                  {freeStudyOptions.map(({ id, label }) => (
-                    <button key={id} className="tile-button" onClick={() => handleSelectTextbook(id)}>
-                      <span>{label}</span>
-                      <FaBook />
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  <div className="tab-switch">
-                    <button
-                      className={filterTab === 'level' ? 'active' : ''}
-                      onClick={() => setFilterTab('level')}
-                    >
-                      レベル別
-                    </button>
-                    <button
-                      className={filterTab === 'pos' ? 'active' : ''}
-                      onClick={() => setFilterTab('pos')}
-                    >
-                      品詞別
-                    </button>
-                    <button
-                      className={filterTab === 'theme' ? 'active' : ''}
-                      onClick={() => setFilterTab('theme')}
-                    >
-                      意味別
-                    </button>
-                  </div>
-                  <div className="selection-grid">
-                    {filterTab === 'level' && (
-                      Object.entries(levelDescriptions).map(([level, info]) => {
-                        const levelWords = allWords.filter(word => word.level === Number(level));
-                        const progressKey = `${selectedTextbookId}_${level}`;
-                        const lastIndex = freeStudyProgress[progressKey] || 0;
-                        const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
-                        
-                        console.log('進捗表示:', {
-                          level: level,
-                          progressKey: progressKey,
-                          lastIndex: lastIndex,
-                          totalWords: levelWords.length,
-                          progressText: progressText,
-                          freeStudyProgress: freeStudyProgress
-                        });
-                        
-                        return (
-                          <button
-                            key={level}
-                            className="selection-card"
-                            disabled={!levelWords.length}
-                            onClick={() => startLearning('level', Number(level))}
-                          >
-                            <span className="selection-card-level">{info.label}</span>
-                            <span className="selection-card-desc">{info.equivalent}</span>
-                            <span className="selection-card-meta">目安: {info.wordsRequired.toLocaleString()}語</span>
-                            <span className="selection-card-progress">{progressText}</span>
-                          </button>
-                        );
-                      })
-                    )}
-                    {filterTab === 'pos' && (
-                      posDisplayOrder.map(pos => (
-                        <button
-                          key={pos}
-                          className="selection-card"
-                          onClick={() => startLearning('pos', pos)}
-                        >
-                          {pos}
-                        </button>
-                      ))
-                    )}
-                    {filterTab === 'theme' && (
-                      Object.entries(themeGroups).map(([themeId, { label }]) => {
-                        const hasWords = (themeGroups[themeId]?.words || []).length > 0;
-                        return (
-                          <button
-                            key={themeId}
-                            className="selection-card"
-                            disabled={!hasWords}
-                            onClick={() => startLearning('theme', themeId)}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
 
             {dailyPlan?.knowledgeHints && dailyPlan.knowledgeHints.length > 0 && (
               <div className="section-card">
@@ -1257,6 +1336,354 @@ export default function StudentDashboard() {
     }
   };
 
+  // タブバーコンポーネント
+  const TabBar = () => (
+    <div className="tab-bar">
+      <button 
+        className={`tab-item ${activeTab === 'home' ? 'active' : ''}`}
+        onClick={() => setActiveTab('home')}
+      >
+        <span className="tab-label">HOME</span>
+      </button>
+      <button 
+        className={`tab-item ${activeTab === 'story' ? 'active' : ''}`}
+        onClick={() => setActiveTab('story')}
+      >
+        <span className="tab-label">長文</span>
+      </button>
+      <button 
+        className={`tab-item ${activeTab === 'free-study' ? 'active' : ''}`}
+        onClick={() => setActiveTab('free-study')}
+      >
+        <span className="tab-label">自由学習</span>
+      </button>
+    </div>
+  );
+
+  // タブ別コンテンツのレンダリング
+  const renderTabContent = () => {
+    // フラッシュカードページの場合は、タブに関係なく適切なコンテンツを表示
+    if (viewMode === 'learn' || viewMode === 'review' || viewMode === 'test' || viewMode === 'result') {
+      return renderContent();
+    }
+    
+    // 通常のタブ表示
+    switch (activeTab) {
+      case 'home':
+        return renderContent();
+      case 'story':
+        return renderStoryContent();
+      case 'free-study':
+        return renderFreeStudyContent();
+      default:
+        return renderContent();
+    }
+  };
+
+  // 長文タブのコンテンツ
+  const renderStoryContent = () => (
+    <div className="story-tab-content">
+      <div className="section-card">
+        <h2 className="section-title">君が世界で最も嫌いな長文</h2>
+        <p className="section-description">英文とその和訳を交互に表示する長文学習機能です。</p>
+        
+        {storiesLoading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>長文データを読み込み中...</p>
+          </div>
+        ) : isGeneratingStory ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>長文を生成しています...</p>
+          </div>
+        ) : monthlyStory && monthlyStory.sentences && Array.isArray(monthlyStory.sentences) ? (
+          <div className="story-content">
+            <div className="story-header">
+              <h3>{monthlyStory.title || '長文'}</h3>
+              <p className="story-date">
+                {monthlyStory.createdAt ? 
+                  (typeof monthlyStory.createdAt === 'object' && monthlyStory.createdAt.seconds ? 
+                    new Date(monthlyStory.createdAt.seconds * 1000).toLocaleDateString('ja-JP') :
+                    monthlyStory.createdAt.toString()
+                  ) : ''
+                }
+              </p>
+            </div>
+            <div className="story-text">
+              {monthlyStory.sentences.map((sentence, index) => (
+                <div key={index} className="sentence-pair">
+                  <div className="english-sentence">
+                    {sentence.english ? highlightReviewWords(sentence.english, monthlyStory.usedWords || []) : ''}
+                  </div>
+                  <div className="japanese-sentence">{sentence.japanese || ''}</div>
+                </div>
+              ))}
+            </div>
+            
+            {/* 使用できなかった復習単語の表示 */}
+            {monthlyStory.unusedWords && monthlyStory.unusedWords.length > 0 && (
+              <div className="unused-words-section" style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #e9ecef' }}>
+                <h4 style={{ margin: '0 0 10px 0', color: '#6c757d', fontSize: '0.9rem' }}>使用できなかった復習単語</h4>
+                <div className="unused-words-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {monthlyStory.unusedWords.map((word, index) => (
+                    <span key={index} className="unused-word-tag" style={{
+                      backgroundColor: '#e9ecef',
+                      color: '#6c757d',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.8rem',
+                      border: '1px solid #dee2e6'
+                    }}>
+                      {word}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <button 
+              className="generate-new-story-btn"
+              onClick={handleGenerateStory}
+            >
+              新しい長文を生成
+            </button>
+          </div>
+        ) : (
+          <div className="no-story">
+            <p>まだ長文が生成されていません。</p>
+            <button 
+              className="generate-story-btn"
+              onClick={handleGenerateStory}
+            >
+              長文を生成する
+            </button>
+          </div>
+        )}
+        
+        {/* 過去の長文一覧 */}
+        {console.log('長文タブ - pastStories:', pastStories, 'storiesLoading:', storiesLoading, 'pastStories.length:', pastStories.length)}
+        {pastStories.length > 0 && (
+          <div className="section-card" style={{ marginTop: '20px' }}>
+            <h3 className="section-title">過去の長文一覧</h3>
+            {storiesLoading ? (
+              <div className="loading-container" style={{height: '50px'}}>
+                <div className="loading-spinner"></div>
+              </div>
+            ) : (
+              <div className="past-stories-list">
+                {pastStories.map(story => {
+                  console.log('長文データ詳細:', story.id, story);
+                  return (
+                    <details key={story.id} className="past-story-item">
+                      <summary style={{ 
+                        padding: '1rem', 
+                        backgroundColor: '#f8f9fa', 
+                        cursor: 'pointer', 
+                        fontWeight: '600',
+                        borderRadius: '8px',
+                        marginBottom: '8px',
+                        border: '1px solid #e9ecef'
+                      }}>
+                        {story.id} の長文 {story.sentences ? `(${story.sentences.length}文)` : '(文なし)'}
+                      </summary>
+                      <div style={{ padding: '1rem', backgroundColor: 'white', borderRadius: '8px' }}>
+                        <div className="story-text">
+                          {story.sentences && story.sentences.length > 0 ? (
+                            <>
+                              {story.sentences.map((sentence, index) => (
+                                <div key={index} className="sentence-pair">
+                                  <div className="english-sentence">
+                                    {sentence.english ? highlightReviewWords(sentence.english, story.usedWords || []) : ''}
+                                  </div>
+                                  <div className="japanese-sentence">{sentence.japanese || ''}</div>
+                                </div>
+                              ))}
+                              
+                              {/* 使用できなかった復習単語の表示 */}
+                              {story.unusedWords && story.unusedWords.length > 0 && (
+                                <div className="unused-words-section" style={{ marginTop: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #e9ecef' }}>
+                                  <h5 style={{ margin: '0 0 8px 0', color: '#6c757d', fontSize: '0.8rem' }}>使用できなかった復習単語</h5>
+                                  <div className="unused-words-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                    {story.unusedWords.map((word, index) => (
+                                      <span key={index} className="unused-word-tag" style={{
+                                        backgroundColor: '#e9ecef',
+                                        color: '#6c757d',
+                                        padding: '3px 6px',
+                                        borderRadius: '3px',
+                                        fontSize: '0.75rem',
+                                        border: '1px solid #dee2e6'
+                                      }}>
+                                        {word}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <p style={{ color: '#64748b', fontStyle: 'italic' }}>
+                              この長文には文が含まれていません。
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* 長文データが存在しない場合の表示 */}
+        {!storiesLoading && pastStories.length === 0 && (
+          <div className="section-card" style={{ marginTop: '20px' }}>
+            <h3 className="section-title">過去の長文一覧</h3>
+            <p style={{ color: '#64748b', fontSize: '0.9rem', textAlign: 'center', padding: '2rem' }}>
+              過去に生成された長文はありません。
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // 自由学習タブのコンテンツ
+  const renderFreeStudyContent = () => (
+    <div className="free-study-tab-content">
+      <div className="section-card">
+        <div className="tile-header">
+          <div>
+            <h3 className="section-title">自由学習メニュー</h3>
+            <p className="tile-caption">リラックスしながら、気になる教材を選んで学べます。</p>
+          </div>
+          {selectionMode === 'filter' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span style={{ 
+                fontSize: '0.9rem', 
+                color: 'var(--primary-color)', 
+                fontWeight: '600',
+                backgroundColor: 'var(--primary-light)',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.5rem'
+              }}>
+                選択中: {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
+              </span>
+              <button className="ghost-button" onClick={handleBackToMainMenu}>
+                教材選択に戻る
+              </button>
+            </div>
+          )}
+        </div>
+
+        {selectionMode === 'main' ? (
+          <div className="list-group">
+            {freeStudyOptions.map(({ id, label }) => (
+              <button key={id} className="tile-button" onClick={() => handleSelectTextbook(id)}>
+                <span>{label}</span>
+                <FaBook />
+              </button>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="tab-switch">
+              <button
+                className={filterTab === 'level' ? 'active' : ''}
+                onClick={() => setFilterTab('level')}
+              >
+                レベル別
+              </button>
+              <button
+                className={filterTab === 'pos' ? 'active' : ''}
+                onClick={() => setFilterTab('pos')}
+              >
+                品詞別
+              </button>
+              <button
+                className={filterTab === 'theme' ? 'active' : ''}
+                onClick={() => setFilterTab('theme')}
+              >
+                意味別
+              </button>
+            </div>
+            <div className="selection-grid">
+              {filterTab === 'level' && (
+                Object.entries(selectedTextbookId && selectedTextbookId.startsWith('eiken-') ? eikenLevelDescriptions : levelDescriptions).map(([level, info]) => {
+                  const levelWords = allWords.filter(word => word.level === Number(level));
+                  const progressKey = `${selectedTextbookId}_${level}`;
+                  const lastIndex = freeStudyProgress[progressKey] || 0;
+                  const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
+                  
+                  return (
+                    <button
+                      key={level}
+                      className="selection-card"
+                      disabled={!levelWords.length}
+                      onClick={() => startLearning('level', Number(level))}
+                    >
+                      <span className="selection-card-level">{info.label}</span>
+                      <span className="selection-card-desc">{info.equivalent}</span>
+                      <span className="selection-card-meta">目安: {info.wordsRequired.toLocaleString()}語</span>
+                      <span className="selection-card-progress">{progressText}</span>
+                    </button>
+                  );
+                })
+              )}
+              {filterTab === 'pos' && (
+                (() => {
+                  // デバッグ: サンプル単語の品詞データを確認
+                  if (allWords.length > 0) {
+                    console.log('サンプル単語の品詞データ:', allWords.slice(0, 5).map(w => ({
+                      word: w.word,
+                      partOfSpeech: w.partOfSpeech,
+                      type: typeof w.partOfSpeech
+                    })));
+                  }
+                  return posDisplayOrder.map(pos => (
+                  <button
+                    key={pos}
+                    className="selection-card"
+                    onClick={() => startLearning('pos', pos)}
+                  >
+                    <span className="selection-card-level">{posLabels[pos]}</span>
+                    <span className="selection-card-desc">{posDescriptions[pos]}</span>
+                    <span className="selection-card-meta">
+                      単語数: {(() => {
+                        const posAbbr = posMap[pos] || pos;
+                        const count = allWords.filter(w => {
+                          return w.partOfSpeech && w.partOfSpeech.includes(posAbbr);
+                        }).length;
+                        console.log(`品詞 ${pos} (${posAbbr}): ${count}語`);
+                        return count;
+                      })()}語
+                    </span>
+                  </button>
+                  ));
+                })()
+              )}
+              {filterTab === 'theme' && (
+                Object.entries(themeGroups).map(([theme, { words }]) => (
+                  <button
+                    key={theme}
+                    className="selection-card"
+                    onClick={() => startLearning('theme', theme)}
+                  >
+                    <span className="selection-card-level">{themeLabels[theme]}</span>
+                    <span className="selection-card-desc">{themeDescriptions[theme]}</span>
+                    <span className="selection-card-meta">
+                      単語数: {words.length}語
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -1266,9 +1693,63 @@ export default function StudentDashboard() {
           <button onClick={handleLogout} className="logout-btn">ログアウト</button>
         </div>
       </header>
+      
+      {/* 初回テストと学習計画最適化のボタン */}
+      {testResultLevel === 0 && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && (
+        <div className="initial-test-banner" style={{
+          backgroundColor: '#3b82f6',
+          color: 'white',
+          padding: '16px 20px',
+          margin: '0 20px 20px 20px',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+        }}>
+          <div>
+            <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold' }}>
+              🎯 単語力チェックテスト
+            </h3>
+            <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>
+              あなたの現在の単語力を診断して、最適な学習計画を作成します
+            </p>
+          </div>
+          <button
+            onClick={startCheckTest}
+            style={{
+              backgroundColor: 'white',
+              color: '#3b82f6',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#f8fafc';
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'white';
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+            }}
+          >
+            テストを開始
+          </button>
+        </div>
+      )}
+      
       <main className="card-main">
-        {renderContent()}
+        {renderTabContent()}
       </main>
+      {/* フラッシュカードページではタブバーを非表示 */}
+      {viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && <TabBar />}
     </div>
   );
 }
