@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup, FaPlay, FaStop } from 'react-icons/fa';
+import AnswerControls from './components/learning/AnswerControls';
 import { initialize, speak } from './logic/speechUtils';
 import logger from './logic/logger';
 
@@ -1273,6 +1274,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           </div>
         </motion.div>
       </div>
+
+      {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
+      <AnswerControls
+        onCorrect={handleCorrect}
+        onIncorrect={handleIncorrect}
+        hint="スワイプでも回答できます（右: わかった / 左: もう一度）"
+      />
+
       {/* プログレスバー */}
       <div style={{ 
         margin: '20px auto', 
