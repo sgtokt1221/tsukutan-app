@@ -14,6 +14,7 @@ import { buildThemeGroups, themeLabels, themeDescriptions } from './logic/themeM
 import AnalyticsPanel from './components/student/AnalyticsPanel';
 import StoryPanel from './components/student/StoryPanel';
 import { useBookmarks } from './logic/useBookmarks';
+import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
 import { FaBook, FaSyncAlt, FaMagic, FaStar } from 'react-icons/fa';
@@ -1563,6 +1564,11 @@ export default function StudentDashboard() {
                   sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
                   title={currentLearningMode === 'bookmark' ? '毎日みる単語' : undefined}
+                  onWordAnswered={
+                    (currentLearningMode === 'daily' || currentLearningMode === 'extra') && dailyPlan.dateKey
+                      ? (wordId) => markNewWordAnswered(auth.currentUser?.uid, dailyPlan.dateKey, wordId)
+                      : undefined
+                  }
                 />;
       case 'review':
         return <ReviewFlashcard 
