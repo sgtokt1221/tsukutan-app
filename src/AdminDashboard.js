@@ -444,7 +444,8 @@ function AdminDashboard() {
       // 生徒側の日次プランと同じ条件で除外する。
       const reviewWords = reviewWordsSnapshot.docs
         .map(d => ({ ...d.data(), id: d.id }))
-        .filter(word => !word.migratedTo);
+        // 習得済みは復習リストの件数には数えない（履歴として残しているだけ）
+        .filter(word => !word.migratedTo && word.status !== 'mastered');
 
       // 生徒側と Functions は generatedStories に書く。
       // ここが 'stories' を読んでいたため、管理画面ではストーリーが常に空だった。
