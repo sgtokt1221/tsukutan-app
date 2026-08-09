@@ -3,8 +3,12 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
-import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup, FaPlay, FaStop } from 'react-icons/fa';
+import { FaUndo, FaArrowLeft, FaArrowUp, FaPlay, FaStop } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
+import SessionHeader from './components/learning/SessionHeader';
+import ModeTabs from './components/learning/ModeTabs';
+import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
+import { useWordbookZoom } from './logic/useWordbookZoom';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
@@ -16,10 +20,13 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [graduatedCount, setGraduatedCount] = useState(0);
   const [viewMode, setViewMode] = useState('flashcard'); // 'flashcard' or 'wordbook'
   const [revealedCards, setRevealedCards] = useState(new Set());
-  const [longPressCards] = useState(new Set());
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
+  // 文字サイズは学習カードと共有する
+  const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
+  // 先頭へ戻るのスクロール対象
+  const wordbookShellRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -153,6 +160,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   // 復習モード用のハンドラー関数
   const handleRevealStart = (cardIndex) => {
+    if (revealedCards.has(cardIndex)) return;
+    // 学習カードと同じく、意味が見えるのと同時に英語→日本語で読み上げる
+    const word = sessionWords[cardIndex];
+    if (word) speakWordThenMeaning(word.word, word.meaning || word.japanese || word.translation);
     setRevealedCards(prev => new Set([...prev, cardIndex]));
   };
 
@@ -801,108 +812,28 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   // 単語帳モードのレンダリング
   const renderWordbookMode = () => (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      backgroundColor: '#f8fafc',
-      overflow: 'auto'
-    }}>
-      {/* ページトップ用のアンカー */}
-      <div id="page-top" style={{ position: 'absolute', top: 0, left: 0, width: '1px', height: '1px' }}></div>
-      {/* ヘッダー */}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '16px 20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-      }}>
-        <div>
-          <h2 style={{
-            margin: 0,
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: '#1f2937'
-          }}>
-            復習単語帳モード ({sessionWords.length}語)
-          </h2>
-          <p style={{
-            margin: '4px 0 0 0',
-            fontSize: '0.875rem',
-            color: '#6b7280'
-          }}>
-            右側長押しで表示 • 左右スワイプで評価 • 長押し+上スワイプで復習完了
-          </p>
-          <div style={{
-            margin: '8px 0 0 0',
-            fontSize: '0.75rem',
-            color: '#10b981',
-            fontWeight: '600'
-          }}>
-            進捗: {wordbookProgress} / {sessionWords.length} 語
-            {wordbookProgress > 0 && (
-              <span style={{ marginLeft: '8px' }}>
-                ({Math.round((wordbookProgress / sessionWords.length) * 100)}%)
-              </span>
-            )}
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            onClick={() => setViewMode('flashcard')}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <FaLayerGroup /> フラッシュカード
-          </button>
-          <button
-            onClick={onBack}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#dc2626',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <FaArrowLeft /> 戻る
-          </button>
-        </div>
+    <div
+      className="wordbook-shell"
+      ref={wordbookShellRef}
+      style={{ '--wordbook-zoom': wordbookZoom / 100 }}
+    >
+      {/* 学習カードと同じ骨格にする。以前はここだけ独自のヘッダー・
+          独自の色・独自のボタンだった。 */}
+      <div className="wordbook-header">
+        <SessionHeader
+          title={`復習単語帳（${sessionWords.length}語）`}
+          current={wordbookProgress}
+          total={sessionWords.length}
+          onBack={handleBackButtonClick}
+          backLabel="終了"
+        />
+        <ModeTabs value="wordbook" onChange={setViewMode}>
+          <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
+        </ModeTabs>
       </div>
 
-      {/* 単語帳コンテンツ */}
-      <div style={{
-        flex: 1,
-        padding: '20px',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        width: '100%'
-      }}>
-        <div style={{
-          display: 'grid',
-          gap: '16px'
-        }}>
+      <div className="wordbook-list">
+        <div className="wordbook-list__grid">
           {sessionWords.slice(wordbookProgress).map((word, index) => {
             const actualIndex = wordbookProgress + index;
             
@@ -910,17 +841,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
             <motion.div
               key={actualIndex}
               data-card-index={actualIndex}
-              style={{ 
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                overflow: 'hidden',
-                border: '1px solid #e5e7eb',
-                position: 'relative',
-                cursor: 'grab',
-                transition: 'transform 0.1s ease-out, background-color 0.2s ease-out',
-                touchAction: 'none' // ブラウザのデフォルトタッチ動作を無効化
-              }}
+              className="wordbook-card"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -928,158 +849,56 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                minHeight: window.innerWidth <= 768 ? '80px' : '120px' // スマホでは高さを小さく
-              }}>
+              <div className="wordbook-card__grid">
                 {/* 左側：英単語 */}
-                <div style={{
-                  padding: window.innerWidth <= 768 ? '12px' : '24px', // スマホではパディングを小さく
-                  borderRight: '1px solid #e5e7eb',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  backgroundColor: '#fafafa'
-                }}>
-                  <div style={{
-                    fontSize: window.innerWidth <= 768 ? '1.5rem' : '2rem', // スマホではフォントサイズを小さく
-                    fontWeight: 'bold',
-                    color: '#1f2937',
-                    marginBottom: '8px',
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                  onClick={() => speak(word.word, 'en-US')}
+                <div className="wordbook-card__side wordbook-card__left">
+                  <button
+                    type="button"
+                    className="wordbook-word"
+                    onClick={() => speak(word.word, 'en-US')}
+                    aria-label={`${word.word} を読み上げる`}
                   >
                     {word.word}
-                  </div>
-                  <div style={{
-                    fontSize: '1rem',
-                    color: '#6b7280',
-                    fontStyle: 'italic'
-                  }}>
-                    {(word.pronunciation || getPronunciation(word.word))
-                      ? `[${word.pronunciation || getPronunciation(word.word)}]`
-                      : ''}
-                  </div>
-                  <div style={{
-                    fontSize: '0.75rem',
-                    color: '#9ca3af',
-                    marginTop: '4px'
-                  }}>
-                    {index + 1} / {sessionWords.length}
-                  </div>
+                  </button>
+                  {(word.pronunciation || getPronunciation(word.word)) && (
+                    <div className="wordbook-pronunciation">
+                      [{word.pronunciation || getPronunciation(word.word)}]
+                    </div>
+                  )}
                 </div>
 
                 {/* 右側：和訳・例文（復習モード長押し機能 + 赤シート機能） */}
-                <div 
-                  style={{
-                    padding: window.innerWidth <= 768 ? '12px' : '24px', // スマホではパディングを小さく
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    backgroundColor: longPressCards.has(index) ? 'rgba(245, 158, 11, 0.1)' : 'transparent'
-                  }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation(); // カード全体のイベントを止める
-                    handleRevealStart(index);
-                  }}
-                  onMouseUp={(e) => {
-                    e.stopPropagation();
-                    handleRevealEnd(index);
-                  }}
-                  onMouseLeave={(e) => {
-                    e.stopPropagation();
-                    handleRevealEnd(index);
-                  }}
-                  onTouchStart={(e) => {
-                    e.stopPropagation();
-                    handleRevealStart(index);
-                  }}
-                  onTouchEnd={(e) => {
-                    e.stopPropagation();
-                    handleRevealEnd(index);
-                  }}
-                >
-                  {/* 赤シートオーバーレイ */}
-                  {!revealedCards.has(index) && !longPressCards.has(index) && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: 'rgba(220, 38, 38, 0.8)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '0 12px 12px 0',
-                      zIndex: 2
-                    }}>
-                      <div style={{
-                        color: 'white',
-                        fontSize: '1rem',
-                        fontWeight: '500',
-                        textAlign: 'center',
-                        padding: '8px'
-                      }}>
-                        長押しで答えを表示
-                      </div>
-                    </div>
+                <div className="wordbook-card__side wordbook-card__right">
+                  {/* 赤シート。長押しを必須にせず、押せば開くボタンにする。
+                      キーボードでも開ける（計画書7.5）。 */}
+                  {!revealedCards.has(index) && (
+                    <button
+                      type="button"
+                      className="wordbook-veil"
+                      onClick={(e) => { e.stopPropagation(); handleRevealStart(index); }}
+                      aria-label={`${word.word} の答えを見る`}
+                    >
+                      答えを見る
+                    </button>
+                  )}
+                  {revealedCards.has(index) && (
+                    <button
+                      type="button"
+                      className="wordbook-veil-hide"
+                      onClick={(e) => { e.stopPropagation(); handleRevealEnd(index); }}
+                    >
+                      隠す
+                    </button>
                   )}
 
-                  {/* 復習モード用オーバーレイ（上部のみ） */}
-                  
-                  {/* 実際のコンテンツ */}
-                  <div style={{
-                    opacity: revealedCards.has(index) || longPressCards.has(index) ? 1 : 0.3,
-                    transition: 'opacity 0.2s ease'
-                  }}>
-                    <div style={{
-                      fontSize: window.innerWidth <= 768 ? '1rem' : '1.25rem', // スマホではフォントサイズを小さく
-                      fontWeight: '600',
-                      color: '#1f2937',
-                      marginBottom: window.innerWidth <= 768 ? '8px' : '16px', // スマホではマージンを小さく
-                      lineHeight: '1.4',
-                      cursor: 'pointer',
-                      userSelect: 'none'
-                    }}
-                    onClick={() => {
-                      const japaneseText = word.meaning || word.japanese || word.translation;
-                      if (japaneseText) {
-                        speak(japaneseText, 'ja-JP');
-                      }
-                    }}
-                    >
-                      {word.meaning}
-                    </div>
-                    
+                  <div className={revealedCards.has(index) ? 'wordbook-answer' : 'wordbook-answer wordbook-answer--hidden'}>
+                    <div className="wordbook-meaning">{word.meaning}</div>
+
                     {word.example && (
-                      <div style={{
-                        marginBottom: '8px'
-                      }}>
-                        <div style={{
-                          fontSize: '0.95rem',
-                          color: '#4b5563',
-                          fontStyle: 'italic',
-                          marginBottom: '4px',
-                          lineHeight: '1.4'
-                        }}>
-                          {word.example}
-                        </div>
+                      <div className="wordbook-example">
+                        <div className="wordbook-example__en">{word.example}</div>
                         {word.exampleJa && (
-                          <div style={{
-                            fontSize: '0.875rem',
-                            color: '#6b7280',
-                            lineHeight: '1.4'
-                          }}>
-                            {word.exampleJa}
-                          </div>
+                          <div className="wordbook-example__ja">{word.exampleJa}</div>
                         )}
                       </div>
                     )}
@@ -1092,65 +911,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         </div>
       </div>
 
-      {/* 上に戻るボタン */}
-      <div style={{
-        position: 'fixed',
-        bottom: '100px',
-        right: '20px',
-        zIndex: 1000
-      }}>
+      <div className="wordbook-to-top">
         <button
-          onClick={() => {
-            logger.debug('上に戻るボタンがクリックされました');
-            
-            // 単語帳モードのコンテナ要素を取得
-            const wordbookContainer = document.querySelector('[style*="height: 100vh"][style*="overflow: auto"]');
-            logger.debug('単語帳コンテナ:', wordbookContainer);
-            
-            if (wordbookContainer) {
-              logger.debug('コンテナのスクロール位置:', wordbookContainer.scrollTop);
-              
-              // コンテナ要素にスクロール
-              wordbookContainer.scrollTo({ top: 0, behavior: 'smooth' });
-              
-              // フォールバック
-              setTimeout(() => {
-                wordbookContainer.scrollTop = 0;
-                logger.debug('フォールバック後の位置:', wordbookContainer.scrollTop);
-              }, 100);
-            } else {
-              // フォールバック: ウィンドウスクロール
-              logger.debug('ウィンドウスクロール実行');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }}
-          style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.2rem',
-            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#2563eb';
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = '#3b82f6';
-            e.target.style.transform = 'translateY(0px)';
-            e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
-          }}
+          type="button"
+          onClick={() => wordbookShellRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="wordbook-to-top__button"
+          aria-label="先頭へ戻る"
         >
-          ↑
+          <FaArrowUp aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -1163,81 +931,29 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-      {/* モード切り替えボタンと自動読み上げボタン */}
-      <div style={{
-        position: 'fixed',
-        top: '120px',
-        right: '20px',
-        zIndex: 99999,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px'
-      }}>
-        {/* 自動読み上げボタン */}
-        <button
-          onClick={autoPlay ? stopAutoPlay : startAutoPlay}
-          style={{
-            padding: '10px 18px',
-            backgroundColor: autoPlay ? '#dc2626' : '#10b981',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: autoPlay ? '0 4px 12px rgba(220, 38, 38, 0.3)' : '0 4px 12px rgba(16, 185, 129, 0.3)',
-            transition: 'all 0.2s ease',
-            fontWeight: '600'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = autoPlay ? '#b91c1c' : '#059669';
-            e.target.style.transform = 'translateY(-2px)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = autoPlay ? '#dc2626' : '#10b981';
-            e.target.style.transform = 'translateY(0px)';
-          }}
-        >
-          {autoPlay ? <FaStop /> : <FaPlay />} 
-          {autoPlay ? '停止' : '自動読み上げ'}
-        </button>
-        
-        {/* 単語帳モードボタン */}
-        <button
-          onClick={() => setViewMode('wordbook')}
-          style={{
-            padding: '10px 18px',
-            backgroundColor: '#f59e0b',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-            transition: 'all 0.2s ease',
-            fontWeight: '600'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#d97706';
-            e.target.style.transform = 'translateY(-2px)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = '#f59e0b';
-            e.target.style.transform = 'translateY(0px)';
-          }}
-        >
-          <FaBook /> 単語帳モード
-        </button>
-      </div>
+      {/* 戻る・セッション名・現在数・進捗をヘッダーにまとめる。
+          モード切替はヘッダー直下のアンダータブに置く。
+          以前は画面右上に浮かせた原色のボタン2つだった。 */}
+      <SessionHeader
+        title="復習"
+        current={currentIndex + 1}
+        total={sessionWords.length}
+        onBack={handleBackButtonClick}
+        backLabel="終了"
+        actions={(
+          <button
+            type="button"
+            className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
+            onClick={autoPlay ? stopAutoPlay : startAutoPlay}
+            aria-pressed={autoPlay}
+            aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
+          >
+            {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+          </button>
+        )}
+      />
+      <ModeTabs value="flashcard" onChange={setViewMode} />
 
-      <div className="test-header">
-        <h3>復習モード</h3>
-      </div>
       <div id="flashcard-container">
         <motion.div
           key={currentIndex}
@@ -1285,109 +1001,18 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         onIncorrect={handleIncorrect}
       />
 
-      {/* プログレスバー */}
-      <div style={{ 
-        margin: '20px auto', 
-        maxWidth: '90vw',
-        padding: '0 20px'
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: '10px'
-        }}>
-          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-            {currentIndex + 1} / {sessionWords.length}
-          </span>
-          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-            復習モード
-          </span>
-        </div>
-        <div style={{
-          width: '100%',
-          height: '6px',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '3px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${((currentIndex + 1) / sessionWords.length) * 100}%`,
-            height: '100%',
-            backgroundColor: '#3b82f6',
-            transition: 'width 0.3s ease'
-          }} />
-        </div>
-      </div>
-
-      {/* ナビゲーションボタン */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        padding: '0 20px',
-        marginTop: '20px',
-        gap: '15px'
-      }}>
-        <button 
-          onClick={handlePrev} 
+      {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く */}
+      <div className="session-footer">
+        <button
+          type="button"
+          className="ghost-button"
+          onClick={handlePrev}
           disabled={currentIndex === 0}
-          style={{
-            flex: 1,
-            padding: '12px 16px',
-            backgroundColor: currentIndex === 0 ? '#f3f4f6' : '#6b7280',
-            color: currentIndex === 0 ? '#9ca3af' : 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px'
-          }}
-          onMouseOver={(e) => {
-            if (currentIndex > 0) {
-              e.target.style.backgroundColor = '#4b5563';
-            }
-          }}
-          onMouseOut={(e) => {
-            if (currentIndex > 0) {
-              e.target.style.backgroundColor = '#6b7280';
-            }
-          }}
         >
-          <FaUndo /> 前の単語
+          <FaUndo aria-hidden="true" /> 前の単語
         </button>
-        
-        <button 
-          onClick={handleBackButtonClick}
-          style={{
-            flex: 1,
-            padding: '12px 16px',
-            backgroundColor: '#dc2626',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#b91c1c';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = '#dc2626';
-          }}
-        >
-          <FaArrowLeft /> 前の画面に戻る
+        <button type="button" className="secondary-action" onClick={handleBackButtonClick}>
+          <FaArrowLeft aria-hidden="true" /> 前の画面に戻る
         </button>
       </div>
     </div>
