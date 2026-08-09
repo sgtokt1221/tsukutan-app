@@ -535,3 +535,88 @@
     gap: 8px;
   }
 }
+
+/* ===== きろくページ: 基準色に合わせ直す =====
+   もともと灰・青のままで、アプリの色（黄緑・オリーブ）と別物に見えていた。 */
+.analytics-tab-content .section-header h3 {
+  color: var(--color-ink-olive);
+  font-family: var(--font-family-heading);
+}
+
+.analytics-tab-content .section-divider {
+  background: linear-gradient(90deg, var(--color-lime-border), transparent);
+  height: 2px;
+}
+
+.analytics-tab-content .stats-grid {
+  /* 250px だと携帯で1枚ずつ縦に並び、画面が間延びしていた */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-12);
+}
+
+.analytics-tab-content .stat-card {
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-16);
+  box-shadow: var(--shadow-1);
+}
+
+.analytics-tab-content .stat-card:hover {
+  box-shadow: var(--shadow-2);
+  border-color: var(--color-lime-border);
+}
+
+.analytics-tab-content .stat-label {
+  color: var(--color-olive-muted);
+}
+
+.analytics-tab-content .stat-value {
+  color: var(--color-ink-olive);
+  font-family: var(--font-family-heading);
+}
+
+.analytics-tab-content .stat-icon {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ===== 推移グラフ ===== */
+.trend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-12);
+}
+
+.trend-card {
+  padding: var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.trend-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+}
+
+.trend-card__label {
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+.trend-card__now {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.trend-chart {
+  position: relative;
+}
