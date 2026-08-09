@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "ASSESSMENT_RANK_SYSTEM_PLAN.md 3.2 の初期換算テーブル。正式な境界は実測データで再調整する。",
+  "note": "ASSESSMENT_RANK_SYSTEM_PLAN.md 3.2 の初期換算テーブル。正式な境界は実測データで再調整する。 紋章はベタ塗り＋白抜き文字。色はすべて白文字でコントラスト比4.5:1以上を満たす濃さにしてある。",
   "scoreMin": 0,
   "scoreMax": 1000,
   "ranks": [
@@ -10,9 +10,14 @@
       "max": 149,
       "cefr": "Pre-A1",
       "eiken": "英検5級相当の目安",
-      "toeic": { "min": 10, "max": 115 },
+      "toeic": {
+        "min": 10,
+        "max": 115
+      },
       "style": "plain",
-      "locked": false
+      "locked": false,
+      "color": "#64748B",
+      "faceColor": "#F1F5F9"
     },
     {
       "id": "D",
@@ -20,9 +25,14 @@
       "max": 274,
       "cefr": "A1",
       "eiken": "英検4級相当の目安",
-      "toeic": { "min": 120, "max": 220 },
+      "toeic": {
+        "min": 120,
+        "max": 220
+      },
       "style": "soft",
-      "locked": false
+      "locked": false,
+      "color": "#9A3412",
+      "faceColor": "#FFF7ED"
     },
     {
       "id": "C",
@@ -30,9 +40,14 @@
       "max": 424,
       "cefr": "A2前半",
       "eiken": "英検3級相当の目安",
-      "toeic": { "min": 225, "max": 380 },
+      "toeic": {
+        "min": 225,
+        "max": 380
+      },
       "style": "double",
-      "locked": false
+      "locked": false,
+      "color": "#475569",
+      "faceColor": "#F8FAFC"
     },
     {
       "id": "B",
@@ -40,9 +55,14 @@
       "max": 574,
       "cefr": "A2後半",
       "eiken": "英検準2級〜準2級プラス相当の目安",
-      "toeic": { "min": 385, "max": 545 },
+      "toeic": {
+        "min": 385,
+        "max": 545
+      },
       "style": "double-gloss",
-      "locked": false
+      "locked": false,
+      "color": "#A16207",
+      "faceColor": "#FEFCE8"
     },
     {
       "id": "A",
@@ -50,9 +70,14 @@
       "max": 724,
       "cefr": "B1",
       "eiken": "英検2級相当の目安",
-      "toeic": { "min": 550, "max": 780 },
+      "toeic": {
+        "min": 550,
+        "max": 780
+      },
       "style": "bold",
-      "locked": false
+      "locked": false,
+      "color": "#4D7C0F",
+      "faceColor": "#F7FEE7"
     },
     {
       "id": "S",
@@ -60,9 +85,14 @@
       "max": 849,
       "cefr": "B2",
       "eiken": "英検準1級相当の目安",
-      "toeic": { "min": 785, "max": 940 },
+      "toeic": {
+        "min": 785,
+        "max": 940
+      },
       "style": "aura",
-      "locked": false
+      "locked": false,
+      "color": "#2563EB",
+      "faceColor": "#EFF6FF"
     },
     {
       "id": "SS",
@@ -70,10 +100,15 @@
       "max": 1000,
       "cefr": "C1",
       "eiken": "英検1級相当の目安",
-      "toeic": { "min": 945, "max": 990 },
+      "toeic": {
+        "min": 945,
+        "max": 990
+      },
       "style": "crest",
       "locked": true,
-      "lockedReason": "C1相当の問題バンクが未整備のため、正式判定は行わない（計画書2.3）"
+      "lockedReason": "C1相当の問題バンクが未整備のため、正式判定は行わない（計画書2.3）",
+      "color": "#6D28D9",
+      "faceColor": "#F5F3FF"
     }
   ],
   "levelToScore": {
