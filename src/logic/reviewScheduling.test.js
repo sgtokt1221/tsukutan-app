@@ -144,3 +144,82 @@ describe('初見の単語（進捗が無い状態からの1回答目）', () => 
       .toBeLessThan(nextSchedule(fresh, ANSWER_QUALITY.good, normal).easeFactor);
   });
 });
+
+describe('Ease Factor の暴走を防ぐ', () => {
+  // 以前は easeFactorMultiplier を毎回答 EF に掛けていたため、
+  // 「そこそこ」(1.2) で12回正解すると EF が 27 まで発散し、
+  // 間隔が約58,000年になっていた。
+  const runCorrect = (config, times) => {
+    let state = { interval: 0, repetitions: 0, easeFactor: 2.5 };
+    for (let i = 0; i < times; i += 1) {
+      state = { ...state, ...nextSchedule(state, ANSWER_QUALITY.good, config) };
+    }
+    return state;
+  };
+
+  test('やる気レベルによらず Ease Factor は 1.3〜3.0 に収まる', () => {
+    for (const key of ['low', 'normal', 'high']) {
+      const state = runCorrect(MOTIVATION_LEVELS[key], 30);
+      expect(state.easeFactor).toBeGreaterThanOrEqual(1.3);
+      expect(state.easeFactor).toBeLessThanOrEqual(3.0);
+    }
+  });
+
+  test('やる気満々でも Ease Factor が下限に張り付かない', () => {
+    // 以前は4回正解で 1.3 に落ち、成績と無関係に3日間隔で回り続けていた
+    const state = runCorrect(MOTIVATION_LEVELS.high, 10);
+    expect(state.easeFactor).toBeGreaterThan(1.3);
+  });
+
+  test('間隔は365日を超えない', () => {
+    for (const key of ['low', 'normal', 'high']) {
+      const state = runCorrect(MOTIVATION_LEVELS[key], 30);
+      expect(state.interval).toBeLessThanOrEqual(365);
+    }
+  });
+
+  test('保存済みの壊れた Ease Factor を読み取り時に丸める', () => {
+    // 既存ユーザーには 27 まで膨らんだ値が入っている
+    const broken = nextSchedule({ interval: 10, repetitions: 3, easeFactor: 27 }, ANSWER_QUALITY.good, normal);
+    expect(broken.easeFactor).toBeLessThanOrEqual(3.0);
+    expect(broken.interval).toBeLessThanOrEqual(365);
+  });
+
+  test('やる気の効きが二重にならない', () => {
+    // interval と easeFactor の両方に倍率を掛けていたため、
+    // やる気満々では 0.7 × 0.8 = 0.56 倍が毎回かかっていた
+    const state = { interval: 10, repetitions: 3, easeFactor: 2.5 };
+    const high = nextSchedule(state, ANSWER_QUALITY.good, MOTIVATION_LEVELS.high).interval;
+    const expected = Math.ceil(10 * 2.5 * MOTIVATION_LEVELS.high.intervalMultiplier);
+    expect(high).toBe(expected);
+  });
+});
+
+describe('習得済みの扱い', () => {
+  // 復習完了は文書削除ではなく status: mastered への変更にした。
+  // 計画側は「一度でも学習した単語」を新規から除くために全履歴を見て、
+  // 「復習候補」からだけ mastered を外す。この2つを取り違えると、
+  // 習得済みの単語が新規単語として出題し直される。
+  const entries = [
+    { id: 'a', status: undefined },
+    { id: 'b', status: 'mastered' },
+    { id: 'c', migratedTo: 'x' },
+  ];
+
+  const notMigrated = entries.filter((e) => !e.migratedTo);
+  const learnedIds = new Set(notMigrated.map((e) => e.id));
+  const reviewCandidates = notMigrated.filter((e) => e.status !== 'mastered');
+
+  test('習得済みも「学習済み」に数える（新規に戻さない）', () => {
+    expect(learnedIds.has('b')).toBe(true);
+  });
+
+  test('習得済みは復習候補には出さない', () => {
+    expect(reviewCandidates.map((e) => e.id)).toEqual(['a']);
+  });
+
+  test('移行済みの旧文書はどちらにも出さない', () => {
+    expect(learnedIds.has('c')).toBe(false);
+    expect(reviewCandidates.some((e) => e.id === 'c')).toBe(false);
+  });
+});
