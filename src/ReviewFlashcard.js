@@ -840,7 +840,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
             fontSize: '0.875rem',
             color: '#6b7280'
           }}>
-            📖 右側長押しで表示 • 左右スワイプで評価 • 長押し+上スワイプで復習完了 🎯
+            右側長押しで表示 • 左右スワイプで評価 • 長押し+上スワイプで復習完了
           </p>
           <div style={{
             margin: '8px 0 0 0',
@@ -1029,7 +1029,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                         textAlign: 'center',
                         padding: '8px'
                       }}>
-                        📖 長押しで答えを表示
+                        長押しで答えを表示
                       </div>
                     </div>
                   )}

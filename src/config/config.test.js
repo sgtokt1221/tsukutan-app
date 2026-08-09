@@ -152,3 +152,66 @@ describe('motivation.json', () => {
     expect(getMotivationConfig(undefined)).toBe(MOTIVATION_LEVELS.normal);
   });
 });
+
+describe('levels.json', () => {
+  const { LEVELS, MAX_WORD_LEVEL, getLevel, clampLevel, getLevelLabel, getLevelEquivalent } = require('./index');
+
+  test('レベルは1〜7の連番', () => {
+    expect(LEVELS.map((entry) => entry.level)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(MAX_WORD_LEVEL).toBe(7);
+  });
+
+  test('全レベルに表示用の項目が揃っている', () => {
+    for (const entry of LEVELS) {
+      for (const field of ['label', 'eiken', 'cefr', 'schoolYear', 'wordsRequired', 'color']) {
+        expect(entry[field]).toBeTruthy();
+      }
+    }
+  });
+
+  test('必要語彙数はレベルが上がるほど増える', () => {
+    const values = LEVELS.map((entry) => entry.wordsRequired);
+    expect(values).toEqual([...values].sort((a, b) => a - b));
+  });
+
+  test('英検1級を割り当てない（データに1級の単語が無い）', () => {
+    expect(LEVELS.some((entry) => entry.eiken === '英検1級')).toBe(false);
+  });
+
+  test('範囲外のレベルは null', () => {
+    expect(getLevel(0)).toBeNull();
+    expect(getLevel(8)).toBeNull();
+    expect(getLevel(10)).toBeNull();
+    expect(getLevelLabel(8)).toBeNull();
+  });
+
+  test('clampLevel は1〜7に収める', () => {
+    expect(clampLevel(0)).toBe(1);
+    expect(clampLevel(10)).toBe(7);
+    expect(clampLevel(4)).toBe(4);
+    expect(clampLevel(undefined)).toBe(1);
+  });
+
+  test('getLevelEquivalent は「英検◯級 / CEFR」形式', () => {
+    expect(getLevelEquivalent(2)).toBe('英検4級 / A1');
+    expect(getLevelEquivalent(99)).toBe('');
+  });
+
+  test('実データのレベルが定義の範囲に収まっている', () => {
+    const master = require('../../public/data/words-master.json');
+    const levels = [...new Set(master.map((word) => word.level))].sort((a, b) => a - b);
+    expect(levels).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  test('実データに英検1級の単語が存在しない', () => {
+    const master = require('../../public/data/words-master.json');
+    const eiken = new Set(master.flatMap((word) => word.eikenLevels || []));
+    expect(eiken.has(1)).toBe(false);
+  });
+
+  test('目標の targetLevel はすべて定義済みレベルを指す', () => {
+    for (const goal of GOALS) {
+      expect(getLevel(goal.targetLevel)).not.toBeNull();
+    }
+  });
+});

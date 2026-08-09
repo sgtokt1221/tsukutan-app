@@ -7,6 +7,7 @@
 
 import goalsJson from './goals.json';
 import motivationJson from './motivation.json';
+import levelsJson from './levels.json';
 
 export const GOALS = goalsJson;
 export const MOTIVATION_LEVELS = motivationJson;
@@ -62,3 +63,33 @@ export const getRecommendedTextbooks = (goalIds = []) => {
 /** goal.targets（[{goalId, displayName}]）から goalId の配列を取り出す。 */
 export const toGoalIds = (targets = []) =>
   targets.map((target) => (typeof target === 'string' ? target : target?.goalId)).filter(Boolean);
+
+/* ===== 単語レベル =====
+ *
+ * 単語データの level は 1〜7 しかない。8以上のレベルには単語が0語で、
+ * eikenLevels に「1級」は一度も現れない（実データで確認済み）。
+ * 以前は LevelBadge / TestResult / StudentDashboard / AdminDashboard の
+ * 4箇所に別々の対応表があり、同じレベル7を「英検準1級」と「英検1級」で
+ * 食い違って表示していた。ここを唯一の出どころにする。
+ */
+
+export const LEVELS = levelsJson;
+export const MIN_WORD_LEVEL = 1;
+export const MAX_WORD_LEVEL = LEVELS.length;
+
+const LEVELS_BY_NUMBER = new Map(LEVELS.map((entry) => [entry.level, entry]));
+
+export const getLevel = (level) => LEVELS_BY_NUMBER.get(Number(level)) || null;
+
+/** 1〜7へ丸める */
+export const clampLevel = (level) =>
+  Math.min(MAX_WORD_LEVEL, Math.max(MIN_WORD_LEVEL, Math.round(Number(level) || MIN_WORD_LEVEL)));
+
+/** 「中学標準」など。未測定は null。 */
+export const getLevelLabel = (level) => getLevel(level)?.label ?? null;
+
+/** 「英検4級 / A1」形式 */
+export const getLevelEquivalent = (level) => {
+  const entry = getLevel(level);
+  return entry ? `${entry.eiken} / ${entry.cefr}` : '';
+};

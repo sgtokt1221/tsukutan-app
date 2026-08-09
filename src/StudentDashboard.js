@@ -16,9 +16,9 @@ import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
-import { FaBook, FaSyncAlt, FaMagic } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaMagic, FaChartLine } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
-import { getRecommendedTextbooks, toGoalIds, getMotivationConfig } from './config';
+import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
 import { loadWordMaster } from './logic/wordMaster';
 import logger from './logic/logger';
@@ -270,7 +270,7 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
           backgroundColor: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
           color: 'white',
           text: '推奨',
-          icon: '★',
+          icon: null,
           borderColor: '#dc2626'
         };
       case 'medium':
@@ -278,7 +278,7 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
           backgroundColor: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
           color: 'white',
           text: 'おすすめ',
-          icon: '☆',
+          icon: null,
           borderColor: '#d97706'
         };
       case 'low':
@@ -286,7 +286,7 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
           backgroundColor: 'linear-gradient(135deg, #10b981, #059669)',
           color: 'white',
           text: '復習',
-          icon: '↻',
+          icon: null,
           borderColor: '#047857'
         };
       default:
@@ -294,7 +294,7 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
           backgroundColor: 'linear-gradient(135deg, #6b7280, #4b5563)',
           color: 'white',
           text: '推奨',
-          icon: '●',
+          icon: null,
           borderColor: '#374151'
         };
     }
@@ -321,7 +321,7 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
         letterSpacing: '0.025em'
       }}
     >
-      <span style={{ fontSize: '10px' }}>{badgeStyle.icon}</span>
+      {/* 記号を出さず、文言と枠の色だけで区別する（絵文字を使わない方針） */}
       <span>{badgeStyle.text}</span>
     </div>
   );
@@ -329,7 +329,7 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
 
 // 既存の定数やヘルパー関数（すべて維持）
 const freeStudyOptions = [
-  { id: 'osaka-koukou-nyuushi', label: '大阪府公立入試英単語', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+  { id: 'osaka-koukou-nyuushi', label: '大阪府公立入試英単語', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
   { id: 'highschool-english', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
   { id: 'eiken-5', label: '英検5級', textbooks: ['highschool-english'] },
   { id: 'eiken-4', label: '英検4級', textbooks: ['highschool-english'] },
@@ -340,16 +340,15 @@ const freeStudyOptions = [
   { id: 'eiken-1', label: '英検1級', textbooks: ['highschool-english'] }
 ];
 // 通常のレベル定義（実際のデータに基づいて調整）
-const levelDescriptions = {
-    1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1", wordsRequired: 600 },
-    2: { label: "中学標準", equivalent: "英検4級 / A1", wordsRequired: 1300 },
-    3: { label: "中学卒業", equivalent: "英検3級 / A2", wordsRequired: 2100 },
-    4: { label: "高校基礎", equivalent: "英検準2級 / A2", wordsRequired: 3600 },
-    5: { label: "高校標準", equivalent: "英検2級 / B1", wordsRequired: 5100 },
-    6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2", wordsRequired: 6000 },
-    7: { label: "大学中級", equivalent: "英検準1級 / B2", wordsRequired: 8000 }
-    // レベル8以上は実際のデータに存在しないため削除
-};
+// レベルの対応表は src/config/levels.json が正本。ここでは表示形に変換するだけ。
+const toDescriptionMap = (format) =>
+  Object.fromEntries(LEVELS.map((entry) => [entry.level, format(entry)]));
+
+const levelDescriptions = toDescriptionMap((entry) => ({
+  label: entry.label,
+  equivalent: `${entry.eiken} / ${entry.cefr}`,
+  wordsRequired: entry.wordsRequired,
+}));
 
 // 高校英語専用のレベル定義
 const highschoolLevelDescriptions = {
@@ -396,32 +395,16 @@ const getHighschoolSubLevelDescription = (subLevel) => {
 
 
 // 英検教材用のレベル定義
-const eikenLevelDescriptions = {
-    1: { label: "英検5級レベル", equivalent: "中1レベル", wordsRequired: 600 },
-    2: { label: "英検4級レベル", equivalent: "中2レベル", wordsRequired: 1300 },
-    3: { label: "英検3級レベル", equivalent: "中3レベル", wordsRequired: 2100 },
-    4: { label: "英検準2級レベル", equivalent: "高1レベル", wordsRequired: 3600 },
-    5: { label: "英検2級レベル", equivalent: "高2レベル", wordsRequired: 5100 },
-    6: { label: "英検準1級レベル", equivalent: "高3レベル", wordsRequired: 6000 },
-    7: { label: "英検1級レベル", equivalent: "大学レベル", wordsRequired: 8000 },
-    8: { label: "上級レベル", equivalent: "大学上級レベル", wordsRequired: 10000 },
-    9: { label: "最上級レベル", equivalent: "大学院レベル", wordsRequired: 12000 },
-    10:{ label: "ネイティブレベル", equivalent: "ネイティブレベル", wordsRequired: 15000 }
-};
+// 英検教材の表示。以前はここだけ「レベル7 = 英検1級」としていたが、
+// 実データに英検1級の単語は1語も無く、正しくは準1級。
+const eikenLevelDescriptions = toDescriptionMap((entry) => ({
+  label: `${entry.eiken}レベル`,
+  equivalent: entry.schoolYear,
+  wordsRequired: entry.wordsRequired,
+}));
 
 // 大阪府公立入試英単語専用のレベル定義
-const osakaLevelDescriptions = {
-    1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1", wordsRequired: 600 },
-    2: { label: "中学標準", equivalent: "英検4級 / A1", wordsRequired: 1300 },
-    3: { label: "中学卒業", equivalent: "英検3級 / A2", wordsRequired: 2100 },
-    4: { label: "高校基礎", equivalent: "英検準2級 / A2", wordsRequired: 3600 },
-    5: { label: "高校標準", equivalent: "英検2級 / B1", wordsRequired: 5100 },
-    6: { label: "高校応用", equivalent: "英検2級 / B1", wordsRequired: 6000 },
-    7: { label: "高校上級", equivalent: "英検2級〜準1級 / B1-B2", wordsRequired: 8000 },
-    8: { label: "大学中級", equivalent: "英検準1級 / B2", wordsRequired: 10000 },
-    9: { label: "大学上級", equivalent: "英検1級 / C1", wordsRequired: 12000 },
-    10: { label: "ネイティブ", equivalent: "ネイティブレベル", wordsRequired: 15000 }
-};
+const osakaLevelDescriptions = levelDescriptions;
 const posMap = {
   '名詞': '名', '動詞': '動', '形容詞': '形', '副詞': '副', '代名詞': '代',
   '前置詞': '前', '接続詞': '接', '冠詞': '冠', '間投詞': '間', '熟語': '熟語',
@@ -2095,7 +2078,7 @@ export default function StudentDashboard() {
           <div className="section-card">
             <h2 className="section-title">詳細分析</h2>
             <div className="empty-state">
-              <div className="empty-icon">📈</div>
+              <div className="empty-icon" aria-hidden="true"><FaChartLine /></div>
               <p>まだテストデータがありません。</p>
               <p>まずは単語力チェックテストを受けてください。</p>
             </div>
@@ -3277,7 +3260,7 @@ export default function StudentDashboard() {
         }}>
           <div>
             <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold' }}>
-              🎯 単語力チェックテスト
+              単語力チェックテスト
             </h3>
             <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>
               あなたの現在の単語力を診断して、最適な学習計画を作成します

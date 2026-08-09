@@ -1,3 +1,4 @@
+import { MAX_WORD_LEVEL } from '../config';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
@@ -299,9 +300,9 @@ export const suggestLearningGoals = (userId, currentLevel) => {
   if (currentLevel < 10) {
     goals.push({
       period: 'short',
-      targetLevel: Math.min(10, currentLevel + 1),
+      targetLevel: Math.min(MAX_WORD_LEVEL, currentLevel + 1),
       timeframe: '1ヶ月',
-      description: `${currentLevel}から${Math.min(10, currentLevel + 1)}へのレベルアップ`,
+      description: `${currentLevel}から${Math.min(MAX_WORD_LEVEL, currentLevel + 1)}へのレベルアップ`,
       difficulty: currentLevel < 5 ? 'easy' : currentLevel < 8 ? 'moderate' : 'challenging',
       estimatedHours: currentLevel < 5 ? 15 : currentLevel < 8 ? 25 : 35
     });
@@ -311,9 +312,9 @@ export const suggestLearningGoals = (userId, currentLevel) => {
   if (currentLevel < 8) {
     goals.push({
       period: 'medium',
-      targetLevel: Math.min(10, currentLevel + 2),
+      targetLevel: Math.min(MAX_WORD_LEVEL, currentLevel + 2),
       timeframe: '3ヶ月',
-      description: `${currentLevel}から${Math.min(10, currentLevel + 2)}へのレベルアップ`,
+      description: `${currentLevel}から${Math.min(MAX_WORD_LEVEL, currentLevel + 2)}へのレベルアップ`,
       difficulty: currentLevel < 3 ? 'moderate' : 'challenging',
       estimatedHours: currentLevel < 3 ? 40 : 60
     });
@@ -323,9 +324,9 @@ export const suggestLearningGoals = (userId, currentLevel) => {
   if (currentLevel < 6) {
     goals.push({
       period: 'long',
-      targetLevel: Math.min(10, currentLevel + 3),
+      targetLevel: Math.min(MAX_WORD_LEVEL, currentLevel + 3),
       timeframe: '6ヶ月',
-      description: `${currentLevel}から${Math.min(10, currentLevel + 3)}へのレベルアップ`,
+      description: `${currentLevel}から${Math.min(MAX_WORD_LEVEL, currentLevel + 3)}へのレベルアップ`,
       difficulty: 'challenging',
       estimatedHours: 80
     });

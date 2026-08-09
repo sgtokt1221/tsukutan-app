@@ -787,8 +787,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
             color: '#6b7280'
           }}>
             {isReviewMode ? 
-              '📖 右側を長押し → 上スワイプで復習完了 🎯' : 
-              '📖 右側を長押しで答えを表示 | 👆 右スワイプ=正解 / 左スワイプ=不正解'
+              '右側を長押し → 上スワイプで復習完了' : 
+              '右側を長押しで答えを表示 | 右スワイプ=正解 / 左スワイプ=不正解'
             }
           </p>
           <div style={{
@@ -992,7 +992,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                         textAlign: 'center',
                         padding: '8px'
                       }}>
-                        📖 長押しで答えを表示
+                        長押しで答えを表示
                       </div>
                     </div>
                   )}
@@ -1019,7 +1019,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                         textAlign: 'center',
                         padding: '8px'
                       }}>
-                        🎯 上にスワイプで復習完了
+                        上にスワイプで復習完了
                       </div>
                     </div>
                   )}
