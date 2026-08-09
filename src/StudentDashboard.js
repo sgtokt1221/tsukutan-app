@@ -542,6 +542,7 @@ export default function StudentDashboard() {
   // --- State宣言 ---
   const [allWords, setAllWords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dashboardError, setDashboardError] = useState(null);
   const [viewMode, setViewMode] = useState('select');
   const [selectionMode, setSelectionMode] = useState('main');
   const [testResultLevel, setTestResultLevel] = useState(0);
@@ -724,6 +725,7 @@ export default function StudentDashboard() {
 
   // --- データ取得・更新ロジック (変更なし) ---
   const refreshDashboardData = useCallback(async (uid) => {
+    setDashboardError(null);
     try {
       const userDocRef = doc(db, 'users', uid);
       // キャッシュを無効化して最新データを取得
@@ -828,7 +830,10 @@ export default function StudentDashboard() {
         setViewMode('test'); 
       }
     } catch (error) {
+      // 空の計画を返して「学習する単語がありません」と誤表示させない。
+      // 画面に再試行できる状態を出す（計画書10.2.9）。
       console.error("Error refreshing dashboard data: ", error);
+      setDashboardError('今日の学習プランを読み込めませんでした。通信状態を確認してください。');
     }
   }, []);
 
@@ -954,9 +959,8 @@ export default function StudentDashboard() {
 
     // Handle incorrect words
     if (incorrectWords && incorrectWords.length > 0) {
-      incorrectWords.forEach(word => {
-        addWordToReview(user.uid, word);
-      });
+      // forEach で投げっぱなしにすると、画面遷移で書き込みを取りこぼす（計画書10.2.10）
+      await Promise.all(incorrectWords.map(word => addWordToReview(user.uid, word)));
     }
 
     // Update vocabulary count and progress if new words were learned
@@ -1709,6 +1713,29 @@ export default function StudentDashboard() {
     return <div className="loading-container"><div className="spinner"></div></div>;
   }
 
+  if (dashboardError) {
+    return (
+      <div className="loading-container">
+        <div className="app-status-card">
+          <h1 className="app-status-title">今日の学習を開けませんでした</h1>
+          <p className="app-status-message">{dashboardError}</p>
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => {
+              const user = auth.currentUser;
+              if (!user) return;
+              setLoading(true);
+              refreshDashboardData(user.uid).finally(() => setLoading(false));
+            }}
+          >
+            再試行する
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
@@ -1916,6 +1943,20 @@ export default function StudentDashboard() {
 
             <div className="section-card">
               <h3 className="section-title">今日のタスク</h3>
+              {dailyPlan.isFeasible === false && (
+                <p className="plan-warning" role="status">
+                  今の期限だと1日 {dailyPlan.requiredNewWords} 語が必要で、達成が難しい設定です。
+                  今日は {dailyPlan.plannedNewWords} 語まで出しています。達成日を見直すか、やる気レベルを上げてください。
+                </p>
+              )}
+              {dailyPlan.isFeasible !== false
+                && dailyPlan.requiredNewWords > dailyPlan.preferredNewWords
+                && dailyPlan.preferredNewWords > 0 && (
+                <p className="plan-notice" role="status">
+                  期限に間に合わせるため、今日は希望の {dailyPlan.preferredNewWords} 語より多い
+                  {' '}{dailyPlan.plannedNewWords} 語を出しています。
+                </p>
+              )}
                <div className="task-cards-container">
                   {isDailyTaskCompleted ? (
                     <div className="task-card okawari-card" onClick={startExtraNewWords}>

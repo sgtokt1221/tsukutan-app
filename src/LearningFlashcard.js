@@ -176,13 +176,27 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     }
   }, [currentIndex, x, y]);
 
+  // 進行中の Firestore 書き込み。セッションを閉じる前に必ず待つ（計画書10.2.10）。
+  const pendingWrites = useRef([]);
+  const trackWrite = useCallback((promise) => {
+    if (promise && typeof promise.then === 'function') {
+      pendingWrites.current.push(promise);
+    }
+    return promise;
+  }, []);
+  const flushWrites = useCallback(async () => {
+    const inFlight = pendingWrites.current;
+    pendingWrites.current = [];
+    await Promise.allSettled(inFlight);
+  }, []);
+
   // 正解・不正解処理関数
-  const handleCorrect = useCallback(() => {
+  const handleCorrect = useCallback(async () => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
     
     if (user && currentWord) {
-      updateUserWordProgress(user.uid, currentWord, true);
+      trackWrite(updateUserWordProgress(user.uid, currentWord, true));
     }
     
     // 次の単語へ
@@ -212,19 +226,21 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         onSaveLog(sessionData);
       }
       
+      // 書き込みを取りこぼさないよう、画面を閉じる前に待つ
+      await flushWrites();
       // 親コンポーネントの戻る処理を呼び出し
       onBack(incorrectWords);
     }
-  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, auth.currentUser]);
+  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
 
-  const handleIncorrect = useCallback(() => {
+  const handleIncorrect = useCallback(async () => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
     
     // 不正解の場合、復習リストに追加
     if (currentWord) {
       if (user) {
-        updateUserWordProgress(user.uid, currentWord, false);
+        trackWrite(updateUserWordProgress(user.uid, currentWord, false));
       }
       setIncorrectWords(prev => [...prev.filter(w => w.id !== currentWord.id), currentWord]);
     }
@@ -256,10 +272,12 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         onSaveLog(sessionData);
       }
       
+      // 書き込みを取りこぼさないよう、画面を閉じる前に待つ
+      await flushWrites();
       // 親コンポーネントの戻る処理を呼び出し
       onBack(incorrectWords);
     }
-  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, auth.currentUser]);
+  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
 
   // ネイティブドラッグイベントハンドラー
   const handleMouseDown = useCallback((e) => {

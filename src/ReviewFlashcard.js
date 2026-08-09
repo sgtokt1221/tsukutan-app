@@ -257,12 +257,26 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     y.set(0);
   }, [currentIndex, x, y]);
 
+  // 進行中の Firestore 書き込み。セッションを閉じる前に必ず待つ（計画書10.2.10）。
+  const pendingWrites = useRef([]);
+  const trackWrite = useCallback((promise) => {
+    if (promise && typeof promise.then === 'function') {
+      pendingWrites.current.push(promise);
+    }
+    return promise;
+  }, []);
+  const flushWrites = useCallback(async () => {
+    const inFlight = pendingWrites.current;
+    pendingWrites.current = [];
+    await Promise.allSettled(inFlight);
+  }, []);
+
   // 正解・不正解処理関数
-  const handleCorrect = useCallback(() => {
+  const handleCorrect = useCallback(async () => {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      updateUserWordProgress(userId, currentWord, true);
+      trackWrite(updateUserWordProgress(userId, currentWord, true));
       setGraduatedCount(prev => prev + 1);
     }
     
@@ -287,16 +301,17 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         };
         onSaveLog(sessionData);
       }
-      
+
+      await flushWrites();
       onBack();
     }
-  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack]);
+  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites]);
 
-  const handleIncorrect = useCallback(() => {
+  const handleIncorrect = useCallback(async () => {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      updateUserWordProgress(userId, currentWord, false);
+      trackWrite(updateUserWordProgress(userId, currentWord, false));
     }
     
     // 次の単語へ
@@ -320,10 +335,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         };
         onSaveLog(sessionData);
       }
-      
+
+      await flushWrites();
       onBack();
     }
-  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack]);
+  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites]);
 
   // ネイティブドラッグイベントハンドラー
   const handleMouseDown = useCallback((e) => {
