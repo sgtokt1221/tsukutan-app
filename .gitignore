@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/functions/node_modules  # ← この行を追加
+/functions/node_modules
 /.pnp
 .pnp.js
 
@@ -28,5 +28,21 @@ serviceAccountKey.json
 
 # Firebase config
 src/firebaseConfig.js
+
+# tooling cache
+.eslintcache
+
+# 単語データのバックアップ（削除せずローカル保管。docs/baseline/README.md の6章を参照）
+words_backup*.json
+highschool_backup*.json
+backups/
+
+# Firebase emulator / CLI artifacts
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+database-debug.log*
+pubsub-debug.log*
+ui-debug.log*
 
 
