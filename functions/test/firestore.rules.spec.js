@@ -139,6 +139,18 @@ describe('マスターデータ', () => {
     await assertSucceeds(getDoc(doc(asStudentA(), 'textbooks', 'osaka-koukou-nyuushi', 'words', 'w1')));
   });
 
+  test('生徒は goalsMaster を一覧取得できる（progressLogic が getDocs する）', async () => {
+    await assertSucceeds(getDocs(collection(asStudentA(), 'goalsMaster')));
+  });
+
+  test('生徒は教材の単語を一覧取得できる（learningPlanner が getDocs する）', async () => {
+    await assertSucceeds(getDocs(collection(asStudentA(), 'textbooks', 'osaka-koukou-nyuushi', 'words')));
+  });
+
+  test('生徒は自分のサブコレクションを一覧取得できる', async () => {
+    await assertSucceeds(getDocs(collection(asStudentA(), 'users', STUDENT_A, 'reviewWords')));
+  });
+
   test('生徒は goalsMaster を書き換えられない', async () => {
     await assertFails(setDoc(doc(asStudentA(), 'goalsMaster', 'eiken_3'), { requiredVocabulary: 1 }));
   });
