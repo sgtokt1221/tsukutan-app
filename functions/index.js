@@ -31,6 +31,32 @@ const manageStudentsApp = express();
 manageStudentsApp.use(cors({ origin: true }));
 manageStudentsApp.use(express.json({ limit: '1mb' }));
 
+/**
+ * HttpsError のコードを HTTP のステータスへ写す。
+ *
+ * 以前は「HttpsError なら一律 400（importUsers は 403）」にしていたため、
+ * 認証ヘッダが無いだけの要求も 400 で返っていた。呼び出し側が
+ * 「入力が悪い」のか「ログインし直せばよい」のか区別できない。
+ */
+const httpStatusFor = (error) => {
+  if (!(error instanceof HttpsError)) return 500;
+  switch (error.code) {
+    case 'unauthenticated':
+      return 401;
+    case 'permission-denied':
+      return 403;
+    case 'not-found':
+      return 404;
+    case 'already-exists':
+      return 409;
+    case 'invalid-argument':
+    case 'failed-precondition':
+      return 400;
+    default:
+      return 500;
+  }
+};
+
 const verifyAdmin = async (req) => {
   const idToken = req.get('Authorization')?.split('Bearer ')[1];
   if (!idToken) {
@@ -325,7 +351,7 @@ importUsersApp.post('/', async (req, res) => {
         : '取り込みが完了しました。',
     });
   } catch (error) {
-    const statusCode = error instanceof HttpsError ? 403 : 500;
+    const statusCode = httpStatusFor(error);
     logger.error('User import failed:', { errorMessage: error.message, errorStack: error.stack });
     return res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
   }
@@ -374,10 +400,9 @@ manageStudentsApp.post('/', async (req, res) => {
 
     return res.status(201).json({ message: 'Student created', uid: newUserRecord.uid });
   } catch (error) {
-    const code = error instanceof HttpsError ? error.code : 'internal';
     const message = error instanceof HttpsError ? error.message : (error.message || 'Internal error');
     logger.error('Create student failed:', error);
-    return res.status(code === 'internal' ? 500 : 400).json({ error: message });
+    return res.status(httpStatusFor(error)).json({ error: message });
   }
 });
 
@@ -428,10 +453,9 @@ manageStudentsApp.delete('/:uid', async (req, res) => {
 
     return res.status(200).json({ message: 'Student deleted' });
   } catch (error) {
-    const code = error instanceof HttpsError ? error.code : 'internal';
     const message = error instanceof HttpsError ? error.message : (error.message || 'Internal error');
     logger.error('Delete student failed:', error);
-    return res.status(code === 'internal' ? 500 : 400).json({ error: message });
+    return res.status(httpStatusFor(error)).json({ error: message });
   }
 });
 
