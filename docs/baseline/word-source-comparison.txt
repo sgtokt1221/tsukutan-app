@@ -1,0 +1,34 @@
+=== 各ファイルの規模 ===
+  words.json              7205件  ユニーク(語+品詞+意味)  6682  レベル 1,2,3,4,5,6,7
+  src/wordsData.json      7205件  ユニーク(語+品詞+意味)  6682  レベル 1,2,3,4,5,6,7
+  public/words.json       1969件  ユニーク(語+品詞+意味)  1969  レベル 1,2,3,4,5,6,7,8,9
+  highschool.json         5307件  ユニーク(語+品詞+意味)  4784  レベル 5,6,7
+
+=== 包含関係（語+品詞+意味 で判定） ===
+  words.json ⊆ src/wordsData.json  （6682件すべて含まれる）
+  src/wordsData.json ⊆ words.json  （6682件すべて含まれる）
+  public/words.json → words.json  97.5% 含まれる（49件が不足）
+  public/words.json → src/wordsData.json  97.5% 含まれる（49件が不足）
+  highschool.json ⊆ words.json  （4784件すべて含まれる）
+  highschool.json ⊆ src/wordsData.json  （4784件すべて含まれる）
+
+=== ファイル間でレベルが食い違う項目 ===
+  219 件
+    - accept / 動 / 〜を受け入れる、〜を受け取る、〜を承諾する  words=6 wordsData=6 public=7
+    - according to / 熟語 / 〜によれば  words=6 wordsData=6 public=7
+    - actually / 副 / 本当に、実際には  words=6 wordsData=6 public=7
+    - affect / 動 / 〜に影響する  words=7 wordsData=7 public=8
+    - after all / 熟語 / 結局、とうとう  words=6 wordsData=6 public=7
+    - against / 前 / 〜に反対して、〜に反して、〜に対して  words=6 wordsData=6 public=7
+    - age / 動 / 熟成する  words=7 wordsData=7 public=8
+    - amount / 名 / 量、額  words=6 wordsData=6 public=7
+    - ancient / 形 / 古代の  words=6 wordsData=6 public=7
+    - announcement / 名 / アナウンス、発表  words=6 wordsData=6 public=7
+
+=== そのファイルにしか無い項目 ===
+  words.json                 0件
+  src/wordsData.json         0件
+  public/words.json         49件
+  highschool.json            0件
+
+レポートを書き出しました: docs/baseline/word-source-comparison.json

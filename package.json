@@ -27,7 +27,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .js,.jsx",
-    "deploy": "npm run build && firebase deploy --only hosting"
+    "deploy": "npm run build && firebase deploy --only hosting",
+    "test:scripts": "node --test scripts/lib/*.test.js",
+    "build:words": "node scripts/build-word-master.js"
   },
   "eslintConfig": {
     "extends": [
