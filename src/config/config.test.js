@@ -247,3 +247,21 @@ describe('発音記号', () => {
     expect(inconsistent.map(([word]) => word)).toEqual([]);
   });
 });
+
+describe('自由学習の教材', () => {
+  const master = require('../../public/data/words-master.json');
+
+  test('英検1級の単語は実データに存在しない', () => {
+    // 教材一覧に英検1級を置くと、常に「0語」のカードになる
+    const hasEiken1 = master.some((word) => (word.eikenLevels || []).includes(1));
+    expect(hasEiken1).toBe(false);
+  });
+
+  test('準1級までは実データに単語がある', () => {
+    for (const level of [5, 4, 3, 'pre2', 2, 'pre1']) {
+      const count = master.filter((word) => (word.eikenLevels || []).includes(level)).length;
+      expect({ level, count }).toEqual({ level, count: expect.any(Number) });
+      expect(count).toBeGreaterThan(0);
+    }
+  });
+});
