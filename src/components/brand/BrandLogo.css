@@ -1,0 +1,62 @@
+/*
+ * BrandLogo の表示サイズ。DESIGN_IMPLEMENTATION_PLAN.md 4.3。
+ * 固定ピクセルだけにせず clamp() と max-width: 100% を併用する。
+ */
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  /* PNGに焼き込まれた淡い黄緑と地の色を合わせる（計画書4.5） */
+  background-color: var(--color-canvas-lime);
+  line-height: 0;
+}
+
+.brand-logo__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+/* 白いカードの上に置くときは、ロゴ領域だけ淡い黄緑のブロックにする */
+.brand-logo--on-surface {
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+}
+
+/* ログイン: ページの主役 */
+.brand-logo--login {
+  width: clamp(200px, 56vw, 280px);
+}
+
+/* 生徒ヘッダー: 高さを44〜50px以内に収める */
+.brand-logo--student-header {
+  width: clamp(126px, 34vw, 150px);
+}
+
+/* 学習ヘッダー: 単語カードより弱くする */
+.brand-logo--study-header {
+  width: clamp(108px, 30vw, 132px);
+}
+
+/* 管理サイドバー */
+.brand-logo--admin-sidebar {
+  width: clamp(144px, 18vw, 180px);
+}
+
+/* リンクとして使う場合 */
+.brand-logo--link {
+  border: 1px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.brand-logo--link:hover {
+  transform: translateY(-1px);
+}
+
+.brand-logo--link:active {
+  transform: scale(0.98);
+}

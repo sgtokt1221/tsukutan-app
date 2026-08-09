@@ -1,0 +1,690 @@
+{
+  "reports": [
+    {
+      "file": "words.json",
+      "bytes": 2052798,
+      "sha256": "ff6b9fad30b3e374472097a4f935b28212d4f9722a5ed8fc432f509efd59a734",
+      "ok": true,
+      "count": 7205,
+      "missingByField": {
+        "word": 0,
+        "partOfSpeech": 0,
+        "meaning": 0,
+        "level": 0
+      },
+      "missingSamples": [],
+      "uniqueSurfaceWords": 6267,
+      "uniqueSignatures": 6687,
+      "homographEntries": 777,
+      "exactDuplicateEntries": 518,
+      "topHomographs": [
+        {
+          "word": "endanger",
+          "count": 4,
+          "meanings": [
+            "動:を危険にさらす",
+            "動:～を危険にさらす"
+          ]
+        },
+        {
+          "word": "embrace",
+          "count": 4,
+          "meanings": [
+            "動:を受け入れる；（を）抱擁する",
+            "動:～を受け入れる"
+          ]
+        },
+        {
+          "word": "all",
+          "count": 3,
+          "meanings": [
+            "形:すべての",
+            "副:すべて、すっかり",
+            "代:すべての人[もの・こと]"
+          ]
+        },
+        {
+          "word": "before",
+          "count": 3,
+          "meanings": [
+            "副:前に、以前に、今までに",
+            "前:〜よりも前に[先に・早く]",
+            "接:〜する前に"
+          ]
+        },
+        {
+          "word": "close",
+          "count": 3,
+          "meanings": [
+            "動:〜を閉じる、〜を閉める",
+            "形:接近した、ごく近い",
+            "副:近くに"
+          ]
+        },
+        {
+          "word": "east",
+          "count": 3,
+          "meanings": [
+            "名:東、東部",
+            "形:東の",
+            "副:東へ"
+          ]
+        },
+        {
+          "word": "first",
+          "count": 3,
+          "meanings": [
+            "名:1番目、最初",
+            "形:1番目の",
+            "副:最初に、初めて"
+          ]
+        },
+        {
+          "word": "half",
+          "count": 3,
+          "meanings": [
+            "名:半分",
+            "形:半分の",
+            "副:半分だけ"
+          ]
+        },
+        {
+          "word": "last",
+          "count": 3,
+          "meanings": [
+            "動:続く",
+            "形:最後の、この前の",
+            "副:最後に"
+          ]
+        },
+        {
+          "word": "north",
+          "count": 3,
+          "meanings": [
+            "名:北、北部",
+            "形:北の",
+            "副:北へ"
+          ]
+        }
+      ],
+      "exactDuplicateSamples": [
+        {
+          "signature": "component|名|構成要素；部品|5",
+          "indexes": [
+            2258,
+            2559
+          ]
+        },
+        {
+          "signature": "reputation|名|評判；名声|5",
+          "indexes": [
+            2259,
+            2560
+          ]
+        },
+        {
+          "signature": "verbal|形|言葉の；口頭での|5",
+          "indexes": [
+            2260,
+            2561
+          ]
+        },
+        {
+          "signature": "internal|形|内部の；国内の|5",
+          "indexes": [
+            2261,
+            2562
+          ]
+        },
+        {
+          "signature": "solid|形|しっかりした；硬い；固体の|5",
+          "indexes": [
+            2262,
+            2563
+          ]
+        }
+      ],
+      "levelDistribution": {
+        "1": 224,
+        "2": 369,
+        "3": 342,
+        "4": 336,
+        "5": 1335,
+        "6": 2941,
+        "7": 1658
+      },
+      "eikenDistribution": {
+        "2": 1815,
+        "3": 800,
+        "4": 706,
+        "5": 486,
+        "(なし)": 3148,
+        "pre1": 1886,
+        "pre2": 1121
+      },
+      "subLevelDistribution": {
+        "(なし)": 1271,
+        "5A": 445,
+        "5B": 702,
+        "5C": 188,
+        "6A": 1082,
+        "6B": 1096,
+        "6C": 763,
+        "7A": 553,
+        "7B": 553,
+        "7C": 552
+      },
+      "fields": [
+        "eikenLevels",
+        "example",
+        "exampleJa",
+        "level",
+        "meaning",
+        "partOfSpeech",
+        "subLevel",
+        "word"
+      ],
+      "hasPersistentId": false
+    },
+    {
+      "file": "src/wordsData.json",
+      "bytes": 2052798,
+      "sha256": "ff6b9fad30b3e374472097a4f935b28212d4f9722a5ed8fc432f509efd59a734",
+      "ok": true,
+      "count": 7205,
+      "missingByField": {
+        "word": 0,
+        "partOfSpeech": 0,
+        "meaning": 0,
+        "level": 0
+      },
+      "missingSamples": [],
+      "uniqueSurfaceWords": 6267,
+      "uniqueSignatures": 6687,
+      "homographEntries": 777,
+      "exactDuplicateEntries": 518,
+      "topHomographs": [
+        {
+          "word": "endanger",
+          "count": 4,
+          "meanings": [
+            "動:を危険にさらす",
+            "動:～を危険にさらす"
+          ]
+        },
+        {
+          "word": "embrace",
+          "count": 4,
+          "meanings": [
+            "動:を受け入れる；（を）抱擁する",
+            "動:～を受け入れる"
+          ]
+        },
+        {
+          "word": "all",
+          "count": 3,
+          "meanings": [
+            "形:すべての",
+            "副:すべて、すっかり",
+            "代:すべての人[もの・こと]"
+          ]
+        },
+        {
+          "word": "before",
+          "count": 3,
+          "meanings": [
+            "副:前に、以前に、今までに",
+            "前:〜よりも前に[先に・早く]",
+            "接:〜する前に"
+          ]
+        },
+        {
+          "word": "close",
+          "count": 3,
+          "meanings": [
+            "動:〜を閉じる、〜を閉める",
+            "形:接近した、ごく近い",
+            "副:近くに"
+          ]
+        },
+        {
+          "word": "east",
+          "count": 3,
+          "meanings": [
+            "名:東、東部",
+            "形:東の",
+            "副:東へ"
+          ]
+        },
+        {
+          "word": "first",
+          "count": 3,
+          "meanings": [
+            "名:1番目、最初",
+            "形:1番目の",
+            "副:最初に、初めて"
+          ]
+        },
+        {
+          "word": "half",
+          "count": 3,
+          "meanings": [
+            "名:半分",
+            "形:半分の",
+            "副:半分だけ"
+          ]
+        },
+        {
+          "word": "last",
+          "count": 3,
+          "meanings": [
+            "動:続く",
+            "形:最後の、この前の",
+            "副:最後に"
+          ]
+        },
+        {
+          "word": "north",
+          "count": 3,
+          "meanings": [
+            "名:北、北部",
+            "形:北の",
+            "副:北へ"
+          ]
+        }
+      ],
+      "exactDuplicateSamples": [
+        {
+          "signature": "component|名|構成要素；部品|5",
+          "indexes": [
+            2258,
+            2559
+          ]
+        },
+        {
+          "signature": "reputation|名|評判；名声|5",
+          "indexes": [
+            2259,
+            2560
+          ]
+        },
+        {
+          "signature": "verbal|形|言葉の；口頭での|5",
+          "indexes": [
+            2260,
+            2561
+          ]
+        },
+        {
+          "signature": "internal|形|内部の；国内の|5",
+          "indexes": [
+            2261,
+            2562
+          ]
+        },
+        {
+          "signature": "solid|形|しっかりした；硬い；固体の|5",
+          "indexes": [
+            2262,
+            2563
+          ]
+        }
+      ],
+      "levelDistribution": {
+        "1": 224,
+        "2": 369,
+        "3": 342,
+        "4": 336,
+        "5": 1335,
+        "6": 2941,
+        "7": 1658
+      },
+      "eikenDistribution": {
+        "2": 1815,
+        "3": 800,
+        "4": 706,
+        "5": 486,
+        "(なし)": 3148,
+        "pre1": 1886,
+        "pre2": 1121
+      },
+      "subLevelDistribution": {
+        "(なし)": 1271,
+        "5A": 445,
+        "5B": 702,
+        "5C": 188,
+        "6A": 1082,
+        "6B": 1096,
+        "6C": 763,
+        "7A": 553,
+        "7B": 553,
+        "7C": 552
+      },
+      "fields": [
+        "eikenLevels",
+        "example",
+        "exampleJa",
+        "level",
+        "meaning",
+        "partOfSpeech",
+        "subLevel",
+        "word"
+      ],
+      "hasPersistentId": false
+    },
+    {
+      "file": "public/words.json",
+      "bytes": 420818,
+      "sha256": "e258cfd4e203e5e2f52b1aab99ed28dafbf7d43de034cb81ed2a81250aa500cd",
+      "ok": true,
+      "count": 1969,
+      "missingByField": {
+        "word": 0,
+        "partOfSpeech": 0,
+        "meaning": 0,
+        "level": 0
+      },
+      "missingSamples": [],
+      "uniqueSurfaceWords": 1750,
+      "uniqueSignatures": 1969,
+      "homographEntries": 426,
+      "exactDuplicateEntries": 0,
+      "topHomographs": [
+        {
+          "word": "all",
+          "count": 3,
+          "meanings": [
+            "形:すべての",
+            "副:すべて、すっかり",
+            "代:すべての人[もの・こと]"
+          ]
+        },
+        {
+          "word": "before",
+          "count": 3,
+          "meanings": [
+            "副:前に、以前に、今までに",
+            "前:〜よりも前に[先に・早く]",
+            "接:〜する前に"
+          ]
+        },
+        {
+          "word": "close",
+          "count": 3,
+          "meanings": [
+            "動:〜を閉じる、〜を閉める",
+            "形:接近した、ごく近い",
+            "副:近くに"
+          ]
+        },
+        {
+          "word": "east",
+          "count": 3,
+          "meanings": [
+            "名:東、東部",
+            "形:東の",
+            "副:東へ"
+          ]
+        },
+        {
+          "word": "first",
+          "count": 3,
+          "meanings": [
+            "名:1番目、最初",
+            "形:1番目の",
+            "副:最初に、初めて"
+          ]
+        },
+        {
+          "word": "half",
+          "count": 3,
+          "meanings": [
+            "名:半分",
+            "形:半分の",
+            "副:半分だけ"
+          ]
+        },
+        {
+          "word": "last",
+          "count": 3,
+          "meanings": [
+            "動:続く",
+            "形:最後の、この前の",
+            "副:最後に"
+          ]
+        },
+        {
+          "word": "north",
+          "count": 3,
+          "meanings": [
+            "名:北、北部",
+            "形:北の",
+            "副:北へ"
+          ]
+        },
+        {
+          "word": "one",
+          "count": 3,
+          "meanings": [
+            "名:1",
+            "形:1つの",
+            "代:もの、人"
+          ]
+        },
+        {
+          "word": "right",
+          "count": 3,
+          "meanings": [
+            "名:右、権利",
+            "形:右の、正しい",
+            "副:ちょうど、すぐに"
+          ]
+        }
+      ],
+      "exactDuplicateSamples": [],
+      "levelDistribution": {
+        "1": 226,
+        "2": 371,
+        "3": 348,
+        "4": 350,
+        "5": 285,
+        "6": 172,
+        "7": 137,
+        "8": 68,
+        "9": 12
+      },
+      "eikenDistribution": {
+        "2": 373,
+        "3": 656,
+        "4": 685,
+        "5": 483,
+        "(なし)": 779,
+        "pre1": 34,
+        "pre2": 311
+      },
+      "subLevelDistribution": {
+        "(なし)": 1969
+      },
+      "fields": [
+        "eikenLevels",
+        "example",
+        "exampleJa",
+        "level",
+        "meaning",
+        "partOfSpeech",
+        "word"
+      ],
+      "hasPersistentId": false
+    },
+    {
+      "file": "highschool.json",
+      "bytes": 1517137,
+      "sha256": "1884bfbc684e8a5f37149ede301d6fb9b2182779373ca87ae2bb32403e4f11ec",
+      "ok": true,
+      "count": 5307,
+      "missingByField": {
+        "word": 0,
+        "partOfSpeech": 0,
+        "meaning": 0,
+        "level": 0
+      },
+      "missingSamples": [],
+      "uniqueSurfaceWords": 4586,
+      "uniqueSignatures": 4789,
+      "homographEntries": 355,
+      "exactDuplicateEntries": 518,
+      "topHomographs": [
+        {
+          "word": "endanger",
+          "count": 4,
+          "meanings": [
+            "動:を危険にさらす",
+            "動:～を危険にさらす"
+          ]
+        },
+        {
+          "word": "embrace",
+          "count": 4,
+          "meanings": [
+            "動:を受け入れる；（を）抱擁する",
+            "動:～を受け入れる"
+          ]
+        },
+        {
+          "word": "encounter",
+          "count": 3,
+          "meanings": [
+            "動:に遭遇する；に（思いがけず）出会う",
+            "名:遭遇"
+          ]
+        },
+        {
+          "word": "crucial",
+          "count": 3,
+          "meanings": [
+            "形:重要な",
+            "形:決定的な",
+            "形:重大な"
+          ]
+        },
+        {
+          "word": "enhance",
+          "count": 3,
+          "meanings": [
+            "動:（価値など）を高める，増す",
+            "動:～を高める"
+          ]
+        },
+        {
+          "word": "frequent",
+          "count": 3,
+          "meanings": [
+            "形:頻繁な"
+          ]
+        },
+        {
+          "word": "extinct",
+          "count": 3,
+          "meanings": [
+            "形:絶滅した；廃止された",
+            "形:絶滅した"
+          ]
+        },
+        {
+          "word": "dominate",
+          "count": 3,
+          "meanings": [
+            "動:を支配する；（～より）優勢である",
+            "動:～を支配する"
+          ]
+        },
+        {
+          "word": "guarantee",
+          "count": 3,
+          "meanings": [
+            "動:を保証する",
+            "名:保証"
+          ]
+        },
+        {
+          "word": "evaluate",
+          "count": 3,
+          "meanings": [
+            "動:を評価する；を査定する",
+            "動:～を評価する"
+          ]
+        }
+      ],
+      "exactDuplicateSamples": [
+        {
+          "signature": "component|名|構成要素；部品|5",
+          "indexes": [
+            360,
+            661
+          ]
+        },
+        {
+          "signature": "reputation|名|評判；名声|5",
+          "indexes": [
+            361,
+            662
+          ]
+        },
+        {
+          "signature": "verbal|形|言葉の；口頭での|5",
+          "indexes": [
+            362,
+            663
+          ]
+        },
+        {
+          "signature": "internal|形|内部の；国内の|5",
+          "indexes": [
+            363,
+            664
+          ]
+        },
+        {
+          "signature": "solid|形|しっかりした；硬い；固体の|5",
+          "indexes": [
+            364,
+            665
+          ]
+        }
+      ],
+      "levelDistribution": {
+        "5": 1062,
+        "6": 2653,
+        "7": 1592
+      },
+      "eikenDistribution": {
+        "2": 1467,
+        "3": 166,
+        "4": 30,
+        "5": 9,
+        "(なし)": 2392,
+        "pre1": 1860,
+        "pre2": 829
+      },
+      "subLevelDistribution": {
+        "(なし)": 5307
+      },
+      "fields": [
+        "eikenLevels",
+        "example",
+        "exampleJa",
+        "level",
+        "meaning",
+        "partOfSpeech",
+        "word"
+      ],
+      "hasPersistentId": false
+    }
+  ],
+  "identical": [
+    [
+      "words.json",
+      "src/wordsData.json"
+    ]
+  ]
+}

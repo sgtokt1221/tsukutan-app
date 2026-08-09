@@ -1,0 +1,4251 @@
+{
+  "sources": {
+    "words": {
+      "file": "words.json",
+      "entries": 7205,
+      "uniqueSignatures": 6682,
+      "uniqueFullSignatures": 6687,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "wordsData": {
+      "file": "src/wordsData.json",
+      "entries": 7205,
+      "uniqueSignatures": 6682,
+      "uniqueFullSignatures": 6687,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "public": {
+      "file": "public/words.json",
+      "entries": 1969,
+      "uniqueSignatures": 1969,
+      "uniqueFullSignatures": 1969,
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "highschool": {
+      "file": "highschool.json",
+      "entries": 5307,
+      "uniqueSignatures": 4784,
+      "uniqueFullSignatures": 4789,
+      "levels": [
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  "containment": [
+    {
+      "from": "words.json",
+      "into": "src/wordsData.json",
+      "fromUnique": 6682,
+      "missingInTarget": 0,
+      "coveragePercent": 100,
+      "samples": []
+    },
+    {
+      "from": "words.json",
+      "into": "public/words.json",
+      "fromUnique": 6682,
+      "missingInTarget": 4762,
+      "coveragePercent": 28.7,
+      "samples": [
+        "consider|動|を熟考する；を（～と）見なす",
+        "allow|動|を許す；（時間・金銭など）を取っておく",
+        "tend|動|（～する）傾向がある",
+        "concern|動|を心配させる；に関係する",
+        "describe|動|の特徴を述べる，を説明する"
+      ]
+    },
+    {
+      "from": "words.json",
+      "into": "highschool.json",
+      "fromUnique": 6682,
+      "missingInTarget": 1898,
+      "coveragePercent": 71.6,
+      "samples": [
+        "a|冠|一つの、一人の",
+        "be able to|熟語|〜することができる、〜する能力がある",
+        "about|副|約、およそ、〜ぐらい",
+        "about|前|〜について(の)、〜に関して",
+        "above|前|〜の上に[の]"
+      ]
+    },
+    {
+      "from": "src/wordsData.json",
+      "into": "words.json",
+      "fromUnique": 6682,
+      "missingInTarget": 0,
+      "coveragePercent": 100,
+      "samples": []
+    },
+    {
+      "from": "src/wordsData.json",
+      "into": "public/words.json",
+      "fromUnique": 6682,
+      "missingInTarget": 4762,
+      "coveragePercent": 28.7,
+      "samples": [
+        "consider|動|を熟考する；を（～と）見なす",
+        "allow|動|を許す；（時間・金銭など）を取っておく",
+        "tend|動|（～する）傾向がある",
+        "concern|動|を心配させる；に関係する",
+        "describe|動|の特徴を述べる，を説明する"
+      ]
+    },
+    {
+      "from": "src/wordsData.json",
+      "into": "highschool.json",
+      "fromUnique": 6682,
+      "missingInTarget": 1898,
+      "coveragePercent": 71.6,
+      "samples": [
+        "a|冠|一つの、一人の",
+        "be able to|熟語|〜することができる、〜する能力がある",
+        "about|副|約、およそ、〜ぐらい",
+        "about|前|〜について(の)、〜に関して",
+        "above|前|〜の上に[の]"
+      ]
+    },
+    {
+      "from": "public/words.json",
+      "into": "words.json",
+      "fromUnique": 1969,
+      "missingInTarget": 49,
+      "coveragePercent": 97.5,
+      "samples": [
+        "beat|動|〜を打つ、〜をたたく、〜を打ち負かす",
+        "check out|熟語|〜を調査する",
+        "in conclusion|熟語|まとめると、結論として",
+        "deal with|熟語|~を取り扱う",
+        "deliver|動|〜を配達する"
+      ]
+    },
+    {
+      "from": "public/words.json",
+      "into": "src/wordsData.json",
+      "fromUnique": 1969,
+      "missingInTarget": 49,
+      "coveragePercent": 97.5,
+      "samples": [
+        "beat|動|〜を打つ、〜をたたく、〜を打ち負かす",
+        "check out|熟語|〜を調査する",
+        "in conclusion|熟語|まとめると、結論として",
+        "deal with|熟語|~を取り扱う",
+        "deliver|動|〜を配達する"
+      ]
+    },
+    {
+      "from": "public/words.json",
+      "into": "highschool.json",
+      "fromUnique": 1969,
+      "missingInTarget": 1947,
+      "coveragePercent": 1.1,
+      "samples": [
+        "a|冠|一つの、一人の",
+        "be able to|熟語|〜することができる、〜する能力がある",
+        "about|副|約、およそ、〜ぐらい",
+        "about|前|〜について(の)、〜に関して",
+        "above|前|〜の上に[の]"
+      ]
+    },
+    {
+      "from": "highschool.json",
+      "into": "words.json",
+      "fromUnique": 4784,
+      "missingInTarget": 0,
+      "coveragePercent": 100,
+      "samples": []
+    },
+    {
+      "from": "highschool.json",
+      "into": "src/wordsData.json",
+      "fromUnique": 4784,
+      "missingInTarget": 0,
+      "coveragePercent": 100,
+      "samples": []
+    },
+    {
+      "from": "highschool.json",
+      "into": "public/words.json",
+      "fromUnique": 4784,
+      "missingInTarget": 4762,
+      "coveragePercent": 0.5,
+      "samples": [
+        "consider|動|を熟考する；を（～と）見なす",
+        "allow|動|を許す；（時間・金銭など）を取っておく",
+        "tend|動|（～する）傾向がある",
+        "concern|動|を心配させる；に関係する",
+        "describe|動|の特徴を述べる，を説明する"
+      ]
+    }
+  ],
+  "levelConflicts": [
+    {
+      "signature": "accept|動|〜を受け入れる、〜を受け取る、〜を承諾する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "according to|熟語|〜によれば",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "actually|副|本当に、実際には",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "affect|動|〜に影響する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "after all|熟語|結局、とうとう",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "against|前|〜に反対して、〜に反して、〜に対して",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "age|動|熟成する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "amount|名|量、額",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "ancient|形|古代の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "announcement|名|アナウンス、発表",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "anyway|副|それにもかかわらず、それでもやはり",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "apply|動|当てはまる",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "atomic|形|原子の、原子力の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "attention|名|注意、関心",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "pay attention to|熟語|〜に注意を払う",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "attract|動|〜を引き付ける、〜を魅了する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "attractive|形|魅力的な、人を引き付ける",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "audience|名|聴衆、観客",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "barrier|名|障壁、障害",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "beyond|前|〜の向こうに[で・の・へ]",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "billion|名|10億",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "billion|形|10億の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "bitter|形|苦い、つらい",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "bomb|名|爆弾",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "brain|名|脳、頭脳",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "cancel|動|〜を取り消す、〜を中止する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "cancer|名|(病気の)ガン",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "cause|動|〜の原因となる、〜を引き起こす",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "certainly|副|確かに、必ず、もちろん",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "charge|名|受け持ち、責任",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "comfortable|形|心地よい、快適な",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "common|形|ふつうの、よくある、共通の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "communicate|動|〜を伝達する、伝え合う",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "communication|名|意思疎通、コミュニケーション",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "compare|動|〜を比較する、〜を比べる",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "complete|動|〜を完成させる",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "conclusion|名|結論",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "condition|名|条件、状態、健康状態",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "connect|動|〜を結びつける、〜をつなぐ",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "content|名|内容",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "continue|動|続く、〜を続ける",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "control|名|支配、統制",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "control|動|〜を思うように操る、〜を管理する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "correspond|動|対応する、一致する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "courage|名|勇気",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "create|動|〜を創造する、〜を生み出す",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "creative|形|創造的な、独創的な",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "custom|名|習慣、風習",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "deal|名|取引、契約",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "death|名|死",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "decorate|動|~を飾る、~を装飾する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "decrease|動|~を減らす、減る、減少する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "deeply|副|深く",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "depend|動|頼る、依存する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "develop|動|〜を発達させる、〜を開発する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "development|名|発達、発展",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "difficulty|名|難しさ、困難",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "disagree|動|意見が合わない、反対する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "disappear|動|見えなくなる、消える",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "discuss|動|〜について話し合う",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "discussion|名|話し合い、議論",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "disease|名|病気",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "effect|名|影響、効果",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "engine|名|エンジン",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "exchange|名|交換",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "exchange|動|〜を交換する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "expect|動|〜を期待する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "explain|動|〜を説明する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "express|動|〜を表現する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "expression|名|表現、表情",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "face|動|〜に直面する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "fit|動|(サイズが)合う",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "forever|副|永遠に",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "global|形|地球の、世界的な",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "global warming|名|地球温暖化",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "god|名|神",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "government|名|政府",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "gradually|副|だんだんと、徐々に",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "hardly|副|ほとんど〜ない",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "honest|形|正直な",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "human|名|人間",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "human|形|人間の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "impossible|形|不可能な",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "impress|動|〜に感銘を与える、〜を感動させる",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "improve|動|〜を改善する、良くなる",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "include|動|〜を含む",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "increase|動|増える、〜を増やす",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "individual|形|個々の",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "industrial|形|産業の、工業の",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "industry|名|産業、工業",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "influence|名|影響",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "ingredient|名|材料、成分",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "injure|動|〜を傷つける",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "injury|名|けが",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "iron|名|鉄",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "judge|動|〜を判断する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "kill|動|〜を殺す",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "knowledge|名|知識",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "lack|名|不足",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "lately|副|近頃、最近",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "lead|動|〜を導く、〜を案内する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "lifestyle|名|生活様式",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "major|動|〜を専攻する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "manager|名|経営者、支配人",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "master|動|〜を習得する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "material|名|材料、原料",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "media|名|メディア",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "medical|形|医学の、医療の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "modern|形|現代の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "nation|名|国家、国民",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "natural|形|自然の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "normal|形|普通の、標準の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "nowadays|副|近頃は",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "offer|動|〜を提供する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "official|形|公式の",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "opportunity|名|機会",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "organization|名|組織、団体",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "original|形|独創的な、最初の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "participate|動|参加する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "patient|形|忍耐強い",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "political|形|政治の",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "politician|名|政治家",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "politics|名|政治",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "pollution|名|汚染、公害",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "prefer|動|〜のほうを好む",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "prevent|動|〜を防ぐ",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "pride|名|誇り",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "take pride in|熟語|〜を誇りに思う",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "priest|名|聖職者、司祭",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "produce|動|〜を生産する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "product|名|製品",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "professional|形|プロの、専門職の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "progress|名|進歩、前進",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "prove|動|〜を証明する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "provide|動|〜を供給する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "purpose|名|目的",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "quality|名|質",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "realize|動|〜を悟る、〜に気づく",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "recently|副|最近",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "recommend|動|〜を推薦する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "reduce|動|〜を減らす",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "refugee|名|難民",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "refuse|動|〜を断る",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "regular|形|規則的な",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "relationship|名|関係",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "remain|動|〜のままでいる",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "remove|動|〜を取り除く",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "request|名|依頼",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "require|動|〜を必要とする",
+      "levels": [
+        7,
+        9
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          9
+        ]
+      }
+    },
+    {
+      "signature": "research|名|研究、調査",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "researcher|名|研究者",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "responsible|形|責任がある",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "role|名|役割",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "satellite|名|衛星",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "section|名|部分、区域",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "seek|動|〜を探し求める",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "sense|名|感覚",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "set up|熟語|〜を設立する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "shoot|動|〜を撃つ",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "similar|形|似ている",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "situation|名|状況",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "society|名|社会",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "solar|形|太陽の",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "soldier|名|兵士",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "spirit|名|精神、心",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "spread|動|広がる、〜を広げる",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "strict|形|厳しい",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "stupid|形|ばかな",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "succeed|動|成功する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "success|名|成功",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "successful|形|成功した",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "suffer|動|苦しむ",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "suggest|動|〜を提案する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "suggestion|名|提案",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "suppose|動|〜だと思う",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "survey|名|調査",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "survive|動|生き残る",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "system|名|制度、体系",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "task|名|仕事、課題",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "technology|名|科学技術",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "tough|形|困難な、たくましい",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "translate|動|〜を翻訳する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "treat|動|〜を扱う",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "trust|動|〜を信頼する",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "unfortunately|副|不運にも",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "unique|形|独特の、ユニークな",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "united nations|名|国際連合",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "universe|名|宇宙",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "upon|前|〜の上に",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "warn|動|〜に警告する",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "weigh|動|〜の重さがある",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "whether|接|〜かどうか",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "within|前|〜以内に",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ]
+      }
+    },
+    {
+      "signature": "youth|名|若さ、青年時代",
+      "levels": [
+        7,
+        8
+      ],
+      "byFile": {
+        "words": [
+          7
+        ],
+        "wordsData": [
+          7
+        ],
+        "public": [
+          8
+        ]
+      }
+    },
+    {
+      "signature": "despite|前|～にもかかわらず",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          5,
+          6
+        ],
+        "wordsData": [
+          5,
+          6
+        ],
+        "highschool": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "signature": "frequent|形|頻繁な",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          5,
+          6
+        ],
+        "wordsData": [
+          5,
+          6
+        ],
+        "highschool": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "signature": "heritage|名|遺産",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          5,
+          6
+        ],
+        "wordsData": [
+          5,
+          6
+        ],
+        "highschool": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "signature": "elite|名|エリート",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          5,
+          6
+        ],
+        "wordsData": [
+          5,
+          6
+        ],
+        "highschool": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "signature": "fatigue|名|疲労",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          5,
+          6
+        ],
+        "wordsData": [
+          5,
+          6
+        ],
+        "highschool": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "signature": "come true|熟語|実現する",
+      "levels": [
+        4,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          4
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "convenience|名|便利",
+      "levels": [
+        6,
+        8
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          8
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "dessert|名|デザート",
+      "levels": [
+        3,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          3
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "diplomat|名|外交官",
+      "levels": [
+        6,
+        8
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          8
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "disability|名|障害",
+      "levels": [
+        6,
+        9
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          9
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "each other|熟語|お互い",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          5
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "effort|名|努力",
+      "levels": [
+        6,
+        8
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          8
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "elementary school|名|小学校",
+      "levels": [
+        3,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          3
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "emotion|名|感情",
+      "levels": [
+        6,
+        8
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          8
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "environment|名|環境",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "especially|副|特に",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "garbage|名|ごみ",
+      "levels": [
+        4,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          4
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "generation|名|世代",
+      "levels": [
+        6,
+        8
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          8
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "get back|熟語|戻る",
+      "levels": [
+        4,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          4
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "get up|熟語|起きる",
+      "levels": [
+        2,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          2
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "graduation|名|卒業",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          5
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "high school|名|高校",
+      "levels": [
+        3,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          3
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "hike|動|ハイキングをする",
+      "levels": [
+        5,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          5
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "humor|名|ユーモア",
+      "levels": [
+        6,
+        7
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          7
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    },
+    {
+      "signature": "ice|名|氷",
+      "levels": [
+        3,
+        6
+      ],
+      "byFile": {
+        "words": [
+          6
+        ],
+        "wordsData": [
+          6
+        ],
+        "public": [
+          3
+        ],
+        "highschool": [
+          6
+        ]
+      }
+    }
+  ],
+  "onlyIn": {
+    "words": {
+      "count": 0,
+      "samples": []
+    },
+    "wordsData": {
+      "count": 0,
+      "samples": []
+    },
+    "public": {
+      "count": 49,
+      "samples": [
+        "beat|動|〜を打つ、〜をたたく、〜を打ち負かす",
+        "check out|熟語|〜を調査する",
+        "in conclusion|熟語|まとめると、結論として",
+        "deal with|熟語|~を取り扱う",
+        "deliver|動|〜を配達する"
+      ]
+    },
+    "highschool": {
+      "count": 0,
+      "samples": []
+    }
+  }
+}

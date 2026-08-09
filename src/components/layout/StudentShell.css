@@ -1,0 +1,28 @@
+/* 生徒向けシェル。高さは 100dvh を基準にし、下部ナビは安全領域を考慮する。 */
+
+.student-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-canvas-lime);
+}
+
+.student-shell__main {
+  flex: 1;
+  width: 100%;
+  /* 本文が横に間延びしないようにする（計画書7） */
+  max-width: var(--width-reading);
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-16) calc(var(--space-64) + env(safe-area-inset-bottom, 0px));
+}
+
+/* 下部ナビのアイコンとラベルを縦に積む */
+.tab-item {
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.tab-icon {
+  font-size: var(--icon-20);
+}

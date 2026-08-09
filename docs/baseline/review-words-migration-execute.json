@@ -1,0 +1,71 @@
+{
+  "totals": {
+    "users": 6,
+    "docs": 1242,
+    "matched": 20,
+    "ambiguous": 1,
+    "unmatched": 0,
+    "merged": 0,
+    "alreadyMigrated": 1221
+  },
+  "perUser": [
+    {
+      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
+      "oldDocs": 956,
+      "newDocs": 19,
+      "mergedGroups": 0,
+      "problems": 1
+    },
+    {
+      "uid": "XuPuokaMF1TGiJO7RmGNRRq84Yj2",
+      "oldDocs": 186,
+      "newDocs": 1,
+      "mergedGroups": 0,
+      "problems": 0
+    },
+    {
+      "uid": "eESG56y9ZCQWqz2aN8LIGSv3Xjr2",
+      "oldDocs": 30,
+      "newDocs": 0,
+      "mergedGroups": 0,
+      "problems": 0
+    },
+    {
+      "uid": "fP2QGWJkPMQCUTJ5AzDDW4aDM8e2",
+      "oldDocs": 22,
+      "newDocs": 0,
+      "mergedGroups": 0,
+      "problems": 0
+    },
+    {
+      "uid": "j8gVJjkIj6b5vAXriJ8dUHCSsRr1",
+      "oldDocs": 28,
+      "newDocs": 0,
+      "mergedGroups": 0,
+      "problems": 0
+    },
+    {
+      "uid": "wUKRkeGAijgRK3MlHg6hAnUel4x2",
+      "oldDocs": 20,
+      "newDocs": 0,
+      "mergedGroups": 0,
+      "problems": 0
+    }
+  ],
+  "problems": [
+    {
+      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
+      "oldId": "X8SF6TDbkgoYuAbrLSXS",
+      "word": "heritage",
+      "partOfSpeech": "名",
+      "meaning": "遺産",
+      "level": 8,
+      "status": "ambiguous",
+      "reason": null,
+      "candidates": [
+        "w_ec1772946eb626c7",
+        "w_0c080dacff0d41a8"
+      ]
+    }
+  ]
+}
