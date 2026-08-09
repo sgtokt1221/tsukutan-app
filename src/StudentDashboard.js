@@ -572,6 +572,7 @@ export default function StudentDashboard() {
   const [freeStudyProgress, setFreeStudyProgress] = useState({});
   const [storyError, setStoryError] = useState(null);
   const [masterWords, setMasterWords] = useState([]);
+  const [wordDataError, setWordDataError] = useState(null);
   
   // ▼▼▼ 親レベル選択用のState ▼▼▼
   const [selectedParentLevel, setSelectedParentLevel] = useState(null);
@@ -580,17 +581,26 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
 
-  // 単語マスターは初期バンドルに含めず、画面が開いたときに取りに行く（計画書13.5）
-  useEffect(() => {
-    let cancelled = false;
-    loadWordMaster()
-      .then((words) => { if (!cancelled) setMasterWords(words); })
+  // 単語マスターは初期バンドルに含めず、画面が開いたときに取りに行く（計画書13.5）。
+  // 日次プランは Firestore から作るのでマスターが無くても出せる。
+  // ここで画面全体を止めると、単語データだけの問題で今日の学習まで開けなくなる。
+  const loadMasterWords = useCallback(() => {
+    setWordDataError(null);
+    return loadWordMaster()
+      .then((words) => {
+        setMasterWords(words);
+        return words;
+      })
       .catch((error) => {
-        console.error('単語マスターの読み込みに失敗しました:', error);
-        if (!cancelled) setDashboardError('単語データを読み込めませんでした。通信状態を確認してください。');
+        logger.error('単語マスターの読み込みに失敗しました:', error);
+        setWordDataError(error.message || '単語データを読み込めませんでした。');
+        throw error;
       });
-    return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    loadMasterWords().catch(() => {});
+  }, [loadMasterWords]);
 
   // 復習単語をハイライトする。生成物のHTMLを実行しないよう、
   // 区間に分けて React の <mark> として組み立てる（計画書12.4）。
@@ -856,7 +866,7 @@ export default function StudentDashboard() {
   const startCheckTest = async () => {
     setLoading(true);
     try {
-      const master = masterWords.length > 0 ? masterWords : await loadWordMaster();
+      const master = masterWords.length > 0 ? masterWords : await loadMasterWords();
       const combinedWords = master.map((word) => ({
         sourceTextbook: 'words-master',
         ...word,
@@ -1010,7 +1020,7 @@ export default function StudentDashboard() {
           }
         } else if (textbookId === 'highschool-english') {
           // 高校英語はマスターのレベル5〜7
-          const master = masterWords.length > 0 ? masterWords : await loadWordMaster();
+          const master = masterWords.length > 0 ? masterWords : await loadMasterWords();
 
           const highschoolWords = master.filter(word => {
             const level = word.level || 1;
@@ -1045,7 +1055,7 @@ export default function StudentDashboard() {
             }
             
             // 1. マスターから取得（eikenLevels フィールドあり）
-            const master = masterWords.length > 0 ? masterWords : await loadWordMaster();
+            const master = masterWords.length > 0 ? masterWords : await loadMasterWords();
             {
               const eikenWordsFromWordsData = master.filter(word => {
                 if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
@@ -1849,6 +1859,22 @@ export default function StudentDashboard() {
               </div>
 
             </div>
+
+            {wordDataError && (
+              <div className="section-card word-data-error" role="alert">
+                <p>{wordDataError}</p>
+                <p className="field-error">
+                  単語力チェックと自由学習が使えません。今日の学習プランはそのまま進められます。
+                </p>
+                <button
+                  type="button"
+                  className="primary-action"
+                  onClick={() => loadMasterWords().catch(() => {})}
+                >
+                  単語データを読み込み直す
+                </button>
+              </div>
+            )}
 
             <div className="section-card">
               <h3 className="section-title">今日のタスク</h3>

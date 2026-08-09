@@ -2304,3 +2304,13 @@ select:focus-visible,
   content: '✓ ';
   font-weight: 700;
 }
+
+/* ===== 単語データ読み込み失敗の案内 ===== */
+.word-data-error {
+  border: 1px solid #ffc107;
+  background-color: #fff8e1;
+}
+.word-data-error p {
+  margin: 0 0 8px 0;
+  line-height: 1.6;
+}
