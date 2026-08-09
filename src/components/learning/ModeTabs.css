@@ -1,0 +1,42 @@
+/*
+ * 表示モードのアンダータブ。ヘッダーのすぐ下に置く細い行。
+ * ここは学習の主役ではないので、高さを詰めて余白も最小にする。
+ */
+
+.mode-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: 0 var(--space-16);
+  border-bottom: 1px solid var(--color-olive-border);
+  background-color: var(--color-surface);
+}
+
+.mode-tabs__list {
+  display: flex;
+  align-items: stretch;
+}
+
+.mode-tabs__tab {
+  padding: var(--space-8) var(--space-12);
+  border: none;
+  /* 選択中の下線ぶんの高さを常に確保して、切り替えても行が動かないようにする */
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-14);
+  font-weight: 600;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mode-tabs__tab:hover {
+  color: var(--color-ink-olive);
+}
+
+.mode-tabs__tab[aria-selected="true"] {
+  color: var(--color-ink-olive);
+  border-bottom-color: var(--color-brand-lime);
+}
