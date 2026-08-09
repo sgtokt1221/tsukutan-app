@@ -75,6 +75,12 @@ export const loadManifest = (options) => fetchJson(`${BASE_PATH}/manifest.json`,
  */
 export const loadPronunciations = (options) => fetchJson(`${BASE_PATH}/pronunciations.json`, options);
 
+/**
+ * 実力テストの問題バンク（約1,100問 / 346KB）。
+ * 初期バンドルへ入れると重いので、テストを始めるときだけ取りに行く。
+ */
+export const loadAssessmentItems = (options) => fetchJson(`${BASE_PATH}/assessment-items.json`, options);
+
 const TEXTBOOK_FILES = {
   'osaka-koukou-nyuushi': 'words-osaka.json',
   'highschool-english': 'words-highschool.json',

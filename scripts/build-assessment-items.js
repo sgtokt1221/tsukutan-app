@@ -79,7 +79,7 @@ const main = () => {
 
   const items = [];
   const counts = {};
-  const rejected = { noPool: 0, distractors: 0, length: 0, noCloze: 0, sameInSentence: 0 };
+  const rejected = { noPool: 0, distractors: 0, length: 0, noCloze: 0, sameInSentence: 0, idiom: 0 };
 
   // 出力を安定させるため、語→品詞→意味で並べてから回す
   const ordered = [...master].sort((a, b) =>
@@ -104,6 +104,15 @@ const main = () => {
       const distractors = pickDistractors(word, pool, index);
       if (!distractors) {
         rejected.distractors += 1;
+        continue;
+      }
+
+      // 熟語は語義が近いものが多く、「〜と調和して」と「〜と一致して」の
+      // ように、文字列としては別でも両方が正解になる組み合わせが作れて
+      // しまう。類義語辞書が無い以上ここでは防げないので、意味を問う
+      // 4択には使わない。空所補充なら文脈で答えが1つに決まる。
+      if (domain === 'vocabulary' && /熟/.test(word.partOfSpeech)) {
+        rejected.idiom = (rejected.idiom || 0) + 1;
         continue;
       }
 
