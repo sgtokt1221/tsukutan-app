@@ -131,3 +131,31 @@
   font-size: var(--font-size-12);
   cursor: pointer;
 }
+
+/* 先頭へ戻る。カードに重ならないよう本文の外側に寄せ、
+   下部ナビと安全領域のぶん持ち上げる。 */
+.wordbook-to-top {
+  position: fixed;
+  right: var(--space-16);
+  bottom: calc(var(--space-64) + env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+}
+
+.wordbook-to-top__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-olive-border);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.wordbook-to-top__button:hover {
+  transform: translateY(-2px);
+}
