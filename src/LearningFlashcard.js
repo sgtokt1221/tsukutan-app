@@ -11,11 +11,8 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
-
-// 単語帳モードの文字サイズの下限・上限（%）。一覧で見渡したいときは小さく、
-// 1語ずつ確かめたいときは大きくできるよう幅を広めに取る。
-const MIN_ZOOM = 20;
-const MAX_ZOOM = 200;
+import { useWordbookZoom } from './logic/useWordbookZoom';
+import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -37,14 +34,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const [revealedCards, setRevealedCards] = useState(new Set()); // 赤シート機能で表示中のカード
   const [longPressCards, setLongPressCards] = useState(new Set()); // 長押し中のカード（復習モード用）
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
-  // 単語帳モードの文字サイズ。端末ごとに好みが違うので覚えておく。
-  const [wordbookZoom, setWordbookZoom] = useState(() => {
-    const saved = Number(localStorage.getItem('tsukutan.wordbookZoom'));
-    return Number.isFinite(saved) && saved >= MIN_ZOOM && saved <= MAX_ZOOM ? saved : 100;
-  });
-  useEffect(() => {
-    localStorage.setItem('tsukutan.wordbookZoom', String(wordbookZoom));
-  }, [wordbookZoom]);
+  // 文字サイズは復習カードと共有する
+  const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -169,6 +160,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
+  // 先頭へ戻るのスクロール対象。スクロールするのは画面ではなくこの要素。
+  const wordbookShellRef = useRef(null);
   const currentWord = shuffledWords?.[currentIndex];
 
   const handleBackButtonClick = useCallback(() => {
@@ -774,9 +767,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // リアル単語帳モードのレンダリング
   const renderWordbookMode = () => (
-    <div className="wordbook-shell" style={{ '--wordbook-zoom': wordbookZoom / 100 }}>
-      {/* ページトップ用のアンカー */}
-      <div id="page-top" className="wordbook-anchor" />
+    <div
+      className="wordbook-shell"
+      ref={wordbookShellRef}
+      style={{ '--wordbook-zoom': wordbookZoom / 100 }}
+    >
 
       {/* フラッシュカードと同じ骨格にする（計画書7.3 / 12.5）。
           以前はここだけ独自のヘッダー・独自の色・独自のボタンだった。 */}
@@ -789,20 +784,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
           backLabel="終了"
         />
         <ModeTabs value="wordbook" onChange={setViewMode}>
-          {/* 文字サイズ。小さいA〜大きいA は拡大縮小の慣用表記 */}
-          <label className="wordbook-zoom">
-            <span className="wordbook-zoom__mark wordbook-zoom__mark--small" aria-hidden="true">A</span>
-            <input
-              type="range"
-              min={MIN_ZOOM}
-              max={MAX_ZOOM}
-              step="10"
-              value={wordbookZoom}
-              onChange={(e) => setWordbookZoom(Number(e.target.value))}
-              aria-label={`文字の大きさ ${wordbookZoom}%`}
-            />
-            <span className="wordbook-zoom__mark wordbook-zoom__mark--large" aria-hidden="true">A</span>
-          </label>
+          <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
         </ModeTabs>
       </div>
 
@@ -948,31 +930,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       {/* 上に戻るボタン。カードに被らないよう右下の余白へ寄せる。 */}
       <div className="wordbook-to-top">
         <button
-          onClick={() => {
-            logger.debug('上に戻るボタンがクリックされました');
-            
-            // 単語帳モードのコンテナ要素を取得
-            const wordbookContainer = document.querySelector('[style*="height: 100vh"][style*="overflow: auto"]');
-            logger.debug('単語帳コンテナ:', wordbookContainer);
-            
-            if (wordbookContainer) {
-              logger.debug('コンテナのスクロール位置:', wordbookContainer.scrollTop);
-              
-              // コンテナ要素にスクロール
-              wordbookContainer.scrollTo({ top: 0, behavior: 'smooth' });
-              
-              // フォールバック
-              setTimeout(() => {
-                wordbookContainer.scrollTop = 0;
-                logger.debug('フォールバック後の位置:', wordbookContainer.scrollTop);
-              }, 100);
-            } else {
-              // フォールバック: ウィンドウスクロール
-              logger.debug('ウィンドウスクロール実行');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }}
           type="button"
+          onClick={() => wordbookShellRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
           className="wordbook-to-top__button"
           aria-label="先頭へ戻る"
         >
