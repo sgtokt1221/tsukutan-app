@@ -2148,3 +2148,22 @@ input[type="file"] { display: none; }
     padding-bottom: 65px;
   }
 }
+/* ===== 日次計画の注意書き ===== */
+.plan-warning,
+.plan-notice {
+  margin: 0 0 1rem 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.plan-warning {
+  background-color: #fff8e1;
+  border: 1px solid #ffc107;
+  color: #7a5900;
+}
+.plan-notice {
+  background-color: #eef6ff;
+  border: 1px solid #b6d4fe;
+  color: #084298;
+}
