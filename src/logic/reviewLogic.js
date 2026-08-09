@@ -1,6 +1,40 @@
 import { db } from '../firebaseConfig';
-import { doc, setDoc, getDoc, updateDoc, deleteDoc, runTransaction } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, runTransaction } from 'firebase/firestore';
 import { logStudyEvent } from './studyLogger';
+
+// やる気レベル別設定
+const MOTIVATION_LEVELS = {
+  low: {
+    name: 'そこそこ',
+    description: '無理せず続けたい',
+    easeFactorMultiplier: 1.2,
+    intervalMultiplier: 1.5,
+    masteredThreshold: 3,
+    dailyReviewQuota: 2,
+    adjacentWordsQuota: 5,
+    newWordsQuota: 15
+  },
+  normal: {
+    name: '普通',
+    description: 'バランスよく学習したい',
+    easeFactorMultiplier: 1.0,
+    intervalMultiplier: 1.0,
+    masteredThreshold: 5,
+    dailyReviewQuota: 3,
+    adjacentWordsQuota: 10,
+    newWordsQuota: 20
+  },
+  high: {
+    name: 'やる気満々',
+    description: '確実に覚えたい',
+    easeFactorMultiplier: 0.8,
+    intervalMultiplier: 0.7,
+    masteredThreshold: 7,
+    dailyReviewQuota: 5,
+    adjacentWordsQuota: 15,
+    newWordsQuota: 30
+  }
+};
 
 /**
  * 新しい単語を復習リストに追加します。
@@ -46,8 +80,9 @@ export const addWordToReview = async (userId, word) => {
  * @param {string} userId ユーザーID
  * @param {object} word 対象の単語オブジェクト
  * @param {boolean} isCorrect 正解したかどうか
+ * @param {boolean} isReviewComplete 復習完了（復習リストから除去）するかどうか
  */
-export const updateUserWordProgress = async (userId, word, isCorrect) => {
+export const updateUserWordProgress = async (userId, word, isCorrect, isReviewComplete = false, motivationLevel = 'normal') => {
   if (!userId || !word || !word.id) return;
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', word.id);
@@ -66,15 +101,22 @@ export const updateUserWordProgress = async (userId, word, isCorrect) => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0); // 時間を正規化
+    // 復習完了の場合は、完全に復習リストから除去
+    if (isReviewComplete) {
+      await removeWordFromReview(userId, word.id);
+      return;
+    }
+
     let { interval, repetitions, easeFactor } = wordData;
+    const config = MOTIVATION_LEVELS[motivationLevel] || MOTIVATION_LEVELS.normal;
 
     if (isCorrect) {
       if (repetitions === 0) {
         interval = 1;
       } else if (repetitions === 1) {
-        interval = 6;
+        interval = Math.ceil(6 * config.intervalMultiplier);
       } else {
-        interval = Math.ceil(interval * easeFactor);
+        interval = Math.ceil(interval * easeFactor * config.easeFactorMultiplier * config.intervalMultiplier);
       }
       repetitions += 1;
     } else {
@@ -88,6 +130,10 @@ export const updateUserWordProgress = async (userId, word, isCorrect) => {
     // 正解: 5, 不正解: 2 とする
     const q = isCorrect ? 5 : 2;
     easeFactor = easeFactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+    
+    // やる気レベルに応じてEase Factorを調整
+    easeFactor *= config.easeFactorMultiplier;
+    
     if (easeFactor < 1.3) easeFactor = 1.3; // 最低E-Factor
 
     const nextReviewDate = new Date(today);
@@ -171,11 +217,14 @@ export const removeWordFromReview = async (userId, wordId) => {
   try {
     // トランザクションを使用して、複数のドキュメント操作の原子性を保証
     await runTransaction(db, async (transaction) => {
-      // 1. 復習リストから削除
+      // 1. 最初にすべての読み取り操作を実行
+      const dailyPlanSnap = await transaction.get(dailyPlanRef);
+      
+      // 2. 次に書き込み操作を実行
+      // 復習リストから削除
       transaction.delete(reviewWordRef);
 
-      // 2. 今日のキャッシュからも削除
-      const dailyPlanSnap = await transaction.get(dailyPlanRef);
+      // 今日のキャッシュからも削除
       if (dailyPlanSnap.exists()) {
         const currentPlan = dailyPlanSnap.data();
         const updatedReviewWords = currentPlan.reviewWords.filter(w => w.id !== wordId);

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebaseConfig';
-import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { logStudySession } from './logic/studyLogger';
+import { initialize, speak } from './logic/speechUtils';
 import { updateProgressPercentage } from './logic/progressLogic'; // ★インポート
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
+import wordsData from './wordsData.json';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -18,16 +20,15 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-// どのテキストブックから単語を探すかを定義
-const textbooks = {
-  'osaka-koukou-nyuushi': '大阪府公立入試英単語',
-  'highschool-english': '高校英語'
-};
+
+// 定数定義
+const QUESTIONS_PER_STAGE = 10; // ステージ1以外は10問
+const QUESTIONS_STAGE_1 = 5; // ステージ1は5問
 
 export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete }) {
   const [allWords, setAllWords] = useState(passedWords || []);
   const [stage, setStage] = useState(1);
-  const [currentLevel, setCurrentLevel] = useState(4);
+  const [currentLevel, setCurrentLevel] = useState(3);
   const [currentQuestions, setCurrentQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -36,120 +37,446 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   const [isBeginnerMode, setIsBeginnerMode] = useState(false);
   const [consecutiveFailures, setConsecutiveFailures] = useState(0);
   const [consecutiveSuccesses, setConsecutiveSuccesses] = useState(0);
+  const [questionStartTime, setQuestionStartTime] = useState(null);
+  const [responseTimes, setResponseTimes] = useState([]);
+  const [adaptiveLevel, setAdaptiveLevel] = useState(3); // 適応的レベル調整
+  const [performanceHistory, setPerformanceHistory] = useState([]); // パフォーマンス履歴
+  const [consecutiveConsistentResults, setConsecutiveConsistentResults] = useState(0); // 連続一貫結果
   const navigate = useNavigate();
 
   // Framer Motion の設定
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-25, 25]);
-  // ▼▼▼【修正点1】スワイプ時の背景色アニメーションを再設定▼▼▼
-  const cardColor = useTransform(x, [-100, 0, 100], ["#fee2e2", "#ffffff", "#dcfce7"]);
+  const y = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
+  const cardColor = useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]);
 
   useEffect(() => {
-    // passedWords があればそれを使う、なければフェッチする（フォールバック）
+    // passedWords があればそれを使う、なければwordsData.jsonを使用
     if (!passedWords || passedWords.length === 0) {
-      const fetchAllWords = async () => {
-        setLoading(true);
-        try {
-          let combinedWords = [];
-          const promises = Object.keys(textbooks).map(id => 
-            getDocs(collection(db, 'textbooks', id, 'words'))
-          );
-          const snapshots = await Promise.all(promises);
-          snapshots.forEach(snapshot => {
-            const wordsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            combinedWords = [...combinedWords, ...wordsData];
-          });
-          const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.word, item])).values());
-          const validWords = uniqueWords.filter(
-            word => word && word.word && (word.meaning || word.japanese)
-          );
-          setAllWords(validWords);
-        } catch (error) {
-          console.error("全単語の読み込みに失敗しました:", error);
-        }
-      };
-      fetchAllWords();
+      setLoading(true);
+      try {
+        // wordsData.jsonから単語を取得
+        const validWords = wordsData.filter(
+          word => word && word.word && (word.meaning || word.japanese)
+        );
+        setAllWords(validWords);
+        console.log('実力テスト用単語データ読み込み完了:', validWords.length, '語');
+      } catch (error) {
+        console.error("全単語の読み込みに失敗しました:", error);
+      }
+      setLoading(false);
     }
+    
+    // テスト開始時間を記録（現在は使用していない）
   }, [passedWords]);
+
+  // 適応的難易度調整のロジック
+  const calculateAdaptiveLevel = (performanceHistory, baseLevel) => {
+    if (performanceHistory.length < 3) return baseLevel;
+    
+    const recentPerformance = performanceHistory.slice(-5); // 直近5問のパフォーマンス
+    const accuracy = recentPerformance.filter(p => p.isCorrect).length / recentPerformance.length;
+    const avgResponseTime = recentPerformance.reduce((sum, p) => sum + p.responseTime, 0) / recentPerformance.length;
+    
+    // 適応的調整ロジック
+    let adjustment = 0;
+    
+    // 正確性に基づく調整（厳しめに設定）
+    if (accuracy >= 0.9) {
+      adjustment += 1; // 正解率90%以上で難易度アップ
+    } else if (accuracy <= 0.6) {
+      adjustment -= 1; // 正解率60%以下で難易度ダウン
+    }
+    
+    // 回答時間に基づく調整（2秒以下で正解なら難易度アップ、8秒以上なら難易度ダウン）
+    if (avgResponseTime <= 2000 && accuracy >= 0.8) {
+      adjustment += 0.5;
+    } else if (avgResponseTime >= 8000) {
+      adjustment -= 0.5;
+    }
+    
+    const newLevel = Math.max(1, Math.min(7, baseLevel + adjustment));
+    return Math.round(newLevel);
+  };
+
+  // 単語の難易度スコアを計算
+  const calculateWordDifficulty = (word) => {
+    let difficulty = 0;
+    
+    // 単語の長さに基づく難易度
+    difficulty += word.word.length * 0.1;
+    
+    // 意味の複雑さ（複数の意味がある場合）
+    if (word.meaning && word.meaning.includes(';')) {
+      difficulty += 0.5;
+    }
+    
+    // 英検レベルに基づく難易度
+    if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
+      const maxEikenLevel = Math.max(...word.eikenLevels.map(l => typeof l === 'string' ? 0 : l));
+      difficulty += maxEikenLevel * 0.3;
+    } else {
+      difficulty += (word.level || 1) * 0.3;
+    }
+    
+    return difficulty;
+  };
 
   useEffect(() => {
     const setupStage = (level) => {
       // ステージ1は5問、それ以外は10問
-      const QUESTIONS_PER_STAGE = stage === 1 ? 5 : 10;
+      const currentQuestionsPerStage = stage === 1 ? QUESTIONS_STAGE_1 : QUESTIONS_PER_STAGE;
       
-      // 英検レベルに基づいてフィルタリング
+      // 適応的レベル調整を適用
+      const effectiveLevel = adaptiveLevel;
+      
+      // 英検レベルに基づいてフィルタリング（範囲を広げてより多くの選択肢を確保）
       let filteredWords = allWords.filter(word => {
         // eikenLevelsフィールドがある場合はそれを使用
         if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
-          return word.eikenLevels.includes(level);
+          return word.eikenLevels.some(eikenLevel => 
+            Math.abs(eikenLevel - effectiveLevel) <= 1
+          );
         }
         // eikenLevelsがない場合は従来のlevelフィールドを使用
-        return Number(word.level) === Number(level);
+        return Math.abs(word.level - effectiveLevel) <= 1;
       });
       
-      if (filteredWords.length < QUESTIONS_PER_STAGE) {
-        const needed = QUESTIONS_PER_STAGE - filteredWords.length;
+      // 難易度スコアでソート（適応的調整に基づいて）
+      filteredWords = filteredWords.sort((a, b) => {
+        const diffA = Math.abs(calculateWordDifficulty(a) - effectiveLevel);
+        const diffB = Math.abs(calculateWordDifficulty(b) - effectiveLevel);
+        return diffA - diffB;
+      });
+      
+      console.log(`実力テスト 適応レベル${effectiveLevel}の出題候補:`, {
+        総単語数: allWords.length,
+        フィルタ後単語数: filteredWords.length,
+        適応レベル: effectiveLevel,
+        サンプル単語: filteredWords.slice(0, 3).map(w => ({ 
+          word: w.word, 
+          level: w.level, 
+          eikenLevels: w.eikenLevels,
+          difficulty: calculateWordDifficulty(w)
+        }))
+      });
+      
+      if (filteredWords.length < currentQuestionsPerStage) {
+        const needed = currentQuestionsPerStage - filteredWords.length;
         const nearbyWords = allWords.filter(word => {
           // eikenLevelsフィールドがある場合は隣接する英検レベルを探す
           if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
-            return word.eikenLevels.includes(level - 1) || word.eikenLevels.includes(level + 1);
+            return word.eikenLevels.some(eikenLevel => 
+              Math.abs(eikenLevel - effectiveLevel) <= 2
+            );
           }
           // eikenLevelsがない場合は従来のlevelフィールドを使用
-          return Math.abs(word.level - level) === 1;
+          return Math.abs(word.level - effectiveLevel) <= 2;
         });
         filteredWords.push(...shuffleArray(nearbyWords).slice(0, needed));
       }
-      setCurrentQuestions(shuffleArray(filteredWords).slice(0, QUESTIONS_PER_STAGE));
+      
+      setCurrentQuestions(shuffleArray(filteredWords).slice(0, currentQuestionsPerStage));
       setQuestionIndex(0);
       setScore(0);
       setIsFlipped(false);
+      setQuestionStartTime(Date.now());
+      setResponseTimes([]);
       x.set(0);
     };
     if (allWords.length > 0) {
       setLoading(false);
-      setupStage(currentLevel);
+      setupStage(adaptiveLevel);
     }
-  }, [allWords, stage, currentLevel, x]);
+  }, [allWords, stage, adaptiveLevel, x]);
 
-  const handleShowAnswer = () => {
-    if (!isFlipped) {
-      setIsFlipped(true);
+  // 音声合成の初期化
+  useEffect(() => {
+    initialize().catch(error => console.error("Speech initialization failed:", error));
+  }, []);
+
+
+  const handleDoubleClick = () => {
+    setIsFlipped(prev => !prev);
+    if (!isFlipped && currentQuestions.length > 0) {
+      const wordToSpeak = currentQuestions[questionIndex].word;
+      speak(wordToSpeak);
     }
   };
 
   const handleDragEnd = (event, info) => {
-    if (Math.abs(info.offset.x) < 30) return;
+    if (Math.abs(info.offset.x) < 50) return;
     
     const currentWord = currentQuestions[questionIndex];
     const user = auth.currentUser;
+    const isCorrect = info.offset.x > 0;
     
-    if (!isFlipped) {
-      // 最初のスワイプ：カードを裏返す
-      setIsFlipped(true);
-      x.set(0);
-    } else {
-      // 2回目のスワイプ：次の単語に進む
-      const isCorrect = info.offset.x > 0;
-      
-      // For incorrect answers, add the word to the user's review list.
-      if (!isCorrect && user && currentWord) {
-        updateUserWordProgress(user.uid, currentWord, false);
-      }
-
-      const newScore = score + (isCorrect ? 1 : 0);
-      if (questionIndex < currentQuestions.length - 1) {
-        setScore(newScore);
-        setQuestionIndex(prev => prev + 1);
-        setIsFlipped(false);
-        x.set(0);
-      } else {
-        evaluateStage(newScore);
+    // 回答時間を記録
+    const responseTime = questionStartTime ? Date.now() - questionStartTime : 0;
+    const performanceData = {
+      wordId: currentWord?.id || currentWord?.word,
+      responseTime: responseTime,
+      isCorrect: isCorrect,
+      level: adaptiveLevel,
+      stage: stage,
+      wordDifficulty: calculateWordDifficulty(currentWord),
+      timestamp: Date.now()
+    };
+    
+    const newResponseTimes = [...responseTimes, performanceData];
+    setResponseTimes(newResponseTimes);
+    
+    // パフォーマンス履歴を更新（ステージ情報を含める）
+    const stagePerformanceData = {
+      ...performanceData,
+      stage: stage,
+      level: currentLevel,
+      score: score + (isCorrect ? 1 : 0)
+    };
+    const newPerformanceHistory = [...performanceHistory, stagePerformanceData];
+    setPerformanceHistory(newPerformanceHistory);
+    
+    // リアルタイム適応的調整（5問ごとに実行）
+    if (newPerformanceHistory.length % 5 === 0) {
+      const newAdaptiveLevel = calculateAdaptiveLevel(newPerformanceHistory, adaptiveLevel);
+      if (newAdaptiveLevel !== adaptiveLevel) {
+        console.log(`適応的調整: レベル${adaptiveLevel} → レベル${newAdaptiveLevel}`);
+        setAdaptiveLevel(newAdaptiveLevel);
       }
     }
+    
+    // For incorrect answers, add the word to the user's review list.
+    if (!isCorrect && user && currentWord) {
+      updateUserWordProgress(user.uid, currentWord, false);
+    }
+
+    const newScore = score + (isCorrect ? 1 : 0);
+    if (questionIndex < currentQuestions.length - 1) {
+      setScore(newScore);
+      setQuestionIndex(prev => prev + 1);
+      setIsFlipped(false);
+      setQuestionStartTime(Date.now()); // 次の問題の開始時間を設定
+      x.set(0);
+      y.set(0);
+    } else {
+      evaluateStage(newScore);
+    }
+  };
+
+  // 新機能: 適応的難易度調整
+  const adjustDifficultyBasedOnPerformance = (level, score, responseTimes, totalQuestions) => {
+    const accuracy = score / totalQuestions;
+    const avgResponseTime = responseTimes.length > 0 ? 
+      responseTimes.reduce((sum, rt) => sum + rt.responseTime, 0) / responseTimes.length : 0;
+    
+    // 精度と回答時間に基づく調整
+    let adjustment = 0;
+    
+    if (accuracy > 0.8 && avgResponseTime < 3000) {
+      // 高精度かつ高速回答：難易度を上げる
+      adjustment = 0.5;
+    } else if (accuracy > 0.9 && avgResponseTime < 2000) {
+      // 非常に高精度かつ非常に高速：大きく上げる
+      adjustment = 1.0;
+    } else if (accuracy < 0.4 && avgResponseTime > 5000) {
+      // 低精度かつ低速回答：難易度を下げる
+      adjustment = -0.5;
+    } else if (accuracy < 0.3 && avgResponseTime > 8000) {
+      // 非常に低精度かつ非常に低速：大きく下げる
+      adjustment = -1.0;
+    }
+    
+    return Math.max(1, Math.min(10, level + adjustment));
+  };
+
+  // 総合評価スコアを計算
+  const calculateComprehensiveScore = (score, responseTimes, totalQuestions, level) => {
+    const accuracy = score / totalQuestions;
+    const avgResponseTime = responseTimes.length > 0 ? 
+      responseTimes.reduce((sum, rt) => sum + rt.responseTime, 0) / responseTimes.length : 0;
+    
+    // 回答時間スコア（3秒以下で満点、10秒以上で0点）
+    const timeScore = Math.max(0, Math.min(1, (10000 - avgResponseTime) / 7000));
+    
+    // 一貫性スコア（回答時間のばらつきが少ないほど高スコア）
+    const responseTimeVariance = responseTimes.length > 1 ? 
+      responseTimes.reduce((sum, rt) => sum + Math.pow(rt.responseTime - avgResponseTime, 2), 0) / responseTimes.length : 0;
+    const consistencyScore = Math.max(0, 1 - (responseTimeVariance / 10000000));
+    
+    // 難易度適応スコア（適応レベルと実際のレベルが近いほど高スコア）
+    const levelAdaptationScore = 1 - Math.abs(adaptiveLevel - level) / 7;
+    
+    // 総合スコア（重み付き平均）
+    const comprehensiveScore = (
+      accuracy * 0.4 +           // 正確性 40%
+      timeScore * 0.3 +          // 速度 30%
+      consistencyScore * 0.2 +   // 一貫性 20%
+      levelAdaptationScore * 0.1 // 適応性 10%
+    );
+    
+    return {
+      comprehensiveScore,
+      accuracy,
+      timeScore,
+      consistencyScore,
+      levelAdaptationScore,
+      avgResponseTime
+    };
+  };
+
+  // 早期終了判定関数
+  const shouldEarlyTerminate = (currentScore, currentStage, currentLevel, performanceHistory) => {
+    
+    // 初学者モードの特別な早期終了条件
+    if (isBeginnerMode) {
+      return shouldBeginnerEarlyTerminate(currentScore, currentStage, currentLevel, performanceHistory);
+    }
+    
+    if (currentStage < 3) return false; // 通常モードでは最小3ステージは実行
+    
+    // 総質問数を正確に計算（ステージ1は5問、それ以外は10問）
+    const totalQuestions = currentStage === 1 ? QUESTIONS_STAGE_1 : 
+                          QUESTIONS_STAGE_1 + (currentStage - 1) * QUESTIONS_PER_STAGE;
+    const accuracy = currentScore / totalQuestions;
+    
+    // 最近のパフォーマンス履歴を分析
+    const recentHistory = performanceHistory.slice(-3); // 最近3ステージ
+    if (recentHistory.length < 2) return false;
+    
+    // 一貫性チェック: 最近のステージで一貫した結果があるか
+    const consistentResults = recentHistory.filter(perf => {
+      const stageQuestions = perf.stage === 1 ? QUESTIONS_STAGE_1 : QUESTIONS_PER_STAGE;
+      const stageAccuracy = perf.score / stageQuestions;
+      return Math.abs(stageAccuracy - accuracy) < 0.2; // 20%以内の変動
+    });
+    
+    // 信頼度チェック: 十分なデータがあるか
+    const hasEnoughData = totalQuestions >= 15; // 最低15問
+    
+    // 明確なレベル判定ができるか
+    const clearLevelIndication = (
+      (accuracy >= 0.8 && currentLevel >= 6) || // 高レベルで高精度
+      (accuracy <= 0.4 && currentLevel <= 3) || // 低レベルで低精度
+      (accuracy >= 0.6 && accuracy <= 0.7) // 中程度の精度
+    );
+    
+    // 連続一貫結果のカウント
+    if (consistentResults.length >= 2) {
+      setConsecutiveConsistentResults(prev => prev + 1);
+    } else {
+      setConsecutiveConsistentResults(0);
+    }
+    
+    // 早期終了条件
+    const shouldTerminate = (
+      hasEnoughData && 
+      clearLevelIndication && 
+      consecutiveConsistentResults >= 2 && // 連続2回一貫
+      (stage >= 4 || (accuracy >= 0.9 || accuracy <= 0.3)) // 明確な結果
+    );
+    
+    console.log('🔍 早期終了判定:', {
+      currentScore,
+      currentStage,
+      currentLevel,
+      accuracy: accuracy.toFixed(2),
+      hasEnoughData,
+      clearLevelIndication,
+      consecutiveConsistentResults,
+      shouldTerminate,
+      recentHistory: recentHistory.length
+    });
+    
+    return shouldTerminate;
+  };
+
+  // 初学者モード専用の早期終了判定関数
+  const shouldBeginnerEarlyTerminate = (currentScore, currentStage, currentLevel, performanceHistory) => {
+    // 初学者モードでは最小2ステージ（約15問）で早期終了可能
+    if (currentStage < 2) return false;
+    
+    // 総質問数を正確に計算（ステージ1は5問、それ以外は10問）
+    const totalQuestions = currentStage === 1 ? QUESTIONS_STAGE_1 : 
+                          QUESTIONS_STAGE_1 + (currentStage - 1) * QUESTIONS_PER_STAGE;
+    const accuracy = currentScore / totalQuestions;
+    
+    console.log('🎓 初学者モード早期終了判定:', {
+      currentScore,
+      currentStage,
+      currentLevel,
+      accuracy: accuracy.toFixed(2),
+      totalQuestions
+    });
+    
+    // 初学者モードの早期終了条件
+    const beginnerConditions = {
+      // 明確に低いレベル（英検5級以下）
+      veryLowLevel: currentLevel <= 5 && accuracy <= 0.3 && totalQuestions >= 15,
+      
+      // 明確に適切なレベル（英検4級程度）
+      appropriateLevel: currentLevel === 4 && accuracy >= 0.6 && accuracy <= 0.8 && totalQuestions >= 15,
+      
+      // 高精度で安定している
+      stableHighAccuracy: accuracy >= 0.8 && currentStage >= 3,
+      
+      // 低精度で安定している（初学者の特徴）
+      stableLowAccuracy: accuracy <= 0.4 && currentStage >= 2 && totalQuestions >= 15,
+      
+      // 英検5級で合格レベル
+      grade5Pass: currentLevel === 5 && accuracy >= 0.6 && totalQuestions >= 15
+    };
+    
+    const shouldTerminate = (
+      beginnerConditions.veryLowLevel ||
+      beginnerConditions.appropriateLevel ||
+      beginnerConditions.stableHighAccuracy ||
+      beginnerConditions.stableLowAccuracy ||
+      beginnerConditions.grade5Pass
+    );
+    
+    console.log('🎓 初学者モード判定結果:', {
+      conditions: beginnerConditions,
+      shouldTerminate
+    });
+    
+    return shouldTerminate;
   };
 
   const evaluateStage = (finalScore) => {
     let nextLevel = currentLevel;
+    
+    // 早期終了判定
+    if (shouldEarlyTerminate(finalScore, stage, currentLevel, performanceHistory)) {
+      console.log('🚀 早期終了判定: テストを終了します');
+      
+      // 初学者モードの場合は適切なレベルを設定
+      let finalLevel = currentLevel;
+      if (isBeginnerMode) {
+        const totalQuestions = stage === 1 ? QUESTIONS_STAGE_1 : 
+                              QUESTIONS_STAGE_1 + (stage - 1) * QUESTIONS_PER_STAGE;
+        const accuracy = finalScore / totalQuestions;
+        
+        if (accuracy >= 0.8) {
+          // 高精度の場合は現在のレベルを維持
+          finalLevel = currentLevel;
+        } else if (accuracy >= 0.6) {
+          // 中程度の精度の場合は現在のレベルまたは1つ下
+          finalLevel = Math.max(1, currentLevel);
+        } else {
+          // 低精度の場合は1-2つ下のレベル
+          finalLevel = Math.max(1, currentLevel - 1);
+        }
+        
+        console.log('🎓 初学者モード最終レベル判定:', {
+          accuracy: accuracy.toFixed(2),
+          originalLevel: currentLevel,
+          finalLevel
+        });
+      }
+      
+      finishTestAndSave(finalLevel);
+      return;
+    }
     
     // ステージ1（5問）の特別処理
     if (stage === 1) {
@@ -171,31 +498,55 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     // 通常のステージ評価（10問）
     const totalQuestions = currentQuestions.length;
     
-    // より厳密な判定基準を適用（段階的に厳しくなる）
+    // 総合評価スコアを計算
+    const evaluation = calculateComprehensiveScore(finalScore, responseTimes, totalQuestions, adaptiveLevel);
+    
+    // 適応的閾値調整（パフォーマンス履歴に基づく）
     let passThreshold, failThreshold;
-    if (currentLevel >= 9) {
-      // 最上位層（レベル9-10）：85%以上で合格、15%以下で不合格
-      passThreshold = Math.ceil(totalQuestions * 0.85);
-      failThreshold = Math.floor(totalQuestions * 0.15);
-    } else if (currentLevel >= 7) {
-      // 上位層（レベル7-8）：80%以上で合格、20%以下で不合格
-      passThreshold = Math.ceil(totalQuestions * 0.8);
-      failThreshold = Math.floor(totalQuestions * 0.2);
-    } else if (currentLevel >= 5) {
-      // 中位層（レベル5-6）：75%以上で合格、25%以下で不合格
-      passThreshold = Math.ceil(totalQuestions * 0.75);
-      failThreshold = Math.floor(totalQuestions * 0.25);
+    const basePassRate = 0.7;
+    const baseFailRate = 0.3;
+    
+    // 適応的調整：過去のパフォーマンスに基づいて閾値を調整
+    if (performanceHistory.length >= 10) {
+      const recentAccuracy = performanceHistory.slice(-10)
+        .filter(p => p.isCorrect).length / 10;
+      
+      if (recentAccuracy > 0.8) {
+        // 高パフォーマンス：閾値を上げる
+        passThreshold = Math.ceil(totalQuestions * (basePassRate + 0.1));
+        failThreshold = Math.floor(totalQuestions * (baseFailRate - 0.05));
+      } else if (recentAccuracy < 0.5) {
+        // 低パフォーマンス：閾値を下げる
+        passThreshold = Math.ceil(totalQuestions * (basePassRate - 0.1));
+        failThreshold = Math.floor(totalQuestions * (baseFailRate + 0.05));
+      } else {
+        // 標準パフォーマンス
+        passThreshold = Math.ceil(totalQuestions * basePassRate);
+        failThreshold = Math.floor(totalQuestions * baseFailRate);
+      }
     } else {
-      // 下位層（レベル1-4）：70%以上で合格、30%以下で不合格
-      passThreshold = Math.ceil(totalQuestions * 0.7);
-      failThreshold = Math.floor(totalQuestions * 0.3);
+      // 初期段階：標準閾値
+      passThreshold = Math.ceil(totalQuestions * basePassRate);
+      failThreshold = Math.floor(totalQuestions * baseFailRate);
     }
+    
+    console.log(`ステージ評価:`, {
+      スコア: finalScore,
+      総合評価: evaluation.comprehensiveScore,
+      正確性: evaluation.accuracy,
+      速度スコア: evaluation.timeScore,
+      一貫性スコア: evaluation.consistencyScore,
+      適応スコア: evaluation.levelAdaptationScore,
+      平均回答時間: evaluation.avgResponseTime,
+      合格閾値: passThreshold,
+      不合格閾値: failThreshold
+    });
     
     // 初学者モードの特別処理
     if (isBeginnerMode) {
       if (finalScore >= passThreshold) {
-        // 合格：レベルアップ
-        nextLevel = Math.min(10, currentLevel + 1);
+        // 合格：レベルアップ（最大レベル7：英検準1級）
+        nextLevel = Math.min(7, currentLevel + 1);
       } else if (finalScore <= failThreshold) {
         // 不合格：レベルダウン
         if (currentLevel === 4) {
@@ -221,28 +572,36 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       if (finalScore >= passThreshold) {
         setConsecutiveFailures(0); // 成功時は連続失敗をリセット
         
-        // 上位層（レベル7以上）では連続成功が必要
-        if (currentLevel >= 7) {
+        // 新機能: 適応的調整を適用
+        const adaptiveLevel = adjustDifficultyBasedOnPerformance(currentLevel, finalScore, responseTimes, totalQuestions);
+        
+        // 上位層（レベル6以上）では連続成功が必要
+        if (currentLevel >= 6) {
           setConsecutiveSuccesses(prev => prev + 1);
-          // レベル7-8: 2回連続成功でレベルアップ
-          // レベル9-10: 3回連続成功でレベルアップ
-          const requiredSuccesses = currentLevel >= 9 ? 3 : 2;
+          // レベル6-7: 2回連続成功でレベルアップ
+          const requiredSuccesses = 2;
           if (consecutiveSuccesses + 1 >= requiredSuccesses) {
-            nextLevel = Math.min(10, currentLevel + 1);
+            // 適応的調整を考慮したレベルアップ（最大レベル7：英検準1級）
+            nextLevel = Math.min(7, Math.max(adaptiveLevel, currentLevel + 1));
             setConsecutiveSuccesses(0); // レベルアップ時は連続成功をリセット
           } else {
-            nextLevel = currentLevel; // レベル維持
+            nextLevel = Math.max(currentLevel, adaptiveLevel); // レベル維持または適応的調整
           }
         } else {
-          // 下位層・中位層は1回の成功でレベルアップ
-          nextLevel = Math.min(10, currentLevel + 1);
+          // 下位層・中位層は適応的調整を適用（最大レベル7：英検準1級）
+          nextLevel = Math.min(7, Math.max(adaptiveLevel, currentLevel + 1));
           setConsecutiveSuccesses(0);
         }
       } else if (finalScore <= failThreshold) {
-        nextLevel = Math.max(1, currentLevel - 1);
+        // 新機能: 適応的調整を適用（失敗時）
+        const adaptiveLevel = adjustDifficultyBasedOnPerformance(currentLevel, finalScore, responseTimes, totalQuestions);
+        nextLevel = Math.max(1, Math.min(adaptiveLevel, currentLevel - 1));
         setConsecutiveFailures(prev => prev + 1); // 失敗時は連続失敗をカウント
         setConsecutiveSuccesses(0); // 失敗時は連続成功をリセット
       } else {
+        // 新機能: 維持時も適応的調整を適用
+        const adaptiveLevel = adjustDifficultyBasedOnPerformance(currentLevel, finalScore, responseTimes, totalQuestions);
+        nextLevel = adaptiveLevel;
         setConsecutiveFailures(0); // 維持時は連続失敗をリセット
         setConsecutiveSuccesses(0); // 維持時は連続成功をリセット
       }
@@ -276,25 +635,51 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       try {
-        await updateDoc(userDocRef, {
+        const userUpdateData = {
           level: finalUserLevel,
           'progress.currentVocabulary': estimatedVocabulary,
           'progress.lastCheckedAt': serverTimestamp(),
-        }, { merge: true });
+        };
+        
+        console.log('👤 ユーザーデータ更新:', userUpdateData);
+        await updateDoc(userDocRef, userUpdateData, { merge: true });
+
+        // 総合評価を計算
+        const finalEvaluation = calculateComprehensiveScore(
+          responseTimes.filter(rt => rt.isCorrect).length,
+          responseTimes,
+          responseTimes.length,
+          finalUserLevel
+        );
 
         // Log the placement test result as a single session event
-        logStudySession(user.uid, {
+        const logData = {
           sessionType: 'placement_test',
           finalLevel: finalUserLevel,
           estimatedVocabulary: estimatedVocabulary,
+          responseTimes: responseTimes, // 回答時間データを追加
+          averageResponseTime: responseTimes.length > 0 ? 
+            responseTimes.reduce((sum, rt) => sum + rt.responseTime, 0) / responseTimes.length : 0,
           timestamp: new Date(),
-        });
+          // 詳細分析データを追加
+          comprehensiveScore: finalEvaluation.comprehensiveScore,
+          accuracy: finalEvaluation.accuracy,
+          timeScore: finalEvaluation.timeScore,
+          consistencyScore: finalEvaluation.consistencyScore,
+          levelAdaptationScore: finalEvaluation.levelAdaptationScore,
+          avgResponseTime: finalEvaluation.avgResponseTime,
+          adaptiveLevel: adaptiveLevel,
+          performanceHistory: performanceHistory
+        };
+        
+        console.log('💾 テスト結果保存:', logData);
+        await logStudySession(user.uid, logData);
 
         // ★進捗率を更新
         await updateProgressPercentage(user.uid);
         
         if (onTestComplete) {
-          onTestComplete(finalUserLevel);
+          onTestComplete(finalUserLevel, responseTimes);
         } else {
           alert(`テスト完了！\nあなたの単語レベル: ${finalUserLevel}\n推定語彙数: 約${estimatedVocabulary}語`);
           navigate('/');
@@ -307,72 +692,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     }
   };
 
-  const handleTap = () => {
-    setIsFlipped(!isFlipped);
-    if (!isFlipped && currentQuestions.length > 0) {
-      const word = currentQuestions[questionIndex].word;
-      const utterance = new SpeechSynthesisUtterance(word);
-      
-      // 強制的に英語音声を設定
-      utterance.lang = 'en-US';
-      
-      // デバイスを検出
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        // モバイルデバイス: 英語音声を強制設定
-        utterance.rate = 0.9; // 少しゆっくりめ
-        utterance.pitch = 1.0; // 自然なピッチ
-        utterance.volume = 0.8; // 適度な音量
-        
-        // 利用可能な英語音声を取得
-        const availableVoices = window.speechSynthesis.getVoices();
-        const englishVoices = availableVoices.filter(voice => 
-          voice.lang === 'en-US' || voice.lang.startsWith('en-')
-        );
-        
-        if (englishVoices.length > 0) {
-          // 英語音声を優先的に選択
-          const selectedVoice = englishVoices.find(voice => voice.name.includes('English')) ||
-                               englishVoices.find(voice => voice.name.includes('US')) ||
-                               englishVoices[0];
-          utterance.voice = selectedVoice;
-        }
-      } else {
-        // デスクトップ: 英語音声を優先選択
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-        
-        // 利用可能な英語音声を取得
-        const availableVoices = window.speechSynthesis.getVoices();
-        const englishVoices = availableVoices.filter(voice => 
-          voice.lang === 'en-US' || voice.lang.startsWith('en-')
-        );
-        
-        if (englishVoices.length > 0) {
-          const selectedVoice = 
-            englishVoices.find(voice => voice.name.includes('Google')) ||
-            englishVoices.find(voice => voice.name === 'Alex') ||
-            englishVoices.find(voice => voice.name.includes('Microsoft')) ||
-            englishVoices.find(voice => voice.name.includes('English')) ||
-            englishVoices.find(voice => voice.name.includes('US')) ||
-            englishVoices[0];
-          
-          utterance.voice = selectedVoice;
-        }
-      }
-      
-      console.log('Test speaking with voice:', utterance.voice?.name || 'default', 'lang:', utterance.lang);
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   const handlePrevQuestion = () => {
     if (questionIndex === 0) return;
     setQuestionIndex(prev => Math.max(0, prev - 1));
     setIsFlipped(false);
+    setQuestionStartTime(Date.now()); // 前の問題に戻る際も時間をリセット
     x.set(0);
+    y.set(0);
   };
 
   if (loading || currentQuestions.length === 0) {
@@ -385,6 +712,26 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     <>
       <div className="test-header">
         <h3>単語力チェックテスト (ステージ {stage} / 10)</h3>
+        <div style={{ marginBottom: '10px' }}>
+          <p style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '0.9rem' }}>
+            適応レベル: {adaptiveLevel} | 現在レベル: {currentLevel}
+            {adaptiveLevel !== currentLevel && (
+              <span style={{ color: '#10b981', marginLeft: '10px' }}>
+                (適応調整中)
+              </span>
+            )}
+          </p>
+          {stage >= 3 && (
+            <p style={{ color: '#8b5cf6', fontSize: '0.8rem' }}>
+              早期終了機能: 一貫した結果が続けば自動終了
+              {consecutiveConsistentResults > 0 && (
+                <span style={{ color: '#ef4444', fontWeight: 'bold' }}>
+                  (一貫性: {consecutiveConsistentResults}回)
+                </span>
+              )}
+            </p>
+          )}
+        </div>
         {isBeginnerMode && (
           <div>
             <p style={{ color: '#f59e0b', fontWeight: 'bold' }}>
@@ -393,6 +740,11 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
             <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>
               {currentLevel === 5 ? '5級で合格すればテスト終了' : '4級で失敗すれば5級に、5級で失敗すればテスト終了'}
             </p>
+            {stage >= 2 && (
+              <p style={{ color: '#10b981', fontSize: '0.8rem' }}>
+                🎓 初学者早期終了: 明確なレベル判定ができれば自動終了（最小15問）
+              </p>
+            )}
           </div>
         )}
         {!isBeginnerMode && currentLevel >= 7 && consecutiveSuccesses > 0 && (
@@ -417,133 +769,207 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
             中位層モード: 65%以上で合格、35%以下で不合格
           </p>
         )}
-        <p>{!isFlipped ? 'カードをタップして答えを確認' : 'わかる→右へスワイプ / わからない→左へスワイプ'}</p>
+        <p>カードをダブルタップして答えを確認</p>
+        <p>わかる→右へスワイプ / わからない→左へスワイプ</p>
       </div>
 
-      <div id="flashcard-container" style={{ 
-        height: '50vh', 
-        position: 'relative',
-        minHeight: '250px',
-        maxHeight: '400px',
-        margin: '0 auto',
-        maxWidth: '90vw'
+      <div id="flashcard-container">
+        <motion.div
+          key={questionIndex}
+          id="flashcard"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+          style={{ x, y, rotate, backgroundColor: cardColor }}
+          onDragEnd={handleDragEnd}
+          onDoubleClick={handleDoubleClick}
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
+            <p id="card-front-text">{currentWord?.word}</p>
+          </div>
+          <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
+            <h3 id="card-back-word">{currentWord?.word}</h3>
+            <p id="card-back-meaning">{currentWord?.meaning || currentWord?.japanese}</p>
+            {(currentWord?.example || currentWord?.exampleJa) && <hr />}
+            <p className="example-text">{currentWord?.example}</p>
+            <p className="example-text-ja">{currentWord?.exampleJa}</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* プログレスバー */}
+      <div style={{ 
+        margin: '20px auto', 
+        maxWidth: '90vw',
+        padding: '0 20px'
       }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${stage}-${questionIndex}-${isFlipped ? 'back' : 'front'}`}
-            id="flashcard"
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            style={{ 
-              x, 
-              rotate, 
-              backgroundColor: isFlipped ? '#f0f9ff' : cardColor,
-              border: isFlipped ? '2px solid #3b82f6' : 'none',
-              width: '100%',
-              height: '100%',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              cursor: 'pointer'
-            }}
-            onDragEnd={handleDragEnd}
-            onTap={handleShowAnswer}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.3 }}
-          >
-            {!isFlipped ? (
-              /* カード表面 */
-              <div className="card-face card-front" style={{ 
-                backgroundColor: 'transparent',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '20px'
-              }}>
-                <p id="card-front-text" style={{ 
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  margin: 0,
-                  color: '#1f2937'
-                }}>{currentWord?.word}</p>
-              </div>
-            ) : (
-              /* カード裏面 */
-              <div className="card-face card-back" style={{ 
-                backgroundColor: 'transparent',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}>
-                <h3 id="card-back-word" style={{ 
-                  fontSize: '1.5rem',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  margin: '0 0 15px 0',
-                  color: '#1f2937'
-                }}>{currentWord?.word}</h3>
-                <p id="card-back-meaning" style={{ 
-                  fontSize: '1.2rem',
-                  textAlign: 'center',
-                  margin: '0 0 15px 0',
-                  color: '#374151'
-                }}>{currentWord?.meaning || currentWord?.japanese}</p>
-                {(currentWord?.example || currentWord?.exampleJa) && (
-                  <hr style={{ margin: '15px 0', border: '1px solid #e5e7eb' }} />
-                )}
-                <p className="example-text" style={{ 
-                  fontSize: '1rem',
-                  textAlign: 'center',
-                  margin: '0 0 10px 0',
-                  color: '#6b7280',
-                  fontStyle: 'italic'
-                }}>{currentWord?.example}</p>
-                <p className="example-text-ja" style={{ 
-                  fontSize: '1rem',
-                  textAlign: 'center',
-                  margin: 0,
-                  color: '#6b7280'
-                }}>{currentWord?.exampleJa}</p>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      <div className="card-navigation">
-        <div className="card-counter">{questionIndex + 1} / {currentQuestions.length}</div>
-      </div>
-
-      
-      <div className="footer-container">
-        <div className="flashcard-footer">
-          <button onClick={handlePrevQuestion} className="prev-action" disabled={questionIndex === 0}>
-            <FaUndo /> 前の問題
-          </button>
-          <button onClick={() => {
-            console.log('VocabularyCheckTest: 前の画面に戻るボタンがクリックされました');
-            
-            // 直接ダッシュボードに遷移（basenameを考慮）
-            console.log('VocabularyCheckTest: 直接ダッシュボードに遷移します');
-            window.location.replace('/tsukutan-app/student-dashboard');
-          }} className="back-action">
-            <FaArrowLeft /> 前の画面に戻る
-          </button>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: '10px'
+        }}>
+          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>
+            {questionIndex + 1} / {currentQuestions.length}
+          </span>
+          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>
+            ステージ {stage} / 10
+          </span>
+        </div>
+        <div style={{
+          width: '100%',
+          height: '6px',
+          backgroundColor: '#e5e7eb',
+          borderRadius: '3px',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            width: `${((questionIndex + 1) / currentQuestions.length) * 100}%`,
+            height: '100%',
+            backgroundColor: '#3b82f6',
+            transition: 'width 0.3s ease'
+          }} />
+        </div>
+        
+        {/* 新機能: 詳細進捗情報 */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginTop: '8px',
+          fontSize: '0.8rem',
+          color: '#6b7280'
+        }}>
+          <span>
+            推定精度: {responseTimes.length > 0 ? 
+              Math.round((responseTimes.filter(rt => rt.isCorrect).length / responseTimes.length) * 100) : 0}%
+          </span>
+          <span>
+            平均回答時間: {responseTimes.length > 0 ? 
+              Math.round(responseTimes.reduce((sum, rt) => sum + rt.responseTime, 0) / responseTimes.length / 1000) : 0}秒
+          </span>
+          <span>
+            残り時間: 約{Math.max(0, Math.round((currentQuestions.length - questionIndex - 1) * 
+              (responseTimes.length > 0 ? responseTimes.reduce((sum, rt) => sum + rt.responseTime, 0) / responseTimes.length / 1000 : 5)))}分
+          </span>
         </div>
       </div>
+
+      {/* ナビゲーションボタン */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        padding: '0 20px',
+        marginTop: '20px',
+        gap: '15px'
+      }}>
+        <button 
+          onClick={handlePrevQuestion} 
+          disabled={questionIndex === 0}
+          style={{
+            flex: 1,
+            padding: '12px 16px',
+            backgroundColor: questionIndex === 0 ? '#f3f4f6' : '#6b7280',
+            color: questionIndex === 0 ? '#9ca3af' : 'white',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '0.9rem',
+            fontWeight: '500',
+            cursor: questionIndex === 0 ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+          onMouseOver={(e) => {
+            if (questionIndex > 0) {
+              e.target.style.backgroundColor = '#4b5563';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (questionIndex > 0) {
+              e.target.style.backgroundColor = '#6b7280';
+            }
+          }}
+        >
+          <FaUndo /> 前の問題
+        </button>
+        
+        <button 
+          onClick={async () => {
+            console.log('VocabularyCheckTest: 前の画面に戻るボタンがクリックされました');
+            // テストを中断する前に、現在の進捗を保存
+            if (stage > 1 || questionIndex > 0) {
+              console.log('📊 テスト中断: 現在の進捗を保存します');
+              await finishTestAndSave(currentLevel);
+            }
+            window.location.replace('/tsukutan-app/student-dashboard');
+          }}
+          style={{
+            flex: 1,
+            padding: '12px 16px',
+            backgroundColor: '#dc2626',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '0.9rem',
+            fontWeight: '500',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#b91c1c';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = '#dc2626';
+          }}
+        >
+          <FaArrowLeft /> 前の画面に戻る
+        </button>
+      </div>
       
-      <div className="swipe-instructions">
-        {!isFlipped ? (
-          <span>スワイプして答えを確認</span>
-        ) : (
-          <>
-            <span>← わからない</span>
-            <span>わかる →</span>
-          </>
-        )}
+      {/* スワイプ説明 */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginTop: '20px',
+        padding: '0 20px'
+      }}>
+        <p style={{ 
+          color: '#6b7280', 
+          fontSize: '0.9rem',
+          margin: 0
+        }}>
+          カードをダブルタップして答えを確認
+        </p>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          gap: '20px',
+          marginTop: '10px'
+        }}>
+          <span style={{ 
+            color: '#dc2626', 
+            fontSize: '0.9rem',
+            fontWeight: '500'
+          }}>
+            ← わからない
+          </span>
+          <span style={{ 
+            color: '#059669', 
+            fontSize: '0.9rem',
+            fontWeight: '500'
+          }}>
+            わかる →
+          </span>
+        </div>
       </div>
     </>
   );

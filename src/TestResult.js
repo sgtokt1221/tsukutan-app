@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { analyzeUserPerformance, generateLearningRecommendations } from './logic/basicAnalytics';
+import { auth } from './firebaseConfig';
 
 // レベル定義
 const levelDescriptions = {
@@ -23,9 +25,10 @@ const getLevelColor = (level) => {
   return "#ef4444"; // 赤
 };
 
-function TestResult({ level, onRestart }) {
+function TestResult({ level, onRestart, responseTimes = [] }) {
   const [meterWidth, setMeterWidth] = useState(0);
-  const navigate = useNavigate();
+  const [recommendations, setRecommendations] = useState([]);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(true);
 
   useEffect(() => {
     // アニメーションのため、少し遅れて幅を計算
@@ -34,6 +37,31 @@ function TestResult({ level, onRestart }) {
     }, 500); // 0.5秒後にアニメーション開始
     return () => clearTimeout(timer);
   }, [level]);
+
+  // 新機能: 学習分析の実行
+  useEffect(() => {
+    const loadAnalysis = async () => {
+      setLoadingAnalysis(true);
+      try {
+        // ユーザーIDを取得
+        const user = auth.currentUser;
+        if (user) {
+          const analysisResult = await analyzeUserPerformance(user.uid);
+          
+          if (analysisResult.hasData) {
+            const recs = generateLearningRecommendations(analysisResult);
+            setRecommendations(recs);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load analysis:', error);
+      } finally {
+        setLoadingAnalysis(false);
+      }
+    };
+    
+    loadAnalysis();
+  }, []);
 
   const { label, equivalent } = levelDescriptions[level] || { label: "レベル判定中", equivalent: "" };
 
@@ -97,7 +125,7 @@ function TestResult({ level, onRestart }) {
                 <div className="stat-icon">📚</div>
                 <div className="stat-content">
                   <span className="stat-label">推定語彙数</span>
-                  <span className="stat-value">{Math.round((level / 10) * 15000).toLocaleString()}語</span>
+                  <span className="stat-value">{levelDescriptions[level]?.wordsRequired?.toLocaleString() || Math.round((level / 10) * 15000).toLocaleString()}語</span>
                 </div>
               </div>
               <div className="stat-item">
@@ -107,8 +135,60 @@ function TestResult({ level, onRestart }) {
                   <span className="stat-value">{Math.round(meterWidth)}%</span>
                 </div>
               </div>
+              {responseTimes.length > 0 && (
+                <div className="stat-item">
+                  <div className="stat-icon">⏱️</div>
+                  <div className="stat-content">
+                    <span className="stat-label">平均回答時間</span>
+                    <span className="stat-value">
+                      {Math.round(responseTimes.reduce((sum, rt) => sum + rt.responseTime, 0) / responseTimes.length / 1000)}秒
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
+          
+          {/* 新機能: 個別フィードバックセクション */}
+          {!loadingAnalysis && recommendations.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="feedback-section"
+            >
+              <h3 className="feedback-title">📊 学習アドバイス</h3>
+              <div className="recommendations-list">
+                {recommendations.map((rec, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8 + (index * 0.1), duration: 0.4 }}
+                    className={`recommendation-item ${rec.priority}`}
+                  >
+                    <div className="recommendation-header">
+                      <span className="recommendation-type">
+                        {rec.type === 'basic' && '🔰 基礎学習'}
+                        {rec.type === 'intermediate' && '📈 中級学習'}
+                        {rec.type === 'advanced' && '🚀 上級学習'}
+                        {rec.type === 'weakness' && '⚠️ 苦手克服'}
+                        {rec.type === 'speed' && '⚡ 速度向上'}
+                        {rec.type === 'frequency' && '📅 学習頻度'}
+                        {rec.type === 'info' && 'ℹ️ 情報'}
+                      </span>
+                      <span className={`priority-badge ${rec.priority}`}>
+                        {rec.priority === 'high' && '重要'}
+                        {rec.priority === 'medium' && '推奨'}
+                        {rec.priority === 'low' && '参考'}
+                      </span>
+                    </div>
+                    <p className="recommendation-message">{rec.message}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -6,6 +6,19 @@
   --shadow-color: rgba(0, 0, 0, 0.08);
 }
 
+/* スワイプエフェクト用アニメーション */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  40% {
+    transform: translate(-50%, -50%) translateY(-10px);
+  }
+  60% {
+    transform: translate(-50%, -50%) translateY(-5px);
+  }
+}
+
 body {
   background-color: var(--background-color);
   font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
@@ -120,6 +133,7 @@ body {
   color: var(--primary-color);
   font-family: 'Zen Kaku Gothic New', sans-serif;
   font-weight: 700;
+  white-space: nowrap;
 }
 .user-info {
   display: flex;
@@ -295,24 +309,32 @@ body {
 }
 
 .story-generate-btn {
-  padding: 10px 16px;
-  border-radius: 12px;
+  padding: 12px 20px;
+  border-radius: 8px;
   border: none;
-  background: rgba(14, 165, 233, 0.18);
-  color: #0f172a;
+  background: #3b82f6;
+  color: white;
   font-weight: 600;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: background 0.18s ease, transform 0.18s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .story-generate-btn:hover:not([disabled]) {
-  background: rgba(14, 165, 233, 0.28);
-  transform: translateY(-1px);
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 
 .story-generate-btn[disabled] {
   opacity: 0.6;
-  cursor: progress;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .story-subtitle {
@@ -468,6 +490,7 @@ body {
 }
 .dashboard-header .tier-4 .level-badge-label {
   background: -webkit-linear-gradient(45deg, #8b5cf6, #6366f1);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -504,20 +527,89 @@ body {
 
 .main-menu { text-align: center; }
 .main-selection-card { display: block; width: 100%; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; text-align: left; cursor: pointer; }
-.selection-card { background-color: #ffffff; border: 1px solid #e5e7eb; color: var(--text-color); padding: 1rem; border-radius: 8px; cursor: pointer; text-align: center; transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
-.selection-card:disabled { cursor: not-allowed; background: rgba(148, 163, 184, 0.25); color: rgba(15, 23, 42, 0.38); border-color: rgba(148, 163, 184, 0.32); }
+.selection-card { 
+  background-color: #ffffff; 
+  border: 1px solid #e5e7eb; 
+  color: var(--text-color); 
+  padding: 1rem; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  text-align: center; 
+  transition: all 0.2s ease;
+  min-height: 120px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.selection-card:hover:not(.selection-card-disabled):not(:disabled) {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.selection-card:disabled { 
+  cursor: not-allowed !important; 
+  background-color: #f5f5f5 !important; 
+  color: #999999 !important; 
+  border-color: #e0e0e0 !important; 
+  opacity: 0.6 !important; 
+  pointer-events: none !important;
+}
 .selection-card:disabled .selection-card-level,
 .selection-card:disabled .selection-card-desc,
-.selection-card:disabled .selection-card-meta { color: rgba(15, 23, 42, 0.38); }
-.selection-card-level { display: block; font-size: 1rem; font-weight: 600; color: #1f2937; }
-.selection-card-desc { display: block; margin-top: 0.35rem; font-size: 0.85rem; color: #64748b; }
-.selection-card-meta { display: block; margin-top: 0.25rem; font-size: 0.78rem; color: #94a3b8; }
+.selection-card:disabled .selection-card-meta,
+.selection-card:disabled .selection-card-progress { 
+  color: #999999 !important; 
+}
+.selection-card-disabled { 
+  cursor: not-allowed !important; 
+  background-color: #f5f5f5 !important; 
+  color: #999999 !important; 
+  border-color: #e0e0e0 !important; 
+  opacity: 0.6 !important; 
+  pointer-events: none !important;
+}
+.selection-card-disabled .selection-card-level,
+.selection-card-disabled .selection-card-desc,
+.selection-card-disabled .selection-card-meta,
+.selection-card-disabled .selection-card-progress { 
+  color: #999999 !important; 
+}
+.selection-card-disabled:hover {
+  background-color: #f5f5f5 !important;
+  transform: none !important;
+}
+.selection-card-level { 
+  display: block; 
+  font-size: 1rem; 
+  font-weight: 600; 
+  color: #1f2937; 
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+.selection-card-desc { 
+  display: block; 
+  font-size: 0.85rem; 
+  color: #64748b; 
+  margin-bottom: 0.5rem;
+  flex-grow: 1;
+  line-height: 1.3;
+}
+.selection-card-meta { 
+  display: block; 
+  font-size: 0.78rem; 
+  color: #94a3b8; 
+  margin-bottom: 0.25rem;
+  flex-shrink: 0;
+}
 .selection-card-progress { 
   display: block; 
-  margin-top: 0.25rem; 
   font-size: 0.75rem; 
   color: var(--primary-color); 
   font-weight: 600; 
+  flex-shrink: 0;
 }
 
 /* ===== GoalSetterのスタイル ===== */
@@ -554,6 +646,7 @@ body {
   cursor: grab;
   border-radius: 15px;
   box-shadow: 0 4px 15px var(--shadow-color);
+  touch-action: none; /* ブラウザのデフォルトタッチ動作を無効化 */
 }
 
 .card-face {
@@ -1316,8 +1409,32 @@ input[type="file"] { display: none; }
 
 .selection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* モバイル向けのレスポンシブ調整 */
+@media (max-width: 768px) {
+  .selection-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  
+  .selection-card {
+    min-height: 110px;
+    padding: 0.8rem;
+  }
+  
+  .selection-card-level {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .selection-card-desc {
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
 }
 
 .ghost-button {
@@ -1347,7 +1464,88 @@ input[type="file"] { display: none; }
   padding: clamp(24px, 6vw, 40px);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+}
+
+/* やる気レベル選択 */
+.motivation-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.motivation-option {
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.motivation-option:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(163, 230, 53, 0.15);
+}
+
+.motivation-option.active {
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  box-shadow: 0 4px 12px rgba(163, 230, 53, 0.2);
+}
+
+.motivation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.motivation-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.motivation-time {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.motivation-option.active .motivation-time {
+  background: var(--primary-color);
+  color: var(--text-color);
+}
+
+.motivation-description {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+}
+
+.motivation-details {
+  display: flex;
+  gap: 16px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.motivation-details span {
+  background: #f9fafb;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.motivation-option.active .motivation-details span {
+  background: rgba(163, 230, 53, 0.1);
+  color: #6b7280;
 }
 
 .goal-hero {
@@ -1438,6 +1636,24 @@ input[type="file"] { display: none; }
     max-width: 820px;
     margin: 0 auto;
     border-radius: 32px;
+  }
+  
+  .motivation-options {
+    gap: 10px;
+  }
+  
+  .motivation-option {
+    padding: 14px;
+  }
+  
+  .motivation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .motivation-time {
+    align-self: flex-end;
   }
 }
 

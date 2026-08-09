@@ -1,61 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig';
-import { collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { updateProgressPercentage } from './logic/progressLogic';
+
+// やる気レベル別設定
+const MOTIVATION_LEVELS = {
+  low: {
+    name: 'そこそこ',
+    description: '無理せず続けたい',
+    easeFactorMultiplier: 1.2,
+    intervalMultiplier: 1.5,
+    masteredThreshold: 3,
+    dailyReviewQuota: 2,
+    adjacentWordsQuota: 5,
+    newWordsQuota: 15
+  },
+  normal: {
+    name: '普通',
+    description: 'バランスよく学習したい',
+    easeFactorMultiplier: 1.0,
+    intervalMultiplier: 1.0,
+    masteredThreshold: 5,
+    dailyReviewQuota: 3,
+    adjacentWordsQuota: 10,
+    newWordsQuota: 20
+  },
+  high: {
+    name: 'やる気満々',
+    description: '確実に覚えたい',
+    easeFactorMultiplier: 0.8,
+    intervalMultiplier: 0.7,
+    masteredThreshold: 7,
+    dailyReviewQuota: 5,
+    adjacentWordsQuota: 15,
+    newWordsQuota: 30
+  }
+};
 
 export default function GoalSetter({ onGoalSet, onGoalReset }) {
   const [goals, setGoals] = useState({});
   const [selectedGoals, setSelectedGoals] = useState([]);
   const [targetDate, setTargetDate] = useState('');
+  const [motivationLevel, setMotivationLevel] = useState('normal');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const goalsCollection = collection(db, 'goalsMaster');
-        const goalsSnapshot = await getDocs(goalsCollection);
-
-        const convertedGoals = {};
-        goalsSnapshot.forEach(goalDoc => {
-          const goalData = goalDoc.data();
-          convertedGoals[goalDoc.id] = goalData;
-        });
-
-        const groupedGoals = Object.entries(convertedGoals).reduce((acc, [goalId, goalData]) => {
-          let category = 'その他';
-          if (goalId.startsWith('eiken')) category = '英検';
-          else if (goalId.startsWith('hs')) category = '高校入試';
-          else if (goalId.startsWith('uni')) category = '大学入試';
-
-          if (!acc[category]) acc[category] = [];
-          acc[category].push({ goalId, ...goalData });
-          return acc;
-        }, {});
-
-        Object.values(groupedGoals).forEach(goalList => {
-          goalList.sort((a, b) => (a.requiredVocabulary || 0) - (b.requiredVocabulary || 0));
-        });
-
-        setGoals(groupedGoals);
-
-        const user = auth.currentUser;
-        if (user) {
-          const userDocRef = doc(db, 'users', user.uid);
-          const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists() && userDoc.data().goal) {
-            const userGoal = userDoc.data().goal;
-            if (userGoal.targets) {
-              setSelectedGoals(userGoal.targets);
-            }
-            if (userGoal.targetDate) {
-              setTargetDate(userGoal.targetDate);
-            }
-          }
-        }
+        // テスト用のデータ
+        const testGoals = {
+          '英検': [
+            { goalId: 'eiken_5', displayName: '英検5級 合格', requiredVocabulary: 600 },
+            { goalId: 'eiken_4', displayName: '英検4級 合格', requiredVocabulary: 1300 },
+            { goalId: 'eiken_3', displayName: '英検3級 合格', requiredVocabulary: 2100 },
+            { goalId: 'eiken_pre2', displayName: '英検準2級 合格', requiredVocabulary: 3600 },
+            { goalId: 'eiken_2', displayName: '英検2級 合格', requiredVocabulary: 5100 },
+            { goalId: 'eiken_pre1', displayName: '英検準1級 合格', requiredVocabulary: 8000 },
+            { goalId: 'eiken_1', displayName: '英検1級 合格', requiredVocabulary: 12000 }
+          ],
+          '高校入試': [
+            { goalId: 'hs_45', displayName: '高校入試（偏差値45）合格', requiredVocabulary: 1500 },
+            { goalId: 'hs_50', displayName: '高校入試（偏差値50）合格', requiredVocabulary: 2000 },
+            { goalId: 'hs_60', displayName: '高校入試（偏差値60）合格', requiredVocabulary: 3000 },
+            { goalId: 'hs_top', displayName: '高校入試（最難関）合格', requiredVocabulary: 4000 }
+          ],
+          '大学入試': [
+            { goalId: 'uni_50', displayName: '大学入試（偏差値50）合格', requiredVocabulary: 4000 },
+            { goalId: 'uni_60', displayName: '大学入試（偏差値60）合格', requiredVocabulary: 5500 },
+            { goalId: 'uni_top', displayName: '大学入試（最難関）合格', requiredVocabulary: 7000 }
+          ]
+        };
+        
+        setGoals(testGoals);
       } catch (err) {
         console.error('データの読み込みに失敗しました:', err);
-        setError(err.message);
+        setError(`データの読み込みに失敗しました: ${err.message}`);
       }
       setLoading(false);
     };
@@ -85,6 +105,7 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
       await updateDoc(userDocRef, {
         'goal.targets': selectedGoals,
         'goal.targetDate': targetDate,
+        'goal.motivationLevel': motivationLevel,
         'goal.isSet': true,
       }, { merge: true });
 
@@ -100,28 +121,34 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
   const handleReset = async () => {
     if (!window.confirm('現在の目標をリセットしてもよろしいですか？')) return;
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+      alert('ログインしていません。');
+      return;
+    }
 
     try {
-      await updateDoc(doc(db, 'users', user.uid), {
+      const userDocRef = doc(db, 'users', user.uid);
+      await updateDoc(userDocRef, {
         goal: {
           targets: [],
           targetDate: null,
+          motivationLevel: 'normal',
           isSet: false,
         }
-      }, { merge: true });
+      });
       
-      // 状態をリセット
       setSelectedGoals([]);
       setTargetDate('');
+      setMotivationLevel('normal');
       
-      // 親コンポーネントにリセット完了を通知
-      if (onGoalReset) onGoalReset();
+      if (onGoalReset) {
+        onGoalReset();
+      }
       
       alert('目標がリセットされました。新しい目標を設定してください。');
     } catch (err) {
       console.error('目標のリセットに失敗しました:', err);
-      alert('目標のリセットに失敗しました。');
+      alert(`目標のリセットに失敗しました: ${err.message}`);
     }
   };
 
@@ -144,7 +171,7 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
           目標をリセットする
         </button>
       </header>
-
+      
       <section className="section-card">
         <h2 className="section-title">達成日を設定</h2>
         <input
@@ -153,6 +180,40 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
           value={targetDate}
           onChange={(e) => setTargetDate(e.target.value)}
         />
+      </section>
+
+      <section className="section-card">
+        <h2 className="section-title">やる気レベルを選択</h2>
+        <p className="section-description">学習のペースを決めましょう</p>
+        
+        <div className="motivation-options">
+          {Object.entries(MOTIVATION_LEVELS).map(([key, config]) => {
+            const totalWords = config.newWordsQuota + (config.dailyReviewQuota + config.adjacentWordsQuota);
+            const estimatedMinutes = Math.round((config.newWordsQuota * 60 + (config.dailyReviewQuota + config.adjacentWordsQuota) * 15) / 60);
+            
+            return (
+              <button
+                key={key}
+                type="button"
+                className={`motivation-option ${motivationLevel === key ? 'active' : ''}`}
+                onClick={() => {
+                  console.log('やる気レベル選択:', key);
+                  setMotivationLevel(key);
+                }}
+              >
+                <div className="motivation-header">
+                  <span className="motivation-title">{config.name}</span>
+                  <span className="motivation-time">約{estimatedMinutes}分/日</span>
+                </div>
+                <p className="motivation-description">{config.description}</p>
+                <div className="motivation-details">
+                  <span>新規: {config.newWordsQuota}語/日</span>
+                  <span>復習: {config.dailyReviewQuota + config.adjacentWordsQuota}語/日</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </section>
 
       {Object.entries(goals).map(([category, goalList]) => (
