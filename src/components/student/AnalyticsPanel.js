@@ -6,6 +6,7 @@ import { analyzeUserPerformance, generateLearningRecommendations } from '../../l
 import { predictPerformance } from '../../logic/predictionModel';
 import { generateSmartRecommendations } from '../../logic/recommendationEngine';
 import { getLevel, MAX_WORD_LEVEL } from '../../config';
+import TrendChart from './TrendChart';
 import logger from '../../logic/logger';
 
 /**
@@ -94,7 +95,17 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
     // 初回読み込み時のみデータを取得
     // 定期更新や外部状態への依存を削除して他の機能への影響を防ぐ
 
-    if (loading) {
+    // グラフ用の点列。日付が壊れている記録は落とす。
+  const accuracyPoints = (analyticsData?.accuracyTrend || [])
+    .filter((entry) => entry && Number.isFinite(entry.accuracy) && entry.date)
+    .map((entry) => ({ date: entry.date, value: entry.accuracy }));
+
+  const levelPoints = (analyticsData?.levelProgression || [])
+    .filter((entry) => entry && Number.isFinite(entry.level) && entry.date)
+    .map((entry) => ({ date: entry.date, value: entry.level }))
+    .reverse(); // levelProgression は新しい順で来る
+
+  if (loading) {
       return (
         <div className="analytics-tab-content">
           <div className="section-card">
@@ -189,13 +200,44 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
               <div className="stat-card">
                 <div className="stat-header">
                   <span className="stat-label">平均回答時間</span>
-                  <div className="stat-icon time-icon">⏱</div>
+                  <div className="stat-icon time-icon">SEC</div>
                 </div>
                 <div className="stat-value">{Math.round(analyticsData.averageResponseTime / 1000)}</div>
                 <div className="stat-unit">秒</div>
               </div>
             </div>
           </div>
+
+          {/* 推移。accuracyTrend / levelProgression は前から計算していたのに
+              どこにも出していなかった。数字だけの画面になっていた原因。 */}
+          {(accuracyPoints.length > 1 || levelPoints.length > 1) && (
+            <div className="analytics-section">
+              <div className="section-header">
+                <h3>これまでの推移</h3>
+                <div className="section-divider"></div>
+              </div>
+              <div className="trend-grid">
+                {accuracyPoints.length > 1 && (
+                  <div className="trend-card">
+                    <div className="trend-card__head">
+                      <span className="trend-card__label">正答率</span>
+                      <span className="trend-card__now">{Math.round(accuracyPoints[accuracyPoints.length - 1].value)}%</span>
+                    </div>
+                    <TrendChart points={accuracyPoints} label="正答率" unit="%" min={0} max={100} />
+                  </div>
+                )}
+                {levelPoints.length > 1 && (
+                  <div className="trend-card">
+                    <div className="trend-card__head">
+                      <span className="trend-card__label">レベル</span>
+                      <span className="trend-card__now">{levelPoints[levelPoints.length - 1].value}</span>
+                    </div>
+                    <TrendChart points={levelPoints} label="レベル" min={0} max={MAX_WORD_LEVEL} />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* 苦手分野 */}
           {analyticsData.weakAreas && analyticsData.weakAreas.length > 0 && (

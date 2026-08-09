@@ -1,67 +1,14 @@
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { THEMES, buildThemeGroups, themeLabels, themeDescriptions } from './themeMatcher';
+
+// テーマの正本は src/config/themes.json（themeMatcher が読む）。
+// 以前はここと StudentDashboard.js に同じ定義が2つあり、片方だけ直すとずれた。
+export { THEMES as THEME_DEFINITIONS, buildThemeGroups, themeLabels, themeDescriptions };
 
 const normalizeWord = (word) => (word || '').toLowerCase().trim();
 
-export const THEME_DEFINITIONS = [
-  {
-    id: 'seeing',
-    label: '見る',
-    keywords: ['see', 'watch', 'look', 'view', 'glance', 'observe', 'glimpse', 'peek', 'stare', 'scan', 'survey', '見', '視', '観', '眺']
-  },
-  {
-    id: 'opinion',
-    label: '意見・考える',
-    keywords: ['think', 'believe', 'opine', 'suppose', 'consider', 'reckon', 'idea', '意見', '考', '思']
-  },
-  {
-    id: 'emotion',
-    label: '感情',
-    keywords: ['love', 'like', 'admire', 'hate', 'dislike', 'fear', 'worry', 'enjoy', 'emotion', '感情', '好き', '嫌', '恐']
-  },
-  {
-    id: 'movement',
-    label: '移動',
-    keywords: ['go', 'come', 'move', 'travel', 'run', 'walk', 'ride', 'fly', 'depart', 'arrive', '移動', '進', '歩']
-  },
-  {
-    id: 'effort',
-    label: '学ぶ・努力',
-    keywords: ['study', 'learn', 'practice', 'train', 'review', 'prepare', '努力', '学ぶ', '練習', '復習']
-  },
-];
 
-export const buildThemeGroups = (words = []) => {
-  const groups = {};
-  if (!Array.isArray(words)) return groups;
-
-  words.forEach((word) => {
-    const surface = normalizeWord(word.word);
-    const combinedMeaning = [word.meaning, word.japanese]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-
-    THEME_DEFINITIONS.forEach((theme) => {
-      const matches = theme.keywords.some((keyword) => {
-        const normalized = keyword.toLowerCase();
-        return surface.includes(normalized) || combinedMeaning.includes(normalized);
-      });
-
-      if (matches) {
-        if (!groups[theme.id]) {
-          groups[theme.id] = { label: theme.label, words: [] };
-        }
-        const exists = groups[theme.id].words.some(entry => entry.id === word.id);
-        if (!exists) {
-          groups[theme.id].words.push(word);
-        }
-      }
-    });
-  });
-
-  return groups;
-};
 
 export const computeKnowledgeMap = async (userId) => {
   if (!userId) return { learned: new Set(), struggling: new Set(), recentNew: new Set() };

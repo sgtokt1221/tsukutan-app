@@ -11,7 +11,8 @@ import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
 import { useWordbookZoom } from './logic/useWordbookZoom';
-import { initialize, speak, speakSequence, speakWordThenMeaning, stopSpeaking } from './logic/speechUtils';
+import { useAutoPlay } from './logic/useAutoPlay';
+import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 
@@ -23,6 +24,19 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [viewMode, setViewMode] = useState('flashcard'); // 'flashcard' or 'wordbook'
   const [revealedCards, setRevealedCards] = useState(new Set());
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
+  // 自動読み上げ。学習カードと同じ実装を共有する。
+  const { autoPlay, start: startAutoPlay, stop: stopAutoPlay } = useAutoPlay({
+    words: sessionWords,
+    currentIndex,
+    enabled: viewMode === 'flashcard',
+    onRevealMeaning: () => setIsFlipped(true),
+    onAdvance: (nextIndex) => {
+      setCurrentIndex(nextIndex);
+      setIsFlipped(false);
+      x.set(0);
+      y.set(0);
+    },
+  });
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
   // 文字サイズは学習カードと共有する
@@ -32,11 +46,6 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
-  const [autoPlay, setAutoPlay] = useState(false); // 自動読み上げ機能
-  const autoPlayRef = useRef(null); // 自動読み上げのタイムアウト参照
-  // 読み上げの完了通知は止めたあとにも届く。state だとクロージャが
-  // 古いままなので ref で見る。
-  const autoPlayActiveRef = useRef(false);
 
   const auth = getAuth();
   // 毎日みたい単語の登録状態
@@ -79,81 +88,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   }, [words]);
 
   // 自動読み上げ機能
-  const startAutoPlay = useCallback(() => {
-    if (viewMode !== 'flashcard' || sessionWords.length === 0) return;
 
-    autoPlayActiveRef.current = true;
-    setAutoPlay(true);
-
-    // 以前は「英語の完了待ち」と「日本語の完了待ち」を同時に走らせていた。
-    // どちらも synthesis.speaking を100ms間隔で見るだけなので、日本語が
-    // 鳴り終わる前に次の単語へ進み、英語と日本語がずれていった。
-    // onend で繋ぐ speakSequence に任せる。
-    const playWordSequence = (index) => {
-      if (!autoPlayActiveRef.current) return;
-      if (index >= sessionWords.length) {
-        autoPlayActiveRef.current = false;
-        setAutoPlay(false);
-        return;
-      }
-
-      const word = sessionWords[index];
-      if (!word) {
-        autoPlayActiveRef.current = false;
-        setAutoPlay(false);
-        return;
-      }
-
-      const meaning = word.meaning || word.japanese || word.translation;
-
-      speakSequence(
-        [
-          { text: word.word, lang: 'en-US' },
-          // 意味を読み始めるのに合わせてカードをめくる
-          { text: meaning, lang: 'ja-JP', onStart: () => setIsFlipped(true) },
-        ],
-        {
-          onDone: () => {
-            if (!autoPlayActiveRef.current) return;
-            autoPlayRef.current = setTimeout(() => {
-              if (index < sessionWords.length - 1) {
-                setCurrentIndex(index + 1);
-                setIsFlipped(false);
-                x.set(0);
-                y.set(0);
-                playWordSequence(index + 1);
-              } else {
-                autoPlayActiveRef.current = false;
-                setAutoPlay(false);
-              }
-            }, 1000);
-          },
-        }
-      );
-    };
-
-    playWordSequence(currentIndex);
-  }, [viewMode, sessionWords, currentIndex, x, y]);
-
-  const stopAutoPlay = useCallback(() => {
-    autoPlayActiveRef.current = false;
-    setAutoPlay(false);
-    if (autoPlayRef.current) {
-      clearTimeout(autoPlayRef.current);
-      autoPlayRef.current = null;
-    }
-    // 読み上げ中のぶんも打ち切る。止めたのに喋り続けるのを防ぐ。
-    stopSpeaking();
-  }, []);
-
-  // コンポーネントのアンマウント時に自動読み上げを停止
-  useEffect(() => {
-    return () => {
-      if (autoPlayRef.current) {
-        clearTimeout(autoPlayRef.current);
-      }
-    };
-  }, []);
 
   // 復習モード用のハンドラー関数
   const handleRevealStart = (cardIndex) => {
