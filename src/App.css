@@ -713,6 +713,8 @@ body {
   width: 95%;
   max-width: 340px;
   height: 250px;
+  /* 文字の大きさをカードの幅から決めるためのコンテナ */
+  container-type: inline-size;
   position: relative;
   transform-style: preserve-3d;
   cursor: grab;
@@ -733,6 +735,20 @@ body {
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
+  /* カードは高さ固定。長い語や長い意味でも外へこぼさない。
+     横は折り返し、縦は収まらない分だけカードの中でスクロールさせる。 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* 中央寄せのまま縦に溢れると、上端が切れて読めなくなる（flexbox の既知の挙動）。
+   safe を付けると溢れたときだけ先頭寄せになり、全部たどれる。 */
+@supports (justify-content: safe center) {
+  .card-face {
+    justify-content: safe center;
+  }
 }
 
 .card-front,
@@ -747,7 +763,11 @@ body {
 }
 
 #card-front-text, .card-front-text { /* 統合 */
-  font-size: 2.5rem;
+  /* 長い語ほど小さくする。2.5rem 固定だと unconditional のような語が
+     カードからはみ出していた。 */
+  font-size: clamp(0.95rem, 13cqi, 2.5rem);
+  line-height: 1.15;
+  max-width: 100%;
   font-weight: 600;
   color: var(--text-color);
   font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -767,7 +787,9 @@ body {
 }
 
 #card-back-word, .card-back-word { 
-  font-size: 1.8rem; 
+  font-size: clamp(0.9rem, 9cqi, 1.8rem);
+  line-height: 1.2;
+  max-width: 100%;
   margin: 0; 
   color: var(--text-color);
   font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -775,7 +797,8 @@ body {
   letter-spacing: 0.01em;
 }
 #card-back-meaning, .card-back-meaning { 
-  font-size: 1.2rem; 
+  font-size: clamp(0.78rem, 6cqi, 1.2rem);
+  max-width: 100%;
   margin-top: 5px; 
   color: var(--text-color);
   font-family: 'Zen Maru Gothic', sans-serif;
@@ -2627,4 +2650,45 @@ select:focus-visible,
 /* 「毎日みる」タスクカードのアイコン。基準色の範囲で他と区別する。 */
 .bookmark-word-icon {
   color: var(--color-ink-olive);
+}
+
+/* ===== カード裏面の例文 =====
+   これまで .example-text / .example-text-ja に指定が無く、本文の
+   大きさのまま出ていた。高さ250pxのカードに単語・発音記号・意味・
+   例文・和訳が入るので、カードの幅に合わせて縮める。 */
+.card-back hr {
+  width: 60%;
+  margin: 8px auto;
+  border: none;
+  border-top: 1px solid var(--color-olive-border, rgba(54, 66, 30, 0.14));
+}
+
+.card-back .example-text,
+.card-back .example-text-ja {
+  max-width: 100%;
+  margin: 2px 0;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.card-back .example-text {
+  font-size: clamp(0.62rem, 4.4cqi, 0.9rem);
+  font-style: italic;
+  color: var(--color-olive-muted, #4b5563);
+}
+
+.card-back .example-text-ja {
+  font-size: clamp(0.58rem, 4cqi, 0.82rem);
+  color: var(--color-olive-muted, #6b7280);
+}
+
+.card-back .card-pronunciation {
+  font-size: clamp(0.66rem, 4cqi, 0.85rem);
+  margin: 2px 0 4px;
+}
+
+/* 内容が多い裏面は余白を詰める */
+.card-face.card-back {
+  padding: 14px;
+  gap: 0;
 }
