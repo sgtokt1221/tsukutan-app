@@ -5,6 +5,13 @@ import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowl
 import { getMotivationConfig, getTargetLevel, toGoalIds, getRecommendedTextbooks } from '../config';
 import { parseLocalDate, getTodayKey } from './dateKeys';
 import {
+  planSignature,
+  isStoredPlanUsable,
+  loadDailyPlan,
+  saveDailyPlan,
+  remainingWords,
+} from './dailyPlanRepository';
+import {
   computeNewWordsQuota,
   computeRemainingDays,
   dedupeAcross,
@@ -90,11 +97,11 @@ export const generateDailyPlan = async (userData, userId) => {
     return emptyPlan('invalid-target-date');
   }
 
-  const remainingWords = await estimateNeededWords(userData);
+  const remainingWordsCount = await estimateNeededWords(userData);
 
   // 期限由来の必要語数と、やる気レベルの希望語数の両方を出す（計画書10.2.3）
   const quota = computeNewWordsQuota({
-    remainingWords,
+    remainingWords: remainingWordsCount,
     remainingDays,
     preferredNewWords: motivation.newWordsQuota,
   });
@@ -103,13 +110,20 @@ export const generateDailyPlan = async (userData, userId) => {
   // 復習対象
   //--------------------------------------------------------------------------
   const reviewSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
-  const enrichedReviewEntries = reviewSnapshot.docs
+  // 永続IDへ移行済みの旧文書は二重に出さない
+  const allProgressEntries = reviewSnapshot.docs
     .map((docSnapshot) => ({ id: docSnapshot.id, ...docSnapshot.data() }))
-    // 永続IDへ移行済みの旧文書は二重に出さない
-    .filter((entry) => !entry.migratedTo)
-    .map((entry) => enrichReviewWord(entry, today));
+    .filter((entry) => !entry.migratedTo);
 
-  const learnedWordIds = new Set(enrichedReviewEntries.map((entry) => entry.id));
+  // 一度でも学習した単語は新規に出さない。習得済みも含める。
+  // ここを復習候補から作ると、習得済みの単語が新規単語として
+  // 出題し直されてしまう。
+  const learnedWordIds = new Set(allProgressEntries.map((entry) => entry.id));
+
+  // 復習候補。習得済み（status: mastered）は履歴として残しているだけなので外す。
+  const enrichedReviewEntries = allProgressEntries
+    .filter((entry) => entry.status !== 'mastered')
+    .map((entry) => enrichReviewWord(entry, today));
 
   const dueForReview = sortReviewCandidates(
     enrichedReviewEntries.filter(
@@ -118,6 +132,43 @@ export const generateDailyPlan = async (userData, userId) => {
         (entry.daysSinceLast != null && entry.daysSinceLast >= Math.max(3, entry.interval || 1))
     )
   );
+
+  //--------------------------------------------------------------------------
+  // 保存済みの計画があればそれを使う（その日のうちは並びを変えない）
+  //--------------------------------------------------------------------------
+  const dateKey = getTodayKey();
+  const signature = planSignature(userData);
+  const stored = await loadDailyPlan(userId, dateKey);
+
+  if (isStoredPlanUsable(stored, signature)) {
+    // 復習単語はIDだけ保存してある。今日の reviewWords から引き直す。
+    // 途中で習得完了になった単語は消えるので、その分だけ減る。
+    const byId = new Map(enrichedReviewEntries.map((entry) => [entry.id, entry]));
+    const storedReviewWords = (stored.reviewWordIds || [])
+      .map((id) => byId.get(id))
+      .filter(Boolean);
+
+    const answered = stored.answeredNewWordIds || [];
+    const restoredNewWords = remainingWords(stored.newWords, answered);
+
+    return {
+      ...emptyPlan(null),
+      newWords: restoredNewWords,
+      reviewWords: storedReviewWords,
+      reviewSessions: splitIntoSessions(storedReviewWords, REVIEW_SESSION_SIZE),
+      extraNewWords: remainingWords(stored.extraNewWords || [], answered),
+      dailyTarget: (stored.newWords || []).length,
+      preferredNewWords: stored.quota?.preferredNewWords ?? 0,
+      requiredNewWords: stored.quota?.requiredNewWords ?? 0,
+      plannedNewWords: stored.quota?.plannedNewWords ?? 0,
+      isFeasible: stored.quota?.isFeasible ?? true,
+      remainingDays,
+      remainingWords: remainingWordsCount,
+      knowledgeHints: stored.knowledgeHints || [],
+      dateKey,
+      fromStoredPlan: true,
+    };
+  }
 
   //--------------------------------------------------------------------------
   // 新規単語
@@ -169,6 +220,22 @@ export const generateDailyPlan = async (userData, userId) => {
   const themeGroups = buildThemeGroups([...newWords, ...extraNewWords, ...finalReviewWords]);
   const knowledgeHints = getKnowledgeGaps(themeGroups, knowledgeMap).slice(0, 3);
 
+  // その日のうちは同じ計画を返せるように保存する。
+  // 復習はIDだけ（reviewWords から引き直せる）、新規と隣接は中身ごと。
+  await saveDailyPlan(userId, dateKey, {
+    signature,
+    newWords,
+    extraNewWords,
+    reviewWordIds: finalReviewWords.map((word) => word.id),
+    knowledgeHints,
+    quota: {
+      preferredNewWords: quota.preferredNewWords,
+      requiredNewWords: quota.requiredNewWords,
+      plannedNewWords: quota.plannedNewWords,
+      isFeasible: quota.isFeasible,
+    },
+  });
+
   return {
     newWords,
     reviewWords: finalReviewWords,
@@ -181,8 +248,10 @@ export const generateDailyPlan = async (userData, userId) => {
     plannedNewWords: quota.plannedNewWords,
     isFeasible: quota.isFeasible,
     remainingDays,
-    remainingWords,
+    remainingWords: remainingWordsCount,
     knowledgeHints,
+    dateKey,
+    fromStoredPlan: false,
   };
 };
 

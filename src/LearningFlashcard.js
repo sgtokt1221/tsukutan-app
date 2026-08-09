@@ -27,7 +27,11 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-export default function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion, title }) {
+export default function LearningFlashcard({
+  words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion, title,
+  // 日次学習のときだけ渡る。1語ずつ記録して、途中で閉じても再開できるようにする。
+  onWordAnswered,
+}) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
@@ -183,6 +187,9 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   // このセッションで初めて記録した単語のID。習得語数はここから数える。
   // 画面のインデックス数だと、戻る・再回答で二重に数えてしまう。
   const newlyLearnedIdsRef = useRef(new Set());
+  // 親から毎回新しい関数が来るので、依存に入れずに最新を参照する
+  const onWordAnsweredRef = useRef(onWordAnswered);
+  onWordAnsweredRef.current = onWordAnswered;
   const currentWord = shuffledWords?.[currentIndex];
 
   const handleBackButtonClick = useCallback(() => {
@@ -241,6 +248,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       trackWrite(
         updateUserWordProgress(user.uid, currentWord, quality).then((result) => {
           if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
+          onWordAnsweredRef.current?.(currentWord.id);
         })
       );
     }
@@ -292,6 +300,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         trackWrite(
           updateUserWordProgress(user.uid, currentWord, 'again').then((result) => {
             if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
+            onWordAnsweredRef.current?.(currentWord.id);
           })
         );
       }
