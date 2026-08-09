@@ -506,20 +506,33 @@ function AdminDashboard() {
   const callImportFunction = async ({ dryRun, operationId }) => {
     const idToken = await auth.currentUser.getIdToken();
     const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
-    const response = await fetch(functionUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${idToken}`,
-      },
-      body: JSON.stringify({
-        mode: importMode,
-        dryRun,
-        operationId,
-        fileName: csvFile.name,
-        fileData: await fileToBase64(csvFile),
-      }),
-    });
+    let response;
+    try {
+      response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          mode: importMode,
+          dryRun,
+          operationId,
+          fileName: csvFile.name,
+          fileData: await fileToBase64(csvFile),
+        }),
+      });
+    } catch (error) {
+      // 通信そのものが失敗したときは「Failed to fetch」しか出ず原因が分からない。
+      // 設定を疑うべきだと分かる文言にする。
+      if (error instanceof TypeError) {
+        throw new Error(
+          'Cloud Function に接続できませんでした。関数がデプロイされているか、'
+          + 'REACT_APP_IMPORT_USERS_URL が正しいか確認してください。'
+        );
+      }
+      throw error;
+    }
 
     const responseText = await response.text();
     let payload;
