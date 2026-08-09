@@ -113,3 +113,34 @@ describe('shouldRepeatToday / actionForQuality', () => {
     expect(actionForQuality(ANSWER_QUALITY.again)).toBe('incorrect');
   });
 });
+
+describe('初見の単語（進捗が無い状態からの1回答目）', () => {
+  // reviewLogic は初回に { interval: 0, repetitions: 0, easeFactor: 2.5 } を作って
+  // そこへ回答を適用する。以前は回答を捨てて必ず interval:1 / repetitions:0 に
+  // していたため、正解でも不正解でも同じ状態になっていた。
+  const fresh = { interval: 0, repetitions: 0, easeFactor: 2.5 };
+
+  test('正解と不正解で状態が変わる', () => {
+    const good = nextSchedule(fresh, ANSWER_QUALITY.good, normal);
+    const again = nextSchedule(fresh, ANSWER_QUALITY.again, normal);
+    expect(good).not.toEqual(again);
+  });
+
+  test('初回正解は翌日、繰り返し1回目になる', () => {
+    const next = nextSchedule(fresh, ANSWER_QUALITY.good, normal);
+    expect(next.interval).toBe(1);
+    expect(next.repetitions).toBe(1);
+  });
+
+  test('初回不正解は当日のまま、繰り返しは進まない', () => {
+    const next = nextSchedule(fresh, ANSWER_QUALITY.again, normal);
+    expect(next.interval).toBe(0);
+    expect(next.repetitions).toBe(0);
+    expect(shouldRepeatToday(ANSWER_QUALITY.again)).toBe(true);
+  });
+
+  test('初回不正解のほうが Ease Factor が低い', () => {
+    expect(nextSchedule(fresh, ANSWER_QUALITY.again, normal).easeFactor)
+      .toBeLessThan(nextSchedule(fresh, ANSWER_QUALITY.good, normal).easeFactor);
+  });
+});

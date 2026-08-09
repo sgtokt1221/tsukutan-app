@@ -180,6 +180,9 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   // 先頭へ戻るのスクロール対象。スクロールするのは画面ではなくこの要素。
   const wordbookShellRef = useRef(null);
+  // このセッションで初めて記録した単語のID。習得語数はここから数える。
+  // 画面のインデックス数だと、戻る・再回答で二重に数えてしまう。
+  const newlyLearnedIdsRef = useRef(new Set());
   const currentWord = shuffledWords?.[currentIndex];
 
   const handleBackButtonClick = useCallback(() => {
@@ -200,7 +203,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     }
     
     // 親コンポーネントの戻る処理を呼び出し
-    onBack(incorrectWords);
+    onBack(incorrectWords, newlyLearnedIdsRef.current.size);
   }, [currentIndex, shuffledWords, sessionInfo, onSaveLog, incorrectWords, onBack]);
 
 
@@ -235,7 +238,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const user = auth.currentUser;
     
     if (user && currentWord) {
-      trackWrite(updateUserWordProgress(user.uid, currentWord, quality));
+      trackWrite(
+        updateUserWordProgress(user.uid, currentWord, quality).then((result) => {
+          if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
+        })
+      );
     }
     
     // 次の単語へ
@@ -268,7 +275,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       // 書き込みを取りこぼさないよう、画面を閉じる前に待つ
       await flushWrites();
       // 親コンポーネントの戻る処理を呼び出し
-      onBack(incorrectWords);
+      onBack(incorrectWords, newlyLearnedIdsRef.current.size);
     }
   }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
 
@@ -282,7 +289,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     // 不正解の場合、復習リストに追加
     if (currentWord) {
       if (user) {
-        trackWrite(updateUserWordProgress(user.uid, currentWord, 'again'));
+        trackWrite(
+          updateUserWordProgress(user.uid, currentWord, 'again').then((result) => {
+            if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
+          })
+        );
       }
       setIncorrectWords(prev => [...prev.filter(w => w.id !== currentWord.id), currentWord]);
     }
@@ -317,7 +328,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       // 書き込みを取りこぼさないよう、画面を閉じる前に待つ
       await flushWrites();
       // 親コンポーネントの戻る処理を呼び出し
-      onBack(incorrectWords);
+      onBack(incorrectWords, newlyLearnedIdsRef.current.size);
     }
   }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
 
@@ -990,7 +1001,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         title={title || (isReviewMode ? '復習単語' : '新規学習')}
         current={currentIndex + 1}
         total={shuffledWords.length}
-        onBack={() => onBack(incorrectWords)}
+        onBack={() => onBack(incorrectWords, newlyLearnedIdsRef.current.size)}
         backLabel="終了"
         actions={(
           <>
