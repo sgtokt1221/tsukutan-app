@@ -4,7 +4,7 @@ import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { FaArrowUp, FaUndo, FaArrowLeft } from 'react-icons/fa';
+import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop } from 'react-icons/fa';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
@@ -12,6 +12,7 @@ import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 import { useWordbookZoom } from './logic/useWordbookZoom';
+import { useAutoPlay } from './logic/useAutoPlay';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
@@ -162,6 +163,19 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
+  // 自動読み上げ。復習カードと同じ実装を共有する。
+  const { autoPlay, start: startAutoPlay, stop: stopAutoPlay } = useAutoPlay({
+    words: shuffledWords,
+    currentIndex,
+    enabled: viewMode === 'flashcard',
+    onRevealMeaning: () => setIsFlipped(true),
+    onAdvance: (nextIndex) => {
+      setCurrentIndex(nextIndex);
+      setIsFlipped(false);
+      x.set(0);
+      y.set(0);
+    },
+  });
   // 毎日みたい単語の登録状態
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   // 先頭へ戻るのスクロール対象。スクロールするのは画面ではなくこの要素。
@@ -978,12 +992,25 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         total={shuffledWords.length}
         onBack={() => onBack(incorrectWords)}
         backLabel="終了"
-        actions={currentWord && (
-          <BookmarkButton
-            active={isBookmarked(currentWord)}
-            onToggle={() => toggleBookmark(currentWord)}
-            label={currentWord.word}
-          />
+        actions={(
+          <>
+            {currentWord && (
+              <BookmarkButton
+                active={isBookmarked(currentWord)}
+                onToggle={() => toggleBookmark(currentWord)}
+                label={currentWord.word}
+              />
+            )}
+            <button
+              type="button"
+              className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
+              onClick={autoPlay ? stopAutoPlay : startAutoPlay}
+              aria-pressed={autoPlay}
+              aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
+            >
+              {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+            </button>
+          </>
         )}
       />
       <ModeTabs value="flashcard" onChange={setViewMode} />
