@@ -199,8 +199,7 @@ const isRecommendedTextbook = (textbookId, testLevel, userData) => {
     'eiken-3': { min: 3, max: 4 },
     'eiken-pre2': { min: 4, max: 5 },
     'eiken-2': { min: 5, max: 6 },
-    'eiken-pre1': { min: 6, max: 7 },
-    'eiken-1': { min: 7, max: 8 }
+    'eiken-pre1': { min: 6, max: 7 }
   };
   
   const mapping = textbookLevelMapping[textbookId];
@@ -337,8 +336,9 @@ const freeStudyOptions = [
   { id: 'eiken-3', label: '英検3級', textbooks: ['highschool-english'] },
   { id: 'eiken-pre2', label: '英検準2級', textbooks: ['highschool-english'] },
   { id: 'eiken-2', label: '英検2級', textbooks: ['highschool-english'] },
-  { id: 'eiken-pre1', label: '英検準1級', textbooks: ['highschool-english'] },
-  { id: 'eiken-1', label: '英検1級', textbooks: ['highschool-english'] }
+  { id: 'eiken-pre1', label: '英検準1級', textbooks: ['highschool-english'] }
+  // 英検1級は置かない。実データに eikenLevels: 1 の単語が1語も無く、
+  // 常に「0語」のカードになる（src/config/levels.json も準1級まで）。
 ];
 // 通常のレベル定義（実際のデータに基づいて調整）
 // レベルの対応表は src/config/levels.json が正本。ここでは表示形に変換するだけ。
@@ -1887,7 +1887,12 @@ export default function StudentDashboard() {
               const priority = recommendationType ? recommendationType.priority : 'medium';
               
               const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
-              
+
+              // 収録が0語の教材は出さない。選んでも何も学べない。
+              // 単語データの読み込み前（masterWords が空）は判定できないので、
+              // そのときは出したままにする。
+              if (masterWords.length > 0 && wordCount === 0) return null;
+
               return (
                 <button key={id} className="tile-button" onClick={() => {
                   logger.debug('🎯 教材選択ボタンクリック:', { id, label, isRecommended, wordCount });
