@@ -30,6 +30,7 @@ const { buildIndex, mapReviewWord, mergeReviewDocs } = require('./lib/reviewWord
 
 const ROOT = path.resolve(__dirname, '..');
 const MASTER_PATH = path.join(ROOT, 'public', 'data', 'words-master.json');
+const PROJECT_ID = 'tsukutan-58b3f';
 
 const argv = process.argv.slice(2);
 const EXECUTE = argv.includes('--execute');
@@ -42,15 +43,25 @@ const main = async () => {
     process.exit(1);
   }
 
-  const serviceAccountPath = path.join(ROOT, 'serviceAccountKey.json');
-  if (!fs.existsSync(serviceAccountPath)) {
-    console.error('serviceAccountKey.json がありません。');
-    process.exit(1);
-  }
-
+  // 認証は Application Default Credentials を優先する。
+  //   gcloud auth application-default login
+  // で済むなら、鍵ファイルをローカルに置かずに実行できる。
+  // ADC が無い環境向けに serviceAccountKey.json へフォールバックする。
   if (!admin.apps.length) {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    admin.initializeApp({ credential: admin.credential.cert(require(serviceAccountPath)) });
+    const serviceAccountPath = path.join(ROOT, 'serviceAccountKey.json');
+    try {
+      admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+        projectId: PROJECT_ID,
+      });
+    } catch (adcError) {
+      if (!fs.existsSync(serviceAccountPath)) {
+        console.error('認証情報がありません。`gcloud auth application-default login` を実行するか、serviceAccountKey.json を置いてください。');
+        process.exit(1);
+      }
+      // eslint-disable-next-line global-require, import/no-dynamic-require
+      admin.initializeApp({ credential: admin.credential.cert(require(serviceAccountPath)) });
+    }
   }
   const db = admin.firestore();
 
@@ -128,11 +139,17 @@ const main = async () => {
     //------------------------------------------------------------------------
     // 本実行
     //------------------------------------------------------------------------
-    const batch = db.batch();
+    // commit したバッチは再利用できない。使い切ったら必ず作り直す。
+    let batch = db.batch();
     let writes = 0;
+    let committed = 0;
 
     for (const [newId, docs] of byNewId) {
       const masterEntry = master.find((entry) => entry.id === newId);
+      if (!masterEntry) {
+        problems.push({ uid, oldId: null, status: 'unmatched', reason: `マスターにIDが無い: ${newId}` });
+        continue;
+      }
       const merged = mergeReviewDocs(docs);
 
       batch.set(
@@ -161,15 +178,21 @@ const main = async () => {
         writes += 1;
       }
 
-      // Firestore のバッチ上限（500）に達する前に区切る
+      // Firestore のバッチ上限（500）に達する前に区切る。
+      // commit 済みのバッチには追記できないので、必ず新しく作り直す。
       if (writes >= 400) {
         await batch.commit();
+        committed += writes;
+        batch = db.batch();
         writes = 0;
       }
     }
 
-    if (writes > 0) await batch.commit();
-    console.log(`  ${uid}: ${snapshot.size} → ${byNewId.size} 件を書き込みました`);
+    if (writes > 0) {
+      await batch.commit();
+      committed += writes;
+    }
+    console.log(`  ${uid}: 旧${snapshot.size} → 新${byNewId.size}（書き込み ${committed} 件）`);
   }
 
   //--------------------------------------------------------------------------
