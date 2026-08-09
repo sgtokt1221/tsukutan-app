@@ -56,28 +56,27 @@ export const addWordToReview = async (userId, word) => {
  * @param {string} motivationLevel やる気レベル
  */
 export const updateUserWordProgress = async (userId, word, answer, isReviewComplete = false, motivationLevel = 'normal') => {
-  if (!userId || !word || !word.id) return;
+  if (!userId || !word || !word.id) return { created: false, mastered: false };
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', word.id);
 
   try {
     const docSnap = await getDoc(reviewWordRef);
-    let wordData;
+    const isFirstTime = !docSnap.exists();
 
-    if (docSnap.exists()) {
-      wordData = docSnap.data();
-    } else {
-      // もし何らかの理由で復習リストにない単語が来た場合、新規追加の処理を行う
-      await addWordToReview(userId, word);
-      return;
-    }
+    // 初めて出会う単語も、その回答を反映して状態を作る。
+    // 以前はここで addWordToReview して return しており、正解しても
+    // 不正解しても同じ状態（interval:1 / repetitions:0）になっていた。
+    const wordData = isFirstTime
+      ? { ...word, interval: 0, repetitions: 0, easeFactor: 2.5, firstSeenAt: new Date() }
+      : docSnap.data();
 
     const today = new Date();
     today.setHours(0, 0, 0, 0); // 時間を正規化
     // 復習完了の場合は、完全に復習リストから除去
     if (isReviewComplete) {
       await removeWordFromReview(userId, word.id);
-      return;
+      return { created: false, mastered: true };
     }
 
     const config = MOTIVATION_LEVELS[motivationLevel] || MOTIVATION_LEVELS.normal;
@@ -113,8 +112,11 @@ export const updateUserWordProgress = async (userId, word, answer, isReviewCompl
       easeFactor: easeFactor,
     });
 
+    // 初めて記録した単語かどうかを返す。呼び出し側が習得語数を数える。
+    return { created: isFirstTime, mastered: false };
   } catch (error) {
     console.error('単語の進捗更新に失敗しました:', error);
+    return { created: false, mastered: false, error };
   }
 };
 

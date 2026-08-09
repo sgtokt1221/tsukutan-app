@@ -10,6 +10,7 @@ import { updateProgressPercentage } from './logic/progressLogic';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 import {
   MAX_STAGES,
+  MIN_ANSWERS_FOR_EARLY_FINISH,
   createInitialState,
   selectQuestions,
   recordAnswer,
@@ -29,7 +30,7 @@ import {
  * 難易度が動くのはステージを締めたときだけなので、5問目で調整が入っても
  * ステージが作り直されることはない。
  */
-export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete }) {
+export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete, onCancel }) {
   const navigate = useNavigate();
 
   // 単語は呼び出し元が渡す。ここで巨大なJSONを import しない（計画書13.5）。
@@ -44,6 +45,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   const [isFlipped, setIsFlipped] = useState(false);
   const [questionStartTime, setQuestionStartTime] = useState(null);
   const [saveError, setSaveError] = useState(null);
+  // 回答が少ないまま抜けようとしたときの確認
+  const [confirmLeave, setConfirmLeave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const x = useMotionValue(0);
@@ -190,13 +193,57 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   };
 
   const handleLeave = async () => {
-    // 途中で抜けるときも、それまでの回答からレベルを出して保存する
-    if (engine.allAnswers.length > 0) {
+    // 回答が少ないうちに抜けた結果でレベルを上書きしない。
+    // 1問だけ答えて戻ると、そのレベルが正式なレベルとして保存され、
+    // 日次計画・推薦・進捗のすべてが狂っていた。
+    // MIN_ANSWERS_FOR_EARLY_FINISH はエンジン側の早期終了の下限と同じ。
+    if (engine.allAnswers.length >= MIN_ANSWERS_FOR_EARLY_FINISH) {
       await finishTestAndSave({ ...engine, resultLevel: computeResultLevel(engine) });
       return;
     }
-    navigate('/student-dashboard');
+    if (engine.allAnswers.length > 0) {
+      setConfirmLeave(true);
+      return;
+    }
+    leaveWithoutSaving();
   };
+
+  // テストは画面内のモード切替で表示している。ルートではないため
+  // navigate('/student-dashboard') では抜けられない（押しても何も起きなかった）。
+  // 親から渡された戻り方を使う。
+  const leaveWithoutSaving = () => {
+    if (onCancel) onCancel();
+    else navigate('/student-dashboard');
+  };
+
+  if (confirmLeave) {
+    return (
+      <div className="loading-container">
+        <div className="app-status-card">
+          <h1 className="app-status-title">結果は保存されません</h1>
+          <p className="app-status-message">
+            レベルを判定するには {MIN_ANSWERS_FOR_EARLY_FINISH} 問以上の回答が必要です。
+            （今 {engine.allAnswers.length} 問）
+            ここでやめると、今のレベルはそのままになります。
+          </p>
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => setConfirmLeave(false)}
+          >
+            テストを続ける
+          </button>
+          <button
+            type="button"
+            className="ghost-button"
+            onClick={leaveWithoutSaving}
+          >
+            結果を破棄して戻る
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (saveError) {
     return (
