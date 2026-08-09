@@ -20,7 +20,7 @@ import { FaBook, FaSyncAlt, FaMagic, FaChartLine } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
-import BrandLogo from './components/brand/BrandLogo';
+import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster } from './logic/wordMaster';
 import logger from './logic/logger';
 
@@ -1925,32 +1925,7 @@ export default function StudentDashboard() {
 
   // タブバーコンポーネント
   const TabBar = () => (
-    <div className="tab-bar">
-                <button 
-        className={`tab-item ${activeTab === 'home' ? 'active' : ''}`}
-        onClick={() => setActiveTab('home')}
-      >
-        <span className="tab-label">HOME</span>
-      </button>
-      <button 
-        className={`tab-item ${activeTab === 'story' ? 'active' : ''}`}
-        onClick={() => setActiveTab('story')}
-      >
-        <span className="tab-label">長文</span>
-      </button>
-      <button 
-        className={`tab-item ${activeTab === 'free-study' ? 'active' : ''}`}
-        onClick={() => setActiveTab('free-study')}
-      >
-        <span className="tab-label">自由学習</span>
-      </button>
-      <button 
-        className={`tab-item ${activeTab === 'analytics' ? 'active' : ''}`}
-        onClick={() => setActiveTab('analytics')}
-      >
-        <span className="tab-label">詳細分析</span>
-                </button>
-                </div>
+    <StudentBottomNav activeTab={activeTab} onChange={setActiveTab} />
   );
 
   // タブ別コンテンツのレンダリング
@@ -3178,18 +3153,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard-container">
-      <header className="student-header">
-        <BrandLogo placement="student-header" priority decorative onSurface />
-        {/* ロゴ画像が読めない環境でも製品名が分かるようにする */}
-        <h1 className="visually-hidden">つくたん</h1>
-
-        <div className="student-header-meta">
-          {userData && <span className="student-header-name">{userData.name}</span>}
-          <button type="button" onClick={handleLogout} className="logout-btn">
-            ログアウト
-          </button>
-        </div>
-      </header>
+      <StudentHeader userName={userData?.name} onLogout={handleLogout} />
       
       {/* 初回テストと学習計画最適化のボタン */}
       {testResultLevel === 0 && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && (
