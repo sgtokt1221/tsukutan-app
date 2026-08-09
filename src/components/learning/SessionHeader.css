@@ -129,6 +129,7 @@
 }
 
 .wordbook-card__left {
+  position: relative;
   border-right: var(--border-default);
   background-color: var(--color-surface);
   /* この列をコンテナにして、語の大きさを列の幅と高さの両方から決める。
@@ -344,4 +345,48 @@
 
 .session-footer > * {
   flex: 1;
+}
+
+/* ===== 毎日みる単語（ブックマーク） ===== */
+.bookmark-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+.bookmark-button:hover {
+  background-color: var(--color-lime-soft);
+}
+
+/* 選択中はタブや aria-pressed と同じ表し方に揃える。
+   基準色は5色に固定されているので、新しい色は足さない（計画書5.1）。 */
+.bookmark-button.is-active {
+  border-color: var(--color-lime-border);
+  background-color: var(--color-lime-muted);
+  color: var(--color-ink-olive);
+}
+
+.bookmark-button--header {
+  flex-shrink: 0;
+  width: var(--tap-target);
+  height: var(--tap-target);
+}
+
+/* カード内は行を広げないよう小さく、右上に寄せる */
+.bookmark-button--inline {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 3;
+  width: calc(22px * var(--wordbook-zoom, 1) + 10px);
+  height: calc(22px * var(--wordbook-zoom, 1) + 10px);
+  min-width: 20px;
+  min-height: 20px;
+  font-size: calc(12px * var(--wordbook-zoom, 1) + 4px);
+  border-radius: var(--radius-pill);
 }

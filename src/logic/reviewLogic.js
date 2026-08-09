@@ -4,6 +4,7 @@ import { logStudyEvent } from './studyLogger';
 import { MOTIVATION_LEVELS } from '../config';
 import { getTodayKey } from './dateKeys';
 import logger from './logger';
+import { actionForQuality, nextSchedule, shouldRepeatToday, toQuality } from './reviewScheduling';
 
 /**
  * 新しい単語を復習リストに追加します。
@@ -46,12 +47,15 @@ export const addWordToReview = async (userId, word) => {
 
 /**
  * ユーザーの単語学習進捗（復習）を更新します。
+ *
  * @param {string} userId ユーザーID
  * @param {object} word 対象の単語オブジェクト
- * @param {boolean} isCorrect 正解したかどうか
+ * @param {'again'|'hard'|'good'|boolean} answer 回答。
+ *   旧来の真偽値も受け取れる（true=good, false=again）。
  * @param {boolean} isReviewComplete 復習完了（復習リストから除去）するかどうか
+ * @param {string} motivationLevel やる気レベル
  */
-export const updateUserWordProgress = async (userId, word, isCorrect, isReviewComplete = false, motivationLevel = 'normal') => {
+export const updateUserWordProgress = async (userId, word, answer, isReviewComplete = false, motivationLevel = 'normal') => {
   if (!userId || !word || !word.id) return;
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', word.id);
@@ -76,34 +80,10 @@ export const updateUserWordProgress = async (userId, word, isCorrect, isReviewCo
       return;
     }
 
-    let { interval, repetitions, easeFactor } = wordData;
     const config = MOTIVATION_LEVELS[motivationLevel] || MOTIVATION_LEVELS.normal;
-
-    if (isCorrect) {
-      if (repetitions === 0) {
-        interval = 1;
-      } else if (repetitions === 1) {
-        interval = Math.ceil(6 * config.intervalMultiplier);
-      } else {
-        interval = Math.ceil(interval * easeFactor * config.easeFactorMultiplier * config.intervalMultiplier);
-      }
-      repetitions += 1;
-    } else {
-      // ★変更: 不正解の場合は即時復習
-      interval = 0;
-      repetitions = 0;
-    }
-    
-    // 新しいEase Factorの計算 (SM-2アルゴリズム)
-    // qは回答の質(0-5)。ここでは単純な正誤(isCorrect)を質に変換する。
-    // 正解: 5, 不正解: 2 とする
-    const q = isCorrect ? 5 : 2;
-    easeFactor = easeFactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
-    
-    // やる気レベルに応じてEase Factorを調整
-    easeFactor *= config.easeFactorMultiplier;
-    
-    if (easeFactor < 1.3) easeFactor = 1.3; // 最低E-Factor
+    const quality = toQuality(answer);
+    // 間隔の計算は reviewScheduling.js に切り出してある（テスト可能にするため）
+    const { interval, repetitions, easeFactor } = nextSchedule(wordData, quality, config);
 
     const nextReviewDate = new Date(today);
     nextReviewDate.setDate(today.getDate() + interval);
@@ -117,8 +97,8 @@ export const updateUserWordProgress = async (userId, word, isCorrect, isReviewCo
       repetitions,
     }, { merge: true });
 
-    // ★不正解の場合はキャッシュにも追加/復帰させる
-    if (!isCorrect) {
+    // 「もう一度」は今日のうちにもう一度出す
+    if (shouldRepeatToday(quality)) {
       await addWordToDailyCache(userId, { ...wordData, id: word.id });
     }
 
@@ -127,7 +107,7 @@ export const updateUserWordProgress = async (userId, word, isCorrect, isReviewCo
       word: word.word,
       wordId: word.id,
       sessionType: 'review',
-      action: isCorrect ? 'correct' : 'incorrect',
+      action: actionForQuality(quality),
       repetitions: repetitions,
       interval: interval,
       easeFactor: easeFactor,

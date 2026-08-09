@@ -12,7 +12,7 @@
     "test:rules": "firebase emulators:exec --only firestore --project demo-tsukutan \"npx jest --testMatch '**/*.spec.js'\""
   },
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "main": "index.js",
   "dependencies": {

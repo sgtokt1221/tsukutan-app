@@ -13,6 +13,8 @@ import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
+import BookmarkButton from './components/learning/BookmarkButton';
+import { useBookmarks } from './logic/useBookmarks';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -24,7 +26,7 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-export default function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion }) {
+export default function LearningFlashcard({ words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion, title }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
@@ -160,6 +162,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
+  // 毎日みたい単語の登録状態
+  const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   // 先頭へ戻るのスクロール対象。スクロールするのは画面ではなくこの要素。
   const wordbookShellRef = useRef(null);
   const currentWord = shuffledWords?.[currentIndex];
@@ -210,12 +214,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   }, []);
 
   // 正解・不正解処理関数
-  const handleCorrect = useCallback(async () => {
+  // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
+  // 'again' は handleIncorrect が受け持つ。
+  const handleAnswer = useCallback(async (quality) => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
     
     if (user && currentWord) {
-      trackWrite(updateUserWordProgress(user.uid, currentWord, true));
+      trackWrite(updateUserWordProgress(user.uid, currentWord, quality));
     }
     
     // 次の単語へ
@@ -252,6 +258,9 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     }
   }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
 
+  const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
+  const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
+
   const handleIncorrect = useCallback(async () => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
@@ -259,7 +268,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     // 不正解の場合、復習リストに追加
     if (currentWord) {
       if (user) {
-        trackWrite(updateUserWordProgress(user.uid, currentWord, false));
+        trackWrite(updateUserWordProgress(user.uid, currentWord, 'again'));
       }
       setIncorrectWords(prev => [...prev.filter(w => w.id !== currentWord.id), currentWord]);
     }
@@ -777,7 +786,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
           以前はここだけ独自のヘッダー・独自の色・独自のボタンだった。 */}
       <div className="wordbook-header">
         <SessionHeader
-          title={`単語帳モード（${shuffledWords.length}語）`}
+          title={title ? `${title}（${shuffledWords.length}語）` : `単語帳モード（${shuffledWords.length}語）`}
           current={wordbookProgress}
           total={shuffledWords.length}
           onBack={handleBackButtonClick}
@@ -808,6 +817,12 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                 <div className="wordbook-card__grid">
                 {/* 左側：英単語 */}
                 <div className="wordbook-card__side wordbook-card__left">
+                  <BookmarkButton
+                    size="inline"
+                    active={isBookmarked(word)}
+                    onToggle={() => toggleBookmark(word)}
+                    label={word.word}
+                  />
                   <button
                     type="button"
                     className="wordbook-word"
@@ -958,11 +973,18 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       {/* 戻る・セッション名・現在数・進捗をヘッダーにまとめる（計画書7.3 / 7.7）。
           モード切替はヘッダー直下のアンダータブに置く。 */}
       <SessionHeader
-        title={isReviewMode ? '復習単語' : '新規学習'}
+        title={title || (isReviewMode ? '復習単語' : '新規学習')}
         current={currentIndex + 1}
         total={shuffledWords.length}
         onBack={() => onBack(incorrectWords)}
         backLabel="終了"
+        actions={currentWord && (
+          <BookmarkButton
+            active={isBookmarked(currentWord)}
+            onToggle={() => toggleBookmark(currentWord)}
+            label={currentWord.word}
+          />
+        )}
       />
       <ModeTabs value="flashcard" onChange={setViewMode} />
 
@@ -1011,6 +1033,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
+        onHard={handleHard}
       />
 
       {/* ナビゲーションボタン */}
