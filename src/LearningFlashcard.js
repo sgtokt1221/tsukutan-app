@@ -30,6 +30,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const [revealedCards, setRevealedCards] = useState(new Set()); // 赤シート機能で表示中のカード
   const [longPressCards, setLongPressCards] = useState(new Set()); // 長押し中のカード（復習モード用）
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
+  // 単語帳モードの文字サイズ。端末ごとに好みが違うので覚えておく。
+  const [wordbookZoom, setWordbookZoom] = useState(() => {
+    const saved = Number(localStorage.getItem('tsukutan.wordbookZoom'));
+    return Number.isFinite(saved) && saved >= 80 && saved <= 160 ? saved : 100;
+  });
+  useEffect(() => {
+    localStorage.setItem('tsukutan.wordbookZoom', String(wordbookZoom));
+  }, [wordbookZoom]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -752,7 +760,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // リアル単語帳モードのレンダリング
   const renderWordbookMode = () => (
-    <div className="wordbook-shell">
+    <div className="wordbook-shell" style={{ '--wordbook-zoom': wordbookZoom / 100 }}>
       {/* ページトップ用のアンカー */}
       <div id="page-top" className="wordbook-anchor" />
 
@@ -772,6 +780,19 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
               ? '「答えを見る」で意味を表示。上スワイプで復習完了にできます。'
               : '「答えを見る」で意味を表示。右スワイプ=わかった / 左スワイプ=もう一度も使えます。'}
           </p>
+          <label className="wordbook-zoom">
+            <span className="wordbook-zoom__label">文字の大きさ</span>
+            <input
+              type="range"
+              min="80"
+              max="160"
+              step="10"
+              value={wordbookZoom}
+              onChange={(e) => setWordbookZoom(Number(e.target.value))}
+              aria-label={`文字の大きさ ${wordbookZoom}%`}
+            />
+            <span className="wordbook-zoom__value">{wordbookZoom}%</span>
+          </label>
           <button type="button" className="secondary-action" onClick={() => setViewMode('flashcard')}>
             <FaLayerGroup aria-hidden="true" /> フラッシュカード
           </button>
@@ -829,25 +850,18 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                   justifyContent: 'center',
                   backgroundColor: '#fafafa'
                 }}>
-                  <div style={{
-                    fontSize: window.innerWidth <= 768 ? '1.5rem' : '2rem', // スマホではフォントサイズを小さく
-                    fontWeight: 'bold',
-                    color: '#1f2937',
-                    marginBottom: '8px',
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                  onClick={() => speak(word.word)}
+                  <button
+                    type="button"
+                    className="wordbook-word"
+                    onClick={() => speak(word.word)}
+                    aria-label={`${word.word} を読み上げる`}
                   >
                     {word.word}
-                  </div>
-                  <div style={{
-                    fontSize: '1rem',
-                    color: '#6b7280',
-                    fontStyle: 'italic'
-                  }}>
-                    [{word.pronunciation || ''}]
-                  </div>
+                  </button>
+                  {/* 発音記号はデータに存在しないので、あるときだけ出す（計画書2.3） */}
+                  {word.pronunciation && (
+                    <div className="wordbook-pronunciation">[{word.pronunciation}]</div>
+                  )}
                   <div style={{
                     fontSize: '0.75rem',
                     color: '#9ca3af',
@@ -948,37 +962,13 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                     opacity: revealedCards.has(index) ? 1 : 0.3,
                     transition: 'opacity 0.2s ease'
                   }}>
-                    <div style={{
-                      fontSize: window.innerWidth <= 768 ? '1rem' : '1.25rem', // スマホではフォントサイズを小さく
-                      fontWeight: '600',
-                      color: '#1f2937',
-                      marginBottom: window.innerWidth <= 768 ? '8px' : '16px', // スマホではマージンを小さく
-                      lineHeight: '1.4'
-                    }}>
-                      {word.meaning}
-                    </div>
-                    
+                    <div className="wordbook-meaning">{word.meaning}</div>
+
                     {word.example && (
-                      <div style={{
-                        marginBottom: '8px'
-                      }}>
-                        <div style={{
-                          fontSize: '0.95rem',
-                          color: '#4b5563',
-                          fontStyle: 'italic',
-                          marginBottom: '4px',
-                          lineHeight: '1.4'
-                        }}>
-                          {word.example}
-                        </div>
-                        {word.exampleTranslation && (
-                          <div style={{
-                            fontSize: '0.875rem',
-                            color: '#6b7280',
-                            lineHeight: '1.4'
-                          }}>
-                            {word.exampleTranslation}
-                          </div>
+                      <div className="wordbook-example">
+                        <div className="wordbook-example__en">{word.example}</div>
+                        {word.exampleJa && (
+                          <div className="wordbook-example__ja">{word.exampleJa}</div>
                         )}
                       </div>
                     )}
@@ -1050,12 +1040,17 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         total={shuffledWords.length}
         onBack={() => onBack(incorrectWords)}
         backLabel="終了"
+        actions={(
+          <button
+            type="button"
+            className="session-header__icon-btn"
+            onClick={() => setViewMode('wordbook')}
+            aria-label="単語帳モードに切り替える"
+          >
+            <FaBook aria-hidden="true" />
+          </button>
+        )}
       />
-      <div className="session-header session-header--actions">
-        <button type="button" className="secondary-action" onClick={() => setViewMode('wordbook')}>
-          <FaBook aria-hidden="true" /> 単語帳モード
-        </button>
-      </div>
 
       <div id="flashcard-container">
         <motion.div
