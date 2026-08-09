@@ -35,6 +35,39 @@ body {
   color: var(--text-color);
 }
 
+
+/* ===== フォームの入力エラー・通知 ===== */
+.field-error {
+  margin: 8px 0 0 0;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+.message-box {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid;
+  line-height: 1.6;
+}
+.message-box-success {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+.message-box-error {
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  color: #842029;
+}
+.primary-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ghost-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ===== 起動時のエラー画面 ===== */
 .app-status-card {
   background-color: var(--card-bg);

@@ -1,40 +1,8 @@
 import { db } from '../firebaseConfig';
 import { doc, setDoc, getDoc, updateDoc, runTransaction } from 'firebase/firestore';
 import { logStudyEvent } from './studyLogger';
-
-// やる気レベル別設定
-const MOTIVATION_LEVELS = {
-  low: {
-    name: 'そこそこ',
-    description: '無理せず続けたい',
-    easeFactorMultiplier: 1.2,
-    intervalMultiplier: 1.5,
-    masteredThreshold: 3,
-    dailyReviewQuota: 2,
-    adjacentWordsQuota: 5,
-    newWordsQuota: 15
-  },
-  normal: {
-    name: '普通',
-    description: 'バランスよく学習したい',
-    easeFactorMultiplier: 1.0,
-    intervalMultiplier: 1.0,
-    masteredThreshold: 5,
-    dailyReviewQuota: 3,
-    adjacentWordsQuota: 10,
-    newWordsQuota: 20
-  },
-  high: {
-    name: 'やる気満々',
-    description: '確実に覚えたい',
-    easeFactorMultiplier: 0.8,
-    intervalMultiplier: 0.7,
-    masteredThreshold: 7,
-    dailyReviewQuota: 5,
-    adjacentWordsQuota: 15,
-    newWordsQuota: 30
-  }
-};
+import { MOTIVATION_LEVELS } from '../config';
+import { getTodayKey } from './dateKeys';
 
 /**
  * 新しい単語を復習リストに追加します。
@@ -177,7 +145,7 @@ export const updateUserWordProgress = async (userId, word, isCorrect, isReviewCo
 const addWordToDailyCache = async (userId, wordToCache) => {
   if (!userId || !wordToCache) return;
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getTodayKey();
   const dailyPlanRef = doc(db, 'users', userId, 'dailyPlans', todayStr);
 
   try {
@@ -211,7 +179,7 @@ export const removeWordFromReview = async (userId, wordId) => {
   if (!userId || !wordId) return;
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', wordId);
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getTodayKey();
   const dailyPlanRef = doc(db, 'users', userId, 'dailyPlans', todayStr);
 
   try {

@@ -9,7 +9,7 @@
  *   node scripts/check-config-consistency.js --json docs/baseline/config-consistency.json
  *
  * 検査項目（IMPLEMENTATION_PLAN.md 5.3）
- *   1. 目標IDの参照漏れ  — setupMasterData.js の goalsMaster 定義を正本とし、
+ *   1. 目標IDの参照漏れ  — src/config/goals.json を正本とし、
  *                          コード内の目標IDリテラルで正本に無いものを検出する
  *   2. 教材IDの参照漏れ  — Firestore の textbooks/{id} を実際に読むIDと、
  *                          画面のコース定義が指すIDを突き合わせる
@@ -33,6 +33,10 @@ const KNOWN_COLLECTIONS = new Set([
   'goalsMaster',
   'textbooks',
   'words',
+  // CLAUDE.md には dailyPlans と書かれているが、実装は dailyCompletion を使っている
+  'dailyCompletion',
+  // CSV取り込みの操作記録（フェーズ2で追加）
+  'importOperations',
 ]);
 
 // Firestore に実体がある教材（textbooks/{id}/words）
@@ -43,7 +47,8 @@ const walk = (dir, out = []) => {
     if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full, out);
-    else if (/\.jsx?$/.test(entry.name)) out.push(full);
+    // テストファイルは旧IDを「存在しないこと」の確認に使うので走査対象から外す
+    else if (/\.jsx?$/.test(entry.name) && !/\.(test|spec)\.jsx?$/.test(entry.name)) out.push(full);
   }
   return out;
 };
@@ -78,12 +83,12 @@ const collect = (sources, pattern) => {
   return found;
 };
 
+// 正本は src/config/goals.json。setupMasterData.js もここを読んで goalsMaster を作る。
 const canonicalGoalIds = () => {
-  const file = path.join(ROOT, 'setupMasterData.js');
+  const file = path.join(ROOT, 'src', 'config', 'goals.json');
   if (!fs.existsSync(file)) return null;
-  const text = fs.readFileSync(file, 'utf8');
-  const ids = [...text.matchAll(/\{\s*id:\s*'([^']+)'\s*,\s*data:/g)].map((m) => m[1]);
-  return new Set(ids);
+  const goals = JSON.parse(fs.readFileSync(file, 'utf8'));
+  return new Set(goals.map((goal) => goal.id));
 };
 
 const envKeys = () => {
@@ -123,9 +128,9 @@ const main = () => {
 
   console.log('=== 1. 目標ID ===');
   if (!canonical) {
-    console.log('  setupMasterData.js が見つからないため正本を特定できません');
+    console.log('  src/config/goals.json が見つからないため正本を特定できません');
   } else {
-    console.log(`  正本 (setupMasterData.js): ${canonical.size} 件`);
+    console.log(`  正本 (src/config/goals.json): ${canonical.size} 件`);
     if (unknownGoalIds.length === 0) {
       console.log('  正本に無い目標ID: なし');
     } else {
@@ -135,8 +140,10 @@ const main = () => {
         console.log(`    - '${id}'  ${locations.join(', ')}`);
       }
     }
-    if (unreferencedGoalIds.length) {
-      console.log(`  コードから参照されていない目標ID: ${unreferencedGoalIds.join(', ')}`);
+    if (unreferencedGoalIds.length === canonical.size) {
+      console.log('  ソースに目標IDのハードコードなし（すべて共通定義経由）');
+    } else if (unreferencedGoalIds.length) {
+      console.log(`  ソースに直接現れない目標ID: ${unreferencedGoalIds.join(', ')}`);
     }
   }
 
