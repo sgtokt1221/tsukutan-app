@@ -159,3 +159,89 @@
 .wordbook-to-top__button:hover {
   transform: translateY(-2px);
 }
+
+/* ヘッダー内のアイコン操作。行を増やさない。 */
+.session-header__icon-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-olive-border);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  cursor: pointer;
+}
+
+.session-header__icon-btn:hover {
+  background-color: var(--color-lime-soft);
+}
+
+/* ===== 単語帳モードの文字サイズ ===== */
+.wordbook-zoom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  white-space: nowrap;
+}
+
+.wordbook-zoom input[type="range"] {
+  width: 96px;
+  accent-color: var(--color-brand-lime);
+}
+
+.wordbook-zoom__value {
+  min-width: 3.2em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 倍率はカード内の文字にだけ効かせる。レイアウトは崩さない。 */
+.wordbook-word {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: calc(var(--font-size-22) * var(--wordbook-zoom, 1));
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  line-height: 1.25;
+  margin-bottom: var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.wordbook-pronunciation {
+  font-size: calc(var(--font-size-14) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+  font-style: italic;
+}
+
+.wordbook-meaning {
+  font-size: calc(var(--font-size-16) * var(--wordbook-zoom, 1));
+  font-weight: 600;
+  color: var(--color-ink-olive);
+  line-height: 1.4;
+  margin-bottom: var(--space-8);
+  overflow-wrap: anywhere;
+}
+
+.wordbook-example__en {
+  font-size: calc(var(--font-size-14) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+  font-style: italic;
+  line-height: 1.4;
+  margin-bottom: var(--space-4);
+}
+
+.wordbook-example__ja {
+  font-size: calc(var(--font-size-12) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+  line-height: 1.4;
+}

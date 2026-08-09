@@ -249,7 +249,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         speak(japaneseText, 'ja-JP'); // 日本語音声で読み上げ
       }
     }
-  }, [isFlipped, currentIndex, sessionWords]);
+  }, [isFlipped, currentIndex, sessionWords, viewMode]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex === 0) return;
@@ -964,7 +964,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                     color: '#6b7280',
                     fontStyle: 'italic'
                   }}>
-                    [{word.pronunciation || ''}]
+                    {word.pronunciation ? `[${word.pronunciation}]` : ''}
                   </div>
                   <div style={{
                     fontSize: '0.75rem',
@@ -1074,13 +1074,13 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                         }}>
                           {word.example}
                         </div>
-                        {word.exampleTranslation && (
+                        {word.exampleJa && (
                           <div style={{
                             fontSize: '0.875rem',
                             color: '#6b7280',
                             lineHeight: '1.4'
                           }}>
-                            {word.exampleTranslation}
+                            {word.exampleJa}
                           </div>
                         )}
                       </div>

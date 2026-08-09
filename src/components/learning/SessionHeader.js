@@ -8,7 +8,7 @@ import './SessionHeader.css';
  * 戻る・セッション名・現在数の3要素に絞る。
  * 進捗は progressbar として読み上げ値も持たせる。
  */
-export default function SessionHeader({ title, current, total, onBack, backLabel = '戻る' }) {
+export default function SessionHeader({ title, current, total, onBack, backLabel = '戻る', actions = null }) {
   const safeTotal = total > 0 ? total : 0;
   const percent = safeTotal > 0 ? Math.min(100, (current / safeTotal) * 100) : 0;
 
@@ -24,6 +24,8 @@ export default function SessionHeader({ title, current, total, onBack, backLabel
         <span className="session-header__count">
           {safeTotal > 0 ? `${current} / ${safeTotal}` : ''}
         </span>
+        {/* 補助操作は行を増やさずヘッダー内に収める */}
+        {actions}
       </div>
 
       {safeTotal > 0 && (
