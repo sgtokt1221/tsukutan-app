@@ -802,18 +802,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       </div>
 
       {/* 単語帳コンテンツ */}
-      <div style={{
-        flex: 1,
-        padding: '20px',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        width: '100%',
-        minHeight: 'calc(100vh - 200px)'
-      }}>
-        <div style={{
-          display: 'grid',
-          gap: '16px'
-        }}>
+      <div className="wordbook-list">
+        <div className="wordbook-list__grid">
           {shuffledWords.slice(wordbookProgress).map((word, index) => {
             const actualIndex = wordbookProgress + index;
             return (
@@ -826,32 +816,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                overflow: 'hidden',
-                border: '1px solid #e5e7eb',
-                position: 'relative',
-                cursor: 'grab',
-                transition: 'transform 0.1s ease-out, background-color 0.2s ease-out',
-                touchAction: 'none' // ブラウザのデフォルトタッチ動作を無効化
-              }}
+              className="wordbook-card"
             >
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  minHeight: window.innerWidth <= 768 ? '80px' : '120px' // スマホでは高さを小さく
-                }}>
+                <div className="wordbook-card__grid">
                 {/* 左側：英単語 */}
-                <div style={{
-                  padding: window.innerWidth <= 768 ? '12px' : '24px', // スマホではパディングを小さく
-                  borderRight: '1px solid #e5e7eb',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  backgroundColor: '#fafafa'
-                }}>
+                <div className="wordbook-card__side wordbook-card__left">
                   <button
                     type="button"
                     className="wordbook-word"
@@ -865,25 +834,15 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                       [{word.pronunciation || getPronunciation(word.word)}]
                     </div>
                   )}
-                  <div style={{
-                    fontSize: '0.75rem',
-                    color: '#9ca3af',
-                    marginTop: '4px'
-                  }}>
+                  <div className="wordbook-index">
                     {index + 1} / {shuffledWords.length}
                   </div>
                 </div>
 
                 {/* 右側：和訳・例文（赤シート機能付き + 復習モード長押し機能） */}
-                <div 
+                <div
+                  className="wordbook-card__side wordbook-card__right"
                   style={{
-                    padding: window.innerWidth <= 768 ? '12px' : '24px', // スマホではパディングを小さく
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    userSelect: 'none',
                     backgroundColor: isReviewMode && longPressCards.has(actualIndex) ? 'rgba(245, 158, 11, 0.1)' : 'transparent'
                   }}
                   onMouseDown={() => {
