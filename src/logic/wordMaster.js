@@ -18,11 +18,27 @@ const fetchJson = (path) => {
   if (cache.has(path)) return cache.get(path);
 
   const promise = fetch(path)
-    .then((response) => {
+    .then(async (response) => {
       if (!response.ok) {
         throw new Error(`単語データを読み込めませんでした (${path}: HTTP ${response.status})`);
       }
-      return response.json();
+
+      // SPA の rewrite があると、ファイルが無くても index.html が 200 で返る。
+      // response.ok だけ見ていると JSON.parse で意味の分からない例外になるので、
+      // ここで気づけるようにしておく。
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('json')) {
+        throw new Error(
+          `${path} がJSONではありません（${contentType || '不明'}）。`
+          + ' 配信設定を確認してください。開発サーバーを起動し直すと直ることがあります。'
+        );
+      }
+
+      try {
+        return await response.json();
+      } catch (error) {
+        throw new Error(`${path} を解釈できませんでした: ${error.message}`);
+      }
     })
     .catch((error) => {
       // 失敗した Promise を残すと、再試行しても同じエラーを返してしまう
