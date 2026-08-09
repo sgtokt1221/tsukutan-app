@@ -21,7 +21,7 @@ import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKe
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
-import { loadWordMaster } from './logic/wordMaster';
+import { loadWordMaster, loadManifest } from './logic/wordMaster';
 import logger from './logic/logger';
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
@@ -113,7 +113,7 @@ const getEikenWordCount = (textbookId, wordsData = []) => {
 };
 
 // 各教材の単語数を計算する関数
-const getTextbookWordCount = (textbookId, wordsData = []) => {
+const getTextbookWordCount = (textbookId, wordsData = [], textbookCounts = {}) => {
   logger.debug('📊 単語数計算開始:', { textbookId });
   
   // 英検教材の場合は実際の処理ロジックを再現
@@ -125,11 +125,10 @@ const getTextbookWordCount = (textbookId, wordsData = []) => {
   
   switch (textbookId) {
     case 'osaka-koukou-nyuushi':
-      // 大阪府公立入試英単語：tsukutan-app/words.jsonから取得（固定値）
-      // 実際の処理ではfetchで取得しているが、表示用なので固定値を使用
-      const osakaCount = 1969; // tsukutan-app/words.jsonの実際の単語数
-      logger.debug('📚 大阪府公立入試英単語数:', osakaCount);
-      return osakaCount;
+      // 固定値 1969 が書かれていたが、Firestore の収録分をマスターへ
+      // 取り込んだあとは 3,193 語になり、表示だけ古いままだった。
+      // 教材ごとの件数は manifest から取る。
+      return textbookCounts[textbookId] ?? 0;
     
     case 'highschool-english':
       // 高校英語：wordsData.jsonからレベル5-7の単語をカウント
@@ -557,6 +556,7 @@ export default function StudentDashboard() {
   const [storyError, setStoryError] = useState(null);
   const [masterWords, setMasterWords] = useState([]);
   const [wordDataError, setWordDataError] = useState(null);
+  const [textbookCounts, setTextbookCounts] = useState({});
   
   // ▼▼▼ 親レベル選択用のState ▼▼▼
   const [selectedParentLevel, setSelectedParentLevel] = useState(null);
@@ -585,6 +585,21 @@ export default function StudentDashboard() {
   useEffect(() => {
     loadMasterWords().catch(() => {});
   }, [loadMasterWords]);
+
+  // 教材ごとの収録語数は manifest を正とする。画面に数値を書かない。
+  useEffect(() => {
+    let cancelled = false;
+    loadManifest()
+      .then((manifest) => {
+        if (cancelled) return;
+        const counts = Object.fromEntries(
+          Object.entries(manifest.textbooks || {}).map(([id, info]) => [id, info.count])
+        );
+        setTextbookCounts(counts);
+      })
+      .catch((error) => logger.error('manifest の読み込みに失敗しました:', error));
+    return () => { cancelled = true; };
+  }, []);
 
   // 復習単語をハイライトする。生成物のHTMLを実行しないよう、
   // 区間に分けて React の <mark> として組み立てる（計画書12.4）。
@@ -2593,18 +2608,13 @@ export default function StudentDashboard() {
                   <p className="tile-caption">リラックスしながら、気になる教材を選んで学べます。</p>
                 </div>
                 {selectionMode === 'filter' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ 
-                      fontSize: '0.9rem', 
-                      color: 'var(--primary-color)', 
-                      fontWeight: '600',
-                      backgroundColor: 'var(--primary-light)',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '0.5rem'
-                    }}>
+                  /* 選択中の教材と戻る導線。以前は横並び固定で、
+                     幅が足りないと文字が1字ずつ折り返されていた（計画書12.4）。 */
+                  <div className="textbook-context">
+                    <span className="textbook-context__current">
                       選択中: {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
                     </span>
-                    <button className="ghost-button" onClick={handleBackToMainMenu}>
+                    <button type="button" className="ghost-button textbook-context__back" onClick={handleBackToMainMenu}>
                       教材選択に戻る
                     </button>
                   </div>
@@ -2621,7 +2631,7 @@ export default function StudentDashboard() {
               );
               const priority = recommendationType ? recommendationType.priority : 'medium';
               
-              const wordCount = getTextbookWordCount(id, masterWords);
+              const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
               
               return (
                 <button key={id} className="tile-button" onClick={() => {

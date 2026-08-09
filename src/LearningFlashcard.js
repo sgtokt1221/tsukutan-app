@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AnswerControls from './components/learning/AnswerControls';
+import SessionHeader from './components/learning/SessionHeader';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup } from 'react-icons/fa';
@@ -751,95 +752,28 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // リアル単語帳モードのレンダリング
   const renderWordbookMode = () => (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      backgroundColor: '#f8fafc',
-      overflow: 'auto'
-    }}>
+    <div className="wordbook-shell">
       {/* ページトップ用のアンカー */}
-      <div id="page-top" style={{ position: 'absolute', top: 0, left: 0, width: '1px', height: '1px' }}></div>
-      {/* ヘッダー */}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '16px 20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-      }}>
-        <div>
-          <h2 style={{
-            margin: 0,
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: '#1f2937'
-          }}>
-            リアル単語帳モード ({shuffledWords.length}語)
-          </h2>
-          <p style={{
-            margin: '4px 0 0 0',
-            fontSize: '0.875rem',
-            color: '#6b7280'
-          }}>
-            {isReviewMode ? 
-              '右側を長押し → 上スワイプで復習完了' : 
-              '右側を長押しで答えを表示 | 右スワイプ=正解 / 左スワイプ=不正解'
-            }
+      <div id="page-top" className="wordbook-anchor" />
+
+      {/* フラッシュカードと同じ骨格にする（計画書7.3 / 12.5）。
+          以前はここだけ独自のヘッダー・独自の色・独自のボタンだった。 */}
+      <div className="wordbook-header">
+        <SessionHeader
+          title={`単語帳モード（${shuffledWords.length}語）`}
+          current={wordbookProgress}
+          total={shuffledWords.length}
+          onBack={handleBackButtonClick}
+          backLabel="終了"
+        />
+        <div className="session-header session-header--actions">
+          <p className="wordbook-hint">
+            {isReviewMode
+              ? '右側を長押し → 上スワイプで復習完了'
+              : '右側を長押しで答えを表示。右スワイプ=わかった / 左スワイプ=もう一度'}
           </p>
-          <div style={{
-            margin: '8px 0 0 0',
-            fontSize: '0.75rem',
-            color: '#10b981',
-            fontWeight: '600'
-          }}>
-            進捗: {wordbookProgress} / {shuffledWords.length} 語
-            {wordbookProgress > 0 && (
-              <span style={{ marginLeft: '8px' }}>
-                ({Math.round((wordbookProgress / shuffledWords.length) * 100)}%)
-              </span>
-            )}
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
-            onClick={() => setViewMode('flashcard')}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <FaLayerGroup /> フラッシュカード
-          </button>
-          <button
-            onClick={handleBackButtonClick}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#dc2626',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <FaArrowLeft /> 戻る
+          <button type="button" className="secondary-action" onClick={() => setViewMode('flashcard')}>
+            <FaLayerGroup aria-hidden="true" /> フラッシュカード
           </button>
         </div>
       </div>
@@ -943,18 +877,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                     }
                   }}
                   onMouseUp={() => {
-                    if (isReviewMode) {
-                      handleLongPressEnd(actualIndex);
-                    } else {
-                      handleRevealEnd(actualIndex);
-                    }
+                    // 通常モードはボタンで開閉するので、離しただけでは閉じない
+                    if (isReviewMode) handleLongPressEnd(actualIndex);
                   }}
                   onMouseLeave={() => {
-                    if (isReviewMode) {
-                      handleLongPressEnd(actualIndex);
-                    } else {
-                      handleRevealEnd(actualIndex);
-                    }
+                    if (isReviewMode) handleLongPressEnd(actualIndex);
                   }}
                   onTouchStart={() => {
                     if (isReviewMode) {
@@ -964,38 +891,29 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                     }
                   }}
                   onTouchEnd={() => {
-                    if (isReviewMode) {
-                      handleLongPressEnd(actualIndex);
-                    } else {
-                      handleRevealEnd(actualIndex);
-                    }
+                    if (isReviewMode) handleLongPressEnd(actualIndex);
                   }}
                 >
-                  {/* 赤シートオーバーレイ（通常モード）または復習モード指示 */}
+                  {/* 赤シート。長押しを必須にしない（計画書7.5）。
+                      ボタンにして、クリックとキーボードでも開けるようにする。 */}
                   {!isReviewMode && !revealedCards.has(actualIndex) && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: 'rgba(220, 38, 38, 0.8)', // 赤シート色
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '0 12px 12px 0',
-                      zIndex: 1
-                    }}>
-                      <div style={{
-                        color: 'white',
-                        fontSize: '1rem',
-                        fontWeight: '500',
-                        textAlign: 'center',
-                        padding: '8px'
-                      }}>
-                        長押しで答えを表示
-                      </div>
-                    </div>
+                    <button
+                      type="button"
+                      className="wordbook-veil"
+                      onClick={(e) => { e.stopPropagation(); handleRevealStart(actualIndex); }}
+                      aria-label={`${word.word} の答えを見る`}
+                    >
+                      答えを見る
+                    </button>
+                  )}
+                  {!isReviewMode && revealedCards.has(actualIndex) && (
+                    <button
+                      type="button"
+                      className="wordbook-veil-hide"
+                      onClick={(e) => { e.stopPropagation(); handleRevealEnd(actualIndex); }}
+                    >
+                      隠す
+                    </button>
                   )}
                   
                   {/* 復習モード用オーバーレイ */}
@@ -1151,47 +1069,21 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-      {/* モード切り替えボタン */}
-      <div style={{
-        position: 'fixed',
-        top: '120px',
-        right: '20px',
-        zIndex: 99999
-      }}>
-        <button
-          onClick={() => setViewMode('wordbook')}
-          style={{
-            padding: '10px 18px',
-            backgroundColor: '#f59e0b',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-            transition: 'all 0.2s ease',
-            fontWeight: '600'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#d97706';
-            e.target.style.transform = 'translateY(-2px)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = '#f59e0b';
-            e.target.style.transform = 'translateY(0px)';
-          }}
-        >
-          <FaBook /> 単語帳モード
+      {/* 戻る・セッション名・現在数・進捗をヘッダーにまとめる（計画書7.3 / 7.7）。
+          単語帳モードの切替は画面に浮かせず、ヘッダー内に収める（計画書12.5）。 */}
+      <SessionHeader
+        title={isReviewMode ? '復習単語' : '新規学習'}
+        current={currentIndex + 1}
+        total={shuffledWords.length}
+        onBack={() => onBack(incorrectWords)}
+        backLabel="終了"
+      />
+      <div className="session-header session-header--actions">
+        <button type="button" className="secondary-action" onClick={() => setViewMode('wordbook')}>
+          <FaBook aria-hidden="true" /> 単語帳モード
         </button>
       </div>
 
-      <div className="test-header">
-        <h3>{isReviewMode ? '復習単語' : '新規学習'}</h3>
-      </div>
-      
       <div id="flashcard-container">
         <motion.div
           key={currentIndex}
@@ -1233,41 +1125,6 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         onIncorrect={handleIncorrect}
         hint="スワイプでも回答できます（右: わかった / 左: もう一度）"
       />
-
-      {/* プログレスバー */}
-      <div style={{ 
-        margin: '20px auto', 
-        maxWidth: '90vw',
-        padding: '0 20px'
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: '10px'
-        }}>
-          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-            {currentIndex + 1} / {shuffledWords.length}
-          </span>
-          <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-            新規学習
-          </span>
-        </div>
-        <div style={{
-          width: '100%',
-          height: '6px',
-          backgroundColor: '#e5e7eb',
-          borderRadius: '3px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${((currentIndex + 1) / shuffledWords.length) * 100}%`,
-            height: '100%',
-            backgroundColor: '#3b82f6',
-            transition: 'width 0.3s ease'
-          }} />
-        </div>
-      </div>
 
       {/* ナビゲーションボタン */}
       <div style={{ 

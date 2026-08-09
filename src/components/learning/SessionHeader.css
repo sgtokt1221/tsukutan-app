@@ -46,3 +46,88 @@
   background-color: var(--color-brand-lime);
   transition: width var(--motion-standard) var(--ease-standard);
 }
+
+/* ヘッダー直下に置く補助操作（単語帳モードなど） */
+.session-header--actions {
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-top: 0;
+}
+
+/* ===== 単語帳モード ===== */
+/* フラッシュカードと同じ地の色・同じヘッダー部品を使う。 */
+.wordbook-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-canvas-lime);
+  overflow: auto;
+}
+
+.wordbook-anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.wordbook-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-surface);
+  border-bottom: var(--border-subtle);
+}
+
+.wordbook-hint {
+  flex: 1;
+  margin: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+  line-height: var(--line-normal);
+}
+
+.session-header--actions {
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* 単語帳モードの赤シート。長押しではなくボタンで開閉する。 */
+.wordbook-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: none;
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  background-color: rgba(220, 38, 38, 0.85);
+  color: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wordbook-veil:hover {
+  background-color: rgba(220, 38, 38, 0.92);
+}
+
+.wordbook-veil-hide {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+  min-height: auto;
+  padding: var(--space-2) var(--space-8);
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-olive-muted);
+  font-size: var(--font-size-12);
+  cursor: pointer;
+}
