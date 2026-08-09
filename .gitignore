@@ -47,3 +47,6 @@ ui-debug.log*
 
 
 .gstack/
+
+# 配信しない作業用ファイル（教室資料など）
+/local

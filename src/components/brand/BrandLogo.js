@@ -6,8 +6,9 @@ import './BrandLogo.css';
  *
  * 画像パスをここ1箇所に集める。画面ごとに <img> を直接置かない。
  *
- * 原本 public/tsukutan-logo-lockup-v1.png（2172×724, 3:1, 872KB）は
- * v1の原本として保持し、表示には public/brand/ の派生を使う。
+ * 原本 assets-source/tsukutan-logo-lockup-v1.png（2172×724, 3:1, 872KB）は
+ * v1の原本として保持する。public/ に置くと配信対象になってしまうため
+ * リポジトリ内の別の場所へ移した。表示には public/brand/ の派生を使う。
  *
  * 背景について（計画書4.5）:
  *   PNGには淡い黄緑の背景が焼き込まれているので、ロゴの周囲も
