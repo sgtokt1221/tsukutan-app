@@ -584,9 +584,9 @@ export default function StudentDashboard() {
   // 単語マスターは初期バンドルに含めず、画面が開いたときに取りに行く（計画書13.5）。
   // 日次プランは Firestore から作るのでマスターが無くても出せる。
   // ここで画面全体を止めると、単語データだけの問題で今日の学習まで開けなくなる。
-  const loadMasterWords = useCallback(() => {
+  const loadMasterWords = useCallback(({ force = false } = {}) => {
     setWordDataError(null);
-    return loadWordMaster()
+    return loadWordMaster({ force })
       .then((words) => {
         setMasterWords(words);
         return words;
@@ -1869,7 +1869,7 @@ export default function StudentDashboard() {
                 <button
                   type="button"
                   className="primary-action"
-                  onClick={() => loadMasterWords().catch(() => {})}
+                  onClick={() => loadMasterWords({ force: true }).catch(() => {})}
                 >
                   単語データを読み込み直す
                 </button>

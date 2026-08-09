@@ -13,8 +13,17 @@ const BASE_PATH = '/data';
 
 // URL ごとに Promise を覚えておく。同時に何度呼ばれても取得は1回。
 const cache = new Map();
+// 失敗も覚えておく。覚えないと、呼び出し箇所の数だけ同じ取得を繰り返してしまう。
+const failures = new Map();
 
-const fetchJson = (path) => {
+const fetchJson = (path, { force = false } = {}) => {
+  if (force) {
+    cache.delete(path);
+    failures.delete(path);
+  }
+
+  // 一度失敗したら、明示的にやり直すまで即座に同じエラーを返す
+  if (failures.has(path)) return Promise.reject(failures.get(path));
   if (cache.has(path)) return cache.get(path);
 
   const promise = fetch(path)
@@ -41,8 +50,10 @@ const fetchJson = (path) => {
       }
     })
     .catch((error) => {
-      // 失敗した Promise を残すと、再試行しても同じエラーを返してしまう
+      // 呼び出し箇所ごとに取得し直さないよう、失敗を記録して即座に返せるようにする。
+      // やり直すときは reload 系（force）を通す。
       cache.delete(path);
+      failures.set(path, error);
       throw error;
     });
 
@@ -50,11 +61,11 @@ const fetchJson = (path) => {
   return promise;
 };
 
-/** 全単語（6,736件） */
-export const loadWordMaster = () => fetchJson(`${BASE_PATH}/words-master.json`);
+/** 全単語（6,736件）。force を付けると失敗の記録を捨ててもう一度取りに行く。 */
+export const loadWordMaster = (options) => fetchJson(`${BASE_PATH}/words-master.json`, options);
 
 /** 版・件数・SHA-256 */
-export const loadManifest = () => fetchJson(`${BASE_PATH}/manifest.json`);
+export const loadManifest = (options) => fetchJson(`${BASE_PATH}/manifest.json`, options);
 
 const TEXTBOOK_FILES = {
   'osaka-koukou-nyuushi': 'words-osaka.json',
@@ -62,13 +73,16 @@ const TEXTBOOK_FILES = {
 };
 
 /** 教材ごとの単語。未知の教材IDは空配列。 */
-export const loadTextbookWords = (textbookId) => {
+export const loadTextbookWords = (textbookId, options) => {
   const file = TEXTBOOK_FILES[textbookId];
   if (!file) return Promise.resolve([]);
-  return fetchJson(`${BASE_PATH}/${file}`);
+  return fetchJson(`${BASE_PATH}/${file}`, options);
 };
 
 export const KNOWN_TEXTBOOK_IDS = Object.keys(TEXTBOOK_FILES);
 
-/** テスト用。キャッシュを空にする。 */
-export const clearWordCache = () => cache.clear();
+/** キャッシュと失敗の記録を空にする。 */
+export const clearWordCache = () => {
+  cache.clear();
+  failures.clear();
+};

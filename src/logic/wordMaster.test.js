@@ -45,13 +45,23 @@ test('SPAのrewriteでindex.htmlが200で返っても気づける', async () => 
   await expect(loadWordMaster()).rejects.toThrow(/JSONではありません/);
 });
 
-test('失敗はキャッシュしないので再試行できる', async () => {
+test('一度失敗したら、呼び出すたびに取りに行かない', async () => {
+  // 失敗を覚えないと、呼び出し箇所の数だけ同じ取得を繰り返してしまう
+  global.fetch.mockResolvedValue({ ok: false, status: 500, headers: { get: () => null } });
+
+  await expect(loadWordMaster()).rejects.toThrow();
+  await expect(loadWordMaster()).rejects.toThrow();
+  await expect(loadWordMaster()).rejects.toThrow();
+  expect(global.fetch).toHaveBeenCalledTimes(1);
+});
+
+test('force を付ければやり直せる', async () => {
   global.fetch
     .mockResolvedValueOnce({ ok: false, status: 500, headers: { get: () => null } })
     .mockResolvedValueOnce(jsonResponse([{ id: 'w1' }]));
 
   await expect(loadWordMaster()).rejects.toThrow();
-  await expect(loadWordMaster()).resolves.toEqual([{ id: 'w1' }]);
+  await expect(loadWordMaster({ force: true })).resolves.toEqual([{ id: 'w1' }]);
   expect(global.fetch).toHaveBeenCalledTimes(2);
 });
 
