@@ -873,15 +873,15 @@ export default function StudentDashboard() {
         サンプル単語: wordsData.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
       });
       
-      const words = wordsData.map((word, index) => ({ 
-        id: `word_${index}`, 
-        sourceTextbook: 'wordsData.json', 
+      const words = wordsData.map((word) => ({ 
+        sourceTextbook: 'words-master', 
         ...word 
       }));
       combinedWords.push(...words);
-      console.log(`wordsData.jsonから取得した単語数:`, words.length);
+      console.log(`単語マスターから取得した単語数:`, words.length);
       
-      const uniqueWords = Array.from(new Map(combinedWords.map(w => [w.word, w])).values());
+      // 表面語をキーにすると close(動/形/副) のような同綴語が消える。永続IDで一意化する。
+      const uniqueWords = Array.from(new Map(combinedWords.map(w => [w.id, w])).values());
       setTestWords(uniqueWords);
       setViewMode('test');
     } catch (error) {
@@ -1011,14 +1011,13 @@ export default function StudentDashboard() {
           
           try {
             // tsukutan-app/words.jsonから直接読み込み
-            const osakaWordsData = await fetch('/words.json').then(res => res.json());
+            const osakaWordsData = await fetch('/data/words-osaka.json').then(res => res.json());
             console.log('📚 大阪府公立入試英単語データ読み込み成功:', {
               総単語数: osakaWordsData.length,
               サンプル単語: osakaWordsData.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
             });
             
-            const words = osakaWordsData.map((word, index) => ({ 
-              id: `osaka_word_${index}`, 
+            const words = osakaWordsData.map((word) => ({ 
               sourceTextbook: 'osaka-koukou-nyuushi', 
               ...word 
             }));
@@ -1050,8 +1049,7 @@ export default function StudentDashboard() {
             サンプル単語: highschoolWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
           });
           
-          const words = highschoolWords.map((word, index) => ({ 
-            id: `highschool_word_${index}`, 
+          const words = highschoolWords.map((word) => ({ 
             sourceTextbook: 'highschool-english', 
             ...word 
           }));
@@ -1093,8 +1091,7 @@ export default function StudentDashboard() {
               
               console.log(`wordsData.jsonから英検${levelPart}級以下の単語数:`, eikenWordsFromWordsData.length);
               
-              const wordsFromWordsData = eikenWordsFromWordsData.map((word, index) => ({ 
-                id: `eiken_wordsdata_${index}`, 
+              const wordsFromWordsData = eikenWordsFromWordsData.map((word) => ({ 
                 sourceTextbook: textbookId, 
                 ...word 
               }));
@@ -1103,7 +1100,7 @@ export default function StudentDashboard() {
             
             // 2. words.jsonから取得（levelフィールドで振り分け）
             try {
-              const osakaWordsData = await fetch('/words.json').then(res => res.json());
+              const osakaWordsData = await fetch('/data/words-osaka.json').then(res => res.json());
               
               // words.jsonのlevelを英検級にマッピング
               const levelToEikenMapping = {
@@ -1135,8 +1132,7 @@ export default function StudentDashboard() {
               
               console.log(`words.jsonから英検${levelPart}級以下の単語数:`, eikenWordsFromWords.length);
               
-              const wordsFromWords = eikenWordsFromWords.map((word, index) => ({ 
-                id: `eiken_words_${index}`, 
+              const wordsFromWords = eikenWordsFromWords.map((word) => ({ 
                 sourceTextbook: textbookId, 
                 ...word 
               }));
@@ -1157,17 +1153,10 @@ export default function StudentDashboard() {
           }
         }
 
-        // 単語の重複を除去（'word'プロパティを基準に）
-        // 複数ソースの場合は重複除去を実行
-        let uniqueWords;
-        if (textbookId === 'osaka-koukou-nyuushi' || textbookId === 'highschool-english') {
-          // 単一ソースの場合は重複除去をスキップ
-          uniqueWords = combinedWords;
-          console.log(`${textbookId}: 重複除去をスキップ、単語数:`, uniqueWords.length);
-        } else {
-          // 複数ソース（英検教材など）の場合は重複除去を実行
-          uniqueWords = Array.from(new Map(combinedWords.map(item => [item.word, item])).values());
-          console.log(`${textbookId}: 重複除去実行、重複除去前: ${combinedWords.length}, 重複除去後: ${uniqueWords.length}`);
+        // 永続IDで重複を除去する。表面語をキーにすると意味違いの同綴語が消える。
+        const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.id, item])).values());
+        if (uniqueWords.length !== combinedWords.length) {
+          console.log(`${textbookId}: 重複除去 ${combinedWords.length} → ${uniqueWords.length}`);
         }
 
         let filteredWords = uniqueWords;

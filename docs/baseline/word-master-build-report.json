@@ -1,0 +1,4971 @@
+{
+  "inputs": {
+    "words.json": 7205,
+    "public/words.json": 1969,
+    "highschool.json": 5307
+  },
+  "mergedExactDuplicates": 518,
+  "duplicatesWithDifferentExamples": 418,
+  "droppedExamples": [
+    {
+      "key": "component|名|構成要素；部品|5",
+      "kept": {
+        "example": "The computer is made of many different components.",
+        "exampleJa": "そのコンピュータは多くの異なる部品で構成されています。"
+      },
+      "dropped": {
+        "example": "A computer is made of many different components.",
+        "exampleJa": "コンピュータは多くの異なる部品で構成されています。"
+      }
+    },
+    {
+      "key": "reputation|名|評判；名声|5",
+      "kept": {
+        "example": "The restaurant has a reputation for excellent food.",
+        "exampleJa": "そのレストランは素晴らしい料理で評判です。"
+      },
+      "dropped": {
+        "example": "The restaurant has a reputation for excellent food.",
+        "exampleJa": "そのレストランは料理が素晴らしいと評判です。"
+      }
+    },
+    {
+      "key": "verbal|形|言葉の；口頭での|5",
+      "kept": {
+        "example": "He has excellent verbal communication skills.",
+        "exampleJa": "彼は優れた口頭でのコミュニケーション能力を持っています。"
+      },
+      "dropped": {
+        "example": "He gave a verbal agreement to the plan.",
+        "exampleJa": "彼はその計画に口頭で同意した。"
+      }
+    },
+    {
+      "key": "internal|形|内部の；国内の|5",
+      "kept": {
+        "example": "The company is conducting an internal review of its policies.",
+        "exampleJa": "その会社は方針の内部見直しを行っています。"
+      },
+      "dropped": {
+        "example": "The company is conducting an internal investigation.",
+        "exampleJa": "その会社は内部調査を行っています。"
+      }
+    },
+    {
+      "key": "solid|形|しっかりした；硬い；固体の|5",
+      "kept": {
+        "example": "The house is built on a solid foundation.",
+        "exampleJa": "その家はしっかりした基礎の上に建てられています。"
+      },
+      "dropped": {
+        "example": "The table is made of solid oak.",
+        "exampleJa": "そのテーブルは頑丈なオーク材でできています。"
+      }
+    },
+    {
+      "key": "remote|形|遠く離れた；かけ離れた|5",
+      "kept": {
+        "example": "He lives in a remote village in the mountains.",
+        "exampleJa": "彼は山奥の離れた村に住んでいます。"
+      },
+      "dropped": {
+        "example": "They live in a remote village in the mountains.",
+        "exampleJa": "彼らは山奥の辺鄙な村に住んでいます。"
+      }
+    },
+    {
+      "key": "principal|形|主要な；資本金の|5",
+      "kept": {
+        "example": "The principal reason for our success is teamwork.",
+        "exampleJa": "私たちの成功の主な理由はチームワークです。"
+      },
+      "dropped": {
+        "example": "The principal reason for his success was his hard work.",
+        "exampleJa": "彼の成功の主な理由は、彼の努力でした。"
+      }
+    },
+    {
+      "key": "sophisticated|形|高性能の，精巧な；洗練された|5",
+      "kept": {
+        "example": "This is a very sophisticated piece of technology.",
+        "exampleJa": "これは非常に高性能な技術です。"
+      },
+      "dropped": {
+        "example": "The new smartphone has a very sophisticated design.",
+        "exampleJa": "新しいスマートフォンは非常に洗練されたデザインをしています。"
+      }
+    },
+    {
+      "key": "equivalent|形|等しい，相当する|5",
+      "kept": {
+        "example": "This qualification is equivalent to a university degree.",
+        "exampleJa": "この資格は大学の学位に相当します。"
+      },
+      "dropped": {
+        "example": "One year of study is equivalent to 30 credits.",
+        "exampleJa": "1年間の学習は30単位に相当します。"
+      }
+    },
+    {
+      "key": "rational|形|理性的な；合理的な|5",
+      "kept": {
+        "example": "Let's try to have a rational discussion about this.",
+        "exampleJa": "これについて理性的な議論を試みましょう。"
+      },
+      "dropped": {
+        "example": "We need to make a rational decision based on the facts.",
+        "exampleJa": "私たちは事実に基づいて合理的な決定を下す必要があります。"
+      }
+    },
+    {
+      "key": "relevant|形|関係がある；適切な|5",
+      "kept": {
+        "example": "Please provide only information that is relevant to the case.",
+        "exampleJa": "その事件に関連する情報のみを提供してください。"
+      },
+      "dropped": {
+        "example": "Please only provide information that is relevant to the case.",
+        "exampleJa": "この件に関連する情報のみを提供してください。"
+      }
+    },
+    {
+      "key": "absolute|形|絶対的な|5",
+      "kept": {
+        "example": "I have absolute trust in her ability.",
+        "exampleJa": "私は彼女の能力に絶対的な信頼を置いています。"
+      },
+      "dropped": {
+        "example": "I have absolute trust in his judgment.",
+        "exampleJa": "私は彼の判断に絶対的な信頼を置いています。"
+      }
+    },
+    {
+      "key": "frequent|形|頻繁な|5",
+      "kept": {
+        "example": "He is a frequent visitor to this coffee shop.",
+        "exampleJa": "彼はこの喫茶店の常連客です。"
+      },
+      "dropped": {
+        "example": "He is a frequent visitor to this coffee shop.",
+        "exampleJa": "彼はこの喫茶店の常連です。"
+      }
+    },
+    {
+      "key": "permanent|形|永続的な|5",
+      "kept": {
+        "example": "She is looking for a permanent position with the company.",
+        "exampleJa": "彼女はその会社での正社員の職を探しています。"
+      },
+      "dropped": {
+        "example": "She is looking for a permanent position at the company.",
+        "exampleJa": "彼女はその会社での正社員の職を探しています。"
+      }
+    },
+    {
+      "key": "intense|形|強烈な；熱烈な|5",
+      "kept": {
+        "example": "The competition for the prize was very intense.",
+        "exampleJa": "その賞をめぐる競争は非常に激しかった。"
+      },
+      "dropped": {
+        "example": "The heat was intense during the summer.",
+        "exampleJa": "夏の間、暑さは強烈でした。"
+      }
+    },
+    {
+      "key": "meaningful|形|意味のある|5",
+      "kept": {
+        "example": "We had a very meaningful conversation.",
+        "exampleJa": "私たちは非常に意味のある会話をした。"
+      },
+      "dropped": {
+        "example": "They had a meaningful conversation about their future.",
+        "exampleJa": "彼らは将来について有意義な会話をした。"
+      }
+    },
+    {
+      "key": "evil|形|邪悪な；有害な|5",
+      "kept": {
+        "example": "The story is about a fight between good and evil.",
+        "exampleJa": "その物語は善と悪の戦いについてです。"
+      },
+      "dropped": {
+        "example": "The story is a classic battle between good and evil.",
+        "exampleJa": "その物語は善と悪の古典的な戦いです。"
+      }
+    },
+    {
+      "key": "extinct|形|絶滅した；廃止された|5",
+      "kept": {
+        "example": "Dinosaurs became extinct millions of years ago.",
+        "exampleJa": "恐竜は何百万年も前に絶滅した。"
+      },
+      "dropped": {
+        "example": "Dinosaurs have been extinct for millions of years.",
+        "exampleJa": "恐竜は何百万年も前に絶滅しました。"
+      }
+    },
+    {
+      "key": "random|形|無作為の；手当たり次第の|5",
+      "kept": {
+        "example": "The winners were chosen by a random draw.",
+        "exampleJa": "当選者は無作為の抽選で選ばれた。"
+      },
+      "dropped": {
+        "example": "The winners will be chosen by a random draw.",
+        "exampleJa": "当選者は無作為抽選によって選ばれます。"
+      }
+    },
+    {
+      "key": "raw|形|生の；未加工の|5",
+      "kept": {
+        "example": "I prefer to eat vegetables raw.",
+        "exampleJa": "私は野菜を生で食べるのが好きです。"
+      },
+      "dropped": {
+        "example": "Some people enjoy eating raw fish, like sushi.",
+        "exampleJa": "寿司のように、生魚を食べるのを楽しむ人もいます。"
+      }
+    },
+    {
+      "key": "rude|形|無礼な；粗野な|5",
+      "kept": {
+        "example": "It is rude to interrupt someone while they are talking.",
+        "exampleJa": "人が話しているときに割り込むのは失礼です。"
+      },
+      "dropped": {
+        "example": "It is rude to interrupt someone while they are speaking.",
+        "exampleJa": "人が話しているのを遮るのは失礼です。"
+      }
+    },
+    {
+      "key": "mere|形|単なる，ほんの|5",
+      "kept": {
+        "example": "It was a mere scratch, nothing serious.",
+        "exampleJa": "それはほんのかすり傷で、大したことはありませんでした。"
+      },
+      "dropped": {
+        "example": "It was a mere scratch, nothing serious.",
+        "exampleJa": "それはほんの擦り傷で、深刻なものではありませんでした。"
+      }
+    },
+    {
+      "key": "forth|副|前へ，先へ；それ以降|5",
+      "kept": {
+        "example": "From that day forth, he never spoke of the incident again.",
+        "exampleJa": "その日以降、彼はその出来事について二度と話さなかった。"
+      },
+      "dropped": {
+        "example": "From that day forth, he never spoke of the incident again.",
+        "exampleJa": "その日以降、彼はその事件について二度と話さなかった。"
+      }
+    },
+    {
+      "key": "possess|動|を所有している；の心をとらえる|5",
+      "kept": {
+        "example": "She possesses a great talent for music.",
+        "exampleJa": "彼女は音楽の素晴らしい才能を持っています。"
+      },
+      "dropped": {
+        "example": "He possesses great musical talent.",
+        "exampleJa": "彼は素晴らしい音楽の才能を持っています。"
+      }
+    },
+    {
+      "key": "dominate|動|を支配する；（～より）優勢である|5",
+      "kept": {
+        "example": "The large company dominates the market.",
+        "exampleJa": "その大企業が市場を支配しています。"
+      },
+      "dropped": {
+        "example": "The large company dominates the market for that product.",
+        "exampleJa": "その大企業はその製品の市場を支配しています。"
+      }
+    },
+    {
+      "key": "guarantee|動|を保証する|5",
+      "kept": {
+        "example": "We guarantee that you will be satisfied with our product.",
+        "exampleJa": "私たちはあなたが私たちの製品に満足することを保証します。"
+      },
+      "dropped": {
+        "example": "We guarantee the quality of all our products.",
+        "exampleJa": "私たちはすべての製品の品質を保証します。"
+      }
+    },
+    {
+      "key": "melt|動|溶ける；なごむ；を溶かす|5",
+      "kept": {
+        "example": "The ice cream is melting in the sun.",
+        "exampleJa": "アイスクリームが太陽の下で溶けています。"
+      },
+      "dropped": {
+        "example": "The snow will melt when the sun comes out.",
+        "exampleJa": "太陽が出ると雪は溶けるでしょう。"
+      }
+    },
+    {
+      "key": "embarrass|動|に恥ずかしい思いをさせる|5",
+      "kept": {
+        "example": "His questions were designed to embarrass the speaker.",
+        "exampleJa": "彼の質問は講演者に恥をかかせるように意図されていた。"
+      },
+      "dropped": {
+        "example": "He embarrassed her by asking personal questions.",
+        "exampleJa": "彼は個人的な質問をして彼女に恥ずかしい思いをさせた。"
+      }
+    },
+    {
+      "key": "discourage|動|（人）にやる気をなくさせる；を落胆させる|5",
+      "kept": {
+        "example": "Don't let a small failure discourage you.",
+        "exampleJa": "小さな失敗で落胆しないでください。"
+      },
+      "dropped": {
+        "example": "Don't let one failure discourage you from trying again.",
+        "exampleJa": "一度の失敗で再挑戦するのを思いとどまってはいけません。"
+      }
+    },
+    {
+      "key": "detect|動|を感知する；を見つけ出す；に気づく|5",
+      "kept": {
+        "example": "The new system can detect even the smallest changes.",
+        "exampleJa": "新しいシステムはどんなに小さな変化でも感知することができます。"
+      },
+      "dropped": {
+        "example": "The security system can detect any movement in the building.",
+        "exampleJa": "そのセキュリティシステムは建物内のどんな動きも感知できます。"
+      }
+    },
+    {
+      "key": "urge|動|に（強く）促す；を強く主張する|5",
+      "kept": {
+        "example": "The doctor urged him to quit smoking.",
+        "exampleJa": "医者は彼に喫煙をやめるよう強く促した。"
+      },
+      "dropped": {
+        "example": "The doctor urged him to quit smoking.",
+        "exampleJa": "医者は彼に禁煙するよう強く促した。"
+      }
+    },
+    {
+      "key": "restrict|動|を制限する|5",
+      "kept": {
+        "example": "Access to this area is restricted to authorized personnel.",
+        "exampleJa": "このエリアへのアクセスは許可された人員に制限されています。"
+      },
+      "dropped": {
+        "example": "The new law will restrict the sale of sugary drinks.",
+        "exampleJa": "新しい法律は加糖飲料の販売を制限します。"
+      }
+    },
+    {
+      "key": "isolate|動|を孤立させる|5",
+      "kept": {
+        "example": "The small village is isolated from the rest of the world.",
+        "exampleJa": "その小さな村は世界の他の地域から孤立しています。"
+      },
+      "dropped": {
+        "example": "The village is isolated by the surrounding mountains.",
+        "exampleJa": "その村は周りの山々によって孤立しています。"
+      }
+    },
+    {
+      "key": "accompany|動|に同行する；に付随する|5",
+      "kept": {
+        "example": "Children under 12 must be accompanied by an adult.",
+        "exampleJa": "12歳未満の子供は、大人が同伴しなければなりません。"
+      },
+      "dropped": {
+        "example": "Children under 12 must be accompanied by an adult.",
+        "exampleJa": "12歳未満の子供は大人に同行されなければなりません。"
+      }
+    },
+    {
+      "key": "exhaust|動|を疲れ果てさせる；を使い尽くす|5",
+      "kept": {
+        "example": "The long journey had completely exhausted them.",
+        "exampleJa": "長い旅は彼らを完全に疲れ果てさせた。"
+      },
+      "dropped": {
+        "example": "The long journey completely exhausted them.",
+        "exampleJa": "その長い旅は彼らを完全に疲れ果てさせた。"
+      }
+    },
+    {
+      "key": "annoy|動|を悩ます；〔受身形で〕腹が立つ|5",
+      "kept": {
+        "example": "The constant noise from the construction site is starting to annoy me.",
+        "exampleJa": "建設現場からの絶え間ない騒音は、私をいらいらさせ始めています。"
+      },
+      "dropped": {
+        "example": "The constant noise from the construction site is starting to annoy me.",
+        "exampleJa": "工事現場からの絶え間ない騒音が私をいらいらさせ始めています。"
+      }
+    },
+    {
+      "key": "endanger|動|を危険にさらす|5",
+      "kept": {
+        "example": "Pollution can endanger many species of wildlife.",
+        "exampleJa": "汚染は多くの野生生物種を危険にさらす可能性があります。"
+      },
+      "dropped": {
+        "example": "Pollution can endanger the lives of many animals.",
+        "exampleJa": "汚染は多くの動物の命を危険にさらす可能性があります。"
+      }
+    },
+    {
+      "key": "acknowledge|動|（事実など）を認める；に謝意を表す|5",
+      "kept": {
+        "example": "He acknowledged that he had received the letter.",
+        "exampleJa": "彼はその手紙を受け取ったことを認めた。"
+      },
+      "dropped": {
+        "example": "He acknowledged that it was a difficult decision to make.",
+        "exampleJa": "彼はそれが下すのが難しい決断であったことを認めた。"
+      }
+    },
+    {
+      "key": "evaluate|動|を評価する；を査定する|5",
+      "kept": {
+        "example": "We need to evaluate the success of the project.",
+        "exampleJa": "私たちはプロジェクトの成功を評価する必要があります。"
+      },
+      "dropped": {
+        "example": "The company will evaluate the performance of all its employees.",
+        "exampleJa": "その会社は全従業員の業績を評価します。"
+      }
+    },
+    {
+      "key": "declare|動|を宣言する；を申告する|5",
+      "kept": {
+        "example": "The government declared a state of emergency.",
+        "exampleJa": "政府は非常事態を宣言した。"
+      },
+      "dropped": {
+        "example": "The country declared independence last year.",
+        "exampleJa": "その国は昨年、独立を宣言した。"
+      }
+    },
+    {
+      "key": "secure|動|を確保する；を守る|5",
+      "kept": {
+        "example": "It is important to secure your computer against viruses.",
+        "exampleJa": "コンピュータをウイルスから守ることは重要です。"
+      },
+      "dropped": {
+        "example": "It's important to secure your personal information online.",
+        "exampleJa": "オンラインで個人情報を保護することは重要です。"
+      }
+    },
+    {
+      "key": "attribute|動|（結果など）を（～に）帰する|5",
+      "kept": {
+        "example": "He attributed his success to hard work and dedication.",
+        "exampleJa": "彼は自分の成功を努力と献身のおかげだとした。"
+      },
+      "dropped": {
+        "example": "He attributed his success to hard work and determination.",
+        "exampleJa": "彼は自身の成功を努力と決意の賜物だとした。"
+      }
+    },
+    {
+      "key": "pretend|動|（の）ふりをする|5",
+      "kept": {
+        "example": "He pretended to be sick to avoid going to school.",
+        "exampleJa": "彼は学校に行かないために病気のふりをした。"
+      },
+      "dropped": {
+        "example": "The children pretended to be asleep when their mother came in.",
+        "exampleJa": "母親が入ってくると、子供たちは眠っているふりをした。"
+      }
+    },
+    {
+      "key": "bury|動|を埋める；を埋葬する|5",
+      "kept": {
+        "example": "The dog buried its bone in the garden.",
+        "exampleJa": "その犬は庭に骨を埋めた。"
+      },
+      "dropped": {
+        "example": "The pirates buried the treasure on a deserted island.",
+        "exampleJa": "海賊たちは無人島に宝物を埋めた。"
+      }
+    },
+    {
+      "key": "reverse|動|を逆転させる；を反対にする|5",
+      "kept": {
+        "example": "The team managed to reverse the score in the final minutes.",
+        "exampleJa": "そのチームは最後の数分でスコアを逆転させることに成功した。"
+      },
+      "dropped": {
+        "example": "You need to reverse the car into the parking space.",
+        "exampleJa": "あなたはその駐車スペースに車をバックさせる必要があります。"
+      }
+    },
+    {
+      "key": "resist|動|に抵抗する；を我慢する|5",
+      "kept": {
+        "example": "It's hard to resist the temptation of delicious food.",
+        "exampleJa": "おいしい食べ物の誘惑に抵抗するのは難しい。"
+      },
+      "dropped": {
+        "example": "The soldiers bravely resisted the attack.",
+        "exampleJa": "兵士たちは勇敢に攻撃に抵抗した。"
+      }
+    },
+    {
+      "key": "scare|動|をおびえさせる；を脅す|5",
+      "kept": {
+        "example": "The sudden noise of the thunder scared the children.",
+        "exampleJa": "突然の雷の音は子供たちを怖がらせた。"
+      },
+      "dropped": {
+        "example": "The sudden loud noise scared the dog.",
+        "exampleJa": "突然の大きな音がその犬を怖がらせた。"
+      }
+    },
+    {
+      "key": "imitate|動|をまねる；を模造する|5",
+      "kept": {
+        "example": "Young children often learn by imitating their parents.",
+        "exampleJa": "幼い子供たちはしばしば親をまねて学ぶ。"
+      },
+      "dropped": {
+        "example": "Some birds can imitate human speech.",
+        "exampleJa": "いくつかの鳥は人間の言葉をまねることができます。"
+      }
+    },
+    {
+      "key": "assist|動|（を）援助する；を手伝う|5",
+      "kept": {
+        "example": "A team of doctors will assist with the surgery.",
+        "exampleJa": "医師のチームが手術を援助します。"
+      },
+      "dropped": {
+        "example": "A team of nurses will assist the doctor during the surgery.",
+        "exampleJa": "看護師のチームが手術中に医師を援助します。"
+      }
+    },
+    {
+      "key": "resemble|動|に似ている|5",
+      "kept": {
+        "example": "She closely resembles her older sister.",
+        "exampleJa": "彼女は姉にとてもよく似ています。"
+      },
+      "dropped": {
+        "example": "He closely resembles his older brother.",
+        "exampleJa": "彼は兄にとてもよく似ています。"
+      }
+    },
+    {
+      "key": "retire|動|引退する，退職する|5",
+      "kept": {
+        "example": "He plans to retire from his job next year.",
+        "exampleJa": "彼は来年、仕事から引退する予定です。"
+      },
+      "dropped": {
+        "example": "He is planning to retire next year after 30 years of service.",
+        "exampleJa": "彼は30年間の勤務の後、来年退職する予定です。"
+      }
+    },
+    {
+      "key": "protest|動|（に）抗議する；を主張する|5",
+      "kept": {
+        "example": "The citizens protested against the new tax.",
+        "exampleJa": "市民は新しい税金に抗議した。"
+      },
+      "dropped": {
+        "example": "People gathered to protest against the new law.",
+        "exampleJa": "人々は新しい法律に抗議するために集まった。"
+      }
+    },
+    {
+      "key": "owe|動|に借りがある；のおかげである|5",
+      "kept": {
+        "example": "I owe you an apology for my mistake.",
+        "exampleJa": "私は自分の間違いについてあなたに謝罪しなければなりません。"
+      },
+      "dropped": {
+        "example": "I owe my success to my parents' support.",
+        "exampleJa": "私の成功は両親のサポートのおかげです。"
+      }
+    },
+    {
+      "key": "sustain|動|を持続させる；を支える|5",
+      "kept": {
+        "example": "We need to find a way to sustain economic growth.",
+        "exampleJa": "私たちは経済成長を持続させる方法を見つける必要があります。"
+      },
+      "dropped": {
+        "example": "We need to find ways to sustain economic growth.",
+        "exampleJa": "私たちは経済成長を持続させる方法を見つける必要があります。"
+      }
+    },
+    {
+      "key": "accomplish|動|を成し遂げる|5",
+      "kept": {
+        "example": "With teamwork, we can accomplish anything.",
+        "exampleJa": "チームワークがあれば、私たちは何でも成し遂げることができます。"
+      },
+      "dropped": {
+        "example": "She worked hard to accomplish her goals.",
+        "exampleJa": "彼女は目標を達成するために一生懸命働いた。"
+      }
+    },
+    {
+      "key": "wisdom|名|知恵；賢明さ；学識|5",
+      "kept": {
+        "example": "She is known for her wisdom and kindness.",
+        "exampleJa": "彼女はその知恵と優しさで知られています。"
+      },
+      "dropped": {
+        "example": "He is respected for his wisdom and experience.",
+        "exampleJa": "彼はその知恵と経験で尊敬されています。"
+      }
+    },
+    {
+      "key": "literacy|名|読み書きの能力；知識|5",
+      "kept": {
+        "example": "The government is working to improve literacy rates in the country.",
+        "exampleJa": "政府はその国の識字率を向上させるために取り組んでいます。"
+      },
+      "dropped": {
+        "example": "The program aims to improve adult literacy.",
+        "exampleJa": "そのプログラムは成人の識字率向上を目指しています。"
+      }
+    },
+    {
+      "key": "heritage|名|遺産|5",
+      "kept": {
+        "example": "This ancient castle is part of our national heritage.",
+        "exampleJa": "この古代の城は私たちの国の遺産の一部です。"
+      },
+      "dropped": {
+        "example": "This ancient temple is part of our cultural heritage.",
+        "exampleJa": "この古代の寺院は私たちの文化遺産の一部です。"
+      }
+    },
+    {
+      "key": "mission|名|使命；使節団；布教|5",
+      "kept": {
+        "example": "The team's mission was to explore the new planet.",
+        "exampleJa": "そのチームの使命は新しい惑星を探査することだった。"
+      },
+      "dropped": {
+        "example": "His mission in life is to help people in need.",
+        "exampleJa": "彼の人生における使命は、困っている人々を助けることです。"
+      }
+    },
+    {
+      "key": "license|名|免許（証）；許可|5",
+      "kept": {
+        "example": "Do you have a valid driver's license?",
+        "exampleJa": "有効な運転免許証を持っていますか？"
+      },
+      "dropped": {
+        "example": "You need a valid driver's license to rent a car.",
+        "exampleJa": "車を借りるには有効な運転免許証が必要です。"
+      }
+    },
+    {
+      "key": "elite|名|エリート|5",
+      "kept": {
+        "example": "He is a member of the country's political elite.",
+        "exampleJa": "彼はその国の政治エリートの一員です。"
+      },
+      "dropped": {
+        "example": "The country's political elite attended the conference.",
+        "exampleJa": "その国の政治エリートが会議に出席した。"
+      }
+    },
+    {
+      "key": "layer|名|層|5",
+      "kept": {
+        "example": "The cake has multiple layers of chocolate and cream.",
+        "exampleJa": "そのケーキはチョコレートとクリームの複数の層でできています。"
+      },
+      "dropped": {
+        "example": "The cake has a thick layer of chocolate frosting.",
+        "exampleJa": "そのケーキにはチョコレートフロスティングの厚い層があります。"
+      }
+    },
+    {
+      "key": "motor|名|モーター；原動力|5",
+      "kept": {
+        "example": "The boat is powered by a small electric motor.",
+        "exampleJa": "そのボートは小さな電動モーターで動いています。"
+      },
+      "dropped": {
+        "example": "The machine is powered by an electric motor.",
+        "exampleJa": "その機械は電気モーターで動いています。"
+      }
+    },
+    {
+      "key": "protein|名|たんぱく質|5",
+      "kept": {
+        "example": "Meat and beans are good sources of protein.",
+        "exampleJa": "肉と豆はたんぱく質の良い供給源です。"
+      },
+      "dropped": {
+        "example": "Beans and nuts are good sources of protein.",
+        "exampleJa": "豆やナッツは良質なたんぱく源です。"
+      }
+    },
+    {
+      "key": "profession|名|職業；専門職|5",
+      "kept": {
+        "example": "Teaching is a very rewarding profession.",
+        "exampleJa": "教職は非常にやりがいのある職業です。"
+      },
+      "dropped": {
+        "example": "He chose teaching as his profession.",
+        "exampleJa": "彼は教師を職業として選びました。"
+      }
+    },
+    {
+      "key": "editor|名|編集者；編集長|5",
+      "kept": {
+        "example": "She works as an editor for a famous fashion magazine.",
+        "exampleJa": "彼女は有名なファッション雑誌の編集者として働いています。"
+      },
+      "dropped": {
+        "example": "She works as a fashion editor for a popular magazine.",
+        "exampleJa": "彼女は人気雑誌のファッション編集者として働いています。"
+      }
+    },
+    {
+      "key": "agent|名|仲介者，代理人；薬剤|5",
+      "kept": {
+        "example": "He booked his flight through a travel agent.",
+        "exampleJa": "彼は旅行代理店を通じて飛行機を予約した。"
+      },
+      "dropped": {
+        "example": "I booked my flight through a travel agent.",
+        "exampleJa": "私は旅行代理店を通じてフライトを予約しました。"
+      }
+    },
+    {
+      "key": "globe|名|地球；世界；球|5",
+      "kept": {
+        "example": "She has traveled to all corners of the globe.",
+        "exampleJa": "彼女は地球の隅々まで旅をしたことがあります。"
+      },
+      "dropped": {
+        "example": "She has traveled to every corner of the globe.",
+        "exampleJa": "彼女は地球の隅々まで旅をしました。"
+      }
+    },
+    {
+      "key": "haven|名|避難所，保護区；港|5",
+      "kept": {
+        "example": "The park is a haven for birds and other wildlife.",
+        "exampleJa": "その公園は鳥や他の野生動物の保護区です。"
+      },
+      "dropped": {
+        "example": "The park is a haven for birds and other wildlife.",
+        "exampleJa": "その公園は鳥や他の野生生物にとっての保護区です。"
+      }
+    },
+    {
+      "key": "row|名|列；通り|5",
+      "kept": {
+        "example": "Our seats are in the front row of the theater.",
+        "exampleJa": "私たちの席は劇場の最前列です。"
+      },
+      "dropped": {
+        "example": "We sat in the front row of the theater.",
+        "exampleJa": "私たちは劇場の最前列に座った。"
+      }
+    },
+    {
+      "key": "sacrifice|名|犠牲；いけにえ|5",
+      "kept": {
+        "example": "He made a great sacrifice to help his family.",
+        "exampleJa": "彼は家族を助けるために大きな犠牲を払った。"
+      },
+      "dropped": {
+        "example": "He made many sacrifices to achieve his dream.",
+        "exampleJa": "彼は夢を達成するために多くの犠牲を払った。"
+      }
+    },
+    {
+      "key": "means|名|手段；資力，収入|5",
+      "kept": {
+        "example": "The internet is an important means of communication.",
+        "exampleJa": "インターネットは重要なコミュニケーション手段です。"
+      },
+      "dropped": {
+        "example": "Walking is a healthy means of transportation.",
+        "exampleJa": "ウォーキングは健康的な交通手段です。"
+      }
+    },
+    {
+      "key": "session|名|集まり；会期；議会|5",
+      "kept": {
+        "example": "We had a productive training session this morning.",
+        "exampleJa": "私たちは今朝、生産的な研修会を開きました。"
+      },
+      "dropped": {
+        "example": "The training session will last for three hours.",
+        "exampleJa": "そのトレーニングセッションは3時間続きます。"
+      }
+    },
+    {
+      "key": "league|名|（競技）連盟；同盟|5",
+      "kept": {
+        "example": "Their team is at the top of the league this season.",
+        "exampleJa": "彼らのチームは今シーズン、リーグのトップにいます。"
+      },
+      "dropped": {
+        "example": "Their team is at the top of the league.",
+        "exampleJa": "彼らのチームはリーグのトップにいます。"
+      }
+    },
+    {
+      "key": "guard|名|警備員；警備隊；監視|5",
+      "kept": {
+        "example": "The security guard checked my ID at the entrance.",
+        "exampleJa": "警備員は入り口で私の身分証明書を確認した。"
+      },
+      "dropped": {
+        "example": "A security guard stands at the entrance of the building.",
+        "exampleJa": "建物の入り口には警備員が立っています。"
+      }
+    },
+    {
+      "key": "opponent|名|（試合・論争などの）相手；反対者|5",
+      "kept": {
+        "example": "He is a strong opponent of the new law.",
+        "exampleJa": "彼はその新しい法律の強力な反対者です。"
+      },
+      "dropped": {
+        "example": "He is a strong opponent of the new tax.",
+        "exampleJa": "彼は新しい税金の強力な反対者です。"
+      }
+    },
+    {
+      "key": "divorce|名|離婚；分離|5",
+      "kept": {
+        "example": "The rate of divorce has been increasing in recent years.",
+        "exampleJa": "近年、離婚率が増加しています。"
+      },
+      "dropped": {
+        "example": "The divorce rate has increased in recent years.",
+        "exampleJa": "近年、離婚率が増加しています。"
+      }
+    },
+    {
+      "key": "tissue|名|（生物の）組織；ティッシュペーパー|5",
+      "kept": {
+        "example": "Muscle tissue is made of specialized cells.",
+        "exampleJa": "筋肉組織は特殊な細胞でできています。"
+      },
+      "dropped": {
+        "example": "Could you pass me a tissue, please?",
+        "exampleJa": "ティッシュを取っていただけますか？"
+      }
+    },
+    {
+      "key": "liquid|名|液体|5",
+      "kept": {
+        "example": "Water is a clear, odorless liquid.",
+        "exampleJa": "水は透明で無臭の液体です。"
+      },
+      "dropped": {
+        "example": "Water is a clear, tasteless liquid.",
+        "exampleJa": "水は透明で無味の液体です。"
+      }
+    },
+    {
+      "key": "prejudice|名|偏見|5",
+      "kept": {
+        "example": "It is important to overcome our own prejudices.",
+        "exampleJa": "私たち自身の偏見を克服することは重要です。"
+      },
+      "dropped": {
+        "example": "It is important to overcome prejudice and treat everyone equally.",
+        "exampleJa": "偏見を克服し、すべての人を平等に扱うことが重要です。"
+      }
+    },
+    {
+      "key": "justice|名|公正，正義；司法|5",
+      "kept": {
+        "example": "He is a well-known fighter for social justice.",
+        "exampleJa": "彼は社会正義のための有名な闘士です。"
+      },
+      "dropped": {
+        "example": "He has a strong sense of justice.",
+        "exampleJa": "彼は強い正義感を持っています。"
+      }
+    },
+    {
+      "key": "guideline|名|指針，ガイドライン|5",
+      "kept": {
+        "example": "The company has strict guidelines for employee conduct.",
+        "exampleJa": "その会社は従業員の行動に関する厳しい指針を持っています。"
+      },
+      "dropped": {
+        "example": "Please follow the company's safety guidelines.",
+        "exampleJa": "会社の安全ガイドラインに従ってください。"
+      }
+    },
+    {
+      "key": "platform|名|プラットフォーム；演壇|5",
+      "kept": {
+        "example": "The train to Kyoto will depart from platform 3.",
+        "exampleJa": "京都行きの電車は3番線から出発します。"
+      },
+      "dropped": {
+        "example": "The train for Tokyo will depart from platform 5.",
+        "exampleJa": "東京行きの電車は5番線から発車します。"
+      }
+    },
+    {
+      "key": "sector|名|部門，セクター；地域|5",
+      "kept": {
+        "example": "She works in the financial sector.",
+        "exampleJa": "彼女は金融部門で働いています。"
+      },
+      "dropped": {
+        "example": "The technology sector is growing rapidly.",
+        "exampleJa": "テクノロジー部門は急速に成長しています。"
+      }
+    },
+    {
+      "key": "channel|名|チャンネル；伝達経路；海峡|5",
+      "kept": {
+        "example": "What's on the news channel right now?",
+        "exampleJa": "今、ニュースチャンネルでは何をしていますか？"
+      },
+      "dropped": {
+        "example": "What's your favorite TV channel?",
+        "exampleJa": "あなたのお気に入りのテレビチャンネルは何ですか？"
+      }
+    },
+    {
+      "key": "glacier|名|氷河|5",
+      "kept": {
+        "example": "Glaciers are melting at an alarming rate due to global warming.",
+        "exampleJa": "地球温暖化のため、氷河は驚くべき速さで溶けています。"
+      },
+      "dropped": {
+        "example": "Glaciers are slowly melting due to global warming.",
+        "exampleJa": "地球温暖化のため、氷河はゆっくりと溶けています。"
+      }
+    },
+    {
+      "key": "usage|名|（使）用法；語法；習慣|5",
+      "kept": {
+        "example": "This dictionary provides examples of modern English usage.",
+        "exampleJa": "この辞書は現代英語の用法の例を提供しています。"
+      },
+      "dropped": {
+        "example": "This dictionary explains the correct usage of English words.",
+        "exampleJa": "この辞書は英単語の正しい使い方を説明しています。"
+      }
+    },
+    {
+      "key": "fortune|名|財産；幸運；運命|5",
+      "kept": {
+        "example": "He inherited a great fortune from his grandfather.",
+        "exampleJa": "彼は祖父から莫大な財産を相続した。"
+      },
+      "dropped": {
+        "example": "He made a fortune by investing in stocks.",
+        "exampleJa": "彼は株に投資して財産を築いた。"
+      }
+    },
+    {
+      "key": "correlation|名|相互関係，相関（関係）|5",
+      "kept": {
+        "example": "There is a strong correlation between smoking and lung cancer.",
+        "exampleJa": "喫煙と肺がんの間には強い相関関係があります。"
+      },
+      "dropped": {
+        "example": "There is a strong correlation between education and income.",
+        "exampleJa": "教育と収入には強い相関関係があります。"
+      }
+    },
+    {
+      "key": "literary|形|文学の；文語の|5",
+      "kept": {
+        "example": "He won a prestigious literary award.",
+        "exampleJa": "彼は名誉ある文学賞を受賞した。"
+      },
+      "dropped": {
+        "example": "He is a famous literary critic.",
+        "exampleJa": "彼は有名な文芸評論家です。"
+      }
+    },
+    {
+      "key": "liberal|形|自由主義の；寛大な|5",
+      "kept": {
+        "example": "He has liberal views on social issues.",
+        "exampleJa": "彼は社会問題について自由主義的な見解を持っています。"
+      },
+      "dropped": {
+        "example": "She has a liberal attitude towards new ideas.",
+        "exampleJa": "彼女は新しい考えに対して寛大な態度をとっています。"
+      }
+    },
+    {
+      "key": "concrete|形|具体的な；有形の|5",
+      "kept": {
+        "example": "We need a concrete plan, not just vague ideas.",
+        "exampleJa": "私たちには曖昧なアイデアだけでなく、具体的な計画が必要です。"
+      },
+      "dropped": {
+        "example": "Could you give me a concrete example?",
+        "exampleJa": "具体的な例を挙げてもらえますか？"
+      }
+    },
+    {
+      "key": "primitive|形|原始的な；未開の|5",
+      "kept": {
+        "example": "The tribe still uses primitive hunting methods.",
+        "exampleJa": "その部族はまだ原始的な狩猟方法を使っています。"
+      },
+      "dropped": {
+        "example": "The tribe lives in a very primitive way.",
+        "exampleJa": "その部族は非常に原始的な方法で生活しています。"
+      }
+    },
+    {
+      "key": "unfamiliar|形|不慣れな；（よく）知られていない|5",
+      "kept": {
+        "example": "I was in an unfamiliar part of the city.",
+        "exampleJa": "私はその街の見慣れない場所にいた。"
+      },
+      "dropped": {
+        "example": "I am unfamiliar with this part of the city.",
+        "exampleJa": "私はこの街のこの地域には不慣れです。"
+      }
+    },
+    {
+      "key": "plain|形|明らかな；平易な；飾りのない|5",
+      "kept": {
+        "example": "The truth was plain to see.",
+        "exampleJa": "真実は誰の目にも明らかだった。"
+      },
+      "dropped": {
+        "example": "The instructions were written in plain language.",
+        "exampleJa": "その指示書は平易な言葉で書かれていた。"
+      }
+    },
+    {
+      "key": "marine|形|海の；船舶の|5",
+      "kept": {
+        "example": "We are studying the effects of pollution on marine life.",
+        "exampleJa": "私たちは汚染が海洋生物に与える影響を研究しています。"
+      },
+      "dropped": {
+        "example": "We are studying marine life in the ocean.",
+        "exampleJa": "私たちは海で海洋生物を研究しています。"
+      }
+    },
+    {
+      "key": "apparent|形|明白な；一見～らしい|5",
+      "kept": {
+        "example": "It was apparent that she was unhappy with the decision.",
+        "exampleJa": "彼女がその決定に不満であることは明らかだった。"
+      },
+      "dropped": {
+        "example": "It was apparent that she was not telling the truth.",
+        "exampleJa": "彼女が真実を語っていないことは明白だった。"
+      }
+    },
+    {
+      "key": "temporary|形|一時的な|5",
+      "kept": {
+        "example": "This is just a temporary solution to the problem.",
+        "exampleJa": "これはその問題に対する一時的な解決策にすぎません。"
+      },
+      "dropped": {
+        "example": "This is a temporary solution to the problem.",
+        "exampleJa": "これはその問題に対する一時的な解決策です。"
+      }
+    },
+    {
+      "key": "royal|形|王の|5",
+      "kept": {
+        "example": "The royal family lives in the palace.",
+        "exampleJa": "王室はその宮殿に住んでいます。"
+      },
+      "dropped": {
+        "example": "The royal family lives in the palace.",
+        "exampleJa": "王室は宮殿に住んでいます。"
+      }
+    },
+    {
+      "key": "pure|形|純粋な；潔白な|5",
+      "kept": {
+        "example": "This shirt is made of pure cotton.",
+        "exampleJa": "このシャツは純綿でできています。"
+      },
+      "dropped": {
+        "example": "This ring is made of pure gold.",
+        "exampleJa": "この指輪は純金でできています。"
+      }
+    },
+    {
+      "key": "eager|形|熱望して；熱心な|5",
+      "kept": {
+        "example": "She is eager to start her new job.",
+        "exampleJa": "彼女は新しい仕事を始めることを熱望しています。"
+      },
+      "dropped": {
+        "example": "She is eager to learn new things.",
+        "exampleJa": "彼女は新しいことを学ぶことに熱心です。"
+      }
+    },
+    {
+      "key": "adequate|形|十分な；適切な|5",
+      "kept": {
+        "example": "His skills are adequate for the job.",
+        "exampleJa": "彼のスキルはその仕事に十分です。"
+      },
+      "dropped": {
+        "example": "We have adequate supplies for the trip.",
+        "exampleJa": "私たちは旅行のための十分な物資を持っています。"
+      }
+    },
+    {
+      "key": "via|前|～経由で；～の媒介で|5",
+      "kept": {
+        "example": "We flew from Tokyo to London via Dubai.",
+        "exampleJa": "私たちは東京からドバイ経由でロンドンへ飛んだ。"
+      },
+      "dropped": {
+        "example": "I will send you the documents via email.",
+        "exampleJa": "私はEメールであなたにその書類を送ります。"
+      }
+    },
+    {
+      "key": "assess|動|を評価する；を査定する|5",
+      "kept": {
+        "example": "It is important to assess the risks before starting a new project.",
+        "exampleJa": "新しいプロジェクトを始める前にリスクを評価することは重要です。"
+      },
+      "dropped": {
+        "example": "It is important to assess the risks before making a decision.",
+        "exampleJa": "決定を下す前にリスクを評価することが重要です。"
+      }
+    },
+    {
+      "key": "approve|動|賛成する；を承認する|5",
+      "kept": {
+        "example": "The board of directors approved the new budget.",
+        "exampleJa": "取締役会は新しい予算を承認した。"
+      },
+      "dropped": {
+        "example": "The committee approved the new plan.",
+        "exampleJa": "委員会はその新しい計画を承認した。"
+      }
+    },
+    {
+      "key": "remark|動|と述べる；意見を述べる|5",
+      "kept": {
+        "example": "He remarked that the weather was unusually warm for this time of year.",
+        "exampleJa": "彼は、この時期にしては天気が異常に暖かいと述べた。"
+      },
+      "dropped": {
+        "example": "He remarked on the beautiful weather.",
+        "exampleJa": "彼はその美しい天候について述べた。"
+      }
+    },
+    {
+      "key": "pose|動|（危険）を引き起こす；（問題など）を提起する；ポーズをとる|5",
+      "kept": {
+        "example": "Air pollution poses a serious threat to our health.",
+        "exampleJa": "大気汚染は私たちの健康に深刻な脅威をもたらします。"
+      },
+      "dropped": {
+        "example": "Pollution poses a serious threat to our planet.",
+        "exampleJa": "汚染は私たちの惑星に深刻な脅威をもたらします。"
+      }
+    },
+    {
+      "key": "exhibit|動|を示す，見せる；を展示する|5",
+      "kept": {
+        "example": "The museum is exhibiting a collection of ancient artifacts.",
+        "exampleJa": "その美術館は古代の遺物のコレクションを展示しています。"
+      },
+      "dropped": {
+        "example": "The museum will exhibit a collection of rare artifacts.",
+        "exampleJa": "その美術館は珍しい工芸品のコレクションを展示します。"
+      }
+    },
+    {
+      "key": "distribute|動|を分配する；分布する|5",
+      "kept": {
+        "example": "The charity will distribute food and clothing to the homeless.",
+        "exampleJa": "その慈善団体はホームレスの人々に食料と衣類を分配します。"
+      },
+      "dropped": {
+        "example": "The charity will distribute food and clothing to the needy.",
+        "exampleJa": "その慈善団体は困窮者に食料と衣類を分配します。"
+      }
+    },
+    {
+      "key": "command|動|を命じる；を指揮する；（景色）を見渡せる|5",
+      "kept": {
+        "example": "The general commanded his soldiers to advance.",
+        "exampleJa": "その将軍は兵士たちに前進を命じた。"
+      },
+      "dropped": {
+        "example": "The captain commanded the soldiers to advance.",
+        "exampleJa": "船長は兵士たちに前進するよう命じた。"
+      }
+    },
+    {
+      "key": "occupy|動|（空間・時間）を占める；を占領する|5",
+      "kept": {
+        "example": "The new building will occupy a large area of the park.",
+        "exampleJa": "新しい建物は公園の広い面積を占めることになります。"
+      },
+      "dropped": {
+        "example": "The new building will occupy a large area of the park.",
+        "exampleJa": "新しい建物は公園の広い面積を占めることになるでしょう。"
+      }
+    },
+    {
+      "key": "pop|動|ひょいと動く；不意に現れる|5",
+      "kept": {
+        "example": "A brilliant idea popped into my head.",
+        "exampleJa": "素晴らしいアイデアが私の頭にひらめいた。"
+      },
+      "dropped": {
+        "example": "An idea suddenly popped into my head.",
+        "exampleJa": "ある考えが突然、私の頭にひらめいた。"
+      }
+    },
+    {
+      "key": "pile|動|を積み重ねる；積み重なる|5",
+      "kept": {
+        "example": "She piled the books on her desk.",
+        "exampleJa": "彼女は机の上に本を積み重ねた。"
+      },
+      "dropped": {
+        "example": "He piled the books on the table.",
+        "exampleJa": "彼はテーブルの上に本を積み重ねた。"
+      }
+    },
+    {
+      "key": "apologize|動|謝る；弁明する|5",
+      "kept": {
+        "example": "You should apologize for your rude behavior.",
+        "exampleJa": "あなたは無礼な振る舞いを謝罪すべきです。"
+      },
+      "dropped": {
+        "example": "You should apologize for your rude behavior.",
+        "exampleJa": "あなたは無礼な振る舞いを謝るべきです。"
+      }
+    },
+    {
+      "key": "frustrate|動|をいら立たせる；を挫折させる|5",
+      "kept": {
+        "example": "The constant delays were beginning to frustrate him.",
+        "exampleJa": "絶え間ない遅延は彼をいらいらさせ始めていた。"
+      },
+      "dropped": {
+        "example": "I was frustrated by the lack of progress.",
+        "exampleJa": "私は進捗のなさにいらいらした。"
+      }
+    },
+    {
+      "key": "deserve|動|に値する|5",
+      "kept": {
+        "example": "After all your hard work, you deserve a vacation.",
+        "exampleJa": "これだけ一生懸命働いたのだから、あなたは休暇に値します。"
+      },
+      "dropped": {
+        "example": "She deserves to be praised for her hard work.",
+        "exampleJa": "彼女はその努力で称賛されるに値します。"
+      }
+    },
+    {
+      "key": "defeat|動|を負かす；を失敗させる|5",
+      "kept": {
+        "example": "Our team was defeated in the final match.",
+        "exampleJa": "私たちのチームは決勝戦で敗れた。"
+      },
+      "dropped": {
+        "example": "Our team was defeated in the final game.",
+        "exampleJa": "私たちのチームは決勝戦で敗れた。"
+      }
+    },
+    {
+      "key": "convert|動|を変える；を改宗させる|5",
+      "kept": {
+        "example": "We need to convert this document into a PDF file.",
+        "exampleJa": "私たちはこの文書をPDFファイルに変換する必要があります。"
+      },
+      "dropped": {
+        "example": "The old factory was converted into a modern art gallery.",
+        "exampleJa": "その古い工場は現代美術館に改装された。"
+      }
+    },
+    {
+      "key": "wed|動|と結婚する|5",
+      "kept": {
+        "example": "They are planning to wed in the spring.",
+        "exampleJa": "彼らは春に結婚する予定です。"
+      },
+      "dropped": {
+        "example": "They decided to wed in the spring.",
+        "exampleJa": "彼らは春に結婚することにした。"
+      }
+    },
+    {
+      "key": "endure|動|に耐える；持ちこたえる|5",
+      "kept": {
+        "example": "She had to endure a lot of pain during her illness.",
+        "exampleJa": "彼女は病気の間、多くの痛みに耐えなければならなかった。"
+      },
+      "dropped": {
+        "example": "He had to endure great pain during his illness.",
+        "exampleJa": "彼は病気の間、大きな痛みに耐えなければならなかった。"
+      }
+    },
+    {
+      "key": "impose|動|を課す；を押しつける|5",
+      "kept": {
+        "example": "The government decided to impose a new tax on sugar.",
+        "exampleJa": "政府は砂糖に新しい税を課すことを決定した。"
+      },
+      "dropped": {
+        "example": "The government imposed new taxes on imported goods.",
+        "exampleJa": "政府は輸入品に新しい税金を課した。"
+      }
+    },
+    {
+      "key": "rescue|動|を救う|5",
+      "kept": {
+        "example": "The firefighters rescued the family from the burning house.",
+        "exampleJa": "消防士たちは燃えている家からその家族を救出した。"
+      },
+      "dropped": {
+        "example": "The firefighter rescued the child from the burning building.",
+        "exampleJa": "その消防士は燃えている建物から子供を救出した。"
+      }
+    },
+    {
+      "key": "resolve|動|を解決する；を決意する|5",
+      "kept": {
+        "example": "We need to find a way to resolve this conflict peacefully.",
+        "exampleJa": "私たちはこの紛争を平和的に解決する方法を見つける必要があります。"
+      },
+      "dropped": {
+        "example": "We need to work together to resolve this issue.",
+        "exampleJa": "この問題を解決するために、私たちは協力する必要があります。"
+      }
+    },
+    {
+      "key": "register|動|を記録する，登録する|5",
+      "kept": {
+        "example": "You need to register for the conference in advance.",
+        "exampleJa": "その会議には事前に登録する必要があります。"
+      },
+      "dropped": {
+        "example": "You must register to vote in the election.",
+        "exampleJa": "選挙で投票するには登録しなければなりません。"
+      }
+    },
+    {
+      "key": "interrupt|動|を中断させる；の邪魔をする|5",
+      "kept": {
+        "example": "I'm sorry to interrupt, but I have an urgent message.",
+        "exampleJa": "お邪魔して申し訳ありませんが、緊急の伝言があります。"
+      },
+      "dropped": {
+        "example": "I'm sorry to interrupt, but I have an urgent message.",
+        "exampleJa": "お邪魔してすみませんが、緊急の伝言があります。"
+      }
+    },
+    {
+      "key": "rid|動|から（～を）取り除く，除去する|5",
+      "kept": {
+        "example": "It's time to get rid of these old clothes.",
+        "exampleJa": "これらの古い服を処分する時です。"
+      },
+      "dropped": {
+        "example": "It's time to get rid of this old furniture.",
+        "exampleJa": "この古い家具を処分する時が来ました。"
+      }
+    },
+    {
+      "key": "prohibit|動|を禁止する|5",
+      "kept": {
+        "example": "Smoking is prohibited in all public buildings.",
+        "exampleJa": "すべての公共の建物内では喫煙は禁止されています。"
+      },
+      "dropped": {
+        "example": "Smoking is strictly prohibited in this area.",
+        "exampleJa": "このエリアでは喫煙は厳しく禁止されています。"
+      }
+    },
+    {
+      "key": "compose|動|を構成する；を創作する|5",
+      "kept": {
+        "example": "The song was composed by a famous musician.",
+        "exampleJa": "その曲は有名な音楽家によって作曲された。"
+      },
+      "dropped": {
+        "example": "The committee is composed of representatives from various departments.",
+        "exampleJa": "その委員会は様々な部署の代表者で構成されています。"
+      }
+    },
+    {
+      "key": "punish|動|を罰する；に損傷を与える|5",
+      "kept": {
+        "example": "He was punished for his crime.",
+        "exampleJa": "彼はその罪で罰せられた。"
+      },
+      "dropped": {
+        "example": "He was punished for breaking the school rules.",
+        "exampleJa": "彼は校則を破ったことで罰せられた。"
+      }
+    },
+    {
+      "key": "ruin|動|をだめにする；を破滅させる|5",
+      "kept": {
+        "example": "The heavy rain ruined our plans for a picnic.",
+        "exampleJa": "大雨が私たちのピクニックの計画を台無しにした。"
+      },
+      "dropped": {
+        "example": "The heavy rain ruined the crops.",
+        "exampleJa": "大雨が作物を台無しにした。"
+      }
+    },
+    {
+      "key": "defend|動|を防御する；を弁護する|5",
+      "kept": {
+        "example": "The soldiers fought bravely to defend their country.",
+        "exampleJa": "兵士たちは国を守るために勇敢に戦った。"
+      },
+      "dropped": {
+        "example": "The lawyer will defend her client in court.",
+        "exampleJa": "その弁護士は法廷で依頼人を弁護します。"
+      }
+    },
+    {
+      "key": "embrace|動|を受け入れる；（を）抱擁する|5",
+      "kept": {
+        "example": "We should embrace different cultures and traditions.",
+        "exampleJa": "私たちは異なる文化や伝統を受け入れるべきです。"
+      },
+      "dropped": {
+        "example": "She warmly embraced her friend after a long time.",
+        "exampleJa": "彼女は久しぶりに友人を温かく抱きしめた。"
+      }
+    },
+    {
+      "key": "modify|動|を修正する；を緩和する|5",
+      "kept": {
+        "example": "The design of the car has been modified to improve safety.",
+        "exampleJa": "その車のデザインは安全性を向上させるために修正された。"
+      },
+      "dropped": {
+        "example": "You may need to modify the plan to fit the new budget.",
+        "exampleJa": "新しい予算に合わせて計画を修正する必要があるかもしれません。"
+      }
+    },
+    {
+      "key": "qualify|動|に資格を与える；資格がある|5",
+      "kept": {
+        "example": "Does he have the necessary experience to qualify for this job?",
+        "exampleJa": "彼はこの仕事の資格を得るために必要な経験を持っていますか？"
+      },
+      "dropped": {
+        "example": "To qualify for the job, you need at least five years of experience.",
+        "exampleJa": "その仕事の資格を得るには、少なくとも5年の経験が必要です。"
+      }
+    },
+    {
+      "key": "passion|名|情熱；熱中；激怒|5",
+      "kept": {
+        "example": "She has a great passion for painting.",
+        "exampleJa": "彼女は絵画に大きな情熱を持っています。"
+      },
+      "dropped": {
+        "example": "He has a great passion for painting.",
+        "exampleJa": "彼は絵画に対して素晴らしい情熱を持っています。"
+      }
+    },
+    {
+      "key": "enthusiasm|名|熱情，熱意|5",
+      "kept": {
+        "example": "He showed great enthusiasm for the new project.",
+        "exampleJa": "彼は新しいプロジェクトに大きな熱意を示した。"
+      },
+      "dropped": {
+        "example": "She showed a lot of enthusiasm for the new project.",
+        "exampleJa": "彼女はその新しいプロジェクトに大きな熱意を示した。"
+      }
+    },
+    {
+      "key": "mode|名|方式；気分；形態|5",
+      "kept": {
+        "example": "Please switch your phone to silent mode.",
+        "exampleJa": "携帯電話をマナーモードに切り替えてください。"
+      },
+      "dropped": {
+        "example": "Please switch your phone to silent mode during the movie.",
+        "exampleJa": "映画の間は、携帯電話をマナーモードに切り替えてください。"
+      }
+    },
+    {
+      "key": "span|名|期間；範囲|5",
+      "kept": {
+        "example": "The bridge has a span of 200 meters.",
+        "exampleJa": "その橋の長さは200メートルです。"
+      },
+      "dropped": {
+        "example": "He has a very short attention span.",
+        "exampleJa": "彼は注意力が非常に短いです。"
+      }
+    },
+    {
+      "key": "gravity|名|重力，引力；重大さ|5",
+      "kept": {
+        "example": "Gravity is the force that keeps us on the Earth.",
+        "exampleJa": "重力は私たちを地球上にとどめておく力です。"
+      },
+      "dropped": {
+        "example": "The force of gravity keeps the planets in orbit.",
+        "exampleJa": "重力が惑星を軌道上に保っています。"
+      }
+    },
+    {
+      "key": "orbit|名|軌道；範囲|5",
+      "kept": {
+        "example": "The Earth's orbit around the sun takes about 365 days.",
+        "exampleJa": "地球の太陽の周りの軌道は約365日かかります。"
+      },
+      "dropped": {
+        "example": "The Earth completes one orbit around the Sun in a year.",
+        "exampleJa": "地球は1年で太陽の周りを1周します。"
+      }
+    },
+    {
+      "key": "asteroid|名|小惑星|5",
+      "kept": {
+        "example": "Scientists are tracking a large asteroid that will pass near the Earth.",
+        "exampleJa": "科学者たちは地球の近くを通過する大きな小惑星を追跡しています。"
+      },
+      "dropped": {
+        "example": "Scientists are tracking a large asteroid that will pass near Earth.",
+        "exampleJa": "科学者たちは地球の近くを通過する大きな小惑星を追跡しています。"
+      }
+    },
+    {
+      "key": "soul|名|精神；魂，霊魂|5",
+      "kept": {
+        "example": "Music is good for the soul.",
+        "exampleJa": "音楽は魂に良い。"
+      },
+      "dropped": {
+        "example": "She has a kind and gentle soul.",
+        "exampleJa": "彼女は優しく穏やかな魂を持っています。"
+      }
+    },
+    {
+      "key": "nerve|名|神経；度胸|5",
+      "kept": {
+        "example": "The dentist accidentally touched a nerve in my tooth.",
+        "exampleJa": "歯医者が誤って私の歯の神経に触れた。"
+      },
+      "dropped": {
+        "example": "It takes a lot of nerve to perform in front of a large audience.",
+        "exampleJa": "大観衆の前でパフォーマンスするには、かなりの度胸が必要です。"
+      }
+    },
+    {
+      "key": "infection|名|感染（症）|5",
+      "kept": {
+        "example": "He has a serious throat infection.",
+        "exampleJa": "彼は深刻な喉の感染症にかかっています。"
+      },
+      "dropped": {
+        "example": "He got a serious infection in his leg.",
+        "exampleJa": "彼は脚に深刻な感染症を負った。"
+      }
+    },
+    {
+      "key": "mall|名|モール，ショッピングセンター|5",
+      "kept": {
+        "example": "Let's go shopping at the new mall this weekend.",
+        "exampleJa": "今週末、新しいショッピングモールに買い物に行きましょう。"
+      },
+      "dropped": {
+        "example": "They spent the afternoon shopping at the mall.",
+        "exampleJa": "彼らは午後、ショッピングモールで買い物をした。"
+      }
+    },
+    {
+      "key": "grocery|名|食料雑貨；食料雑貨店|5",
+      "kept": {
+        "example": "I need to buy some groceries on my way home.",
+        "exampleJa": "帰り道に食料品を買う必要があります。"
+      },
+      "dropped": {
+        "example": "I need to go to the grocery store to buy some milk.",
+        "exampleJa": "牛乳を買いに食料品店に行く必要があります。"
+      }
+    },
+    {
+      "key": "faith|名|信頼；信仰（心）|5",
+      "kept": {
+        "example": "I have great faith in her ability to lead the team.",
+        "exampleJa": "私は彼女がチームを率いる能力に大きな信頼を置いています。"
+      },
+      "dropped": {
+        "example": "I have complete faith in her ability to do the job.",
+        "exampleJa": "私は彼女がその仕事をこなす能力に全幅の信頼を置いています。"
+      }
+    },
+    {
+      "key": "incentive|名|動機（づけ）；報奨金|5",
+      "kept": {
+        "example": "The company offers a financial incentive for high-performing employees.",
+        "exampleJa": "その会社は優秀な従業員に金銭的なインセンティブを提供しています。"
+      },
+      "dropped": {
+        "example": "The company offers a bonus as an incentive for high sales.",
+        "exampleJa": "その会社は高い売上に対する報奨としてボーナスを提供しています。"
+      }
+    },
+    {
+      "key": "prospect|名|見込み；展望|5",
+      "kept": {
+        "example": "The company has good prospects for future growth.",
+        "exampleJa": "その会社は将来の成長に向けて良い見通しを持っています。"
+      },
+      "dropped": {
+        "example": "The job offers good prospects for promotion.",
+        "exampleJa": "その仕事は昇進の良い見込みがあります。"
+      }
+    },
+    {
+      "key": "obstacle|名|障害（物）|5",
+      "kept": {
+        "example": "Lack of funding is the biggest obstacle to the project.",
+        "exampleJa": "資金不足がそのプロジェクトの最大の障害です。"
+      },
+      "dropped": {
+        "example": "Lack of funding is the main obstacle to the project.",
+        "exampleJa": "資金不足がそのプロジェクトの主な障害です。"
+      }
+    },
+    {
+      "key": "architecture|名|建築；建築様式；構造|5",
+      "kept": {
+        "example": "I admire the modern architecture of this building.",
+        "exampleJa": "私はこの建物の現代的な建築様式を称賛します。"
+      },
+      "dropped": {
+        "example": "I am studying modern architecture at university.",
+        "exampleJa": "私は大学で現代建築を勉強しています。"
+      }
+    },
+    {
+      "key": "shame|名|恥；残念なこと|5",
+      "kept": {
+        "example": "It is a shame that he couldn't come to the party.",
+        "exampleJa": "彼がパーティーに来られなかったのは残念です。"
+      },
+      "dropped": {
+        "example": "It is a shame that you have to leave so soon.",
+        "exampleJa": "あなたがそんなに早く帰らなければならないのは残念です。"
+      }
+    },
+    {
+      "key": "drought|名|干ばつ；（慢性的な）不足|5",
+      "kept": {
+        "example": "The long drought caused serious damage to the crops.",
+        "exampleJa": "長い干ばつは作物に深刻な損害を与えた。"
+      },
+      "dropped": {
+        "example": "The long drought caused a serious water shortage.",
+        "exampleJa": "長い干ばつは深刻な水不足を引き起こした。"
+      }
+    },
+    {
+      "key": "flavor|名|風味；特色|5",
+      "kept": {
+        "example": "This ice cream has a unique vanilla flavor.",
+        "exampleJa": "このアイスクリームはユニークなバニラの風味があります。"
+      },
+      "dropped": {
+        "example": "This soup has a rich, spicy flavor.",
+        "exampleJa": "このスープは豊かでスパイシーな風味があります。"
+      }
+    },
+    {
+      "key": "portion|名|部分；1人前；割り当て|5",
+      "kept": {
+        "example": "She ate only a small portion of her meal.",
+        "exampleJa": "彼女は食事のほんの一部しか食べなかった。"
+      },
+      "dropped": {
+        "example": "She ate a small portion of the cake.",
+        "exampleJa": "彼女はケーキのほんの一部を食べた。"
+      }
+    },
+    {
+      "key": "luxury|名|ぜいたく（品）；豪華な|5",
+      "kept": {
+        "example": "Staying in a five-star hotel is a real luxury.",
+        "exampleJa": "5つ星ホテルに泊まるのは本当に贅沢です。"
+      },
+      "dropped": {
+        "example": "Staying in a five-star hotel is a luxury for me.",
+        "exampleJa": "五つ星ホテルに泊まるのは私にとって贅沢です。"
+      }
+    },
+    {
+      "key": "chip|名|小片，破片；集積回路|5",
+      "kept": {
+        "example": "This computer has a very powerful chip inside.",
+        "exampleJa": "このコンピュータには非常に強力なチップが内蔵されています。"
+      },
+      "dropped": {
+        "example": "A small chip of wood was stuck in his finger.",
+        "exampleJa": "小さな木片が彼の指に刺さっていた。"
+      }
+    },
+    {
+      "key": "ritual|名|儀式；（日常の）習慣的行為|5",
+      "kept": {
+        "example": "Drinking a cup of tea in the morning is my daily ritual.",
+        "exampleJa": "朝に一杯のお茶を飲むのが私の日課です。"
+      },
+      "dropped": {
+        "example": "My morning ritual includes drinking a cup of coffee.",
+        "exampleJa": "私の朝の習慣には、コーヒーを一杯飲むことが含まれています。"
+      }
+    },
+    {
+      "key": "sake|名|ために，目的で|5",
+      "kept": {
+        "example": "He did it for the sake of his family's happiness.",
+        "exampleJa": "彼は家族の幸せのためにそれをした。"
+      },
+      "dropped": {
+        "example": "He did it for the sake of his family.",
+        "exampleJa": "彼は家族のためにそれをした。"
+      }
+    },
+    {
+      "key": "prefecture|名|（日本の）県，府|5",
+      "kept": {
+        "example": "Kyoto Prefecture is famous for its beautiful temples.",
+        "exampleJa": "京都府は美しい寺院で有名です。"
+      },
+      "dropped": {
+        "example": "Osaka is a large prefecture in Japan.",
+        "exampleJa": "大阪は日本の大きな府です。"
+      }
+    },
+    {
+      "key": "council|名|（地方）議会；評議会|5",
+      "kept": {
+        "example": "The city council will vote on the new proposal tomorrow.",
+        "exampleJa": "市議会は明日、新しい提案について投票します。"
+      },
+      "dropped": {
+        "example": "The city council voted to build a new park.",
+        "exampleJa": "市議会は新しい公園を建設することに投票した。"
+      }
+    },
+    {
+      "key": "administration|名|管理（部）；行政；政府（機関）|5",
+      "kept": {
+        "example": "The new administration has promised to lower taxes.",
+        "exampleJa": "新政権は減税を約束した。"
+      },
+      "dropped": {
+        "example": "She works in the sales administration department.",
+        "exampleJa": "彼女は営業管理部で働いています。"
+      }
+    },
+    {
+      "key": "curriculum|名|教育課程，カリキュラム|5",
+      "kept": {
+        "example": "The school has a very challenging academic curriculum.",
+        "exampleJa": "その学校は非常にやりがいのある学術的なカリキュラムを持っています。"
+      },
+      "dropped": {
+        "example": "The school has a very diverse curriculum.",
+        "exampleJa": "その学校は非常に多様なカリキュラムを持っています。"
+      }
+    },
+    {
+      "key": "precious|形|貴重な；高価な|5",
+      "kept": {
+        "example": "Time is the most precious resource we have.",
+        "exampleJa": "時間は私たちが持つ最も貴重な資源です。"
+      },
+      "dropped": {
+        "example": "Time is the most precious thing we have.",
+        "exampleJa": "時間は私たちが持つ最も貴重なものです。"
+      }
+    },
+    {
+      "key": "generous|形|寛大な；気前のよい|5",
+      "kept": {
+        "example": "He is very generous and always helps people in need.",
+        "exampleJa": "彼は非常に寛大で、いつも困っている人々を助けます。"
+      },
+      "dropped": {
+        "example": "Thank you for your generous donation.",
+        "exampleJa": "寛大なご寄付ありがとうございます。"
+      }
+    },
+    {
+      "key": "casual|形|何気ない；形式ばらない|5",
+      "kept": {
+        "example": "The company has a casual dress code on Fridays.",
+        "exampleJa": "その会社は金曜日にはカジュアルな服装規定があります。"
+      },
+      "dropped": {
+        "example": "The dress code for the event is casual.",
+        "exampleJa": "そのイベントの服装規定はカジュアルです。"
+      }
+    },
+    {
+      "key": "optimistic|形|楽観的な|5",
+      "kept": {
+        "example": "She has an optimistic outlook on the future.",
+        "exampleJa": "彼女は未来に対して楽観的な見方をしています。"
+      },
+      "dropped": {
+        "example": "She is optimistic about the future of the company.",
+        "exampleJa": "彼女は会社の将来について楽観的です。"
+      }
+    },
+    {
+      "key": "rough|形|粗い；大まかな；乱暴な|5",
+      "kept": {
+        "example": "The sea was very rough during the storm.",
+        "exampleJa": "嵐の間、海は非常に荒れていた。"
+      },
+      "dropped": {
+        "example": "The surface of the rock was rough to the touch.",
+        "exampleJa": "その岩の表面は触るとざらざらしていた。"
+      }
+    },
+    {
+      "key": "unpleasant|形|不愉快な；不親切な，無礼な|5",
+      "kept": {
+        "example": "I had an unpleasant experience at the hotel.",
+        "exampleJa": "私はそのホテルで不愉快な経験をした。"
+      },
+      "dropped": {
+        "example": "There was an unpleasant smell in the room.",
+        "exampleJa": "その部屋には不快なにおいがした。"
+      }
+    },
+    {
+      "key": "arctic|形|北極の|5",
+      "kept": {
+        "example": "Polar bears are well adapted to the Arctic climate.",
+        "exampleJa": "ホッキョクグマは北極の気候によく適応しています。"
+      },
+      "dropped": {
+        "example": "Polar bears live in the Arctic region.",
+        "exampleJa": "ホッキョクグマは北極地方に生息しています。"
+      }
+    },
+    {
+      "key": "ultimate|形|究極の|5",
+      "kept": {
+        "example": "The ultimate goal of our research is to find a cure for the disease.",
+        "exampleJa": "私たちの研究の究極の目標は、その病気の治療法を見つけることです。"
+      },
+      "dropped": {
+        "example": "The ultimate goal is to create a peaceful society.",
+        "exampleJa": "究極の目標は、平和な社会を創造することです。"
+      }
+    },
+    {
+      "key": "genuine|形|本物の；偽りのない|5",
+      "kept": {
+        "example": "Is this a genuine diamond?",
+        "exampleJa": "これは本物のダイヤモンドですか？"
+      },
+      "dropped": {
+        "example": "This is a genuine leather jacket.",
+        "exampleJa": "これは本物の革のジャケットです。"
+      }
+    },
+    {
+      "key": "manual|形|体［手］を使う；手の；手動式の|5",
+      "kept": {
+        "example": "The job requires a lot of manual labor.",
+        "exampleJa": "その仕事は多くの肉体労働を必要とします。"
+      },
+      "dropped": {
+        "example": "The machine has both automatic and manual settings.",
+        "exampleJa": "その機械には自動と手動の両方の設定があります。"
+      }
+    },
+    {
+      "key": "mechanical|形|機械の；機械的な|5",
+      "kept": {
+        "example": "There seems to be a mechanical problem with the car.",
+        "exampleJa": "その車には機械的な問題があるようです。"
+      },
+      "dropped": {
+        "example": "The watch has a complex mechanical movement.",
+        "exampleJa": "その腕時計は複雑な機械式ムーブメントを持っています。"
+      }
+    },
+    {
+      "key": "instant|形|即時の，すぐの；即席の|5",
+      "kept": {
+        "example": "I need an instant reply to my email.",
+        "exampleJa": "私はEメールに即時の返信が必要です。"
+      },
+      "dropped": {
+        "example": "I need an instant reply to my email.",
+        "exampleJa": "私は私のEメールに即座の返信が必要です。"
+      }
+    },
+    {
+      "key": "immune|形|免疫を持つ；免れた|5",
+      "kept": {
+        "example": "After getting the vaccine, you should be immune to the virus.",
+        "exampleJa": "ワクチンを接種した後、あなたはそのウイルスに対して免疫を持つはずです。"
+      },
+      "dropped": {
+        "example": "The vaccine can make you immune to the disease.",
+        "exampleJa": "そのワクチンはあなたをその病気に対して免疫にすることができます。"
+      }
+    },
+    {
+      "key": "harsh|形|厳しい；不快な|5",
+      "kept": {
+        "example": "The team faced some harsh criticism after losing the game.",
+        "exampleJa": "そのチームは試合に負けた後、厳しい批判に直面した。"
+      },
+      "dropped": {
+        "example": "The team faced some harsh criticism after the loss.",
+        "exampleJa": "そのチームは敗戦後、厳しい批判に直面した。"
+      }
+    },
+    {
+      "key": "profound|形|重大な；深い；難解な|5",
+      "kept": {
+        "example": "The book had a profound impact on my thinking.",
+        "exampleJa": "その本は私の考え方に重大な影響を与えた。"
+      },
+      "dropped": {
+        "example": "The book had a profound effect on his thinking.",
+        "exampleJa": "その本は彼の考え方に重大な影響を与えた。"
+      }
+    },
+    {
+      "key": "steady|形|着実な，一定の；安定した|5",
+      "kept": {
+        "example": "She has made steady progress in her studies.",
+        "exampleJa": "彼女は勉強で着実な進歩を遂げています。"
+      },
+      "dropped": {
+        "example": "She has made steady progress in her English studies.",
+        "exampleJa": "彼女は英語の勉強で着実な進歩を遂げました。"
+      }
+    },
+    {
+      "key": "mature|形|成熟した；熟した|5",
+      "kept": {
+        "example": "She is very mature for her age.",
+        "exampleJa": "彼女は年齢の割に非常に成熟しています。"
+      },
+      "dropped": {
+        "example": "She is very mature for her age.",
+        "exampleJa": "彼女は年齢の割にとても成熟しています。"
+      }
+    },
+    {
+      "key": "likewise|副|同様に|5",
+      "kept": {
+        "example": "He is a talented artist; likewise, his sister is a gifted musician.",
+        "exampleJa": "彼は才能ある芸術家であり、同様に彼の妹も才能ある音楽家です。"
+      },
+      "dropped": {
+        "example": "He is a great athlete, and his brother is likewise talented.",
+        "exampleJa": "彼は素晴らしいアスリートで、同様に彼の兄も才能があります。"
+      }
+    },
+    {
+      "key": "chase|動|（を）追跡する；（を）追求する|5",
+      "kept": {
+        "example": "The police car was chasing the stolen vehicle.",
+        "exampleJa": "パトカーは盗難車を追跡していた。"
+      },
+      "dropped": {
+        "example": "The police car chased the stolen vehicle.",
+        "exampleJa": "パトカーは盗難車を追跡した。"
+      }
+    },
+    {
+      "key": "sue|動|を告訴する；（～を求めて）訴訟を起こす|5",
+      "kept": {
+        "example": "She decided to sue the company for damages.",
+        "exampleJa": "彼女は損害賠償を求めて会社を訴えることに決めた。"
+      },
+      "dropped": {
+        "example": "She decided to sue the company for unfair dismissal.",
+        "exampleJa": "彼女は不当解雇で会社を訴えることに決めた。"
+      }
+    },
+    {
+      "key": "slip|動|滑る；滑り落ちる；そっと動く|5",
+      "kept": {
+        "example": "Be careful not to slip on the icy sidewalk.",
+        "exampleJa": "凍った歩道で滑らないように気をつけてください。"
+      },
+      "dropped": {
+        "example": "Be careful not to slip on the wet floor.",
+        "exampleJa": "濡れた床で滑らないように気をつけてください。"
+      }
+    },
+    {
+      "key": "load|動|に積む；に負わせる|5",
+      "kept": {
+        "example": "They loaded the truck with boxes.",
+        "exampleJa": "彼らはトラックに箱を積んだ。"
+      },
+      "dropped": {
+        "example": "They loaded the truck with fresh vegetables.",
+        "exampleJa": "彼らはトラックに新鮮な野菜を積んだ。"
+      }
+    },
+    {
+      "key": "wander|動|歩き回る；それる；はぐれる|5",
+      "kept": {
+        "example": "He loves to wander through the city at night.",
+        "exampleJa": "彼は夜に街を歩き回るのが大好きです。"
+      },
+      "dropped": {
+        "example": "We spent the afternoon wandering around the old town.",
+        "exampleJa": "私たちは午後、旧市街をぶらぶら歩き回った。"
+      }
+    },
+    {
+      "key": "float|動|漂う，浮かぶ；を浮かべる|5",
+      "kept": {
+        "example": "A boat was floating gently on the lake.",
+        "exampleJa": "ボートが湖の上で穏やかに浮かんでいた。"
+      },
+      "dropped": {
+        "example": "A single white cloud was floating in the blue sky.",
+        "exampleJa": "青い空に白い雲が一つ浮かんでいた。"
+      }
+    },
+    {
+      "key": "pour|動|を注ぐ；激しく降る；押し寄せる|5",
+      "kept": {
+        "example": "Could you pour me a glass of water, please?",
+        "exampleJa": "水を一杯注いでいただけますか？"
+      },
+      "dropped": {
+        "example": "Could you please pour me a glass of water?",
+        "exampleJa": "水を一杯注いでいただけますか？"
+      }
+    },
+    {
+      "key": "pronounce|動|を発音する；を宣言する|5",
+      "kept": {
+        "example": "It is difficult to pronounce some English words.",
+        "exampleJa": "いくつかの英単語を発音するのは難しい。"
+      },
+      "dropped": {
+        "example": "How do you pronounce this word?",
+        "exampleJa": "この単語はどのように発音しますか？"
+      }
+    },
+    {
+      "key": "shrink|動|縮む，縮小する；減少する|5",
+      "kept": {
+        "example": "My new sweater shrank after I washed it.",
+        "exampleJa": "新しいセーターが洗濯したら縮んでしまった。"
+      },
+      "dropped": {
+        "example": "My new sweater shrank after I washed it.",
+        "exampleJa": "新しいセーターは洗濯したら縮んでしまった。"
+      }
+    },
+    {
+      "key": "restore|動|を回復させる；を修復する|5",
+      "kept": {
+        "example": "The city is working to restore the historic building.",
+        "exampleJa": "市はその歴史的建造物を修復するために取り組んでいます。"
+      },
+      "dropped": {
+        "example": "They are working to restore the ancient castle.",
+        "exampleJa": "彼らはその古代の城を修復するために作業している。"
+      }
+    },
+    {
+      "key": "trigger|動|を引き起こす；のきっかけとなる|5",
+      "kept": {
+        "example": "The smell of baking bread can trigger happy memories.",
+        "exampleJa": "パンを焼く匂いは幸せな記憶を引き起こすことがあります。"
+      },
+      "dropped": {
+        "example": "The loud noise triggered the car alarm.",
+        "exampleJa": "その大きな音が車の警報装置を作動させた。"
+      }
+    },
+    {
+      "key": "grab|動|をつかむ；を横取りする|5",
+      "kept": {
+        "example": "She grabbed her bag and ran for the bus.",
+        "exampleJa": "彼女はバッグをつかんでバスに走った。"
+      },
+      "dropped": {
+        "example": "He grabbed his coat and ran out of the house.",
+        "exampleJa": "彼はコートをつかんで家から走り出した。"
+      }
+    },
+    {
+      "key": "retain|動|を保持する；を覚えている|5",
+      "kept": {
+        "example": "It's difficult to retain so much information at once.",
+        "exampleJa": "一度にそんなに多くの情報を記憶するのは難しい。"
+      },
+      "dropped": {
+        "example": "It is difficult to retain so much information at once.",
+        "exampleJa": "一度にそんなに多くの情報を記憶するのは難しい。"
+      }
+    },
+    {
+      "key": "bob|動|上下に動く；急に動く|5",
+      "kept": {
+        "example": "The apple was bobbing in the water.",
+        "exampleJa": "リンゴが水の中で上下に揺れていた。"
+      },
+      "dropped": {
+        "example": "The small boat bobbed up and down on the waves.",
+        "exampleJa": "その小さなボートは波に乗って上下に揺れた。"
+      }
+    },
+    {
+      "key": "entertain|動|を楽しませる；をもてなす|5",
+      "kept": {
+        "example": "The clown's job is to entertain the children.",
+        "exampleJa": "ピエロの仕事は子供たちを楽しませることです。"
+      },
+      "dropped": {
+        "example": "The comedian's jokes entertained the audience.",
+        "exampleJa": "そのコメディアンの冗談は観客を楽しませた。"
+      }
+    },
+    {
+      "key": "anticipate|動|を予期する；楽しみに待つ|5",
+      "kept": {
+        "example": "We anticipate a large crowd at the concert.",
+        "exampleJa": "私たちはそのコンサートに大勢の観客を予期しています。"
+      },
+      "dropped": {
+        "example": "We anticipate that the project will be completed ahead of schedule.",
+        "exampleJa": "私たちはそのプロジェクトが予定より早く完了することを期待しています。"
+      }
+    },
+    {
+      "key": "regulate|動|を規制する；を調整する|5",
+      "kept": {
+        "example": "The government needs to regulate the use of pesticides.",
+        "exampleJa": "政府は農薬の使用を規制する必要があります。"
+      },
+      "dropped": {
+        "example": "The government needs to regulate the use of pesticides.",
+        "exampleJa": "政府は殺虫剤の使用を規制する必要があります。"
+      }
+    },
+    {
+      "key": "scan|動|を走査［スキャン］する；をざっと見る|5",
+      "kept": {
+        "example": "I scanned the document for any key information.",
+        "exampleJa": "私は何か重要な情報がないか、その文書にざっと目を通した。"
+      },
+      "dropped": {
+        "example": "She quickly scanned the document for any important details.",
+        "exampleJa": "彼女は何か重要な詳細がないか、その書類にさっと目を通した。"
+      }
+    },
+    {
+      "key": "classify|動|を分類する；を機密扱いにする|5",
+      "kept": {
+        "example": "The books in the library are classified by subject.",
+        "exampleJa": "図書館の本は主題によって分類されています。"
+      },
+      "dropped": {
+        "example": "The books in the library are classified according to subject.",
+        "exampleJa": "図書館の本は主題によって分類されています。"
+      }
+    },
+    {
+      "key": "submit|動|を提出する；従う|5",
+      "kept": {
+        "example": "All students must submit their essays by Friday.",
+        "exampleJa": "すべての生徒は金曜日までにエッセイを提出しなければなりません。"
+      },
+      "dropped": {
+        "example": "All students must submit their essays by Friday.",
+        "exampleJa": "すべての学生は金曜日までにエッセイを提出しなければなりません。"
+      }
+    },
+    {
+      "key": "pause|動|（一時的に）中止する；（一瞬）立ち止まる|5",
+      "kept": {
+        "example": "Let's pause for a moment to consider the options.",
+        "exampleJa": "選択肢を検討するために少し立ち止まりましょう。"
+      },
+      "dropped": {
+        "example": "Let's pause for a moment to think about this.",
+        "exampleJa": "これについて考えるために、少し立ち止まりましょう。"
+      }
+    },
+    {
+      "key": "lean|動|傾く；寄りかかる|5",
+      "kept": {
+        "example": "Please don't lean against the freshly painted wall.",
+        "exampleJa": "塗りたての壁に寄りかからないでください。"
+      },
+      "dropped": {
+        "example": "The old tower is leaning slightly to one side.",
+        "exampleJa": "その古い塔は片側にわずかに傾いています。"
+      }
+    },
+    {
+      "key": "bump|動|ぶつかる；をぶつける|5",
+      "kept": {
+        "example": "I accidentally bumped into him in the hallway.",
+        "exampleJa": "私は廊下で誤って彼にぶつかった。"
+      },
+      "dropped": {
+        "example": "I bumped my head on the low ceiling.",
+        "exampleJa": "私は低い天井に頭をぶつけた。"
+      }
+    },
+    {
+      "key": "fold|動|を折り畳む；（両腕）を組む|5",
+      "kept": {
+        "example": "He folded the letter and put it in his pocket.",
+        "exampleJa": "彼はその手紙を折りたたんでポケットに入れた。"
+      },
+      "dropped": {
+        "example": "He folded the letter and put it in his pocket.",
+        "exampleJa": "彼はその手紙を折り畳んでポケットに入れた。"
+      }
+    },
+    {
+      "key": "pump|動|（液体・気体）をポンプで送り込む|5",
+      "kept": {
+        "example": "The heart pumps blood throughout the body.",
+        "exampleJa": "心臓は体中に血液を送り出します。"
+      },
+      "dropped": {
+        "example": "The heart pumps blood around the body.",
+        "exampleJa": "心臓は体中に血液を送り出します。"
+      }
+    },
+    {
+      "key": "mount|動|を据えつける；に着手する；に乗る；増える|5",
+      "kept": {
+        "example": "The pressure on the team is mounting.",
+        "exampleJa": "そのチームへのプレッシャーは増している。"
+      },
+      "dropped": {
+        "example": "The pressure on the government is mounting.",
+        "exampleJa": "政府への圧力が高まっています。"
+      }
+    },
+    {
+      "key": "undergo|動|を経験する；（手術など）を受ける|5",
+      "kept": {
+        "example": "She will undergo surgery next month.",
+        "exampleJa": "彼女は来月、手術を受けます。"
+      },
+      "dropped": {
+        "example": "She will undergo surgery next month.",
+        "exampleJa": "彼女は来月、手術を受ける予定です。"
+      }
+    },
+    {
+      "key": "confront|動|に立ち向かう；に立ちはだかる|5",
+      "kept": {
+        "example": "It is time to confront the reality of the situation.",
+        "exampleJa": "状況の現実に立ち向かう時です。"
+      },
+      "dropped": {
+        "example": "It is time to confront the challenges that lie ahead.",
+        "exampleJa": "前途に横たわる課題に立ち向かう時が来ました。"
+      }
+    },
+    {
+      "key": "consult|動|（に）相談する；を参照する|5",
+      "kept": {
+        "example": "You should consult a doctor if the symptoms persist.",
+        "exampleJa": "症状が続く場合は、医師に相談すべきです。"
+      },
+      "dropped": {
+        "example": "You should consult a doctor if you feel unwell.",
+        "exampleJa": "気分が悪い場合は、医師に相談すべきです。"
+      }
+    },
+    {
+      "key": "fulfill|動|を実現させる；を果たす；を満たす|5",
+      "kept": {
+        "example": "He worked hard to fulfill his dream of becoming a scientist.",
+        "exampleJa": "彼は科学者になるという夢を実現するために一生懸命働いた。"
+      },
+      "dropped": {
+        "example": "She worked hard to fulfill her lifelong dream.",
+        "exampleJa": "彼女は生涯の夢を実現させるために一生懸命働いた。"
+      }
+    },
+    {
+      "key": "privilege|名|特権，特典|5",
+      "kept": {
+        "example": "Access to good education should be a right, not a privilege.",
+        "exampleJa": "良い教育を受けることは特権ではなく、権利であるべきです。"
+      },
+      "dropped": {
+        "example": "Education should be a right, not a privilege.",
+        "exampleJa": "教育は特権ではなく、権利であるべきです。"
+      }
+    },
+    {
+      "key": "formation|名|形成；構成（物）；隊列|5",
+      "kept": {
+        "example": "The book discusses the formation of character.",
+        "exampleJa": "その本は人格の形成について論じています。"
+      },
+      "dropped": {
+        "example": "The formation of the mountains took millions of years.",
+        "exampleJa": "その山々の形成には何百万年もかかりました。"
+      }
+    },
+    {
+      "key": "dimension|名|側面，局面；次元；寸法|5",
+      "kept": {
+        "example": "We need to consider the problem in all its dimensions.",
+        "exampleJa": "私たちはその問題をあらゆる側面から検討する必要があります。"
+      },
+      "dropped": {
+        "example": "We need to consider the problem in all its dimensions.",
+        "exampleJa": "私たちはその問題をあらゆる側面から考慮する必要があります。"
+      }
+    },
+    {
+      "key": "sensation|名|感覚；大評判|5",
+      "kept": {
+        "example": "He felt a tingling sensation in his fingers.",
+        "exampleJa": "彼は指にチクチクする感覚を感じた。"
+      },
+      "dropped": {
+        "example": "He felt a strange sensation in his arm.",
+        "exampleJa": "彼は腕に奇妙な感覚を感じた。"
+      }
+    },
+    {
+      "key": "chart|名|図，グラフ；海図|5",
+      "kept": {
+        "example": "This chart shows the company's sales growth over the last five years.",
+        "exampleJa": "このグラフは過去5年間の会社の売上成長を示しています。"
+      },
+      "dropped": {
+        "example": "This chart shows the company's sales over the past year.",
+        "exampleJa": "このグラフは過去1年間の会社の売上を示しています。"
+      }
+    },
+    {
+      "key": "geography|名|地理；地理学|5",
+      "kept": {
+        "example": "He is studying the geography of Asia.",
+        "exampleJa": "彼はアジアの地理を勉強しています。"
+      },
+      "dropped": {
+        "example": "She is studying the geography of Southeast Asia.",
+        "exampleJa": "彼女は東南アジアの地理を勉強しています。"
+      }
+    },
+    {
+      "key": "panel|名|（専門家の）一団；討論者一同|5",
+      "kept": {
+        "example": "A panel of experts was invited to discuss the topic.",
+        "exampleJa": "そのトピックについて議論するために専門家の一団が招待された。"
+      },
+      "dropped": {
+        "example": "A panel of experts was invited to discuss the topic.",
+        "exampleJa": "そのトピックを議論するために専門家の一団が招待された。"
+      }
+    },
+    {
+      "key": "semester|名|（2学期制の）学期|5",
+      "kept": {
+        "example": "The fall semester starts in September.",
+        "exampleJa": "秋学期は9月に始まります。"
+      },
+      "dropped": {
+        "example": "The first semester starts in September.",
+        "exampleJa": "前期は9月に始まります。"
+      }
+    },
+    {
+      "key": "workforce|名|労働人口，総労働力|5",
+      "kept": {
+        "example": "The company has a highly skilled workforce.",
+        "exampleJa": "その会社は高度なスキルを持つ労働力を有しています。"
+      },
+      "dropped": {
+        "example": "The company has a very diverse workforce.",
+        "exampleJa": "その会社は非常に多様な労働力を持っています。"
+      }
+    },
+    {
+      "key": "mill|名|製造工場；製粉所|5",
+      "kept": {
+        "example": "The old paper mill has been closed for years.",
+        "exampleJa": "その古い製紙工場は何年も閉鎖されています。"
+      },
+      "dropped": {
+        "example": "The old textile mill is now a museum.",
+        "exampleJa": "その古い織物工場は現在、博物館になっています。"
+      }
+    },
+    {
+      "key": "abuse|名|乱用；虐待|5",
+      "kept": {
+        "example": "Drug abuse is a serious problem in many societies.",
+        "exampleJa": "薬物乱用は多くの社会で深刻な問題です。"
+      },
+      "dropped": {
+        "example": "Drug abuse is a serious problem in many countries.",
+        "exampleJa": "薬物乱用は多くの国で深刻な問題です。"
+      }
+    },
+    {
+      "key": "fate|名|運命；結末；最期|5",
+      "kept": {
+        "example": "She believes that it was her fate to become a writer.",
+        "exampleJa": "彼女は作家になることが自分の運命だと信じています。"
+      },
+      "dropped": {
+        "example": "He believes that it was his fate to become a doctor.",
+        "exampleJa": "彼は医者になるのが自分の運命だと信じています。"
+      }
+    },
+    {
+      "key": "tragedy|名|悲劇（的な事態）|5",
+      "kept": {
+        "example": "The story of Romeo and Juliet is a famous tragedy.",
+        "exampleJa": "ロミオとジュリエットの物語は有名な悲劇です。"
+      },
+      "dropped": {
+        "example": "The play ends in tragedy, with the death of the main characters.",
+        "exampleJa": "その劇は主要な登場人物の死という悲劇で終わります。"
+      }
+    },
+    {
+      "key": "scenario|名|（予想される）筋書き，事態；脚本|5",
+      "kept": {
+        "example": "We need to prepare for a worst-case scenario.",
+        "exampleJa": "私たちは最悪の事態のシナリオに備える必要があります。"
+      },
+      "dropped": {
+        "example": "Let's consider a few possible scenarios.",
+        "exampleJa": "いくつかの考えられるシナリオを検討しましょう。"
+      }
+    },
+    {
+      "key": "allergy|名|アレルギー|5",
+      "kept": {
+        "example": "I have a severe allergy to peanuts.",
+        "exampleJa": "私は重度のピーナッツアレルギーです。"
+      },
+      "dropped": {
+        "example": "She has a severe allergy to peanuts.",
+        "exampleJa": "彼女はピーナッツに重度のアレルギーを持っています。"
+      }
+    },
+    {
+      "key": "wound|名|（銃弾・刃物などによる）傷；痛手|5",
+      "kept": {
+        "example": "The doctor cleaned and bandaged the wound.",
+        "exampleJa": "医者は傷をきれいにし、包帯を巻いた。"
+      },
+      "dropped": {
+        "example": "The soldier received a deep wound in his leg.",
+        "exampleJa": "その兵士は脚に深い傷を負った。"
+      }
+    },
+    {
+      "key": "antibiotic|名|抗生物質|5",
+      "kept": {
+        "example": "The doctor prescribed an antibiotic for the infection.",
+        "exampleJa": "医者はその感染症のために抗生物質を処方した。"
+      },
+      "dropped": {
+        "example": "The doctor prescribed an antibiotic for the infection.",
+        "exampleJa": "医者はその感染症に抗生物質を処方した。"
+      }
+    },
+    {
+      "key": "vaccine|名|ワクチン|5",
+      "kept": {
+        "example": "The new vaccine is effective against the virus.",
+        "exampleJa": "新しいワクチンはそのウイルスに対して効果的です。"
+      },
+      "dropped": {
+        "example": "It is important to get the flu vaccine every year.",
+        "exampleJa": "毎年インフルエンザのワクチンを接種することは重要です。"
+      }
+    },
+    {
+      "key": "metaphor|名|隠喩；比喩|5",
+      "kept": {
+        "example": "In the poem, 'life is a journey' is used as a metaphor.",
+        "exampleJa": "その詩では、「人生は旅である」が隠喩として使われています。"
+      },
+      "dropped": {
+        "example": "'Life is a journey' is a common metaphor.",
+        "exampleJa": "「人生は旅だ」はよくある比喩です。"
+      }
+    },
+    {
+      "key": "folk|名|人々；皆さん；家族|5",
+      "kept": {
+        "example": "The local folk are very welcoming to tourists.",
+        "exampleJa": "地元の人々は観光客をとても歓迎してくれます。"
+      },
+      "dropped": {
+        "example": "The local folk are very friendly to tourists.",
+        "exampleJa": "地元の人々は観光客にとても親切です。"
+      }
+    },
+    {
+      "key": "transition|名|移り変わり；過渡期|5",
+      "kept": {
+        "example": "The transition from high school to college can be challenging.",
+        "exampleJa": "高校から大学への移行は困難な場合があります。"
+      },
+      "dropped": {
+        "example": "The transition from high school to university can be challenging.",
+        "exampleJa": "高校から大学への移行は困難な場合があります。"
+      }
+    },
+    {
+      "key": "galaxy|名|星雲，銀河；銀河系|5",
+      "kept": {
+        "example": "Our solar system is just one part of the Milky Way galaxy.",
+        "exampleJa": "私たちの太陽系は天の川銀河のほんの一部です。"
+      },
+      "dropped": {
+        "example": "Our solar system is located in the Milky Way galaxy.",
+        "exampleJa": "私たちの太陽系は天の川銀河に位置しています。"
+      }
+    },
+    {
+      "key": "counterpart|名|相当する物［人］|5",
+      "kept": {
+        "example": "The president met with his French counterpart.",
+        "exampleJa": "大統領はフランスのカウンターパート（首相）と会談した。"
+      },
+      "dropped": {
+        "example": "The prime minister met with his Canadian counterpart.",
+        "exampleJa": "首相はカナダの首相と会談した。"
+      }
+    },
+    {
+      "key": "stroke|名|脳卒中；（ボールを）打つこと；一撃|5",
+      "kept": {
+        "example": "He suffered a stroke last year.",
+        "exampleJa": "彼は昨年、脳卒中になりました。"
+      },
+      "dropped": {
+        "example": "He had a stroke and was hospitalized.",
+        "exampleJa": "彼は脳卒中を起こして入院した。"
+      }
+    },
+    {
+      "key": "ecology|名|生態学；生態系；環境保護|5",
+      "kept": {
+        "example": "We must protect the delicate ecology of the rainforest.",
+        "exampleJa": "私たちは熱帯雨林の繊細な生態系を保護しなければなりません。"
+      },
+      "dropped": {
+        "example": "The oil spill had a devastating effect on the local ecology.",
+        "exampleJa": "その石油流出は地元の生態系に壊滅的な影響を与えた。"
+      }
+    },
+    {
+      "key": "sibling|名|きょうだい（の1人）|5",
+      "kept": {
+        "example": "Do you have any siblings?",
+        "exampleJa": "きょうだいはいますか？"
+      },
+      "dropped": {
+        "example": "Do you have any siblings?",
+        "exampleJa": "兄弟はいますか？"
+      }
+    },
+    {
+      "key": "ratio|名|比率|5",
+      "kept": {
+        "example": "The ratio of students to teachers is about 20 to 1.",
+        "exampleJa": "生徒と教師の比率は約20対1です。"
+      },
+      "dropped": {
+        "example": "The ratio of students to teachers is 20 to 1.",
+        "exampleJa": "生徒と教師の比率は20対1です。"
+      }
+    },
+    {
+      "key": "mixture|名|混合（物）|5",
+      "kept": {
+        "example": "The city has a rich mixture of cultures.",
+        "exampleJa": "その都市は豊かな文化の混合物です。"
+      },
+      "dropped": {
+        "example": "The city has a rich mixture of cultures.",
+        "exampleJa": "その都市は豊かな文化の混合を持っています。"
+      }
+    },
+    {
+      "key": "charm|名|魅力；お守り|5",
+      "kept": {
+        "example": "She has a natural charm that makes everyone like her.",
+        "exampleJa": "彼女には誰もが好きになる天性の魅力があります。"
+      },
+      "dropped": {
+        "example": "She has a natural charm that makes her popular.",
+        "exampleJa": "彼女には彼女を人気者にする天性の魅力があります。"
+      }
+    },
+    {
+      "key": "prominent|形|卓越した；目立つ|5",
+      "kept": {
+        "example": "He is a prominent figure in the field of science.",
+        "exampleJa": "彼は科学の分野で卓越した人物です。"
+      },
+      "dropped": {
+        "example": "He is a prominent figure in the world of art.",
+        "exampleJa": "彼は芸術界で卓越した人物です。"
+      }
+    },
+    {
+      "key": "informal|形|形式ばらない，略式の|5",
+      "kept": {
+        "example": "We had an informal meeting to discuss the project.",
+        "exampleJa": "私たちはプロジェクトについて話し合うために非公式な会議を開いた。"
+      },
+      "dropped": {
+        "example": "The meeting was very informal and relaxed.",
+        "exampleJa": "その会議は非常に形式ばらず、リラックスしたものだった。"
+      }
+    },
+    {
+      "key": "conspicuous|形|目立つ|6",
+      "kept": {
+        "example": "He was conspicuous by his absence at the meeting.",
+        "exampleJa": "彼が会議に欠席していることは際立っていた。"
+      },
+      "dropped": {
+        "example": "He was conspicuous by his bright red jacket.",
+        "exampleJa": "彼は真っ赤なジャケットで目立っていた。"
+      }
+    },
+    {
+      "key": "circulate|動|循環する|6",
+      "kept": {
+        "example": "The fan helps to circulate the air in the room.",
+        "exampleJa": "扇風機は部屋の空気を循環させるのに役立ちます。"
+      },
+      "dropped": {
+        "example": "Hot water circulates through the pipes to heat the house.",
+        "exampleJa": "温水がパイプを循環して家を暖めます。"
+      }
+    },
+    {
+      "key": "circumvent|動|～を回避する|6",
+      "kept": {
+        "example": "They found a way to circumvent the new regulations.",
+        "exampleJa": "彼らは新しい規制を回避する方法を見つけた。"
+      },
+      "dropped": {
+        "example": "They found a way to circumvent the security system.",
+        "exampleJa": "彼らはそのセキュリティシステムを回避する方法を見つけた。"
+      }
+    },
+    {
+      "key": "close in on|熟語|～に迫る|6",
+      "kept": {
+        "example": "The police are closing in on the suspect.",
+        "exampleJa": "警察は容疑者に迫っている。"
+      },
+      "dropped": {
+        "example": "The police were closing in on the suspect.",
+        "exampleJa": "警察は容疑者に迫っていた。"
+      }
+    },
+    {
+      "key": "come about|熟語|起こる|6",
+      "kept": {
+        "example": "How did the accident come about?",
+        "exampleJa": "その事故はどのようにして起こったのですか？"
+      },
+      "dropped": {
+        "example": "How did this misunderstanding come about?",
+        "exampleJa": "この誤解はどのようにして起こったのですか？"
+      }
+    },
+    {
+      "key": "come along|熟語|やって来る|6",
+      "kept": {
+        "example": "Come along with us to the park.",
+        "exampleJa": "私たちと一緒に公園に来てください。"
+      },
+      "dropped": {
+        "example": "A great opportunity has come along for our company.",
+        "exampleJa": "我々の会社に素晴らしい機会がやってきた。"
+      }
+    },
+    {
+      "key": "come by|熟語|～を手に入れる|6",
+      "kept": {
+        "example": "Good jobs are hard to come by these days.",
+        "exampleJa": "最近は良い仕事を手に入れるのが難しい。"
+      },
+      "dropped": {
+        "example": "Good jobs are hard to come by these days.",
+        "exampleJa": "近頃、良い仕事を手に入れるのは難しい。"
+      }
+    },
+    {
+      "key": "come into being|熟語|出現する|6",
+      "kept": {
+        "example": "The new law came into being last year.",
+        "exampleJa": "その新しい法律は昨年施行された。"
+      },
+      "dropped": {
+        "example": "The new law came into being last year.",
+        "exampleJa": "新しい法律は昨年、出現した（施行された）。"
+      }
+    },
+    {
+      "key": "come into effect|熟語|（法律などが）発効する|6",
+      "kept": {
+        "example": "The new rules will come into effect next month.",
+        "exampleJa": "新しい規則は来月発効します。"
+      },
+      "dropped": {
+        "example": "The new regulations will come into effect next month.",
+        "exampleJa": "新しい規制は来月から発効します。"
+      }
+    },
+    {
+      "key": "come of age|熟語|成人になる|6",
+      "kept": {
+        "example": "In Japan, people come of age at 18.",
+        "exampleJa": "日本では、人々は18歳で成人になります。"
+      },
+      "dropped": {
+        "example": "In Japan, people come of age at 18.",
+        "exampleJa": "日本では18歳で成人になります。"
+      }
+    },
+    {
+      "key": "come out|熟語|現れる|6",
+      "kept": {
+        "example": "The sun came out from behind the clouds.",
+        "exampleJa": "太陽が雲の後ろから現れた。"
+      },
+      "dropped": {
+        "example": "The stars come out at night.",
+        "exampleJa": "夜になると星が現れます。"
+      }
+    },
+    {
+      "key": "come to|熟語|意識を取り戻す|6",
+      "kept": {
+        "example": "He fainted, but he came to after a few minutes.",
+        "exampleJa": "彼は気絶したが、数分後に意識を取り戻した。"
+      },
+      "dropped": {
+        "example": "She fainted, but she came to after a few minutes.",
+        "exampleJa": "彼女は気絶したが、数分後に意識を取り戻した。"
+      }
+    },
+    {
+      "key": "come to an end|熟語|終わる|6",
+      "kept": {
+        "example": "The long meeting finally came to an end.",
+        "exampleJa": "その長い会議はついに終わった。"
+      },
+      "dropped": {
+        "example": "The long meeting finally came to an end.",
+        "exampleJa": "長い会議がついに終わった。"
+      }
+    },
+    {
+      "key": "come to light|熟語|明るみに出る|6",
+      "kept": {
+        "example": "New evidence has come to light in the case.",
+        "exampleJa": "その事件で新しい証拠が明るみに出た。"
+      },
+      "dropped": {
+        "example": "The truth about the scandal finally came to light.",
+        "exampleJa": "そのスキャンダルに関する真実がついに明るみに出た。"
+      }
+    },
+    {
+      "key": "come true|熟語|実現する|6",
+      "kept": {
+        "example": "I hope my dream will come true someday.",
+        "exampleJa": "いつか私の夢が実現することを願っています。"
+      },
+      "dropped": {
+        "example": "Her dream of becoming a singer finally came true.",
+        "exampleJa": "歌手になるという彼女の夢がついに実現した。"
+      }
+    },
+    {
+      "key": "come up with|熟語|～を思いつく|6",
+      "kept": {
+        "example": "She came up with a great idea for the new project.",
+        "exampleJa": "彼女は新しいプロジェクトのための素晴らしいアイデアを思いついた。"
+      },
+      "dropped": {
+        "example": "She came up with a brilliant idea for the project.",
+        "exampleJa": "彼女はそのプロジェクトのために素晴らしいアイデアを思いついた。"
+      }
+    },
+    {
+      "key": "comprehensive|形|包括的な|6",
+      "kept": {
+        "example": "The book provides a comprehensive guide to the city.",
+        "exampleJa": "その本はその都市の包括的なガイドを提供しています。"
+      },
+      "dropped": {
+        "example": "The book provides a comprehensive guide to the city's history.",
+        "exampleJa": "その本はその都市の歴史に関する包括的なガイドを提供しています。"
+      }
+    },
+    {
+      "key": "concede|動|～を認める|6",
+      "kept": {
+        "example": "He finally conceded that he had made a mistake.",
+        "exampleJa": "彼はついに自分が間違いを犯したことを認めた。"
+      },
+      "dropped": {
+        "example": "He finally conceded that she was right.",
+        "exampleJa": "彼はついに彼女が正しいと認めた。"
+      }
+    },
+    {
+      "key": "condense|動|～を凝縮する|6",
+      "kept": {
+        "example": "Could you condense this long report into a few pages?",
+        "exampleJa": "この長い報告書を数ページに要約していただけますか？"
+      },
+      "dropped": {
+        "example": "Please condense this long report into a one-page summary.",
+        "exampleJa": "この長いレポートを1ページの要約に凝縮してください。"
+      }
+    },
+    {
+      "key": "conscientious|形|良心的な|6",
+      "kept": {
+        "example": "She is a very conscientious and hardworking employee.",
+        "exampleJa": "彼女は非常に良心的で勤勉な従業員です。"
+      },
+      "dropped": {
+        "example": "She is a conscientious student who always does her homework.",
+        "exampleJa": "彼女はいつも宿題をする良心的な生徒です。"
+      }
+    },
+    {
+      "key": "consecutive|形|連続した|6",
+      "kept": {
+        "example": "The team has won five consecutive games.",
+        "exampleJa": "そのチームは5試合連続で勝利しています。"
+      },
+      "dropped": {
+        "example": "It has rained for five consecutive days.",
+        "exampleJa": "5日間連続で雨が降っています。"
+      }
+    },
+    {
+      "key": "considerable|形|かなりの|6",
+      "kept": {
+        "example": "The project required a considerable amount of time and money.",
+        "exampleJa": "そのプロジェクトはかなりの時間と費用を必要とした。"
+      },
+      "dropped": {
+        "example": "The project required a considerable amount of time and effort.",
+        "exampleJa": "そのプロジェクトはかなりの時間と労力を必要とした。"
+      }
+    },
+    {
+      "key": "consistent|形|首尾一貫した|6",
+      "kept": {
+        "example": "His actions are not consistent with his words.",
+        "exampleJa": "彼の行動は言葉と一致していません。"
+      },
+      "dropped": {
+        "example": "His actions are not consistent with his words.",
+        "exampleJa": "彼の行動は彼の言葉と一致していません。"
+      }
+    },
+    {
+      "key": "conspicuous|形|目立つ|6",
+      "kept": {
+        "example": "He was conspicuous by his absence at the meeting.",
+        "exampleJa": "彼が会議に欠席していることは際立っていた。"
+      },
+      "dropped": {
+        "example": "He was conspicuous by his absence at the important meeting.",
+        "exampleJa": "彼がその重要な会議に欠席していることは際立っていた。"
+      }
+    },
+    {
+      "key": "constraint|名|制約|6",
+      "kept": {
+        "example": "We have to work within the constraints of a tight budget.",
+        "exampleJa": "私たちは厳しい予算の制約の中で働かなければなりません。"
+      },
+      "dropped": {
+        "example": "We have to work within the constraints of the budget.",
+        "exampleJa": "私たちは予算の制約内で作業しなければなりません。"
+      }
+    },
+    {
+      "key": "consul|名|領事|6",
+      "kept": {
+        "example": "You may need to visit the consul at the embassy.",
+        "exampleJa": "大使館の領事に会う必要があるかもしれません。"
+      },
+      "dropped": {
+        "example": "He works as a consul at the embassy.",
+        "exampleJa": "彼は大使館で領事として働いています。"
+      }
+    },
+    {
+      "key": "contemplate|動|～を熟考する|6",
+      "kept": {
+        "example": "She is contemplating her future career.",
+        "exampleJa": "彼女は将来のキャリアについて熟考しています。"
+      },
+      "dropped": {
+        "example": "He is contemplating a major career change.",
+        "exampleJa": "彼は大きなキャリアチェンジを熟考しています。"
+      }
+    },
+    {
+      "key": "contradiction|名|矛盾|6",
+      "kept": {
+        "example": "There is a contradiction between what he says and what he does.",
+        "exampleJa": "彼の言うこととすることの間には矛盾があります。"
+      },
+      "dropped": {
+        "example": "There is a contradiction between his words and his actions.",
+        "exampleJa": "彼の言葉と行動には矛盾があります。"
+      }
+    },
+    {
+      "key": "contradictory|形|矛盾した|6",
+      "kept": {
+        "example": "The two witnesses gave contradictory accounts of the event.",
+        "exampleJa": "その2人の目撃者はその出来事について矛盾した説明をした。"
+      },
+      "dropped": {
+        "example": "The two witnesses gave contradictory accounts of the event.",
+        "exampleJa": "その2人の目撃者は、その出来事について矛盾した説明をした。"
+      }
+    },
+    {
+      "key": "conversely|副|逆に|6",
+      "kept": {
+        "example": "He is very talkative; conversely, his sister is very quiet.",
+        "exampleJa": "彼はおしゃべりですが、逆に、彼の妹はとても物静かです。"
+      },
+      "dropped": {
+        "example": "Some people love the city; conversely, others prefer the countryside.",
+        "exampleJa": "都会を愛する人もいれば、逆に田舎を好む人もいます。"
+      }
+    },
+    {
+      "key": "conversion|名|転換|6",
+      "kept": {
+        "example": "The conversion of the old factory into apartments was a great success.",
+        "exampleJa": "その古い工場のアパートへの転換は大成功でした。"
+      },
+      "dropped": {
+        "example": "The conversion of the old factory into apartments took two years.",
+        "exampleJa": "古い工場のアパートへの転換には2年かかりました。"
+      }
+    },
+    {
+      "key": "corrupt|形|腐敗した|6",
+      "kept": {
+        "example": "He is a corrupt politician who accepts bribes.",
+        "exampleJa": "彼は賄賂を受け取る腐敗した政治家です。"
+      },
+      "dropped": {
+        "example": "The country is trying to fight against corrupt officials.",
+        "exampleJa": "その国は腐敗した役人と戦おうとしています。"
+      }
+    },
+    {
+      "key": "count on|熟語|～を当てにする|6",
+      "kept": {
+        "example": "You can count on me to help you.",
+        "exampleJa": "私があなたを助けることを当てにしていいですよ。"
+      },
+      "dropped": {
+        "example": "You can always count on him for help.",
+        "exampleJa": "あなたはいつも彼の助けを当てにすることができます。"
+      }
+    },
+    {
+      "key": "cozy|形|居心地の良い|6",
+      "kept": {
+        "example": "The small room was warm and cozy.",
+        "exampleJa": "その小さな部屋は暖かくて居心地が良かった。"
+      },
+      "dropped": {
+        "example": "We spent a cozy evening by the fireplace.",
+        "exampleJa": "私たちは暖炉のそばで居心地の良い夜を過ごした。"
+      }
+    },
+    {
+      "key": "credible|形|信用できる|6",
+      "kept": {
+        "example": "The police received a credible tip from an anonymous source.",
+        "exampleJa": "警察は匿名の情報源から信頼できる密告を受け取った。"
+      },
+      "dropped": {
+        "example": "The police received a credible tip from an anonymous source.",
+        "exampleJa": "警察は匿名の情報源から信用できる密告を受け取った。"
+      }
+    },
+    {
+      "key": "creep|動|忍び寄る|6",
+      "kept": {
+        "example": "He crept silently into the room.",
+        "exampleJa": "彼は静かに部屋に忍び込んだ。"
+      },
+      "dropped": {
+        "example": "He crept silently into the room.",
+        "exampleJa": "彼は静かに部屋に忍び寄った。"
+      }
+    },
+    {
+      "key": "criterion|名|基準|6",
+      "kept": {
+        "example": "What is the main criterion for choosing the winner?",
+        "exampleJa": "勝者を選ぶ主な基準は何ですか？"
+      },
+      "dropped": {
+        "example": "What is the main criterion for choosing a university?",
+        "exampleJa": "大学を選ぶ主な基準は何ですか？"
+      }
+    },
+    {
+      "key": "cross out|熟語|～を線で消す|6",
+      "kept": {
+        "example": "Please cross out the incorrect answers.",
+        "exampleJa": "間違った答えを線で消してください。"
+      },
+      "dropped": {
+        "example": "Please cross out any incorrect answers.",
+        "exampleJa": "間違った答えは線で消してください。"
+      }
+    },
+    {
+      "key": "curiosity|名|好奇心|6",
+      "kept": {
+        "example": "Children have a natural curiosity about the world.",
+        "exampleJa": "子供たちは世界に対して自然な好奇心を持っています。"
+      },
+      "dropped": {
+        "example": "Children have a natural curiosity about the world.",
+        "exampleJa": "子供たちは世界に対する自然な好奇心を持っています。"
+      }
+    },
+    {
+      "key": "currently|副|現在は|6",
+      "kept": {
+        "example": "The product is currently unavailable.",
+        "exampleJa": "その製品は現在入手不可能です。"
+      },
+      "dropped": {
+        "example": "He is currently working on a new project.",
+        "exampleJa": "彼は現在、新しいプロジェクトに取り組んでいます。"
+      }
+    },
+    {
+      "key": "cut down on|熟語|～を減らす|6",
+      "kept": {
+        "example": "You should cut down on the amount of fast food you eat.",
+        "exampleJa": "あなたは食べるファストフードの量を減らすべきです。"
+      },
+      "dropped": {
+        "example": "You should cut down on the amount of fat you eat.",
+        "exampleJa": "あなたは脂肪の摂取量を減らすべきです。"
+      }
+    },
+    {
+      "key": "cut in|熟語|口を挟む|6",
+      "kept": {
+        "example": "Sorry to cut in, but I have an important message.",
+        "exampleJa": "お話の途中すみませんが、緊急の伝言があります。"
+      },
+      "dropped": {
+        "example": "Sorry to cut in, but I have a question.",
+        "exampleJa": "お話の途中で申し訳ありませんが、質問があります。"
+      }
+    },
+    {
+      "key": "cut off|熟語|～を切り離す|6",
+      "kept": {
+        "example": "The town was cut off from the rest of the world by the flood.",
+        "exampleJa": "その町は洪水によって外界から切り離された。"
+      },
+      "dropped": {
+        "example": "The small village was cut off from the rest of the world by the snow.",
+        "exampleJa": "その小さな村は雪によって外界から切り離された。"
+      }
+    },
+    {
+      "key": "cynicism|名|皮肉|6",
+      "kept": {
+        "example": "His cynicism made it difficult for him to trust anyone.",
+        "exampleJa": "彼の皮肉な態度のせいで、彼は誰も信用するのが難しかった。"
+      },
+      "dropped": {
+        "example": "His comments were full of cynicism.",
+        "exampleJa": "彼のコメントは皮肉に満ちていた。"
+      }
+    },
+    {
+      "key": "dawn|名|夜明け|6",
+      "kept": {
+        "example": "We woke up at dawn to see the sunrise.",
+        "exampleJa": "私たちは日の出を見るために夜明けに起きた。"
+      },
+      "dropped": {
+        "example": "We woke up at dawn to watch the sunrise.",
+        "exampleJa": "私たちは日の出を見るために夜明けに起きた。"
+      }
+    },
+    {
+      "key": "dedication|名|献身|6",
+      "kept": {
+        "example": "Her dedication to her work is admirable.",
+        "exampleJa": "彼女の仕事への献身は素晴らしい。"
+      },
+      "dropped": {
+        "example": "She is admired for her dedication to her work.",
+        "exampleJa": "彼女は仕事への献身で賞賛されている。"
+      }
+    },
+    {
+      "key": "defy|動|～に逆らう|6",
+      "kept": {
+        "example": "He defied his parents' wishes and became a musician.",
+        "exampleJa": "彼は両親の願いに逆らって音楽家になった。"
+      },
+      "dropped": {
+        "example": "He defied his parents and decided to become an artist.",
+        "exampleJa": "彼は両親に逆らって芸術家になることを決めた。"
+      }
+    },
+    {
+      "key": "degenerate|動|悪化する|6",
+      "kept": {
+        "example": "The situation could degenerate into violence.",
+        "exampleJa": "状況は暴力にまで悪化する可能性があります。"
+      },
+      "dropped": {
+        "example": "The situation could degenerate into a civil war.",
+        "exampleJa": "その状況は内戦に悪化する可能性がある。"
+      }
+    },
+    {
+      "key": "degrade|動|～の品位を下げる|6",
+      "kept": {
+        "example": "He felt that the new job was degrading.",
+        "exampleJa": "彼は新しい仕事が品位を下げるものだと感じた。"
+      },
+      "dropped": {
+        "example": "We should not degrade others for their beliefs.",
+        "exampleJa": "私たちは他人の信念のためにその品位を下げるべきではない。"
+      }
+    },
+    {
+      "key": "delinquent|形|非行の|6",
+      "kept": {
+        "example": "The program helps juvenile delinquents get back on the right track.",
+        "exampleJa": "そのプログラムは少年非行者が正しい道に戻るのを助けます。"
+      },
+      "dropped": {
+        "example": "The school has a program for juvenile delinquents.",
+        "exampleJa": "その学校には少年非行者のためのプログラムがあります。"
+      }
+    },
+    {
+      "key": "demise|名|終焉|6",
+      "kept": {
+        "example": "The invention of the internet led to the demise of many traditional businesses.",
+        "exampleJa": "インターネットの発明は、多くの伝統的なビジネスの終焉につながった。"
+      },
+      "dropped": {
+        "example": "The company's demise was caused by poor management.",
+        "exampleJa": "その会社の終焉は、劣悪な経営によって引き起こされた。"
+      }
+    },
+    {
+      "key": "demography|名|人口統計学|6",
+      "kept": {
+        "example": "She is an expert in the demography of developing countries.",
+        "exampleJa": "彼女は発展途上国の人口統計学の専門家です。"
+      },
+      "dropped": {
+        "example": "Demography is the study of human populations.",
+        "exampleJa": "人口統計学は人間の人口の研究です。"
+      }
+    },
+    {
+      "key": "demolish|動|～を取り壊す|6",
+      "kept": {
+        "example": "The old building was demolished to make way for a new one.",
+        "exampleJa": "その古い建物は新しいもののために取り壊された。"
+      },
+      "dropped": {
+        "example": "They are going to demolish the old building.",
+        "exampleJa": "彼らはその古い建物を取り壊す予定です。"
+      }
+    },
+    {
+      "key": "denounce|動|～を非難する|6",
+      "kept": {
+        "example": "The politician's actions were denounced by the public.",
+        "exampleJa": "その政治家の行動は国民から非難された。"
+      },
+      "dropped": {
+        "example": "He denounced the government's actions as a betrayal of trust.",
+        "exampleJa": "彼は政府の行動を信頼の裏切りだと非難した。"
+      }
+    },
+    {
+      "key": "deplore|動|～を嘆く|6",
+      "kept": {
+        "example": "We deplore the loss of life in the accident.",
+        "exampleJa": "私たちはその事故での人命の損失を嘆きます。"
+      },
+      "dropped": {
+        "example": "We deplore the use of violence.",
+        "exampleJa": "私たちは暴力の使用を嘆きます。"
+      }
+    },
+    {
+      "key": "deprive a of b|熟語|aからbを奪う|6",
+      "kept": {
+        "example": "The new law deprived them of their rights.",
+        "exampleJa": "新しい法律は彼らから権利を奪った。"
+      },
+      "dropped": {
+        "example": "The new law will deprive many people of their basic rights.",
+        "exampleJa": "新しい法律は多くの人々から基本的な権利を奪うだろう。"
+      }
+    },
+    {
+      "key": "deputy|名|代理（人）|6",
+      "kept": {
+        "example": "The deputy mayor will attend the meeting.",
+        "exampleJa": "副市長がその会議に出席します。"
+      },
+      "dropped": {
+        "example": "He is the deputy manager of the department.",
+        "exampleJa": "彼はその部署の副部長です。"
+      }
+    },
+    {
+      "key": "desolate|形|荒涼とした|6",
+      "kept": {
+        "example": "The landscape was desolate and empty.",
+        "exampleJa": "その風景は荒涼としていて何もない。"
+      },
+      "dropped": {
+        "example": "They traveled through a desolate and empty landscape.",
+        "exampleJa": "彼らは荒涼として何もない風景の中を旅した。"
+      }
+    },
+    {
+      "key": "despise|動|～を軽蔑する|6",
+      "kept": {
+        "example": "She despised him for his dishonesty.",
+        "exampleJa": "彼女は彼の不正直さを軽蔑した。"
+      },
+      "dropped": {
+        "example": "She despises people who are cruel to animals.",
+        "exampleJa": "彼女は動物に残酷な人々を軽蔑しています。"
+      }
+    },
+    {
+      "key": "detach|動|～を切り離す|6",
+      "kept": {
+        "example": "Please detach the form and return it to us.",
+        "exampleJa": "その用紙を切り離して、私たちに返送してください。"
+      },
+      "dropped": {
+        "example": "Please detach the form at the bottom of the page.",
+        "exampleJa": "ページの下部にある用紙を切り離してください。"
+      }
+    },
+    {
+      "key": "detain|動|～を拘留する|6",
+      "kept": {
+        "example": "The police detained the suspect for questioning.",
+        "exampleJa": "警察は容疑者を尋問のために拘留した。"
+      },
+      "dropped": {
+        "example": "The police detained him for questioning.",
+        "exampleJa": "警察は彼を尋問のために拘留した。"
+      }
+    },
+    {
+      "key": "deteriorate|動|悪化する|6",
+      "kept": {
+        "example": "His health has deteriorated in recent weeks.",
+        "exampleJa": "彼の健康はここ数週間で悪化した。"
+      },
+      "dropped": {
+        "example": "His health has deteriorated in recent months.",
+        "exampleJa": "彼の健康はここ数ヶ月で悪化した。"
+      }
+    },
+    {
+      "key": "detest|動|～をひどく嫌う|6",
+      "kept": {
+        "example": "I detest dishonest people.",
+        "exampleJa": "私は不正直な人々をひどく嫌います。"
+      },
+      "dropped": {
+        "example": "I detest people who are cruel to animals.",
+        "exampleJa": "私は動物に残酷な人々をひどく嫌います。"
+      }
+    },
+    {
+      "key": "detour|名|回り道|6",
+      "kept": {
+        "example": "We had to take a detour because of the road closure.",
+        "exampleJa": "道路閉鎖のため、私たちは回り道をしなければならなかった。"
+      },
+      "dropped": {
+        "example": "We had to take a detour because the main road was closed.",
+        "exampleJa": "主要道路が閉鎖されていたため、私たちは回り道をしなければならなかった。"
+      }
+    },
+    {
+      "key": "detrimental|形|有害な|6",
+      "kept": {
+        "example": "Smoking has a detrimental effect on your health.",
+        "exampleJa": "喫煙は健康に有害な影響を及ぼします。"
+      },
+      "dropped": {
+        "example": "Smoking is detrimental to your health.",
+        "exampleJa": "喫煙はあなたの健康に有害です。"
+      }
+    },
+    {
+      "key": "devastate|動|～を壊滅させる|6",
+      "kept": {
+        "example": "The hurricane devastated the coastal town.",
+        "exampleJa": "そのハリケーンは沿岸の町を壊滅させた。"
+      },
+      "dropped": {
+        "example": "The earthquake devastated the entire city.",
+        "exampleJa": "その地震は都市全体を壊滅させた。"
+      }
+    },
+    {
+      "key": "devour|動|～をむさぼり食う|6",
+      "kept": {
+        "example": "The hungry lion devoured its prey.",
+        "exampleJa": "その空腹のライオンは獲物をむさぼり食った。"
+      },
+      "dropped": {
+        "example": "The hungry lion devoured its prey.",
+        "exampleJa": "空腹のライオンは獲物をむさぼり食った。"
+      }
+    },
+    {
+      "key": "die down|熟語|静まる|6",
+      "kept": {
+        "example": "The storm finally died down.",
+        "exampleJa": "その嵐はついに静まった。"
+      },
+      "dropped": {
+        "example": "The excitement of the crowd finally died down.",
+        "exampleJa": "群衆の興奮はついに静まった。"
+      }
+    },
+    {
+      "key": "die out|熟語|絶滅する|6",
+      "kept": {
+        "example": "Many species have died out due to climate change.",
+        "exampleJa": "多くの種が気候変動のために絶滅しました。"
+      },
+      "dropped": {
+        "example": "Many species are in danger of dying out.",
+        "exampleJa": "多くの種が絶滅の危機に瀕しています。"
+      }
+    },
+    {
+      "key": "differentiate|動|～を区別する|6",
+      "kept": {
+        "example": "It is important to differentiate between fact and opinion.",
+        "exampleJa": "事実と意見を区別することは重要です。"
+      },
+      "dropped": {
+        "example": "It is important to differentiate between facts and opinions.",
+        "exampleJa": "事実と意見を区別することは重要です。"
+      }
+    },
+    {
+      "key": "dilute|動|～を薄める|6",
+      "kept": {
+        "example": "You should dilute the juice with water.",
+        "exampleJa": "そのジュースは水で薄めるべきです。"
+      },
+      "dropped": {
+        "example": "You should dilute the juice with some water.",
+        "exampleJa": "そのジュースは水で薄めるべきです。"
+      }
+    },
+    {
+      "key": "disclose|動|～を公表する|6",
+      "kept": {
+        "example": "The company refused to disclose the details of the agreement.",
+        "exampleJa": "その会社は契約の詳細を公表することを拒否した。"
+      },
+      "dropped": {
+        "example": "The company is required to disclose its financial information to the public.",
+        "exampleJa": "その会社は財務情報を一般に公表することが義務付けられています。"
+      }
+    },
+    {
+      "key": "disdain|名|軽蔑|6",
+      "kept": {
+        "example": "She looked at him with disdain.",
+        "exampleJa": "彼女は彼を軽蔑の目で見た。"
+      },
+      "dropped": {
+        "example": "He looked at the suggestion with disdain.",
+        "exampleJa": "彼はその提案を軽蔑の目で見た。"
+      }
+    },
+    {
+      "key": "disembark|動|～から降りる|6",
+      "kept": {
+        "example": "The passengers disembarked from the ship.",
+        "exampleJa": "乗客は船から降りた。"
+      },
+      "dropped": {
+        "example": "The passengers began to disembark from the ship.",
+        "exampleJa": "乗客たちは船から降り始めた。"
+      }
+    },
+    {
+      "key": "disgrace|名|不名誉|6",
+      "kept": {
+        "example": "He brought disgrace to his family.",
+        "exampleJa": "彼は家族に不名誉をもたらした。"
+      },
+      "dropped": {
+        "example": "He brought disgrace upon his entire family.",
+        "exampleJa": "彼は家族全員に不名誉をもたらした。"
+      }
+    },
+    {
+      "key": "disintegrate|動|崩壊する|6",
+      "kept": {
+        "example": "The old building is starting to disintegrate.",
+        "exampleJa": "その古い建物は崩壊し始めている。"
+      },
+      "dropped": {
+        "example": "The old building began to disintegrate after the earthquake.",
+        "exampleJa": "その古い建物は地震の後、崩壊し始めた。"
+      }
+    },
+    {
+      "key": "dismal|形|陰気な|6",
+      "kept": {
+        "example": "The weather was dismal and rainy.",
+        "exampleJa": "天気はどんよりとして雨が降っていた。"
+      },
+      "dropped": {
+        "example": "The rainy weather made the day feel dismal.",
+        "exampleJa": "雨天のせいでその日は陰気に感じられた。"
+      }
+    },
+    {
+      "key": "dismissal|名|解雇|6",
+      "kept": {
+        "example": "He received a letter of dismissal from his job.",
+        "exampleJa": "彼は仕事からの解雇通知を受け取った。"
+      },
+      "dropped": {
+        "example": "His dismissal from the company came as a shock.",
+        "exampleJa": "彼の会社からの解雇は衝撃だった。"
+      }
+    },
+    {
+      "key": "dispatch|動|～を派遣する|6",
+      "kept": {
+        "example": "The company dispatched a team of engineers to fix the problem.",
+        "exampleJa": "その会社は問題を修理するためにエンジニアのチームを派遣した。"
+      },
+      "dropped": {
+        "example": "The company will dispatch the order tomorrow.",
+        "exampleJa": "その会社は明日、注文品を発送します。"
+      }
+    },
+    {
+      "key": "dispense with|熟語|～なしで済ます|6",
+      "kept": {
+        "example": "We can dispense with the formalities.",
+        "exampleJa": "形式的なことは抜きにしましょう。"
+      },
+      "dropped": {
+        "example": "With new technology, we can dispense with many manual tasks.",
+        "exampleJa": "新しい技術のおかげで、多くの手作業をなしで済ますことができる。"
+      }
+    },
+    {
+      "key": "disperse|動|～を分散させる|6",
+      "kept": {
+        "example": "The police dispersed the crowd.",
+        "exampleJa": "警察は群衆を解散させた。"
+      },
+      "dropped": {
+        "example": "The police used tear gas to disperse the crowd.",
+        "exampleJa": "警察は群衆を分散させるために催涙ガスを使用した。"
+      }
+    },
+    {
+      "key": "dispose of|熟語|～を処分する|6",
+      "kept": {
+        "example": "Please dispose of your trash properly.",
+        "exampleJa": "ごみは適切に処分してください。"
+      },
+      "dropped": {
+        "example": "Please dispose of your trash in the proper bin.",
+        "exampleJa": "ゴミは適切なゴミ箱に処分してください。"
+      }
+    },
+    {
+      "key": "disposition|名|気質|6",
+      "kept": {
+        "example": "She has a cheerful and friendly disposition.",
+        "exampleJa": "彼女は明るくフレンドリーな気質を持っています。"
+      },
+      "dropped": {
+        "example": "She has a cheerful and friendly disposition.",
+        "exampleJa": "彼女は陽気で親しみやすい気質をしている。"
+      }
+    },
+    {
+      "key": "disregard|動|～を無視する|6",
+      "kept": {
+        "example": "He disregarded the doctor's advice and continued to smoke.",
+        "exampleJa": "彼は医者の忠告を無視して喫煙を続けた。"
+      },
+      "dropped": {
+        "example": "He chose to disregard the warning signs.",
+        "exampleJa": "彼はその警告サインを無視することを選んだ。"
+      }
+    },
+    {
+      "key": "disrupt|動|～を混乱させる|6",
+      "kept": {
+        "example": "The protest disrupted traffic in the city.",
+        "exampleJa": "その抗議活動は市内の交通を混乱させた。"
+      },
+      "dropped": {
+        "example": "The protest disrupted traffic in the city center.",
+        "exampleJa": "その抗議活動は市の中心部の交通を混乱させた。"
+      }
+    },
+    {
+      "key": "disseminate|動|～を広める|6",
+      "kept": {
+        "example": "The internet is a powerful tool for disseminating information.",
+        "exampleJa": "インターネットは情報を広めるための強力なツールです。"
+      },
+      "dropped": {
+        "example": "The internet is a powerful tool to disseminate information.",
+        "exampleJa": "インターネットは情報を広めるための強力なツールです。"
+      }
+    },
+    {
+      "key": "dissuade a from b|熟語|aにbを思いとどまらせる|6",
+      "kept": {
+        "example": "He tried to dissuade her from quitting her job.",
+        "exampleJa": "彼は彼女に仕事を辞めるのを思いとどまらせようとした。"
+      },
+      "dropped": {
+        "example": "I tried to dissuade him from quitting his job.",
+        "exampleJa": "私は彼に仕事を辞めるのを思いとどまらせようとした。"
+      }
+    },
+    {
+      "key": "distill|動|～を蒸留する|6",
+      "kept": {
+        "example": "They distill the whiskey in large copper pots.",
+        "exampleJa": "彼らは大きな銅製のポットでウィスキーを蒸留します。"
+      },
+      "dropped": {
+        "example": "Whiskey is made by distilling fermented grain.",
+        "exampleJa": "ウイスキーは発酵させた穀物を蒸留して作られます。"
+      }
+    },
+    {
+      "key": "distraught|形|取り乱した|6",
+      "kept": {
+        "example": "She was distraught with grief.",
+        "exampleJa": "彼女は悲しみのあまり取り乱していた。"
+      },
+      "dropped": {
+        "example": "She was distraught over the loss of her pet.",
+        "exampleJa": "彼女はペットを失って取り乱していた。"
+      }
+    },
+    {
+      "key": "distress|名|苦悩|6",
+      "kept": {
+        "example": "The family was in great distress after the fire.",
+        "exampleJa": "その家族は火事の後、大きな苦悩の中にいた。"
+      },
+      "dropped": {
+        "example": "The charity provides help to people in financial distress.",
+        "exampleJa": "その慈善団体は経済的苦境にある人々を支援しています。"
+      }
+    },
+    {
+      "key": "distrust|名|不信|6",
+      "kept": {
+        "example": "There is a deep distrust between the two countries.",
+        "exampleJa": "両国間には深い不信感があります。"
+      },
+      "dropped": {
+        "example": "There is a deep distrust between the two communities.",
+        "exampleJa": "その2つのコミュニティの間には深い不信感があります。"
+      }
+    },
+    {
+      "key": "ditch|名|溝|6",
+      "kept": {
+        "example": "The car ended up in a ditch.",
+        "exampleJa": "その車は溝に落ちてしまった。"
+      },
+      "dropped": {
+        "example": "The car swerved and ended up in a ditch.",
+        "exampleJa": "その車は急ハンドルを切って溝に落ちた。"
+      }
+    },
+    {
+      "key": "dive|動|飛び込む|6",
+      "kept": {
+        "example": "He dived into the pool.",
+        "exampleJa": "彼はプールに飛び込んだ。"
+      },
+      "dropped": {
+        "example": "He dived into the swimming pool.",
+        "exampleJa": "彼はスイミングプールに飛び込んだ。"
+      }
+    },
+    {
+      "key": "diverse|形|多様な|6",
+      "kept": {
+        "example": "The city has a diverse population.",
+        "exampleJa": "その都市は多様な人口を抱えています。"
+      },
+      "dropped": {
+        "example": "The city has a very diverse population.",
+        "exampleJa": "その都市は非常に多様な人口を抱えています。"
+      }
+    },
+    {
+      "key": "do away with|熟語|～を廃止する|6",
+      "kept": {
+        "example": "The government should do away with this old law.",
+        "exampleJa": "政府はこの古い法律を廃止すべきです。"
+      },
+      "dropped": {
+        "example": "The school decided to do away with the old uniform.",
+        "exampleJa": "その学校は古い制服を廃止することに決めた。"
+      }
+    },
+    {
+      "key": "do over|熟語|～をやり直す|6",
+      "kept": {
+        "example": "I had to do the whole report over because of a small mistake.",
+        "exampleJa": "小さなミスのために、私はレポート全体をやり直さなければならなかった。"
+      },
+      "dropped": {
+        "example": "I had to do the entire report over because of a small mistake.",
+        "exampleJa": "小さなミスのために、私はレポート全体をやり直さなければならなかった。"
+      }
+    },
+    {
+      "key": "do without|熟語|～なしで済ます|6",
+      "kept": {
+        "example": "I can't do without my smartphone.",
+        "exampleJa": "私はスマートフォンなしでは済ますことができません。"
+      },
+      "dropped": {
+        "example": "We had to do without electricity for a few days after the storm.",
+        "exampleJa": "嵐の後、私たちは数日間電気なしで済まさなければならなかった。"
+      }
+    },
+    {
+      "key": "docile|形|従順な|6",
+      "kept": {
+        "example": "The horse is very docile and easy to ride.",
+        "exampleJa": "その馬は非常に従順で乗りやすいです。"
+      },
+      "dropped": {
+        "example": "The horse was very docile and easy to ride.",
+        "exampleJa": "その馬は非常に従順で乗りやすかった。"
+      }
+    },
+    {
+      "key": "dole out|熟語|～を分け与える|6",
+      "kept": {
+        "example": "The charity doled out food and blankets to the homeless.",
+        "exampleJa": "その慈善団体はホームレスに食料と毛布を分け与えた。"
+      },
+      "dropped": {
+        "example": "The charity organization doled out food to the homeless.",
+        "exampleJa": "その慈善団体はホームレスの人々に食料を分け与えた。"
+      }
+    },
+    {
+      "key": "dormant|形|休眠状態の|6",
+      "kept": {
+        "example": "The volcano has been dormant for many years.",
+        "exampleJa": "その火山は何年も休眠状態です。"
+      },
+      "dropped": {
+        "example": "The volcano has been dormant for many years.",
+        "exampleJa": "その火山は何年もの間、休眠状態にある。"
+      }
+    },
+    {
+      "key": "downfall|名|失脚|6",
+      "kept": {
+        "example": "His arrogance was his downfall.",
+        "exampleJa": "彼の傲慢さが彼の失脚の原因だった。"
+      },
+      "dropped": {
+        "example": "His arrogance was the cause of his downfall.",
+        "exampleJa": "彼の傲慢さが彼の失脚の原因だった。"
+      }
+    },
+    {
+      "key": "draw up|熟語|～を作成する|6",
+      "kept": {
+        "example": "They drew up a plan for the new project.",
+        "exampleJa": "彼らは新しいプロジェクトの計画を作成した。"
+      },
+      "dropped": {
+        "example": "The lawyer drew up a contract for them to sign.",
+        "exampleJa": "その弁護士は彼らが署名するための契約書を作成した。"
+      }
+    },
+    {
+      "key": "dress up|熟語|正装する|6",
+      "kept": {
+        "example": "We need to dress up for the wedding.",
+        "exampleJa": "私たちは結婚式のために正装する必要があります。"
+      },
+      "dropped": {
+        "example": "We have to dress up for the wedding reception.",
+        "exampleJa": "私たちは結婚披露宴のために正装しなければなりません。"
+      }
+    },
+    {
+      "key": "drive away|熟語|～を追い払う|6",
+      "kept": {
+        "example": "The dog's barking drove the intruder away.",
+        "exampleJa": "犬の吠え声が侵入者を追い払った。"
+      },
+      "dropped": {
+        "example": "He tried to drive away the stray dog.",
+        "exampleJa": "彼はその野良犬を追い払おうとした。"
+      }
+    },
+    {
+      "key": "due to|熟語|～のために|6",
+      "kept": {
+        "example": "The game was canceled due to bad weather.",
+        "exampleJa": "その試合は悪天候のために中止になった。"
+      },
+      "dropped": {
+        "example": "The game was canceled due to heavy rain.",
+        "exampleJa": "その試合は大雨のため中止になった。"
+      }
+    },
+    {
+      "key": "dwell on|熟語|～をくよくよ考える|6",
+      "kept": {
+        "example": "Don't dwell on your past mistakes.",
+        "exampleJa": "過去の失敗をくよくよ考えないでください。"
+      },
+      "dropped": {
+        "example": "It's not healthy to dwell on past mistakes.",
+        "exampleJa": "過去の失敗をくよくよ考えるのは健康的ではありません。"
+      }
+    },
+    {
+      "key": "dynamic|形|活動的な|6",
+      "kept": {
+        "example": "She has a very dynamic personality.",
+        "exampleJa": "彼女は非常に活動的な性格です。"
+      },
+      "dropped": {
+        "example": "She has a very dynamic and engaging personality.",
+        "exampleJa": "彼女は非常に活動的で魅力的な性格をしています。"
+      }
+    },
+    {
+      "key": "eccentric|形|風変わりな|6",
+      "kept": {
+        "example": "He is an eccentric old man who lives alone.",
+        "exampleJa": "彼は一人暮らしの風変わりな老人です。"
+      },
+      "dropped": {
+        "example": "He is a brilliant but eccentric scientist.",
+        "exampleJa": "彼は優秀だが風変わりな科学者だ。"
+      }
+    },
+    {
+      "key": "echo|名|反響|6",
+      "kept": {
+        "example": "I could hear the echo of my voice in the cave.",
+        "exampleJa": "洞窟の中で自分の声の反響が聞こえた。"
+      },
+      "dropped": {
+        "example": "We could hear the echo of our voices in the cave.",
+        "exampleJa": "洞窟の中で私たちの声の反響が聞こえた。"
+      }
+    },
+    {
+      "key": "eclectic|形|折衷的な|6",
+      "kept": {
+        "example": "She has an eclectic taste in music.",
+        "exampleJa": "彼女は音楽の趣味が折衷的です。"
+      },
+      "dropped": {
+        "example": "Her taste in music is very eclectic.",
+        "exampleJa": "彼女の音楽の好みは非常に折衷的です。"
+      }
+    },
+    {
+      "key": "economical|形|経済的な|6",
+      "kept": {
+        "example": "This car is very economical to run.",
+        "exampleJa": "この車は走らせるのに非常に経済的です。"
+      },
+      "dropped": {
+        "example": "This car is very economical on fuel.",
+        "exampleJa": "この車は燃費が非常に経済的です。"
+      }
+    },
+    {
+      "key": "elbow|名|ひじ|6",
+      "kept": {
+        "example": "I bumped my elbow on the door.",
+        "exampleJa": "私はドアにひじをぶつけた。"
+      },
+      "dropped": {
+        "example": "He bumped his elbow on the table.",
+        "exampleJa": "彼はテーブルにひじをぶつけた。"
+      }
+    },
+    {
+      "key": "electorate|名|有権者|6",
+      "kept": {
+        "example": "The politician is trying to win the support of the electorate.",
+        "exampleJa": "その政治家は有権者の支持を得ようとしています。"
+      },
+      "dropped": {
+        "example": "The candidates are trying to win the support of the electorate.",
+        "exampleJa": "候補者たちは有権者の支持を得ようとしています。"
+      }
+    },
+    {
+      "key": "elegance|名|優雅|6",
+      "kept": {
+        "example": "She dressed with great elegance.",
+        "exampleJa": "彼女は素晴らしい優雅さで服を着ていた。"
+      },
+      "dropped": {
+        "example": "She is known for her style and elegance.",
+        "exampleJa": "彼女はスタイルと優雅さで知られています。"
+      }
+    },
+    {
+      "key": "elevate|動|～を高める|6",
+      "kept": {
+        "example": "He was elevated to the position of CEO.",
+        "exampleJa": "彼はCEOの地位に昇進した。"
+      },
+      "dropped": {
+        "example": "Good education can elevate a person's social status.",
+        "exampleJa": "良い教育は人の社会的地位を高めることができます。"
+      }
+    },
+    {
+      "key": "eligible for|熟語|～の資格がある|6",
+      "kept": {
+        "example": "You are eligible for a discount.",
+        "exampleJa": "あなたは割引の資格があります。"
+      },
+      "dropped": {
+        "example": "You are not eligible for this scholarship.",
+        "exampleJa": "あなたはこの奨学金を受ける資格がありません。"
+      }
+    },
+    {
+      "key": "eliminate a from b|熟語|bからaを排除する|6",
+      "kept": {
+        "example": "We need to eliminate all errors from the document.",
+        "exampleJa": "私たちはその文書からすべての誤りを排除する必要があります。"
+      },
+      "dropped": {
+        "example": "We need to eliminate all errors from the report.",
+        "exampleJa": "私たちは報告書からすべての誤りを排除する必要があります。"
+      }
+    },
+    {
+      "key": "eloquence|名|雄弁|6",
+      "kept": {
+        "example": "He is known for his eloquence as a speaker.",
+        "exampleJa": "彼は講演者としての雄弁さで知られています。"
+      },
+      "dropped": {
+        "example": "He is famous for his eloquence as a speaker.",
+        "exampleJa": "彼は講演者としての雄弁さで有名です。"
+      }
+    },
+    {
+      "key": "elucidate|動|～を解明する|6",
+      "kept": {
+        "example": "The professor tried to elucidate the complex theory.",
+        "exampleJa": "その教授は複雑な理論を解明しようとした。"
+      },
+      "dropped": {
+        "example": "The professor tried to elucidate the complex theory.",
+        "exampleJa": "その教授は複雑な理論を解明しようと試みた。"
+      }
+    },
+    {
+      "key": "emancipate|動|～を解放する|6",
+      "kept": {
+        "example": "The new law emancipated the slaves.",
+        "exampleJa": "新しい法律は奴隷を解放した。"
+      },
+      "dropped": {
+        "example": "The new law helped to emancipate the slaves.",
+        "exampleJa": "新しい法律は奴隷を解放するのに役立った。"
+      }
+    },
+    {
+      "key": "embargo|名|禁輸|6",
+      "kept": {
+        "example": "The government has imposed an embargo on all imports from that country.",
+        "exampleJa": "政府はその国からのすべての輸入品に禁輸措置を講じた。"
+      },
+      "dropped": {
+        "example": "The country is under a trade embargo.",
+        "exampleJa": "その国は貿易禁輸措置を受けています。"
+      }
+    },
+    {
+      "key": "embark on|熟語|～に乗り出す|6",
+      "kept": {
+        "example": "She is about to embark on a new career.",
+        "exampleJa": "彼女は新しいキャリアに乗り出そうとしています。"
+      },
+      "dropped": {
+        "example": "She is about to embark on a new adventure.",
+        "exampleJa": "彼女は新しい冒険に乗り出そうとしています。"
+      }
+    },
+    {
+      "key": "embrace|動|～を受け入れる|6",
+      "kept": {
+        "example": "We should embrace diversity in our society.",
+        "exampleJa": "私たちは社会の多様性を受け入れるべきです。"
+      },
+      "dropped": {
+        "example": "We should embrace new ideas and technologies.",
+        "exampleJa": "私たちは新しい考えや技術を受け入れるべきです。"
+      }
+    },
+    {
+      "key": "emigrate|動|移住する|6",
+      "kept": {
+        "example": "His grandparents emigrated from Ireland.",
+        "exampleJa": "彼の祖父母はアイルランドから移住した。"
+      },
+      "dropped": {
+        "example": "His family emigrated from Ireland to the United States.",
+        "exampleJa": "彼の家族はアイルランドからアメリカ合衆国に移住した。"
+      }
+    },
+    {
+      "key": "eminent|形|著名な|6",
+      "kept": {
+        "example": "He is an eminent scientist.",
+        "exampleJa": "彼は著名な科学者です。"
+      },
+      "dropped": {
+        "example": "He is an eminent scientist in his field.",
+        "exampleJa": "彼はその分野で著名な科学者です。"
+      }
+    },
+    {
+      "key": "emphasis|名|強調|6",
+      "kept": {
+        "example": "The school places a strong emphasis on academic achievement.",
+        "exampleJa": "その学校は学業成績を非常に重視しています。"
+      },
+      "dropped": {
+        "example": "The company places a strong emphasis on customer service.",
+        "exampleJa": "その会社は顧客サービスを強く重視しています。"
+      }
+    },
+    {
+      "key": "emphatic|形|強調した|6",
+      "kept": {
+        "example": "He was emphatic that he had not seen anything.",
+        "exampleJa": "彼は何も見ていないと強調した。"
+      },
+      "dropped": {
+        "example": "He gave an emphatic denial of the accusation.",
+        "exampleJa": "彼はその非難をきっぱりと否定した。"
+      }
+    },
+    {
+      "key": "empire|名|帝国|6",
+      "kept": {
+        "example": "The British Empire was once the largest in the world.",
+        "exampleJa": "大英帝国はかつて世界最大でした。"
+      },
+      "dropped": {
+        "example": "The Roman Empire was one of the most powerful empires in history.",
+        "exampleJa": "ローマ帝国は歴史上最も強力な帝国の一つでした。"
+      }
+    },
+    {
+      "key": "empower|動|～に権限を与える|6",
+      "kept": {
+        "example": "The new law will empower local communities.",
+        "exampleJa": "新しい法律は地域社会に権限を与えるでしょう。"
+      },
+      "dropped": {
+        "example": "The new law is designed to empower local communities.",
+        "exampleJa": "新しい法律は地域社会に権限を与えるように設計されています。"
+      }
+    },
+    {
+      "key": "encounter|名|遭遇|6",
+      "kept": {
+        "example": "I had a strange encounter with a man on the train.",
+        "exampleJa": "私は電車で奇妙な男に遭遇した。"
+      },
+      "dropped": {
+        "example": "I had a strange encounter with a famous actor.",
+        "exampleJa": "私は有名な俳優と奇妙な遭遇をした。"
+      }
+    },
+    {
+      "key": "encyclopedia|名|百科事典|6",
+      "kept": {
+        "example": "You can find a lot of information in an encyclopedia.",
+        "exampleJa": "百科事典では多くの情報を見つけることができます。"
+      },
+      "dropped": {
+        "example": "You can find information about almost anything in an encyclopedia.",
+        "exampleJa": "百科事典では、ほとんど何でも情報を得ることができます。"
+      }
+    },
+    {
+      "key": "endorse|動|～を支持する|6",
+      "kept": {
+        "example": "The politician was endorsed by several celebrities.",
+        "exampleJa": "その政治家はいくつかの著名人から支持された。"
+      },
+      "dropped": {
+        "example": "Many famous celebrities have endorsed the new product.",
+        "exampleJa": "多くの有名人がその新製品を支持しています。"
+      }
+    },
+    {
+      "key": "endow|動|～に授ける|6",
+      "kept": {
+        "example": "She is endowed with great musical talent.",
+        "exampleJa": "彼女は素晴らしい音楽の才能に恵まれています。"
+      },
+      "dropped": {
+        "example": "Nature has endowed her with great talent.",
+        "exampleJa": "自然は彼女に素晴らしい才能を授けた。"
+      }
+    },
+    {
+      "key": "endurance|名|忍耐力|6",
+      "kept": {
+        "example": "Running a marathon is a test of human endurance.",
+        "exampleJa": "マラソンを走ることは人間の忍耐力の試練です。"
+      },
+      "dropped": {
+        "example": "Running a marathon requires great physical endurance.",
+        "exampleJa": "マラソンを走るには、素晴らしい身体的忍耐力が必要です。"
+      }
+    },
+    {
+      "key": "enemy|名|敵|6",
+      "kept": {
+        "example": "He is my sworn enemy.",
+        "exampleJa": "彼は私の不倶戴天の敵です。"
+      },
+      "dropped": {
+        "example": "He is my biggest enemy in the competition.",
+        "exampleJa": "彼はその競争における私の最大の敵です。"
+      }
+    },
+    {
+      "key": "energetic|形|精力的な|6",
+      "kept": {
+        "example": "She is a very energetic and active child.",
+        "exampleJa": "彼女は非常に精力的で活発な子供です。"
+      },
+      "dropped": {
+        "example": "She is a very energetic and active person.",
+        "exampleJa": "彼女は非常に精力的で活動的な人です。"
+      }
+    },
+    {
+      "key": "enforce|動|～を施行する|6",
+      "kept": {
+        "example": "The police are responsible for enforcing the law.",
+        "exampleJa": "警察は法律を施行する責任があります。"
+      },
+      "dropped": {
+        "example": "The police are responsible for enforcing the law.",
+        "exampleJa": "警察は法律を執行する責任があります。"
+      }
+    },
+    {
+      "key": "engage in|熟語|～に従事する|6",
+      "kept": {
+        "example": "She is engaged in a variety of volunteer activities.",
+        "exampleJa": "彼女は様々なボランティア活動に従事しています。"
+      },
+      "dropped": {
+        "example": "She is engaged in a number of volunteer activities.",
+        "exampleJa": "彼女は多くのボランティア活動に従事しています。"
+      }
+    },
+    {
+      "key": "engrave|動|～を彫る|6",
+      "kept": {
+        "example": "His name was engraved on the trophy.",
+        "exampleJa": "彼の名前はトロフィーに刻まれた。"
+      },
+      "dropped": {
+        "example": "They engraved their names on the tree.",
+        "exampleJa": "彼らは木に自分たちの名前を彫った。"
+      }
+    },
+    {
+      "key": "engulf|動|～を飲み込む|6",
+      "kept": {
+        "example": "The flames engulfed the entire building.",
+        "exampleJa": "炎が建物全体を飲み込んだ。"
+      },
+      "dropped": {
+        "example": "The flames quickly engulfed the entire building.",
+        "exampleJa": "炎はすぐに建物全体を飲み込んだ。"
+      }
+    },
+    {
+      "key": "enhance|動|～を高める|6",
+      "kept": {
+        "example": "The new features will enhance the user experience.",
+        "exampleJa": "新しい機能はユーザー体験を向上させるだろう。"
+      },
+      "dropped": {
+        "example": "The new features will enhance the user's experience.",
+        "exampleJa": "新しい機能はユーザーの体験を向上させます。"
+      }
+    },
+    {
+      "key": "ensue|動|続いて起こる|6",
+      "kept": {
+        "example": "A heated debate ensued.",
+        "exampleJa": "白熱した議論が続いて起こった。"
+      },
+      "dropped": {
+        "example": "A heated debate ensued after his speech.",
+        "exampleJa": "彼のスピーチの後、白熱した議論が続いた。"
+      }
+    },
+    {
+      "key": "enthusiastic|形|熱心な|6",
+      "kept": {
+        "example": "She is an enthusiastic supporter of the team.",
+        "exampleJa": "彼女はそのチームの熱心なサポーターです。"
+      },
+      "dropped": {
+        "example": "He is an enthusiastic supporter of the local team.",
+        "exampleJa": "彼は地元のチームの熱心なサポーターです。"
+      }
+    },
+    {
+      "key": "entice|動|～を誘惑する|6",
+      "kept": {
+        "example": "The advertisement is designed to entice customers.",
+        "exampleJa": "その広告は顧客を誘惑するようにデザインされています。"
+      },
+      "dropped": {
+        "example": "The smell of freshly baked cookies enticed me into the kitchen.",
+        "exampleJa": "焼きたてのクッキーのにおいが、私を台所へと誘惑した。"
+      }
+    },
+    {
+      "key": "entity|名|実体|6",
+      "kept": {
+        "example": "The company is a separate legal entity.",
+        "exampleJa": "その会社は別個の法人です。"
+      },
+      "dropped": {
+        "example": "The company operates as a separate legal entity.",
+        "exampleJa": "その会社は独立した法人として運営されています。"
+      }
+    },
+    {
+      "key": "enumerate|動|～を列挙する|6",
+      "kept": {
+        "example": "The report enumerates the reasons for the company's success.",
+        "exampleJa": "その報告書は会社の成功の理由を列挙しています。"
+      },
+      "dropped": {
+        "example": "Let me enumerate the reasons for my decision.",
+        "exampleJa": "私の決断の理由を列挙させてください。"
+      }
+    },
+    {
+      "key": "envelop|動|～を包む|6",
+      "kept": {
+        "example": "The fog enveloped the entire city.",
+        "exampleJa": "霧が都市全体を包んだ。"
+      },
+      "dropped": {
+        "example": "Fog enveloped the entire valley.",
+        "exampleJa": "霧が谷全体を包み込んだ。"
+      }
+    },
+    {
+      "key": "envision|動|～を心に描く|6",
+      "kept": {
+        "example": "She envisions a future where everyone has access to education.",
+        "exampleJa": "彼女は誰もが教育を受けられる未来を心に描いています。"
+      },
+      "dropped": {
+        "example": "She envisioned a future where everyone could live in peace.",
+        "exampleJa": "彼女は誰もが平和に暮らせる未来を心に描いた。"
+      }
+    },
+    {
+      "key": "envoy|名|使節|6",
+      "kept": {
+        "example": "The government sent a special envoy to the peace talks.",
+        "exampleJa": "政府は和平交渉に特別使節を送った。"
+      },
+      "dropped": {
+        "example": "The government sent a special envoy to the peace talks.",
+        "exampleJa": "政府は和平交渉に特使を送った。"
+      }
+    },
+    {
+      "key": "epitome|名|典型|6",
+      "kept": {
+        "example": "She is the epitome of kindness.",
+        "exampleJa": "彼女は親切の典型です。"
+      },
+      "dropped": {
+        "example": "She is the epitome of grace and elegance.",
+        "exampleJa": "彼女は優雅さと気品の見本です。"
+      }
+    },
+    {
+      "key": "equator|名|赤道|6",
+      "kept": {
+        "example": "The equator is an imaginary line around the middle of the Earth.",
+        "exampleJa": "赤道は地球の中央を一周する架空の線です。"
+      },
+      "dropped": {
+        "example": "Countries near the equator have a tropical climate.",
+        "exampleJa": "赤道に近い国々は熱帯気候です。"
+      }
+    },
+    {
+      "key": "equilibrium|名|均衡|6",
+      "kept": {
+        "example": "It is important to maintain a balance and equilibrium in your life.",
+        "exampleJa": "人生においてバランスと均衡を保つことは重要です。"
+      },
+      "dropped": {
+        "example": "It is important to find an equilibrium between work and life.",
+        "exampleJa": "仕事と生活の均衡を見つけることは重要です。"
+      }
+    },
+    {
+      "key": "equity|名|公平|6",
+      "kept": {
+        "example": "The company is committed to equity and diversity in the workplace.",
+        "exampleJa": "その会社は職場における公平性と多様性に取り組んでいます。"
+      },
+      "dropped": {
+        "example": "The company is committed to fairness and equity in the workplace.",
+        "exampleJa": "その会社は職場における公正と公平に取り組んでいます。"
+      }
+    },
+    {
+      "key": "eradicate|動|～を根絶する|6",
+      "kept": {
+        "example": "We must work together to eradicate poverty.",
+        "exampleJa": "私たちは貧困を根絶するために協力しなければなりません。"
+      },
+      "dropped": {
+        "example": "Scientists are working to eradicate the disease.",
+        "exampleJa": "科学者たちはその病気を根絶するために研究しています。"
+      }
+    },
+    {
+      "key": "evacuate|動|～を避難させる|6",
+      "kept": {
+        "example": "The residents were evacuated from the area due to the flood.",
+        "exampleJa": "その地域の住民は洪水のために避難させられた。"
+      },
+      "dropped": {
+        "example": "The residents were evacuated from the building due to the fire.",
+        "exampleJa": "火事のため、住民は建物から避難させられました。"
+      }
+    },
+    {
+      "key": "evade|動|～を逃れる|6",
+      "kept": {
+        "example": "He tried to evade paying taxes.",
+        "exampleJa": "彼は税金を払うのを逃れようとした。"
+      },
+      "dropped": {
+        "example": "He tried to evade paying taxes.",
+        "exampleJa": "彼は税金の支払いを逃れようとした。"
+      }
+    },
+    {
+      "key": "even so|熟語|たとえそうでも|6",
+      "kept": {
+        "example": "The weather was bad, but even so, we enjoyed our trip.",
+        "exampleJa": "天気は悪かったが、それでも私たちは旅行を楽しんだ。"
+      },
+      "dropped": {
+        "example": "The work was difficult. Even so, he enjoyed the challenge.",
+        "exampleJa": "その仕事は困難でした。たとえそうでも、彼はその挑戦を楽しみました。"
+      }
+    },
+    {
+      "key": "ever since|熟語|～以来ずっと|6",
+      "kept": {
+        "example": "I have been a fan of her music ever since I was a child.",
+        "exampleJa": "私は子供の頃からずっと彼女の音楽のファンです。"
+      },
+      "dropped": {
+        "example": "I have been a fan of her music ever since I was a teenager.",
+        "exampleJa": "私は10代の頃からずっと彼女の音楽のファンです。"
+      }
+    },
+    {
+      "key": "every other|熟語|～おきに|6",
+      "kept": {
+        "example": "The meeting is held every other week.",
+        "exampleJa": "その会議は1週間おきに開かれます。"
+      },
+      "dropped": {
+        "example": "We have a meeting every other week.",
+        "exampleJa": "私たちは1週間おきに会議を開きます。"
+      }
+    },
+    {
+      "key": "excavate|動|～を発掘する|6",
+      "kept": {
+        "example": "Archaeologists are excavating an ancient city.",
+        "exampleJa": "考古学者たちは古代都市を発掘しています。"
+      },
+      "dropped": {
+        "example": "Archaeologists are excavating an ancient Roman city.",
+        "exampleJa": "考古学者たちは古代ローマの都市を発掘しています。"
+      }
+    },
+    {
+      "key": "excerpt|名|抜粋|6",
+      "kept": {
+        "example": "The book includes an excerpt from his new novel.",
+        "exampleJa": "その本には彼の新しい小説からの抜粋が含まれています。"
+      },
+      "dropped": {
+        "example": "The book includes an excerpt from his latest novel.",
+        "exampleJa": "その本には彼の最新小説からの抜粋が含まれています。"
+      }
+    },
+    {
+      "key": "exhilarating|形|爽快な|6",
+      "kept": {
+        "example": "It was an exhilarating experience to climb the mountain.",
+        "exampleJa": "その山に登るのは爽快な経験でした。"
+      },
+      "dropped": {
+        "example": "Riding a rollercoaster is an exhilarating experience.",
+        "exampleJa": "ジェットコースターに乗るのは爽快な経験です。"
+      }
+    },
+    {
+      "key": "exorbitant|形|法外な|6",
+      "kept": {
+        "example": "The price of the hotel was exorbitant.",
+        "exampleJa": "そのホテルの価格は法外だった。"
+      },
+      "dropped": {
+        "example": "The price of the ticket was exorbitant.",
+        "exampleJa": "そのチケットの価格は法外だった。"
+      }
+    },
+    {
+      "key": "exotic|形|異国風の|6",
+      "kept": {
+        "example": "She loves to travel to exotic places.",
+        "exampleJa": "彼女はエキゾチックな場所へ旅行するのが大好きです。"
+      },
+      "dropped": {
+        "example": "She loves to travel to exotic destinations.",
+        "exampleJa": "彼女はエキゾチックな目的地へ旅行するのが大好きです。"
+      }
+    },
+    {
+      "key": "expedite|動|～をはかどらせる|6",
+      "kept": {
+        "example": "We need to expedite the delivery of the goods.",
+        "exampleJa": "私たちは商品の配達をはかどらせる必要があります。"
+      },
+      "dropped": {
+        "example": "We need to expedite the delivery process.",
+        "exampleJa": "私たちは配達プロセスをはかどらせる必要があります。"
+      }
+    },
+    {
+      "key": "expenditure|名|支出|6",
+      "kept": {
+        "example": "The company is trying to reduce its expenditures.",
+        "exampleJa": "その会社は支出を削減しようとしています。"
+      },
+      "dropped": {
+        "example": "The government is trying to reduce its public expenditure.",
+        "exampleJa": "政府は公共支出を削減しようとしています。"
+      }
+    },
+    {
+      "key": "expertise|名|専門知識|6",
+      "kept": {
+        "example": "He has a lot of expertise in the field of computer science.",
+        "exampleJa": "彼はコンピュータサイエンスの分野で多くの専門知識を持っています。"
+      },
+      "dropped": {
+        "example": "He has a lot of expertise in the field of computer science.",
+        "exampleJa": "彼はコンピュータ科学の分野で多くの専門知識を持っています。"
+      }
+    },
+    {
+      "key": "expire|動|期限が切れる|6",
+      "kept": {
+        "example": "My driver's license will expire next month.",
+        "exampleJa": "私の運転免許証は来月、期限が切れます。"
+      },
+      "dropped": {
+        "example": "My passport will expire next year.",
+        "exampleJa": "私のパスポートは来年、期限が切れます。"
+      }
+    },
+    {
+      "key": "explicit|形|明白な|6",
+      "kept": {
+        "example": "He gave me explicit instructions.",
+        "exampleJa": "彼は私に明白な指示を与えた。"
+      },
+      "dropped": {
+        "example": "The instructions were very explicit and easy to follow.",
+        "exampleJa": "その指示は非常に明白で、従うのが簡単でした。"
+      }
+    },
+    {
+      "key": "exposition|名|博覧会|6",
+      "kept": {
+        "example": "The city will host an international exposition next year.",
+        "exampleJa": "その都市は来年、国際博覧会を開催します。"
+      },
+      "dropped": {
+        "example": "The city is hosting an international exposition next year.",
+        "exampleJa": "その都市は来年、国際博覧会を開催します。"
+      }
+    },
+    {
+      "key": "extort|動|～を強要する|6",
+      "kept": {
+        "example": "He was arrested for extorting money from the shopkeeper.",
+        "exampleJa": "彼は店主から金を強要したとして逮捕された。"
+      },
+      "dropped": {
+        "example": "He was arrested for trying to extort money from the company.",
+        "exampleJa": "彼はその会社から金を強要しようとして逮捕された。"
+      }
+    },
+    {
+      "key": "extravagant|形|金遣いの荒い|6",
+      "kept": {
+        "example": "She has an extravagant taste in clothes.",
+        "exampleJa": "彼女は服の趣味が金遣いが荒い。"
+      },
+      "dropped": {
+        "example": "She has an extravagant taste in clothes.",
+        "exampleJa": "彼女は服に金遣いの荒い趣味を持っています。"
+      }
+    },
+    {
+      "key": "fabricate|動|～をでっち上げる|6",
+      "kept": {
+        "example": "He was accused of fabricating evidence.",
+        "exampleJa": "彼は証拠をでっち上げたとして告発された。"
+      },
+      "dropped": {
+        "example": "He was accused of fabricating the evidence.",
+        "exampleJa": "彼は証拠をでっち上げたとして告発された。"
+      }
+    },
+    {
+      "key": "garment|名|衣服|6",
+      "kept": {
+        "example": "She was wearing a beautiful silk garment.",
+        "exampleJa": "彼女は美しい絹の衣服を着ていた。"
+      },
+      "dropped": {
+        "example": "The store sells a variety of beautiful garments.",
+        "exampleJa": "その店は様々な美しい衣服を販売しています。"
+      }
+    },
+    {
+      "key": "grief|名|深い悲しみ|6",
+      "kept": {
+        "example": "She was overcome with grief after her husband's death.",
+        "exampleJa": "夫の死後、彼女は深い悲しみに打ちひしがれた。"
+      },
+      "dropped": {
+        "example": "She was overcome with grief after her husband's death.",
+        "exampleJa": "彼女は夫の死後、深い悲しみに打ちひしがれた。"
+      }
+    },
+    {
+      "key": "hostile|形|敵意のある|6",
+      "kept": {
+        "example": "He was hostile to the new idea.",
+        "exampleJa": "彼はその新しい考えに敵意を抱いていた。"
+      },
+      "dropped": {
+        "example": "He received a hostile reception from the crowd.",
+        "exampleJa": "彼は群衆から敵意のある歓迎を受けた。"
+      }
+    }
+  ],
+  "importedFromPublicWords": 49,
+  "importedEntries": [
+    {
+      "word": "beat",
+      "partOfSpeech": "動",
+      "meaning": "〜を打つ、〜をたたく、〜を打ち負かす",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "check out",
+      "partOfSpeech": "熟語",
+      "meaning": "〜を調査する",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "in conclusion",
+      "partOfSpeech": "熟語",
+      "meaning": "まとめると、結論として",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "deal with",
+      "partOfSpeech": "熟語",
+      "meaning": "~を取り扱う",
+      "publicLevel": 7,
+      "assignedLevel": 7
+    },
+    {
+      "word": "deliver",
+      "partOfSpeech": "動",
+      "meaning": "〜を配達する",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "depend on",
+      "partOfSpeech": "熟語",
+      "meaning": "〜次第である、〜に頼る",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "disaster",
+      "partOfSpeech": "名",
+      "meaning": "災害、災難",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "empty",
+      "partOfSpeech": "形",
+      "meaning": "からの、空いている",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "engineer",
+      "partOfSpeech": "名",
+      "meaning": "エンジニア、技師",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "event",
+      "partOfSpeech": "名",
+      "meaning": "出来事、行事、イベント",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "in fact",
+      "partOfSpeech": "熟語",
+      "meaning": "実は、それどころか",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "fantasy",
+      "partOfSpeech": "名",
+      "meaning": "ファンタジー、空想",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "favorite",
+      "partOfSpeech": "形",
+      "meaning": "一番好きな、お気に入りの",
+      "publicLevel": 2,
+      "assignedLevel": 2
+    },
+    {
+      "word": "find out",
+      "partOfSpeech": "熟語",
+      "meaning": "〜を見つけ出す、〜を知る",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "fire",
+      "partOfSpeech": "名",
+      "meaning": "火、火事",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "front",
+      "partOfSpeech": "名",
+      "meaning": "前、正面",
+      "publicLevel": 3,
+      "assignedLevel": 3
+    },
+    {
+      "word": "in front of",
+      "partOfSpeech": "熟語",
+      "meaning": "〜の前に",
+      "publicLevel": 3,
+      "assignedLevel": 3
+    },
+    {
+      "word": "gap",
+      "partOfSpeech": "名",
+      "meaning": "格差、ギャップ",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "gather",
+      "partOfSpeech": "動",
+      "meaning": "集まる、〜を集める",
+      "publicLevel": 7,
+      "assignedLevel": 7
+    },
+    {
+      "word": "gentle",
+      "partOfSpeech": "形",
+      "meaning": "優しい、穏やかな",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "get in",
+      "partOfSpeech": "熟語",
+      "meaning": "〜に乗る",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "get off",
+      "partOfSpeech": "熟語",
+      "meaning": "〜を降りる",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "get on",
+      "partOfSpeech": "熟語",
+      "meaning": "〜に乗る",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "get out of",
+      "partOfSpeech": "熟語",
+      "meaning": "〜から出る",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "get to",
+      "partOfSpeech": "熟語",
+      "meaning": "〜に着く",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "give up",
+      "partOfSpeech": "熟語",
+      "meaning": "〜をやめる、〜をあきらめる",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "goods",
+      "partOfSpeech": "名",
+      "meaning": "品物、商品",
+      "publicLevel": 7,
+      "assignedLevel": 7
+    },
+    {
+      "word": "greet",
+      "partOfSpeech": "動",
+      "meaning": "〜にあいさつする",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "ground",
+      "partOfSpeech": "名",
+      "meaning": "地面、運動場",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "grow up",
+      "partOfSpeech": "熟語",
+      "meaning": "育つ、成長する",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "helpful",
+      "partOfSpeech": "形",
+      "meaning": "役に立つ",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "hero",
+      "partOfSpeech": "名",
+      "meaning": "ヒーロー、英雄",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "hint",
+      "partOfSpeech": "名",
+      "meaning": "ヒント、手がかり",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "home",
+      "partOfSpeech": "名",
+      "meaning": "家",
+      "publicLevel": 1,
+      "assignedLevel": 1
+    },
+    {
+      "word": "home",
+      "partOfSpeech": "副",
+      "meaning": "家に[へ]",
+      "publicLevel": 1,
+      "assignedLevel": 1
+    },
+    {
+      "word": "horrible",
+      "partOfSpeech": "形",
+      "meaning": "恐ろしい、ひどい",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "host",
+      "partOfSpeech": "名",
+      "meaning": "主催者、ホスト",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "however",
+      "partOfSpeech": "接",
+      "meaning": "しかしながら、けれども",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "however",
+      "partOfSpeech": "副",
+      "meaning": "どんなに〜でも",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "image",
+      "partOfSpeech": "名",
+      "meaning": "像、イメージ、画像",
+      "publicLevel": 7,
+      "assignedLevel": 7
+    },
+    {
+      "word": "imagine",
+      "partOfSpeech": "動",
+      "meaning": "〜を想像する",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "monument",
+      "partOfSpeech": "名",
+      "meaning": "記念碑",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "nod",
+      "partOfSpeech": "動",
+      "meaning": "うなずく",
+      "publicLevel": 5,
+      "assignedLevel": 5
+    },
+    {
+      "word": "praise",
+      "partOfSpeech": "動",
+      "meaning": "〜をほめる",
+      "publicLevel": 7,
+      "assignedLevel": 7
+    },
+    {
+      "word": "regret",
+      "partOfSpeech": "動",
+      "meaning": "〜を後悔する",
+      "publicLevel": 9,
+      "assignedLevel": 7
+    },
+    {
+      "word": "remind",
+      "partOfSpeech": "動",
+      "meaning": "〜に思い出させる",
+      "publicLevel": 8,
+      "assignedLevel": 7
+    },
+    {
+      "word": "scenery",
+      "partOfSpeech": "名",
+      "meaning": "風景",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    },
+    {
+      "word": "tablet",
+      "partOfSpeech": "名",
+      "meaning": "タブレット",
+      "publicLevel": 4,
+      "assignedLevel": 4
+    },
+    {
+      "word": "update",
+      "partOfSpeech": "動",
+      "meaning": "〜を更新する",
+      "publicLevel": 6,
+      "assignedLevel": 6
+    }
+  ],
+  "totalEntries": 6736,
+  "reusedIds": 6736,
+  "idCollisions": [],
+  "textbooks": {
+    "osaka-koukou-nyuushi": 1969,
+    "highschool-english": 4789
+  },
+  "levelDistribution": {
+    "1": 226,
+    "2": 370,
+    "3": 344,
+    "4": 347,
+    "5": 1044,
+    "6": 2734,
+    "7": 1671
+  }
+}

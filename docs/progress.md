@@ -3,23 +3,25 @@
 `IMPLEMENTATION_PLAN.md` の工程ごとに、基準値からの変化を記録する。
 基準値そのものは `docs/baseline/` に置き、上書きしない。
 
-| 指標 | 基準（フェーズ0） | フェーズ1後 | フェーズ2後 | フェーズ3後 |
-|---|---|---|---|---|
-| `npm run build` | 成功・警告あり | 成功・警告1件 | 成功・警告1件 | 成功・警告1件 |
-| `npm run lint` | **スクリプト未定義** | 定義済み・警告2件・エラー0 | 警告2件・エラー0 | 警告1件・エラー0 |
-| JSバンドル（gzip） | 766.17 kB | 766.36 kB | 767.64 kB | 768.54 kB |
-| ビルドの想定ホスト | `/tsukutan-app/` | **`/`** | `/` | `/` |
-| アプリ側 `npm test` | 0件のため失敗 | 変化なし | 変化なし（フェーズ9で対応） | **48件 成功** |
-| Functions ユニットテスト | なし | なし | **26件 成功** | 26件 成功 |
-| Rules 許可・拒否テスト | なし | なし | **21件 成功** | 21件 成功 |
-| アプリ依存監査 | 69件 / critical 4 | 変化なし | 変化なし（CRA由来。フェーズ8のVite移行で対応） | 変化なし |
-| Functions依存監査 | 22件 / critical 3 | **16件 / critical 0** | 16件 / critical 0 | 16件 / critical 0 |
-| Functions Node.js | 18 | **20** | 20 | 20 |
-| 追跡中 `functions/node_modules` | 15,318ファイル | 0 | 0 | 0 |
-| Firestore Rules | **バージョン管理外** | 変化なし | **`firestore.rules` として管理** | 管理下 |
-| 設定の不整合（`check-config-consistency`） | 目標ID 8種の不整合 | 変化なし | 変化なし | **不整合なし** |
-| `MOTIVATION_LEVELS` の定義箇所 | 3ファイルに重複 | 3ファイル | 3ファイル | **1ファイル** |
-| `src/App.js` | 370行 | 372行 | 372行 | **153行** |
+| 指標 | 基準（フェーズ0） | フェーズ1後 | フェーズ2後 | フェーズ3後 | フェーズ4後 |
+|---|---|---|---|---|---|
+| `npm run build` | 成功・警告あり | 成功・警告1件 | 成功・警告1件 | 成功・警告1件 | 成功・警告1件 |
+| `npm run lint` | **スクリプト未定義** | 定義済み・警告2件・エラー0 | 警告2件・エラー0 | 警告1件・エラー0 | 警告1件・エラー0 |
+| JSバンドル（gzip） | 766.17 kB | 766.36 kB | 767.64 kB | 768.54 kB | 822.1 kB（IDを付けた分。フェーズ8で除去） |
+| ビルドの想定ホスト | `/tsukutan-app/` | **`/`** | `/` | `/` | `/` |
+| アプリ側 `npm test` | 0件のため失敗 | 変化なし | 変化なし（フェーズ9で対応） | **48件 成功** | 48件 成功 |
+| Functions ユニットテスト | なし | なし | **26件 成功** | 26件 成功 | 26件 成功 |
+| Rules 許可・拒否テスト | なし | なし | **21件 成功** | 21件 成功 | 21件 成功 |
+| アプリ依存監査 | 69件 / critical 4 | 変化なし | 変化なし（CRA由来。フェーズ8のVite移行で対応） | 変化なし | 変化なし |
+| Functions依存監査 | 22件 / critical 3 | **16件 / critical 0** | 16件 / critical 0 | 16件 / critical 0 | 16件 / critical 0 |
+| Functions Node.js | 18 | **20** | 20 | 20 | 20 |
+| 追跡中 `functions/node_modules` | 15,318ファイル | 0 | 0 | 0 | 0 |
+| Firestore Rules | **バージョン管理外** | 変化なし | **`firestore.rules` として管理** | 管理下 | 管理下 |
+| 設定の不整合（`check-config-consistency`） | 目標ID 8種の不整合 | 変化なし | 変化なし | **不整合なし** | 不整合なし |
+| `MOTIVATION_LEVELS` の定義箇所 | 3ファイルに重複 | 3ファイル | 3ファイル | **1ファイル** | 1ファイル |
+| `src/App.js` | 370行 | 372行 | 372行 | **153行** | 153行 |
+| 単語の永続ID | なし（配列index） | なし | なし | なし | **6,736件すべてに付与** |
+| スクリプトのテスト | なし | なし | なし | なし | **13件 成功** |
 
 ---
 
@@ -317,3 +319,114 @@ CRA雛形の `src/App.test.js` はテストを1件も含まずスイート全体
 - 目標設定画面を実ブラウザで操作確認していない。生徒アカウントでのログインが必要なため。
   コンポーネントテストで保存条件・選択状態・二重送信・失敗時の挙動は検証済み。
 - `newWordsQuota` を実際の日次計画で使う件（計画書10.2.2）はフェーズ5。
+
+## フェーズ4: 単語マスターと永続ID（データ生成・移行ツールまで完了 / 本番移行は未実行）
+
+### 9.2 正本の確定
+
+`scripts/compare-word-sources.js` で4ファイルを照合した。
+
+| ファイル | 件数 | レベル | 判定 |
+|---|---:|---|---|
+| `words.json` | 7,205 | 1〜7 | **正本** |
+| `src/wordsData.json` | 7,205 | 1〜7 | `words.json` とバイト単位で同一の複製 |
+| `highschool.json` | 5,307 | 5〜7 | 素材。**全件が `words.json` に含まれる** |
+| `public/words.json` | 1,969 | **1〜9** | 大阪府公立入試の収録範囲。旧レベル体系 |
+
+判明したこと:
+
+- `public/words.json` の 97.5% は `words.json` に含まれるが、**49件は含まれない**。
+  `home` / `favorite` / `give up` / `in front of` など基本語が抜けていた。
+- **219件でレベルが食い違う。** 187件は `public` が +1（words=6 → public=7 など）だが、
+  残り32件は −4〜+3 とばらばらで、systematicな換算では埋まらない。
+  `words.json` は再分類スクリプトを通った後の値なのでこちらを採用した。
+
+### 9.3 永続ID
+
+これまで単語IDは**配列のインデックス**だった。
+
+```
+id: `word_${index}`             語彙力チェック
+id: `osaka_word_${index}`       大阪府公立入試
+id: `highschool_word_${index}`  高校英語
+id: `eiken_wordsdata_${index}`  英検（wordsData由来）
+id: `eiken_words_${index}`      英検（words.json由来）
+```
+
+同じ単語でも読み込み経路が違えば別ID、JSONの並びが変われば全部ずれる。
+Firestore の `textbooks/*/words` は `.add()` のランダム自動IDで、これとも無関係。
+
+`scripts/build-word-master.js` で `w_` + SHA-256(出どころ|語|品詞|意味|レベル) の
+先頭16桁を付けた。
+
+- **並び順を変えてもIDは変わらない**（`words.json` を逆順にして生成し、6,736件すべて同一IDを確認）
+- 既に `words-master.json` にあるIDは、意味やレベルを直しても維持する（2回目の実行で6,736件を引き継ぎ）
+- `close`（動/形/副）のような意味違いの同綴語は別IDになる
+
+### 生成結果
+
+| 項目 | 値 |
+|---|---:|
+| 完全同一の重複を統合 | 518件（うち例文が違ったもの418件はレポートに全件記録） |
+| `public/words.json` から取り込み | 49件（レベルは上限7へ丸め） |
+| マスター件数 | **6,736件** |
+| 大阪府公立入試 | 1,969件 |
+| 高校英語 | 4,789件 |
+
+出力:
+
+```
+public/data/manifest.json           版・件数・SHA-256
+public/data/words-master.json       6,736件
+public/data/words-osaka.json        1,969件
+public/data/words-highschool.json   4,789件
+src/wordsData.json                  マスターと同内容（画面が import している分）
+```
+
+`npm run build:words` で再生成、`node scripts/build-word-master.js --check` で
+生成物が最新かを確認できる。
+
+### 消えていた777語
+
+`StudentDashboard.js` の語彙力チェック準備に
+
+```js
+Array.from(new Map(combinedWords.map(w => [w.word, w])).values())
+```
+
+があり、**表面語をキーにしていたため意味違いの同綴語が消えていた**（7,205 → 6,267）。
+`close` の動詞・形容詞・副詞、`first` の名詞・形容詞・副詞などが1つに潰れていた。
+永続IDをキーに変更。教材別の重複除去（1,165行付近）も同じ問題があったので直した。
+
+### 9.5 復習データの移行
+
+`scripts/lib/reviewWordMapping.js`（純粋関数）と `scripts/migrate-review-words.js`。
+
+`reviewWords` の文書は `{...word}` を展開して保存しているので、語・品詞・意味・レベルが
+残っている。これを使って新IDへ対応づける。
+
+1. 語+品詞+意味+レベル が一致（最も確か）
+2. 語+品詞+意味 が一致（レベルが再分類された場合）
+3. 語だけ一致し、候補が1件ならそれ。複数なら**曖昧として保留し書き込まない**
+
+同じ新IDへ複数の旧文書が集まる場合の統合は計画書9.5の規則どおり
+（lastReviewed は最新 / nextReviewDate は最早 / repetitions は最大 /
+easeFactor と interval は最新履歴 / 移行元IDを `migratedFrom` に記録）。
+
+テスト13件（`npm run test:scripts`）。マスター6,736件すべてが自分自身へ
+一意に対応づくことも検証済み。
+
+**移行はまだ実行していない。** スクリプトの既定はドライランで、`--execute` を
+明示しない限り1件も書き込まない。旧文書は本実行後も削除せず `migratedTo` を付けるだけ。
+
+### 未完了
+
+- **本番の `reviewWords` 移行は未実行。** `node scripts/migrate-review-words.js` で
+  ドライランして件数を確認してから `--execute` が必要。`serviceAccountKey.json` を使う。
+- **Firestore の `textbooks/*/words` は手つかず。** ランダム自動IDのまま。
+  学習画面の一部（その他教材）はまだここを読む。永続IDへの入れ替えが要る。
+- **バンドルからの単語JSON除去は未実施。** 計画書13.5（フェーズ8）の担当。
+  IDを足した分だけバンドルが 768.54 kB → 822.1 kB に増えている。
+  `public/data/` の遅延読み込みへ移せば丸ごと落とせる。
+- 取り込んだ49件のレベルは `min(publicのレベル, 7)` で機械的に決めた。
+  `docs/baseline/word-master-build-report.json` に全件あるので確認してほしい。
