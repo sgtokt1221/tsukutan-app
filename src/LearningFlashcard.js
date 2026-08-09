@@ -5,7 +5,7 @@ import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
 import { FaArrowUp, FaUndo, FaArrowLeft } from 'react-icons/fa';
-import { initialize, speak } from './logic/speechUtils';
+import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
@@ -14,7 +14,7 @@ import { usePronunciation } from './logic/usePronunciation';
 
 // 単語帳モードの文字サイズの下限・上限（%）。一覧で見渡したいときは小さく、
 // 1語ずつ確かめたいときは大きくできるよう幅を広めに取る。
-const MIN_ZOOM = 50;
+const MIN_ZOOM = 30;
 const MAX_ZOOM = 200;
 
 // 配列をシャッフルするヘルパー関数
@@ -520,10 +520,9 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const handleDoubleClick = useCallback(() => {
     setIsFlipped(prev => !prev);
     if (!isFlipped && shuffledWords.length > 0 && shuffledWords[currentIndex]) {
-      const wordToSpeak = shuffledWords[currentIndex]?.word;
-      if (wordToSpeak) {
-        speak(wordToSpeak);
-      }
+      const word = shuffledWords[currentIndex];
+      // 英語を読んでから意味を読む。音だけで確認できるようにする。
+      speakWordThenMeaning(word?.word, word?.japanese || word?.meaning);
     }
   }, [isFlipped, currentIndex, shuffledWords]);
 
@@ -876,7 +875,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                     <button
                       type="button"
                       className="wordbook-veil"
-                      onClick={(e) => { e.stopPropagation(); handleRevealStart(actualIndex); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRevealStart(actualIndex);
+                        speakWordThenMeaning(word.word, word.meaning);
+                      }}
                       aria-label={`${word.word} の答えを見る`}
                     >
                       答えを見る
@@ -1050,7 +1053,6 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
-        hint="スワイプでも回答できます（右: わかった / 左: もう一度）"
       />
 
       {/* ナビゲーションボタン */}
