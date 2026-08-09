@@ -1,0 +1,127 @@
+/*
+ * ランク紋章。ASSESSMENT_RANK_SYSTEM_PLAN.md 8.3。
+ *
+ * 基準色（ライム / キャンバス / オリーブ / アクセントブルー / 白）は増やさない。
+ * ランク差は枠・面・光沢・縁光の付け方だけで表す。
+ */
+
+.rank-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  font-family: var(--font-family-heading);
+  line-height: 1;
+}
+
+.rank-badge__letter {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.rank-badge__caption {
+  margin-top: var(--space-4);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  font-weight: 400;
+  color: var(--color-olive-muted);
+}
+
+/* ---- 大きさ ---- */
+.rank-badge--small {
+  width: 44px;
+  height: 44px;
+}
+.rank-badge--small .rank-badge__letter {
+  font-size: var(--font-size-18);
+}
+
+.rank-badge--medium {
+  width: 72px;
+  height: 72px;
+}
+.rank-badge--medium .rank-badge__letter {
+  font-size: var(--font-size-28);
+}
+
+.rank-badge--large {
+  width: 108px;
+  height: 108px;
+}
+.rank-badge--large .rank-badge__letter {
+  font-size: var(--font-size-40);
+}
+
+/* ---- ランクごとの表現（計画書8.3の表） ---- */
+
+/* E: 細い1本枠、影なし */
+.rank-badge--plain {
+  border: 1px solid var(--color-olive-border);
+}
+
+/* D: 1本枠、薄い面 */
+.rank-badge--soft {
+  border: 1px solid var(--color-olive-border);
+  background-color: var(--color-lime-soft);
+}
+
+/* C: 二重枠 */
+.rank-badge--double {
+  border: 2px solid var(--color-lime-border);
+  box-shadow: inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px var(--color-lime-border);
+  background-color: var(--color-lime-soft);
+}
+
+/* B: 二重枠と小さな光沢 */
+.rank-badge--double-gloss {
+  border: 2px solid var(--color-lime-border);
+  box-shadow:
+    inset 0 0 0 4px var(--color-surface),
+    inset 0 0 0 5px var(--color-lime-border),
+    inset 0 12px 16px -12px rgba(255, 255, 255, 0.9);
+  background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
+}
+
+/* A: 太い枠と立体的な紋章 */
+.rank-badge--bold {
+  border: 3px solid var(--color-brand-lime);
+  box-shadow:
+    inset 0 0 0 5px var(--color-surface),
+    var(--shadow-2);
+  background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
+}
+
+/* S: ブルーの縁光と静かなシマー */
+.rank-badge--aura {
+  border: 3px solid var(--color-brand-lime);
+  box-shadow:
+    inset 0 0 0 5px var(--color-surface),
+    0 0 0 3px rgba(59, 130, 246, 0.28),
+    var(--shadow-2);
+  background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
+}
+
+/* SS: ライムとブルーの二重光、専用紋章 */
+.rank-badge--crest {
+  border: 3px solid var(--color-brand-lime);
+  box-shadow:
+    inset 0 0 0 5px var(--color-surface),
+    0 0 0 3px rgba(163, 230, 53, 0.55),
+    0 0 0 6px rgba(59, 130, 246, 0.35),
+    var(--shadow-3);
+  background-image: linear-gradient(160deg, var(--color-lime-muted), rgba(59, 130, 246, 0.10));
+}
+
+/* 未解放。見せてもよいが、獲得済みには見せない（計画書2.3） */
+.rank-badge--locked {
+  opacity: 0.55;
+  filter: grayscale(0.35);
+}
+
+.rank-badge--unmeasured {
+  border: 1px dashed var(--color-olive-border);
+  color: var(--color-olive-muted);
+}
