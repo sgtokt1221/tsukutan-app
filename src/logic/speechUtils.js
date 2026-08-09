@@ -2,6 +2,8 @@ import logger from './logger';
 const synthesis = window.speechSynthesis;
 let voices = [];
 let initializationPromise = null;
+// 発話中の utterance。GC で読み上げが切れるのを防ぐために保持する。
+let activeUtterance = null;
 
 const initialize = () => {
   if (initializationPromise) {
@@ -199,18 +201,31 @@ const speakSequence = (items) => {
   const queue = (items || []).filter((item) => item && item.text);
   if (queue.length === 0) return;
 
-  // 前の読み上げは打ち切る。カードを次々めくったときに溜まらないように。
-  synthesis.cancel();
-
   const speakAt = (index) => {
     if (index >= queue.length) return;
     const { text, lang = 'en-US' } = queue[index];
     const utterance = buildUtterance(text, lang);
-    utterance.onend = () => speakAt(index + 1);
+    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残しておく。
+    activeUtterance = utterance;
+    utterance.onend = () => {
+      if (activeUtterance === utterance) activeUtterance = null;
+      speakAt(index + 1);
+    };
     // 読み上げに失敗しても次へ進める（音声が無い端末で止まらないように）
-    utterance.onerror = () => speakAt(index + 1);
+    utterance.onerror = () => {
+      if (activeUtterance === utterance) activeUtterance = null;
+      speakAt(index + 1);
+    };
     synthesis.speak(utterance);
   };
+
+  if (synthesis.speaking || synthesis.pending) {
+    // 前の読み上げは打ち切る。カードを次々めくったときに溜まらないように。
+    synthesis.cancel();
+    // cancel() の直後に speak() を呼ぶと Chrome が無視することがあるので間を置く。
+    setTimeout(() => speakAt(0), 100);
+    return;
+  }
 
   speakAt(0);
 };
