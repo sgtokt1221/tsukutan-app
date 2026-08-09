@@ -1,15 +1,16 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import logger from './logger';
 
 export const logStudySession = async (userId, payload) => {
   if (!userId || !payload) return;
   try {
-    console.log('💾 ログ保存開始:', { userId, payload });
+    logger.debug('💾 ログ保存開始:', { userId, payload });
     const docRef = await addDoc(collection(db, 'users', userId, 'logs'), {
       timestamp: serverTimestamp(),
       ...payload,
     });
-    console.log('✅ ログ保存成功:', { docId: docRef.id, sessionType: payload.sessionType });
+    logger.debug('✅ ログ保存成功:', { docId: docRef.id, sessionType: payload.sessionType });
   } catch (error) {
     console.error('❌ ログ保存失敗:', error);
   }

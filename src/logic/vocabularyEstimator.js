@@ -1,5 +1,6 @@
 import { db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
+import logger from './logger';
 
 /**
  * ユーザーの目標と現在の語彙力から、不足している語彙数を推定します。
@@ -32,7 +33,7 @@ export const estimateNeededWords = async (userData) => {
 
     const neededWords = Math.max(0, maxRequiredVocabulary - currentVocabulary);
     
-    console.log(`目標語彙数: ${maxRequiredVocabulary}, 現在の語彙数: ${currentVocabulary}, 不足語彙数: ${neededWords}`);
+    logger.debug(`目標語彙数: ${maxRequiredVocabulary}, 現在の語彙数: ${currentVocabulary}, 不足語彙数: ${neededWords}`);
 
     return neededWords;
 

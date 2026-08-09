@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom';
 import { analyzeUserPerformance, generateLearningRecommendations } from './logic/basicAnalytics';
 import { auth } from './firebaseConfig';
+import logger from './logic/logger';
 
 // レベル定義
 const levelDescriptions = {
@@ -197,7 +198,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
             className="result-actions"
           >
             <button className="restart-btn" onClick={() => {
-              console.log('TestResult: 前の画面に戻るボタンがクリックされました');
+              logger.debug('TestResult: 前の画面に戻るボタンがクリックされました');
               window.location.replace('/student-dashboard');
             }}>
               <span className="btn-icon">🏠</span>

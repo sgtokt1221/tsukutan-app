@@ -15,8 +15,6 @@
  *
  * 出力
  *   public/data/words-master.json      永続IDつきの全単語
- *   src/wordsData.json                 上と同じ内容。バンドルへ import している画面用。
- *                                      フェーズ8で遅延読み込みへ移したら消せる。
  *   public/data/words-osaka.json       大阪府公立入試英単語
  *   public/data/words-highschool.json  高校英語
  *   public/data/manifest.json          版・件数・SHA-256
@@ -250,12 +248,6 @@ const main = () => {
         changed = true;
       }
     }
-    const bundledPath = path.join(ROOT, 'src', 'wordsData.json');
-    const bundled = fs.existsSync(bundledPath) ? fs.readFileSync(bundledPath, 'utf8') : null;
-    if (bundled !== payloads[0].text) {
-      console.log('差分あり: src/wordsData.json');
-      changed = true;
-    }
     console.log(changed ? '再生成が必要です。' : '生成済みファイルは最新です。');
     process.exitCode = changed ? 1 : 0;
     return;
@@ -266,8 +258,6 @@ const main = () => {
     fs.writeFileSync(path.join(OUT_DIR, name), text);
   }
 
-  // 画面が import しているコピー。フェーズ8で public/data からの遅延読み込みに移す予定。
-  fs.writeFileSync(path.join(ROOT, 'src', 'wordsData.json'), payloads[0].text);
   fs.writeFileSync(path.join(OUT_DIR, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 
   const reportPath = path.join(ROOT, 'docs', 'baseline', 'word-master-build-report.json');
@@ -287,7 +277,6 @@ const main = () => {
     console.log(`    ${id.padEnd(22)} ${count} 件`);
   }
   console.log('  出力          : public/data/{manifest,words-master,words-osaka,words-highschool}.json');
-  console.log('                  src/wordsData.json（画面が import する同内容のコピー）');
   console.log('  レポート      : docs/baseline/word-master-build-report.json');
 };
 

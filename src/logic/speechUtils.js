@@ -1,3 +1,4 @@
+import logger from './logger';
 const synthesis = window.speechSynthesis;
 let voices = [];
 let initializationPromise = null;
@@ -14,7 +15,7 @@ const initialize = () => {
         // すべての音声を保存（英語・日本語両方）
         voices = availableVoices;
         
-        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        logger.debug('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
         
         // イベントリスナーをクリーンアップ
         synthesis.onvoiceschanged = null;
@@ -48,7 +49,7 @@ const speak = (text, lang = 'en-US') => {
 
   // 進行中の発話がある場合は、読み上げ完了を待つ
   if (synthesis.speaking) {
-    console.log('Speech already in progress, queuing next speech');
+    logger.debug('Speech already in progress, queuing next speech');
     // 現在の読み上げが完了するまで待機
     const checkSpeaking = () => {
       if (synthesis.speaking) {
@@ -58,7 +59,7 @@ const speak = (text, lang = 'en-US') => {
         setTimeout(() => {
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = lang;
-          console.log('Speaking queued text:', text, 'with lang:', lang);
+          logger.debug('Speaking queued text:', text, 'with lang:', lang);
           synthesis.speak(utterance);
         }, 200); // 少し間隔を空ける
       }
@@ -72,7 +73,7 @@ const speak = (text, lang = 'en-US') => {
   // 言語を設定（デフォルトは英語）
   utterance.lang = lang;
   
-  console.log('Attempting to speak:', text, 'with lang:', lang);
+  logger.debug('Attempting to speak:', text, 'with lang:', lang);
   
   // デバイスを検出
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -85,7 +86,7 @@ const speak = (text, lang = 'en-US') => {
     
     // 利用可能な音声を取得
     const availableVoices = synthesis.getVoices();
-    console.log('Available voices for mobile:', availableVoices.map(v => `${v.name} (${v.lang})`));
+    logger.debug('Available voices for mobile:', availableVoices.map(v => `${v.name} (${v.lang})`));
     
     if (lang === 'ja' || lang === 'ja-JP') {
       // 日本語音声を選択
@@ -93,7 +94,7 @@ const speak = (text, lang = 'en-US') => {
         voice.lang === 'ja-JP' || voice.lang.startsWith('ja')
       );
       
-      console.log('Japanese voices found:', japaneseVoices.map(v => `${v.name} (${v.lang})`));
+      logger.debug('Japanese voices found:', japaneseVoices.map(v => `${v.name} (${v.lang})`));
       
       if (japaneseVoices.length > 0) {
         const selectedVoice = japaneseVoices.find(voice => voice.name.includes('Google')) ||
@@ -101,7 +102,7 @@ const speak = (text, lang = 'en-US') => {
                              japaneseVoices.find(voice => voice.name.includes('日本語')) ||
                              japaneseVoices[0];
         utterance.voice = selectedVoice;
-        console.log('Selected Japanese voice:', selectedVoice?.name);
+        logger.debug('Selected Japanese voice:', selectedVoice?.name);
       } else {
         console.warn('No Japanese voices found, using default');
       }
@@ -131,7 +132,7 @@ const speak = (text, lang = 'en-US') => {
           voice.lang === 'ja-JP' || voice.lang.startsWith('ja')
         );
         
-        console.log('Japanese voices found (desktop):', japaneseVoices.map(v => `${v.name} (${v.lang})`));
+        logger.debug('Japanese voices found (desktop):', japaneseVoices.map(v => `${v.name} (${v.lang})`));
         
         if (japaneseVoices.length > 0) {
           const selectedVoice = 
@@ -142,7 +143,7 @@ const speak = (text, lang = 'en-US') => {
             japaneseVoices[0];
           
           utterance.voice = selectedVoice;
-          console.log('Selected Japanese voice (desktop):', selectedVoice?.name);
+          logger.debug('Selected Japanese voice (desktop):', selectedVoice?.name);
         } else {
           console.warn('No Japanese voices found (desktop), using default');
         }
@@ -167,7 +168,7 @@ const speak = (text, lang = 'en-US') => {
     }
   }
 
-  console.log('Speaking with voice:', utterance.voice?.name || 'default', 'lang:', utterance.lang);
+  logger.debug('Speaking with voice:', utterance.voice?.name || 'default', 'lang:', utterance.lang);
   
   // 日本語音声が見つからない場合のフォールバック
   if ((lang === 'ja' || lang === 'ja-JP') && !utterance.voice) {

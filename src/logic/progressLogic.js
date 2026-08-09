@@ -1,5 +1,6 @@
 import { db } from '../firebaseConfig';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
+import logger from './logger';
 
 /**
  * ユーザーの目標達成度（パーセンテージ）を計算し、Firestoreのユーザーデータを更新します。
@@ -23,7 +24,7 @@ export const updateProgressPercentage = async (userId) => {
 
     // 目標が設定されていない、または現在の語彙数がなければ計算不可
     if (!goal || !goal.targets || goal.targets.length === 0 || !progress || progress.currentVocabulary === undefined) {
-      console.log("進捗計算に必要なデータ（目標または現在の語彙数）がありません。");
+      logger.debug("進捗計算に必要なデータ（目標または現在の語彙数）がありません。");
       await updateDoc(userDocRef, { 'progress.percentage': 0 });
       return;
     }
@@ -62,7 +63,7 @@ export const updateProgressPercentage = async (userId) => {
       'progress.targetVocabulary': targetVocabulary // 目標語彙数も保存しておく
     });
 
-    console.log(`進捗を更新しました: ${percentage}% (現在:${currentVocabulary} / 目標:${targetVocabulary})`);
+    logger.debug(`進捗を更新しました: ${percentage}% (現在:${currentVocabulary} / 目標:${targetVocabulary})`);
 
   } catch (error) {
     console.error("進捗率の更新に失敗しました:", error);

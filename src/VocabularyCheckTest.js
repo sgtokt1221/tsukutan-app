@@ -8,7 +8,6 @@ import { logStudySession } from './logic/studyLogger';
 import { initialize, speak } from './logic/speechUtils';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
-import wordsData from './wordsData.json';
 import {
   MAX_STAGES,
   createInitialState,
@@ -33,10 +32,11 @@ import {
 export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete }) {
   const navigate = useNavigate();
 
-  const words = useMemo(() => {
-    const source = passedWords && passedWords.length > 0 ? passedWords : wordsData;
-    return source.filter((word) => word && word.id && word.word && (word.meaning || word.japanese));
-  }, [passedWords]);
+  // 単語は呼び出し元が渡す。ここで巨大なJSONを import しない（計画書13.5）。
+  const words = useMemo(
+    () => (passedWords || []).filter((word) => word && word.id && word.word && (word.meaning || word.japanese)),
+    [passedWords]
+  );
 
   const [engine, setEngine] = useState(() => createInitialState());
   const [questions, setQuestions] = useState([]);

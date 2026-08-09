@@ -3,6 +3,7 @@ import { doc, setDoc, getDoc, updateDoc, runTransaction } from 'firebase/firesto
 import { logStudyEvent } from './studyLogger';
 import { MOTIVATION_LEVELS } from '../config';
 import { getTodayKey } from './dateKeys';
+import logger from './logger';
 
 /**
  * 新しい単語を復習リストに追加します。
@@ -27,7 +28,7 @@ export const addWordToReview = async (userId, word) => {
 
   try {
     await setDoc(reviewWordRef, newReviewWord);
-    console.log(`単語 "${word.word}" を復習リストに追加しました。`);
+    logger.debug(`単語 "${word.word}" を復習リストに追加しました。`);
     // ★キャッシュにも追加
     await addWordToDailyCache(userId, newReviewWord);
     
@@ -160,7 +161,7 @@ const addWordToDailyCache = async (userId, wordToCache) => {
       if (!isAlreadyInList) {
         const updatedReviewWords = [...reviewWords, wordToCache];
         await updateDoc(dailyPlanRef, { reviewWords: updatedReviewWords });
-        console.log(`キャッシュを更新しました: ${wordToCache.word}`);
+        logger.debug(`キャッシュを更新しました: ${wordToCache.word}`);
       }
     }
     // キャッシュが存在しない場合は何もしない。
@@ -199,7 +200,7 @@ export const removeWordFromReview = async (userId, wordId) => {
         transaction.update(dailyPlanRef, { reviewWords: updatedReviewWords });
       }
     });
-    console.log(`単語(ID: ${wordId})が正常に削除されました。`);
+    logger.debug(`単語(ID: ${wordId})が正常に削除されました。`);
     
     // 学習ログを記録
     await logStudyEvent(userId, {
