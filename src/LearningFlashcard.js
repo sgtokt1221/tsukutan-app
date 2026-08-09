@@ -9,6 +9,7 @@ import { initialize, speak } from './logic/speechUtils';
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
+import { usePronunciation } from './logic/usePronunciation';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -154,6 +155,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
   const cardColor = useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]);
 
+  // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
+  const getPronunciation = usePronunciation();
   const currentWord = shuffledWords?.[currentIndex];
 
   const handleBackButtonClick = useCallback(() => {
@@ -858,9 +861,10 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                   >
                     {word.word}
                   </button>
-                  {/* 発音記号はデータに存在しないので、あるときだけ出す（計画書2.3） */}
-                  {word.pronunciation && (
-                    <div className="wordbook-pronunciation">[{word.pronunciation}]</div>
+                  {(word.pronunciation || getPronunciation(word.word)) && (
+                    <div className="wordbook-pronunciation">
+                      [{word.pronunciation || getPronunciation(word.word)}]
+                    </div>
                   )}
                   <div style={{
                     fontSize: '0.75rem',
@@ -1076,9 +1080,15 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         >
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             <p id="card-front-text">{currentWord?.word || 'Loading...'}</p>
+            {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
+              <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
+            )}
           </div>
           <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word || 'Loading...'}</h3>
+            {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
+              <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
+            )}
             <p id="card-back-meaning">{currentWord?.japanese || currentWord?.meaning || 'Loading...'}</p>
             {(currentWord?.example || currentWord?.exampleJa) && <hr />}
             <p className="example-text">{currentWord?.example || ''}</p>

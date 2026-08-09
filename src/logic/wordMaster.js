@@ -67,6 +67,14 @@ export const loadWordMaster = (options) => fetchJson(`${BASE_PATH}/words-master.
 /** 版・件数・SHA-256 */
 export const loadManifest = (options) => fetchJson(`${BASE_PATH}/manifest.json`, options);
 
+/**
+ * 発音記号（IPA）の表。{ "about": "əˈbaʊt", ... }
+ *
+ * 日次学習の単語は Firestore の textbooks から来るため pronunciation を
+ * 持たない。復習単語も保存時点の写しなので同じ。表示するときにここで引く。
+ */
+export const loadPronunciations = (options) => fetchJson(`${BASE_PATH}/pronunciations.json`, options);
+
 const TEXTBOOK_FILES = {
   'osaka-koukou-nyuushi': 'words-osaka.json',
   'highschool-english': 'words-highschool.json',
