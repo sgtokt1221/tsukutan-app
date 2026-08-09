@@ -1,21 +1,10 @@
 import React from 'react';
+import { getLevel, MAX_WORD_LEVEL } from './config';
 
-// StudentDashboardからレベル定義をコピーしてくる
-const levelDescriptions = {
-  1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1", wordsRequired: 600 },
-  2: { label: "中学標準", equivalent: "英検4級 / A1", wordsRequired: 1300 },
-  3: { label: "中学卒業", equivalent: "英検3級 / A2", wordsRequired: 2100 },
-  4: { label: "高校基礎", equivalent: "英検準2級 / A2", wordsRequired: 3600 },
-  5: { label: "高校標準", equivalent: "英検2級 / B1", wordsRequired: 5100 },
-  6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2", wordsRequired: 6000 },
-  7: { label: "大学中級", equivalent: "英検準1級 / B2", wordsRequired: 8000 },
-  8: { label: "大学上級", equivalent: "英検1級 / C1", wordsRequired: 10000 },
-  9: { label: "超上級", equivalent: "英検1級+", wordsRequired: 12000 },
-  10:{ label: "ネイティブ", equivalent: "ネイティブレベル", wordsRequired: 15000 }
-};
 
 function LevelBadge({ level }) {
-  const hasLevel = level && level > 0 && levelDescriptions[level];
+  const info = getLevel(level);
+  const hasLevel = Boolean(level) && level > 0 && Boolean(info);
 
   if (!hasLevel) {
     return (
@@ -25,15 +14,14 @@ function LevelBadge({ level }) {
     );
   }
 
-  const { label, equivalent } = levelDescriptions[level];
-  const totalLevels = Object.keys(levelDescriptions).length;
-  const eikenLevel = equivalent.split(' / ')[0];
+  const { label, eiken: eikenLevel } = info;
+  const totalLevels = MAX_WORD_LEVEL;
 
   // Determine the tier for styling
+  // レベルは1〜7。3段階に分ける。
   let tier = 1;
-  if (level >= 4 && level <= 6) tier = 2;
-  else if (level >= 7 && level <= 8) tier = 3;
-  else if (level >= 9) tier = 4;
+  if (level >= 4 && level <= 5) tier = 2;
+  else if (level >= 6) tier = 3;
 
   const containerClassName = `level-badge-container tier-${tier}`;
 

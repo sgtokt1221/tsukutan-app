@@ -9,7 +9,7 @@ import PrintableStory from './PrintableStory';
 import { FaChartLine } from 'react-icons/fa';
 import './AdminDashboard.css';
 import { getTodayKey } from './logic/dateKeys';
-import { getGoal, getTargetLevel, getRequiredVocabulary, toGoalIds } from './config';
+import { getGoal, getTargetLevel, getRequiredVocabulary, toGoalIds, getLevel, LEVELS, MAX_WORD_LEVEL } from './config';
 import logger from './logic/logger';
 
 // Register Chart.js components
@@ -17,21 +17,14 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 // 段階グラフコンポーネント
 const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
+  // レベルの対応表は src/config/levels.json が正本。
+  // 以前はここに独自の1〜10の表があり、レベル7を「英検1級」と表示していた。
+  // 実データに英検1級の単語は1語も無く、生徒画面側の「準1級」が正しい。
+  // 絵文字は使わない方針なのでアイコンも持たせない。
   const getLevelInfo = (level) => {
-    const levelMap = {
-      0: { label: '未測定', subLabel: '', color: '#6b7280', icon: '❓' },
-      1: { label: '英検5級', subLabel: '中1レベル', color: '#ef4444', icon: '🔴' },
-      2: { label: '英検4級', subLabel: '中2レベル', color: '#f97316', icon: '🟠' },
-      3: { label: '英検3級', subLabel: '中3レベル', color: '#eab308', icon: '🟡' },
-      4: { label: '英検準2級', subLabel: '高1レベル', color: '#22c55e', icon: '🟢' },
-      5: { label: '英検2級', subLabel: '高2レベル', color: '#06b6d4', icon: '🔵' },
-      6: { label: '英検準1級', subLabel: '高3レベル', color: '#8b5cf6', icon: '🟣' },
-      7: { label: '英検1級', subLabel: '大学レベル', color: '#f59e0b', icon: '🟤' },
-      8: { label: '大学上級', subLabel: '大学上級レベル', color: '#ec4899', icon: '🌸' },
-      9: { label: '大学院', subLabel: '大学院レベル', color: '#6366f1', icon: '🎓' },
-      10: { label: 'ネイティブ', subLabel: 'ネイティブレベル', color: '#10b981', icon: '👑' }
-    };
-    return levelMap[level] || levelMap[0];
+    const info = getLevel(level);
+    if (!info) return { label: '未測定', subLabel: '', color: '#6b7280' };
+    return { label: info.eiken, subLabel: info.schoolYear, color: info.color };
   };
 
   const getGoalInfo = (goal) => {
@@ -97,7 +90,7 @@ const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
       {/* 階段グラフ */}
       <div className="staircase-chart">
         <div className="staircase-container">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level, index) => {
+          {LEVELS.map(({ level }, index) => {
             const info = getLevelInfo(level);
             const isReached = level <= currentLevel;
             const isCurrent = level === currentLevel;
@@ -111,7 +104,7 @@ const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
             
             // 階段の高さを計算（レベルに応じて段々高くなる）
             const stepHeight = 40 + (level * 8);
-            const isLastStep = index === 9;
+            const isLastStep = index === MAX_WORD_LEVEL - 1;
             
             return (
               <div key={level} className="staircase-step-container">

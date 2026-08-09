@@ -1,3 +1,4 @@
+import { MAX_WORD_LEVEL } from '../config';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
@@ -75,7 +76,7 @@ const predictNextWeekLevel = (logs) => {
   const oneWeekLater = Date.now() + (7 * 24 * 60 * 60 * 1000);
   const predictedLevel = slope * oneWeekLater + intercept;
   
-  return Math.max(1, Math.min(10, Math.round(predictedLevel * 10) / 10));
+  return Math.max(1, Math.min(MAX_WORD_LEVEL, Math.round(predictedLevel * 10) / 10));
 };
 
 // 学習曲線の計算

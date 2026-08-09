@@ -1,3 +1,5 @@
+import { getLevel, getLevelEquivalent, MAX_WORD_LEVEL } from './config';
+import { FaBook, FaBullseye, FaHome } from 'react-icons/fa';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom';
@@ -6,23 +8,11 @@ import { auth } from './firebaseConfig';
 import logger from './logic/logger';
 
 // レベル定義
-const levelDescriptions = {
-  1: { label: "中学基礎", equivalent: "英検5級 / Pre-A1", wordsRequired: 600 },
-  2: { label: "中学標準", equivalent: "英検4級 / A1", wordsRequired: 1300 },
-  3: { label: "中学卒業", equivalent: "英検3級 / A2", wordsRequired: 2100 },
-  4: { label: "高校基礎", equivalent: "英検準2級 / A2", wordsRequired: 3600 },
-  5: { label: "高校標準", equivalent: "英検2級 / B1", wordsRequired: 5100 },
-  6: { label: "高校応用", equivalent: "英検2級〜準1級 / B1-B2", wordsRequired: 6000 },
-  7: { label: "大学中級", equivalent: "英検準1級 / B2", wordsRequired: 8000 },
-  8: { label: "大学上級", equivalent: "英検1級 / C1", wordsRequired: 10000 },
-  9: { label: "超上級", equivalent: "英検1級+", wordsRequired: 12000 },
-  10:{ label: "ネイティブ", equivalent: "ネイティブレベル", wordsRequired: 15000 }
-};
 
 const getLevelColor = (level) => {
   if (level <= 3) return "#34d399"; // 緑
-  if (level <= 6) return "#fbbf24"; // 黄
-  if (level <= 8) return "#f97316"; // オレンジ
+  if (level <= 5) return "#fbbf24"; // 黄
+  if (level <= 6) return "#f97316"; // オレンジ
   return "#ef4444"; // 赤
 };
 
@@ -34,7 +24,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
   useEffect(() => {
     // アニメーションのため、少し遅れて幅を計算
     const timer = setTimeout(() => {
-      setMeterWidth((level / 10) * 100);
+      setMeterWidth((level / MAX_WORD_LEVEL) * 100);
     }, 500); // 0.5秒後にアニメーション開始
     return () => clearTimeout(timer);
   }, [level]);
@@ -64,7 +54,9 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
     loadAnalysis();
   }, []);
 
-  const { label, equivalent } = levelDescriptions[level] || { label: "レベル判定中", equivalent: "" };
+  const info = getLevel(level);
+  const label = info?.label || 'レベル判定中';
+  const equivalent = info ? getLevelEquivalent(level) : '';
 
   return (
     <div className="test-result-container stylish-result">
@@ -123,14 +115,14 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
             
             <div className="result-stats">
               <div className="stat-item">
-                <div className="stat-icon">📚</div>
+                <div className="stat-icon" aria-hidden="true"><FaBook /></div>
                 <div className="stat-content">
                   <span className="stat-label">推定語彙数</span>
-                  <span className="stat-value">{levelDescriptions[level]?.wordsRequired?.toLocaleString() || Math.round((level / 10) * 15000).toLocaleString()}語</span>
+                  <span className="stat-value">{(info?.wordsRequired ?? 0).toLocaleString()}語</span>
                 </div>
               </div>
               <div className="stat-item">
-                <div className="stat-icon">🎯</div>
+                <div className="stat-icon" aria-hidden="true"><FaBullseye /></div>
                 <div className="stat-content">
                   <span className="stat-label">目標達成度</span>
                   <span className="stat-value">{Math.round(meterWidth)}%</span>
@@ -158,7 +150,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="feedback-section"
             >
-              <h3 className="feedback-title">📊 学習アドバイス</h3>
+              <h3 className="feedback-title">学習アドバイス</h3>
               <div className="recommendations-list">
                 {recommendations.map((rec, index) => (
                   <motion.div
@@ -170,12 +162,12 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
                   >
                     <div className="recommendation-header">
                       <span className="recommendation-type">
-                        {rec.type === 'basic' && '🔰 基礎学習'}
-                        {rec.type === 'intermediate' && '📈 中級学習'}
-                        {rec.type === 'advanced' && '🚀 上級学習'}
-                        {rec.type === 'weakness' && '⚠️ 苦手克服'}
-                        {rec.type === 'speed' && '⚡ 速度向上'}
-                        {rec.type === 'frequency' && '📅 学習頻度'}
+                        {rec.type === 'basic' && '基礎学習'}
+                        {rec.type === 'intermediate' && '中級学習'}
+                        {rec.type === 'advanced' && '上級学習'}
+                        {rec.type === 'weakness' && '苦手克服'}
+                        {rec.type === 'speed' && '速度向上'}
+                        {rec.type === 'frequency' && '学習頻度'}
                         {rec.type === 'info' && 'ℹ️ 情報'}
                       </span>
                       <span className={`priority-badge ${rec.priority}`}>
@@ -201,7 +193,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
               logger.debug('TestResult: 前の画面に戻るボタンがクリックされました');
               window.location.replace('/student-dashboard');
             }}>
-              <span className="btn-icon">🏠</span>
+              <span className="btn-icon" aria-hidden="true"><FaHome /></span>
               <span className="btn-text">ダッシュボードに戻る</span>
             </button>
           </motion.div>
