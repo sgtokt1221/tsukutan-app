@@ -2824,6 +2824,13 @@ export default function StudentDashboard() {
                       eikenLevelOrder.indexOf(currentLevelEiken) > targetIndex;
                   }
                   
+                  // 収録語が1語も無いレベルはカードごと出さない。
+                  // 単語データのレベル体系は1〜7で、レベル8〜10には単語が存在しない。
+                  // 「対象外」と表示すべきレベルは別で判定しているので、それらは残す。
+                  if (levelWords.length === 0 && !isUnusedLevel && !isEikenUnusedLevel) {
+                    return null;
+                  }
+
                   // 推奨判定
                   const isRecommended = isRecommendedLevel(Number(level), testResultLevel);
                   const recommendations = getRecommendedLevels(testResultLevel);
