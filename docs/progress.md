@@ -837,3 +837,93 @@ Chart.js は `AdminDashboard` からしか使わないので、遅延読み込�
   ログイン画面と初期読み込みはブラウザで確認済み。
 - 大量一覧のページング・仮想化（13.5）は未実施。
   生徒数が数百程度なら問題にならない見込みだが、実データで確認していない。
+
+## 本番デプロイ（2026-08-09）: バックアップ → Rules → Functions
+
+計画書15.2の順序のうち、Rules と Functions まで実施。Hosting は未公開のまま。
+
+### 前提として判明したこと
+
+**この時点でアプリはどこにも公開されていなかった。**
+
+```
+https://tsukutan-58b3f.web.app/            200  <title>Welcome to Firebase Hosting</title>
+https://sgtokt1221.github.io/tsukutan-app/ 404
+```
+
+Firebase Hosting は初期画面、GitHub Pages は404。
+一方で本番 Firestore には生徒240人分の実データがある。
+つまり今回のフロント公開は「更新」ではなく初回公開になる。
+壊す相手の稼働中フロントエンドが無いので、デプロイのリスクは低い。
+
+### 1. バックアップ
+
+`docs/baseline/pre-release-backup-2026-08-09.md` に記録。
+
+| 項目 | 値 |
+|---|---:|
+| Firestore エクスポート | `gs://tsukutan-58b3f-firestore-backup/2026-08-09-pre-release` |
+| 文書数 | 13,717 |
+| Auth アカウント | 242 |
+| `users` 文書 | 240 |
+
+Firestore のロケーションが `asia-northeast2` だったので、
+同じロケーションにバックアップ用バケットを新規作成した。
+
+**Firebase Auth はこのエクスポートに含まれない。** 今回は取得していない
+（出力にパスワードハッシュが含まれるため）。生徒アカウントは
+メールとパスワードの規約から再作成できる。
+
+### 2. Firestore Rules
+
+デプロイ前に、実アプリの一覧取得パターンをエミュレータで追加検証した。
+
+- `progressLogic` の `getDocs(collection(db,'goalsMaster'))`
+- `learningPlanner` の `getDocs(collection(db,'textbooks/*/words'))`
+- 生徒による自分のサブコレクションの一覧取得
+
+24件すべて通過。
+
+`firebase deploy --only firestore:rules` を実行し、Rules API で本番の内容を確認。
+
+| 確認項目 | 結果 |
+|---|---|
+| `allow read, write: if request.auth != null`（全開放） | **消えた** |
+| 管理者判定 | あり |
+| 既定 deny（`match /{document=**}` → false） | あり |
+
+**「認証済みなら全ドキュメント読み書き可」は解消。**
+
+### 3. Cloud Functions
+
+3本すべて `nodejs20` で ACTIVE。URLは変わっていない。
+
+| Function | 状態 | 変更内容 |
+|---|---|---|
+| `importUsers` | ACTIVE | **全削除する旧実装を非破壊版に置き換え** |
+| `manageStudents` | ACTIVE | 変更なし（ランタイムのみ 18→20） |
+| `generateStoryFromWords` | ACTIVE | トランザクション予約つきの1回呼び出し版へ |
+
+認証なしで `importUsers` を叩くと 403 と
+`{"error":"Authorization header is missing."}` を返すことを確認。
+
+### 注意: Node 20 も既に非推奨
+
+デプロイ時の警告:
+
+> Runtime Node.js 20 was deprecated on 2026-04-30 and will be
+> decommissioned on 2026-10-30
+
+計画書は「18 → 20」だったが、20 も期限が切れている。
+**2026-10-30 までに Node 22 へ上げる必要がある。**
+併せて `firebase-functions` も最新版への更新を促す警告が出ている。
+
+### 残っている工程
+
+1. 復習データの移行（`scripts/migrate-review-words.js`。ドライラン未実施）
+2. Hosting の初回公開
+3. 公開後のスモークテスト
+
+**フロントエンドを公開する前に移行を通すこと。** 順序を逆にすると、
+語彙力チェックが永続IDで復習単語を書くのに既存が旧IDのままなので、
+同じ単語が2つのIDで並ぶ。
