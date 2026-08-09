@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "note": "ASSESSMENT_RANK_SYSTEM_PLAN.md 3.2 の初期換算テーブル。正式な境界は実測データで再調整する。",
+  "scoreMin": 0,
+  "scoreMax": 1000,
+  "ranks": [
+    {
+      "id": "E",
+      "min": 0,
+      "max": 149,
+      "cefr": "Pre-A1",
+      "eiken": "英検5級相当の目安",
+      "toeic": { "min": 10, "max": 115 },
+      "style": "plain",
+      "locked": false
+    },
+    {
+      "id": "D",
+      "min": 150,
+      "max": 274,
+      "cefr": "A1",
+      "eiken": "英検4級相当の目安",
+      "toeic": { "min": 120, "max": 220 },
+      "style": "soft",
+      "locked": false
+    },
+    {
+      "id": "C",
+      "min": 275,
+      "max": 424,
+      "cefr": "A2前半",
+      "eiken": "英検3級相当の目安",
+      "toeic": { "min": 225, "max": 380 },
+      "style": "double",
+      "locked": false
+    },
+    {
+      "id": "B",
+      "min": 425,
+      "max": 574,
+      "cefr": "A2後半",
+      "eiken": "英検準2級〜準2級プラス相当の目安",
+      "toeic": { "min": 385, "max": 545 },
+      "style": "double-gloss",
+      "locked": false
+    },
+    {
+      "id": "A",
+      "min": 575,
+      "max": 724,
+      "cefr": "B1",
+      "eiken": "英検2級相当の目安",
+      "toeic": { "min": 550, "max": 780 },
+      "style": "bold",
+      "locked": false
+    },
+    {
+      "id": "S",
+      "min": 725,
+      "max": 849,
+      "cefr": "B2",
+      "eiken": "英検準1級相当の目安",
+      "toeic": { "min": 785, "max": 940 },
+      "style": "aura",
+      "locked": false
+    },
+    {
+      "id": "SS",
+      "min": 850,
+      "max": 1000,
+      "cefr": "C1",
+      "eiken": "英検1級相当の目安",
+      "toeic": { "min": 945, "max": 990 },
+      "style": "crest",
+      "locked": true,
+      "lockedReason": "C1相当の問題バンクが未整備のため、正式判定は行わない（計画書2.3）"
+    }
+  ],
+  "levelToScore": {
+    "note": "現行の実力テストは自己申告型で、計画書4.1により正式ランク判定には使えない。移行期間中は既存の level(1〜7) から代表値へ写して表示だけ行う。信頼度は low 固定。",
+    "1": 75,
+    "2": 210,
+    "3": 350,
+    "4": 470,
+    "5": 610,
+    "6": 690,
+    "7": 780
+  },
+  "disclaimer": "この結果は、つくたん独自テストによる語彙・読解・Listening基礎の推定です。英検の合否やTOEIC公式スコアを保証するものではありません。"
+}

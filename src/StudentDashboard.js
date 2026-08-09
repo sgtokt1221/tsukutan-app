@@ -16,10 +16,11 @@ import StoryPanel from './components/student/StoryPanel';
 import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
-import LevelBadge from './LevelBadge';
+import RankCard from './components/assessment/RankCard';
 import { FaBook, FaSyncAlt, FaMagic, FaStar } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
+import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster, loadManifest } from './logic/wordMaster';
@@ -459,6 +460,11 @@ export default function StudentDashboard() {
   const [testWords, setTestWords] = useState([]);
   const [currentSessionInfo, setCurrentSessionInfo] = useState(null);
   const [userData, setUserData] = useState(null);
+  // 能力スコアとランク。現行の level からの暫定換算（計画書12 フェーズ1）。
+  const abilityScore = scoreFromLegacyLevel(testResultLevel);
+  const currentRankId = rankForScore(abilityScore)?.id ?? null;
+  // 自己ベストは下がっても消さない。保存済みが無ければ現在値を使う。
+  const bestRankId = bestRankOf(userData?.assessment?.bestRank ?? null, currentRankId);
   const [dailyPlan, setDailyPlan] = useState({ newWords: [], reviewWords: [], extraNewWords: [] });
   const [showRetestPrompt, setShowRetestPrompt] = useState(false);
   const [isDailyTaskCompleted, setIsDailyTaskCompleted] = useState(false);
@@ -1642,49 +1648,15 @@ export default function StudentDashboard() {
             </div>
 
             <div className="section-card">
-              <div className="dashboard-header" style={{ position: 'relative' }}>
-                <LevelBadge level={testResultLevel} />
-                {testResultLevel > 0 && (
-                <button
-                  onClick={startCheckTest}
-                  style={{ 
-                    position: 'absolute',
-                    bottom: '-8px',
-                    right: '-8px',
-                    fontSize: '0.7rem',
-                    padding: '4px 8px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '12px',
-                    background: '#f8fafc',
-                    color: '#6b7280',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '3px',
-                    fontWeight: '500',
-                    height: '24px',
-                    minWidth: '60px',
-                    justifyContent: 'center',
-                    zIndex: 10,
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                  }}
-                  onMouseOver={(e) => {
-                    e.target.style.background = '#e5e7eb';
-                    e.target.style.color = '#374151';
-                    e.target.style.transform = 'scale(1.05)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.background = '#f8fafc';
-                    e.target.style.color = '#6b7280';
-                    e.target.style.transform = 'scale(1)';
-                  }}
-                >
-                  <FaSyncAlt style={{ fontSize: '0.65rem' }} />
-                  再テスト
-                </button>
-                )}
-              </div>
+              {/* レベルの直接表示をランク表示へ置き換える（計画書12 フェーズ1-2）。
+                  現行テストは自己申告型で正式ランク判定には使えないため、
+                  既存 level から代表スコアへ写した暫定表示。信頼度は low。 */}
+              <RankCard
+                score={abilityScore}
+                bestRankId={bestRankId}
+                onRetest={testResultLevel > 0 ? startCheckTest : undefined}
+                compact
+              />
 
               {/* 学習計画最適化ボタン */}
               {showRetestPrompt && (
