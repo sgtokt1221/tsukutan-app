@@ -3,7 +3,7 @@ import AnswerControls from './components/learning/AnswerControls';
 import SessionHeader from './components/learning/SessionHeader';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup } from 'react-icons/fa';
+import { FaArrowUp, FaUndo, FaArrowLeft, FaBook, FaLayerGroup } from 'react-icons/fa';
 import { initialize, speak } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
@@ -769,8 +769,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         <div className="session-header session-header--actions">
           <p className="wordbook-hint">
             {isReviewMode
-              ? '右側を長押し → 上スワイプで復習完了'
-              : '右側を長押しで答えを表示。右スワイプ=わかった / 左スワイプ=もう一度'}
+              ? '「答えを見る」で意味を表示。上スワイプで復習完了にできます。'
+              : '「答えを見る」で意味を表示。右スワイプ=わかった / 左スワイプ=もう一度も使えます。'}
           </p>
           <button type="button" className="secondary-action" onClick={() => setViewMode('flashcard')}>
             <FaLayerGroup aria-hidden="true" /> フラッシュカード
@@ -991,13 +991,8 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         </div>
       </div>
 
-      {/* 上に戻るボタン */}
-      <div style={{
-        position: 'fixed',
-        bottom: '100px',
-        right: '20px',
-        zIndex: 1000
-      }}>
+      {/* 上に戻るボタン。カードに被らないよう右下の余白へ寄せる。 */}
+      <div className="wordbook-to-top">
         <button
           onClick={() => {
             logger.debug('上に戻るボタンがクリックされました');
@@ -1023,33 +1018,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
-          style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.2rem',
-            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#2563eb';
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = '#3b82f6';
-            e.target.style.transform = 'translateY(0px)';
-            e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
-          }}
+          type="button"
+          className="wordbook-to-top__button"
+          aria-label="先頭へ戻る"
         >
-          ↑
+          <FaArrowUp aria-hidden="true" />
         </button>
       </div>
     </div>
