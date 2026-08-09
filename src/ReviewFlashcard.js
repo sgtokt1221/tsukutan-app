@@ -285,11 +285,13 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   }, []);
 
   // 正解・不正解処理関数
-  const handleCorrect = useCallback(async () => {
+  // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
+  // 'again' は handleIncorrect が受け持つ。
+  const handleAnswer = useCallback(async (quality) => {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      trackWrite(updateUserWordProgress(userId, currentWord, true));
+      trackWrite(updateUserWordProgress(userId, currentWord, quality));
       setGraduatedCount(prev => prev + 1);
     }
     
@@ -320,11 +322,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     }
   }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites]);
 
+  const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
+  const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
+
   const handleIncorrect = useCallback(async () => {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      trackWrite(updateUserWordProgress(userId, currentWord, false));
+      trackWrite(updateUserWordProgress(userId, currentWord, 'again'));
     }
     
     // 次の単語へ
@@ -1018,6 +1023,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
+        onHard={handleHard}
       />
 
       {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く */}

@@ -60,3 +60,19 @@
 .answer-btn--again:hover:not(:disabled) {
   background-color: var(--color-danger-bg);
 }
+
+/* 3段階のとき。狭い画面でも文字を潰さないよう間隔を詰める。 */
+.answer-controls__buttons--three {
+  gap: var(--space-8);
+}
+
+/* 迷った: わかった と もう一度 の中間。基準色の範囲で表す（計画書5.1）。 */
+.answer-btn--hard {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+  border: 1px solid var(--color-lime-border);
+}
+
+.answer-btn--hard:hover:not(:disabled) {
+  background-color: var(--color-lime-muted);
+}
