@@ -8,6 +8,8 @@ import AnswerControls from './components/learning/AnswerControls';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
+import BookmarkButton from './components/learning/BookmarkButton';
+import { useBookmarks } from './logic/useBookmarks';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
@@ -34,6 +36,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const autoPlayRef = useRef(null); // 自動読み上げのタイムアウト参照
 
   const auth = getAuth();
+  // 毎日みたい単語の登録状態
+  const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const sessionStartTime = useRef(new Date());
 
@@ -852,6 +856,12 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
               <div className="wordbook-card__grid">
                 {/* 左側：英単語 */}
                 <div className="wordbook-card__side wordbook-card__left">
+                  <BookmarkButton
+                    size="inline"
+                    active={isBookmarked(word)}
+                    onToggle={() => toggleBookmark(word)}
+                    label={word.word}
+                  />
                   <button
                     type="button"
                     className="wordbook-word"
@@ -941,15 +951,24 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         onBack={handleBackButtonClick}
         backLabel="終了"
         actions={(
-          <button
-            type="button"
-            className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
-            onClick={autoPlay ? stopAutoPlay : startAutoPlay}
-            aria-pressed={autoPlay}
-            aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
-          >
-            {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
-          </button>
+          <>
+            {currentWord && (
+              <BookmarkButton
+                active={isBookmarked(currentWord)}
+                onToggle={() => toggleBookmark(currentWord)}
+                label={currentWord.word}
+              />
+            )}
+            <button
+              type="button"
+              className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
+              onClick={autoPlay ? stopAutoPlay : startAutoPlay}
+              aria-pressed={autoPlay}
+              aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
+            >
+              {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+            </button>
+          </>
         )}
       />
       <ModeTabs value="flashcard" onChange={setViewMode} />
