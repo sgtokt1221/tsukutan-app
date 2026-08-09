@@ -17,7 +17,6 @@ import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
-import AssessmentTest from './AssessmentTest';
 import { FaBook, FaSyncAlt, FaMagic, FaStar } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
@@ -1584,13 +1583,6 @@ export default function StudentDashboard() {
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
                 />;
-      case 'assessment':
-        return (
-          <AssessmentTest
-            previousLevel={testResultLevel}
-            onBack={() => setViewMode('select')}
-          />
-        );
       case 'test':
         return (
           <VocabularyCheckTest
@@ -1665,15 +1657,6 @@ export default function StudentDashboard() {
                 onRetest={testResultLevel > 0 ? startCheckTest : undefined}
                 compact
               />
-              {/* 客観問題の新テスト。試験運用中なのでランクは動かさない。
-                  受けてもらわないと問題の良し悪しが分からないため導線は出す。 */}
-              <button
-                type="button"
-                className="trial-test-link"
-                onClick={() => setViewMode('assessment')}
-              >
-                新しい実力テストを試す（試験運用・ランクは変わりません）
-              </button>
 
               {/* 学習計画最適化ボタン */}
               {showRetestPrompt && (

@@ -55,64 +55,81 @@
   font-size: var(--font-size-40);
 }
 
-/* ---- ランクごとの表現（計画書8.3の表） ---- */
+/* ホームの主役。ここだけ大きく取る。 */
+.rank-badge--xlarge {
+  width: 92px;
+  height: 92px;
+}
+.rank-badge--xlarge .rank-badge__letter {
+  font-size: 2.75rem;
+}
 
-/* E: 細い1本枠、影なし */
+/* ---- ランクごとの表現（計画書8.3の表） ----
+   色は5色から増やさない。枠の本数・太さ・面の濃さ・縁光だけで差を出す。
+   隣り合うランクで見分けがつくよう、段ごとに要素をひとつずつ足していく。 */
+
+/* E: 細い1本枠、面も影もなし */
 .rank-badge--plain {
   border: 1px solid var(--color-olive-border);
 }
 
-/* D: 1本枠、薄い面 */
+/* D: 面が付く */
 .rank-badge--soft {
-  border: 1px solid var(--color-olive-border);
+  border: 1px solid var(--color-lime-border);
   background-color: var(--color-lime-soft);
 }
 
 /* C: 二重枠 */
 .rank-badge--double {
   border: 2px solid var(--color-lime-border);
-  box-shadow: inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px var(--color-lime-border);
-  background-color: var(--color-lime-soft);
+  box-shadow: inset 0 0 0 3px var(--color-surface), inset 0 0 0 5px var(--color-lime-border);
+  background-color: var(--color-lime-muted);
 }
 
-/* B: 二重枠と小さな光沢 */
+/* B: 二重枠が濃くなり、上から光沢が乗る */
 .rank-badge--double-gloss {
-  border: 2px solid var(--color-lime-border);
+  border: 3px solid var(--color-brand-lime);
   box-shadow:
-    inset 0 0 0 4px var(--color-surface),
-    inset 0 0 0 5px var(--color-lime-border),
-    inset 0 12px 16px -12px rgba(255, 255, 255, 0.9);
+    inset 0 0 0 3px var(--color-surface),
+    inset 0 0 0 6px var(--color-brand-lime),
+    inset 0 14px 18px -12px rgba(255, 255, 255, 0.95);
   background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
 }
 
-/* A: 太い枠と立体的な紋章 */
+/* A: 外側へ影が出て、立体的になる */
 .rank-badge--bold {
   border: 3px solid var(--color-brand-lime);
   box-shadow:
-    inset 0 0 0 5px var(--color-surface),
+    inset 0 0 0 4px var(--color-surface),
+    inset 0 0 0 7px var(--color-brand-lime),
+    inset 0 14px 18px -12px rgba(255, 255, 255, 0.95),
     var(--shadow-2);
   background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
 }
 
-/* S: ブルーの縁光と静かなシマー */
+/* S: 青い縁光が加わる。ここで初めて別系統の色が出る。 */
 .rank-badge--aura {
   border: 3px solid var(--color-brand-lime);
   box-shadow:
-    inset 0 0 0 5px var(--color-surface),
-    0 0 0 3px rgba(59, 130, 246, 0.28),
+    inset 0 0 0 4px var(--color-surface),
+    inset 0 0 0 7px var(--color-brand-lime),
+    0 0 0 4px rgba(59, 130, 246, 0.55),
+    0 0 14px 4px rgba(59, 130, 246, 0.30),
     var(--shadow-2);
   background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
 }
 
-/* SS: ライムとブルーの二重光、専用紋章 */
+/* SS: ライムと青の二重光。最上位だけの見た目。 */
 .rank-badge--crest {
   border: 3px solid var(--color-brand-lime);
   box-shadow:
-    inset 0 0 0 5px var(--color-surface),
-    0 0 0 3px rgba(163, 230, 53, 0.55),
-    0 0 0 6px rgba(59, 130, 246, 0.35),
+    inset 0 0 0 4px var(--color-surface),
+    inset 0 0 0 7px var(--color-brand-lime),
+    0 0 0 4px rgba(163, 230, 53, 0.85),
+    0 0 0 8px rgba(59, 130, 246, 0.60),
+    0 0 20px 6px rgba(59, 130, 246, 0.35),
     var(--shadow-3);
-  background-image: linear-gradient(160deg, var(--color-lime-muted), rgba(59, 130, 246, 0.10));
+  background-image: linear-gradient(160deg, var(--color-lime-muted), rgba(59, 130, 246, 0.14));
 }
 
 /* 未解放。見せてもよいが、獲得済みには見せない（計画書2.3） */
