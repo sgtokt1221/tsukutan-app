@@ -4,7 +4,6 @@ import { auth, db } from './firebaseConfig';
 import './Analytics.css';
 import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, updateDoc, increment, where } from "firebase/firestore";
 import { generateDailyPlan } from './logic/learningPlanner';
-import { addWordToReview } from './logic/reviewLogic';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { logStudySession } from './logic/studyLogger';
 import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress } from './logic/freeStudyProgress';
@@ -827,11 +826,9 @@ export default function StudentDashboard() {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Handle incorrect words
-    if (incorrectWords && incorrectWords.length > 0) {
-      // forEach で投げっぱなしにすると、画面遷移で書き込みを取りこぼす（計画書10.2.10）
-      await Promise.all(incorrectWords.map(word => addWordToReview(user.uid, word)));
-    }
+    // 不正解単語はここでは登録しない。LearningFlashcard が回答のたびに
+    // updateUserWordProgress('again') で記録済み。ここでも addWordToReview を
+    // 呼ぶと、積み上げた復習間隔を初期値へ上書きしてしまう。
 
     // Update vocabulary count and progress if new words were learned
     if (newlyLearnedCount > 0) {
@@ -1575,7 +1572,13 @@ export default function StudentDashboard() {
                   sessionInfo={currentSessionInfo}
                 />;
       case 'test':
-        return <VocabularyCheckTest allWords={testWords} onTestComplete={handleTestComplete} />;
+        return (
+          <VocabularyCheckTest
+            allWords={testWords}
+            onTestComplete={handleTestComplete}
+            onCancel={() => setViewMode('select')}
+          />
+        );
       case 'result':
         const lastResponseTimes = JSON.parse(localStorage.getItem('lastTestResponseTimes') || '[]');
         return <TestResult level={testResultLevel} onRestart={() => {}} responseTimes={lastResponseTimes} />;
