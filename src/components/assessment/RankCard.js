@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import RankBadge from './RankBadge';
 import {
   DISCLAIMER,
+  clampToAwardable,
   getRank,
   nextRank,
   pointsToNextRank,
@@ -29,8 +30,12 @@ export default function RankCard({
 }) {
   const [showDetail, setShowDetail] = useState(false);
 
-  const rank = rankForScore(score);
-  const equivalency = buildEquivalency({ score });
+  const measured = rankForScore(score);
+  // 正式に付与できるランクまでしか出さない。スコアがSS帯に届いても、
+  // C1問題バンクが無い以上「SSを取った」ようには見せない（計画書2.3）。
+  const rank = getRank(clampToAwardable(measured?.id));
+  const cappedByLock = Boolean(measured && rank && measured.id !== rank.id);
+  const equivalency = buildEquivalency({ score: cappedByLock ? rank.max : score });
 
   if (!rank) {
     return (
@@ -85,6 +90,12 @@ export default function RankCard({
           </p>
         </div>
       </div>
+
+      {cappedByLock && (
+        <p className="rank-card__locked-note">
+          {measured.id} は測定準備中です。今は {rank.id} までの判定になります。
+        </p>
+      )}
 
       {next && (
         <div className="rank-card__progress">

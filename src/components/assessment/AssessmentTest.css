@@ -1,0 +1,70 @@
+/* 新しい実力テスト。ASSESSMENT_RANK_SYSTEM_PLAN.md 10章 */
+
+.assessment {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.assessment__hint {
+  margin: 0;
+  padding: 0 var(--space-16) var(--space-16);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  text-align: center;
+}
+
+.assessment__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+}
+
+/* 試験運用であることを最初に伝える。ランクが動くと誤解させない。 */
+.assessment__trial-note {
+  margin: 0;
+  padding: var(--space-12);
+  border: 1px solid var(--color-lime-border);
+  border-radius: var(--radius-control);
+  background-color: var(--color-lime-soft);
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+}
+
+.assessment__stats {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.assessment__stats > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-12);
+  font-size: var(--font-size-14);
+}
+
+.assessment__stats dt {
+  margin: 0;
+  color: var(--color-olive-muted);
+}
+
+.assessment__stats dd {
+  margin: 0;
+  color: var(--color-ink-olive);
+  font-variant-numeric: tabular-nums;
+}
+
+.assessment__next {
+  margin: var(--space-8) 0 0;
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+}
+
+.assessment__disclaimer {
+  margin: 0;
+  font-size: var(--font-size-12);
+  line-height: var(--line-normal);
+  color: var(--color-olive-muted);
+}
