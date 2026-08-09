@@ -300,3 +300,48 @@
   color: var(--color-olive-muted);
   line-height: 1.4;
 }
+
+/* ヘッダー内のアイコン操作。行を増やさずに1つだけ置く用。 */
+.session-header__icon-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-control);
+  border: var(--border-default);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  cursor: pointer;
+}
+
+.session-header__icon-btn:hover {
+  background-color: var(--color-lime-soft);
+}
+
+/* 押している間だけ状態が変わる操作（自動読み上げなど） */
+.session-header__icon-btn.is-active {
+  border-color: var(--color-brand-lime);
+  background-color: var(--color-lime-soft);
+}
+
+/* 答えの表示・非表示。赤シートの下でも位置がずれないよう不透明度で切り替える。 */
+.wordbook-answer {
+  transition: opacity var(--motion-standard) var(--ease-standard);
+}
+
+.wordbook-answer--hidden {
+  opacity: 0.3;
+}
+
+/* カード下の操作行 */
+.session-footer {
+  display: flex;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16) calc(var(--space-16) + env(safe-area-inset-bottom));
+}
+
+.session-footer > * {
+  flex: 1;
+}
