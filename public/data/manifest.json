@@ -16,14 +16,14 @@
   ],
   "files": {
     "words-master.json": {
-      "count": 6736,
-      "bytes": 1673642,
-      "sha256": "ae127474436fd78a807372ecf05a246d943f42d4feb4042b6ce208d36a973b5f"
+      "count": 7949,
+      "bytes": 1922162,
+      "sha256": "aff739008e3fa38b165b54ea5edfc9d207ad56568eeefde712a5592ea07cc5c9"
     },
     "words-osaka.json": {
-      "count": 1969,
-      "bytes": 370287,
-      "sha256": "5428456a944f0ac9922e6863c4046338186d16c86e01c159dc205971404e3ee0"
+      "count": 3193,
+      "bytes": 621540,
+      "sha256": "a545e686d863bf54db0236edd5ae1f1ea78c3d466f0f449b577affd50108e85f"
     },
     "words-highschool.json": {
       "count": 4789,
@@ -34,7 +34,7 @@
   "textbooks": {
     "osaka-koukou-nyuushi": {
       "file": "words-osaka.json",
-      "count": 1969
+      "count": 3193
     },
     "highschool-english": {
       "file": "words-highschool.json",

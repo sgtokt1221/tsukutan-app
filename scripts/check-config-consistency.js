@@ -220,10 +220,14 @@ const main = () => {
   // --- 4. 環境変数 ---
   const referenced = collect(sources, /process\.env\.(REACT_APP_[A-Z0-9_]+)/);
   // `process.env.X || 'https://...'` のように既定値があるものは即座の障害にはならない
-  const withFallback = collect(sources, /process\.env\.(REACT_APP_[A-Z0-9_]+)\s*\|\|/);
+  const withFallback = collect(sources, /process\.env\.(REACT_APP_[A-Z0-9_]+)\s*(?:\|\||\?\?)/);
+  // `process.env.X === 'true'` のような比較だけの使い方は、未定義でも false になるだけ。
+  // 任意の有効化フラグはこの形なので、未定義をエラーにしない。
+  const comparisonOnly = collect(sources, /process\.env\.(REACT_APP_[A-Z0-9_]+)\s*[!=]==?/);
   const defined = envKeys();
-  const missingInEnv = [...referenced.keys()].filter((key) => !defined.has(key) && !withFallback.has(key));
-  const fallbackOnly = [...referenced.keys()].filter((key) => !defined.has(key) && withFallback.has(key));
+  const optional = (key) => withFallback.has(key) || comparisonOnly.has(key);
+  const missingInEnv = [...referenced.keys()].filter((key) => !defined.has(key) && !optional(key));
+  const fallbackOnly = [...referenced.keys()].filter((key) => !defined.has(key) && optional(key));
   const unusedInEnv = [...defined].filter((key) => key.startsWith('REACT_APP_') && !referenced.has(key));
 
   result.env = {
@@ -244,7 +248,7 @@ const main = () => {
     }
   }
   for (const key of fallbackOnly) {
-    console.log(`  未定義（コード内の既定値で動作）: ${key}  ${referenced.get(key).join(', ')}`);
+    console.log(`  未定義でも動作（既定値または比較のみ）: ${key}  ${referenced.get(key).join(', ')}`);
   }
   if (unusedInEnv.length) {
     console.log(`  未使用: ${unusedInEnv.join(', ')}`);

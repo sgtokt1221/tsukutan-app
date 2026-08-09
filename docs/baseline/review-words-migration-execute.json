@@ -1,169 +1,58 @@
 {
   "totals": {
     "users": 6,
-    "docs": 646,
-    "matched": 625,
-    "ambiguous": 13,
-    "unmatched": 8,
-    "merged": 23,
-    "alreadyMigrated": 0
+    "docs": 1242,
+    "matched": 20,
+    "ambiguous": 1,
+    "unmatched": 0,
+    "merged": 0,
+    "alreadyMigrated": 1221
   },
   "perUser": [
     {
       "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldDocs": 502,
-      "newDocs": 456,
-      "mergedGroups": 22,
-      "problems": 20
-    },
-    {
-      "uid": "XuPuokaMF1TGiJO7RmGNRRq84Yj2",
-      "oldDocs": 94,
-      "newDocs": 92,
-      "mergedGroups": 1,
+      "oldDocs": 956,
+      "newDocs": 19,
+      "mergedGroups": 0,
       "problems": 1
     },
     {
+      "uid": "XuPuokaMF1TGiJO7RmGNRRq84Yj2",
+      "oldDocs": 186,
+      "newDocs": 1,
+      "mergedGroups": 0,
+      "problems": 0
+    },
+    {
       "uid": "eESG56y9ZCQWqz2aN8LIGSv3Xjr2",
-      "oldDocs": 15,
-      "newDocs": 15,
+      "oldDocs": 30,
+      "newDocs": 0,
       "mergedGroups": 0,
       "problems": 0
     },
     {
       "uid": "fP2QGWJkPMQCUTJ5AzDDW4aDM8e2",
-      "oldDocs": 11,
-      "newDocs": 11,
+      "oldDocs": 22,
+      "newDocs": 0,
       "mergedGroups": 0,
       "problems": 0
     },
     {
       "uid": "j8gVJjkIj6b5vAXriJ8dUHCSsRr1",
-      "oldDocs": 14,
-      "newDocs": 14,
+      "oldDocs": 28,
+      "newDocs": 0,
       "mergedGroups": 0,
       "problems": 0
     },
     {
       "uid": "wUKRkeGAijgRK3MlHg6hAnUel4x2",
-      "oldDocs": 10,
-      "newDocs": 10,
+      "oldDocs": 20,
+      "newDocs": 0,
       "mergedGroups": 0,
       "problems": 0
     }
   ],
   "problems": [
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "BGh4xQOEbxHNksh7NTSP",
-      "word": "eighteenth",
-      "partOfSpeech": "名",
-      "meaning": "18番め、18日",
-      "level": 4,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "IunIXGK1uG51IY7QgjtZ",
-      "word": "five",
-      "partOfSpeech": "形",
-      "meaning": "5の",
-      "level": 1,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_abdd7e637ea27cd6",
-        "w_a695e8603634f409"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "MQZFVNscytVWEyAvGKhJ",
-      "word": "skin",
-      "partOfSpeech": "名",
-      "meaning": "皮ふ、肌、皮",
-      "level": 5,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "MgTuGFwVTuFeWLkde5m1",
-      "word": "next",
-      "partOfSpeech": "形",
-      "meaning": "次の、隣の",
-      "level": 2,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_272237c18be20796",
-        "w_9945ac94ac657d55"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "Pajn5Li3ApAsUNAxtaDK",
-      "word": "stick",
-      "partOfSpeech": "名, 動",
-      "meaning": "杖、棒、棒状のもの; くっつく",
-      "level": 5,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "PicxBz92NaZhs7KAN9oK",
-      "word": "shop",
-      "partOfSpeech": "名, 動",
-      "meaning": "店; 買い物をする",
-      "level": 2,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_2c2ff15b38097e1c",
-        "w_05c4c454bcb02fd6"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "TzJMWF73S7wYFDxmu5wc",
-      "word": "turn into ~",
-      "partOfSpeech": "熟語",
-      "meaning": "~になる、変わる",
-      "level": 5,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "VNy83KwqFeX7A7sjiuNA",
-      "word": "organize",
-      "partOfSpeech": "動",
-      "meaning": "(~を)組織する、~をまとめる",
-      "level": 8,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "X5GN1moYxtCZtrOrplaQ",
-      "word": "welcome",
-      "partOfSpeech": "動, 形, 間",
-      "meaning": "~を歓迎する; 歓迎される; ようこそ",
-      "level": 1,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_9aa8f7a41f71574c",
-        "w_1d97a817b9e413ce"
-      ]
-    },
     {
       "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
       "oldId": "X8SF6TDbkgoYuAbrLSXS",
@@ -176,152 +65,6 @@
       "candidates": [
         "w_ec1772946eb626c7",
         "w_0c080dacff0d41a8"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "ZD9ykEfNDyaCDo8BiSvk",
-      "word": "first",
-      "partOfSpeech": "副",
-      "meaning": "はじめて、第1に",
-      "level": 2,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_1c3dacbfd2cb0b8c",
-        "w_b815403ff6e51c32",
-        "w_37b249f8337733c7"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "ZISjz9yp1foe7sSw1ahE",
-      "word": "third",
-      "partOfSpeech": "名, 形, 副",
-      "meaning": "3番め、3日; 3番めの; 3番めに",
-      "level": 2,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_c8630a0fe82d5dbd",
-        "w_b148a70cb48e9fa0"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "aNBZmcWqNGuIboIFyPah",
-      "word": "those",
-      "partOfSpeech": "形, 代",
-      "meaning": "あれらの・それらの; あれらは[が]・それらは[が]",
-      "level": 1,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_8619eaa54fbc9239",
-        "w_a9880210af898c43"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "eaReVmM62Rn9TjlUgBOV",
-      "word": "today",
-      "partOfSpeech": "名, 副",
-      "meaning": "今日、本日; 今日は",
-      "level": 1,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_69b801ec841c572e",
-        "w_d18c29393976d14a"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "hGvi24RQyCmT9L8UW6ol",
-      "word": "there is [are]~",
-      "partOfSpeech": "熟語",
-      "meaning": "~がいる〔ある】",
-      "level": 2,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "kKsLC3rnImHLVKIdZgtl",
-      "word": "stapler",
-      "partOfSpeech": "名",
-      "meaning": "ステープラー",
-      "level": 3,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "kiDNLTTAKExX7wlkOBYu",
-      "word": "fox",
-      "partOfSpeech": "名",
-      "meaning": "キツネ",
-      "level": 4,
-      "status": "unmatched",
-      "reason": "マスターに該当なし",
-      "candidates": null
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "yHwhNGJuq3O9VNTaO3bi",
-      "word": "left",
-      "partOfSpeech": "副",
-      "meaning": "左へ、左の方へ",
-      "level": 2,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_fc1f925e0bbdb2d1",
-        "w_91fc22aa21bb91b3"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "zQSsjgjtcCEcmmDhfvxs",
-      "word": "face",
-      "partOfSpeech": "名",
-      "meaning": "顔、面、表情",
-      "level": 2,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_8ca49b7be297fac7",
-        "w_6e2e0d7089c921ca"
-      ]
-    },
-    {
-      "uid": "9C2VqkT1mzVUIG6Bi0xgKOam3Sq1",
-      "oldId": "zb70qAeWN63eFwyzXklw",
-      "word": "tomorrow",
-      "partOfSpeech": "名, 副",
-      "meaning": "明日; 明日は",
-      "level": 1,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_8a77882793cf0ab0",
-        "w_043a622f4a371d33"
-      ]
-    },
-    {
-      "uid": "XuPuokaMF1TGiJO7RmGNRRq84Yj2",
-      "oldId": "cDSozn6hKLiHSjsCVaWy",
-      "word": "sound",
-      "partOfSpeech": "名, 動",
-      "meaning": "音、物音、響き; ~に聞こえる、~のように思われる",
-      "level": 4,
-      "status": "ambiguous",
-      "reason": null,
-      "candidates": [
-        "w_974e6b5c998d42d2",
-        "w_7ece472743edfede"
       ]
     }
   ]

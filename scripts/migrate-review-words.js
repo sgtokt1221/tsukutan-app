@@ -67,6 +67,9 @@ const main = async () => {
 
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, 'utf8'));
   const index = buildIndex(master);
+  // 既に永続IDになっている文書は対象外。処理すると migratedFrom（統合元の記録）を
+  // 自分自身のIDで上書きしてしまう。
+  const masterIds = new Set(master.map((entry) => entry.id));
 
   console.log(EXECUTE ? '=== 本実行 ===' : '=== ドライラン（書き込みません） ===');
   console.log(`マスター: ${master.length} 件`);
@@ -95,7 +98,7 @@ const main = async () => {
       totals.docs += 1;
       const data = reviewDoc.data();
 
-      if (data.migratedTo) {
+      if (data.migratedTo || masterIds.has(reviewDoc.id)) {
         totals.alreadyMigrated += 1;
         continue;
       }
