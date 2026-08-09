@@ -11,54 +11,68 @@ const initialize = () => {
     const loadVoices = () => {
       const availableVoices = synthesis.getVoices();
       if (availableVoices.length > 0) {
-        // 英語音声を優先的にフィルタリング
-        voices = availableVoices.filter(voice => 
-          voice.lang === 'en-US' || voice.lang.startsWith('en-')
-        );
+        // すべての音声を保存（英語・日本語両方）
+        voices = availableVoices;
         
-        console.log('Available English voices:', voices.map(v => `${v.name} (${v.lang})`));
+        console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
         
-        if (voices.length > 0) {
-          // イベントリスナーをクリーンアップ
-          synthesis.onvoiceschanged = null;
-          resolve();
-        } else {
-          console.warn('No English voices found, using default voice');
-          // 英語音声が見つからない場合でも初期化を完了
-          voices = availableVoices; // デフォルト音声を使用
-          synthesis.onvoiceschanged = null;
-          resolve();
-        }
+        // イベントリスナーをクリーンアップ
+        synthesis.onvoiceschanged = null;
+        resolve();
       }
     };
 
+    // 即座に試行
     loadVoices();
-    if (voices.length === 0 && synthesis.onvoiceschanged !== undefined) {
-      synthesis.onvoiceschanged = loadVoices;
-    } else if (voices.length === 0) {
-      // 音声が利用できない場合でも初期化を完了
-      console.warn('No voices available, will use default settings');
-      resolve();
+    
+    // 音声がまだ読み込まれていない場合、イベントを待つ
+    if (voices.length === 0) {
+      if (synthesis.onvoiceschanged !== undefined) {
+        synthesis.onvoiceschanged = loadVoices;
+      } else {
+        // 音声が利用できない場合でも初期化を完了
+        console.warn('No voices available, will use default settings');
+        voices = [];
+        resolve();
+      }
     }
   });
 
   return initializationPromise;
 };
 
-const speak = (text) => {
+const speak = (text, lang = 'en-US') => {
   if (!text) {
     return;
   }
 
-  // 進行中の発話をキャンセル
+  // 進行中の発話がある場合は、読み上げ完了を待つ
   if (synthesis.speaking) {
-    synthesis.cancel();
+    console.log('Speech already in progress, queuing next speech');
+    // 現在の読み上げが完了するまで待機
+    const checkSpeaking = () => {
+      if (synthesis.speaking) {
+        setTimeout(checkSpeaking, 100);
+      } else {
+        // 読み上げ完了後に新しい音声を開始
+        setTimeout(() => {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang;
+          console.log('Speaking queued text:', text, 'with lang:', lang);
+          synthesis.speak(utterance);
+        }, 200); // 少し間隔を空ける
+      }
+    };
+    checkSpeaking();
+    return;
   }
 
   const utterance = new SpeechSynthesisUtterance(text);
   
-  // 強制的に英語音声を設定
-  utterance.lang = 'en-US';
+  // 言語を設定（デフォルトは英語）
+  utterance.lang = lang;
+  
+  console.log('Attempting to speak:', text, 'with lang:', lang);
   
   // デバイスを検出
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -69,18 +83,40 @@ const speak = (text) => {
     utterance.pitch = 1.0; // 自然なピッチ
     utterance.volume = 0.8; // 適度な音量
     
-    // 利用可能な英語音声を取得
+    // 利用可能な音声を取得
     const availableVoices = synthesis.getVoices();
-    const englishVoices = availableVoices.filter(voice => 
-      voice.lang === 'en-US' || voice.lang.startsWith('en-')
-    );
+    console.log('Available voices for mobile:', availableVoices.map(v => `${v.name} (${v.lang})`));
     
-    if (englishVoices.length > 0) {
-      // 英語音声を優先的に選択
-      const selectedVoice = englishVoices.find(voice => voice.name.includes('English')) ||
-                           englishVoices.find(voice => voice.name.includes('US')) ||
-                           englishVoices[0];
-      utterance.voice = selectedVoice;
+    if (lang === 'ja' || lang === 'ja-JP') {
+      // 日本語音声を選択
+      const japaneseVoices = availableVoices.filter(voice => 
+        voice.lang === 'ja-JP' || voice.lang.startsWith('ja')
+      );
+      
+      console.log('Japanese voices found:', japaneseVoices.map(v => `${v.name} (${v.lang})`));
+      
+      if (japaneseVoices.length > 0) {
+        const selectedVoice = japaneseVoices.find(voice => voice.name.includes('Google')) ||
+                             japaneseVoices.find(voice => voice.name.includes('Kyoko')) ||
+                             japaneseVoices.find(voice => voice.name.includes('日本語')) ||
+                             japaneseVoices[0];
+        utterance.voice = selectedVoice;
+        console.log('Selected Japanese voice:', selectedVoice?.name);
+      } else {
+        console.warn('No Japanese voices found, using default');
+      }
+    } else {
+      // 英語音声を選択
+      const englishVoices = availableVoices.filter(voice => 
+        voice.lang === 'en-US' || voice.lang.startsWith('en-')
+      );
+      
+      if (englishVoices.length > 0) {
+        const selectedVoice = englishVoices.find(voice => voice.name.includes('English')) ||
+                             englishVoices.find(voice => voice.name.includes('US')) ||
+                             englishVoices[0];
+        utterance.voice = selectedVoice;
+      }
     }
   } else {
     // デスクトップ: 英語音声を優先選択
@@ -89,26 +125,57 @@ const speak = (text) => {
     utterance.volume = 1.0;
     
     if (voices.length > 0) {
-      // 英語音声のみから選択
-      const englishVoices = voices.filter(voice => 
-        voice.lang === 'en-US' || voice.lang.startsWith('en-')
-      );
-      
-      if (englishVoices.length > 0) {
-        const selectedVoice = 
-          englishVoices.find(voice => voice.name.includes('Google')) ||
-          englishVoices.find(voice => voice.name === 'Alex') || // macOSの高品質な音声
-          englishVoices.find(voice => voice.name.includes('Microsoft')) ||
-          englishVoices.find(voice => voice.name.includes('English')) ||
-          englishVoices.find(voice => voice.name.includes('US')) ||
-          englishVoices[0];
+      if (lang === 'ja' || lang === 'ja-JP') {
+        // 日本語音声を選択
+        const japaneseVoices = voices.filter(voice => 
+          voice.lang === 'ja-JP' || voice.lang.startsWith('ja')
+        );
         
-        utterance.voice = selectedVoice;
+        console.log('Japanese voices found (desktop):', japaneseVoices.map(v => `${v.name} (${v.lang})`));
+        
+        if (japaneseVoices.length > 0) {
+          const selectedVoice = 
+            japaneseVoices.find(voice => voice.name.includes('Google')) ||
+            japaneseVoices.find(voice => voice.name.includes('Kyoko')) || // macOSの日本語音声
+            japaneseVoices.find(voice => voice.name.includes('Microsoft')) ||
+            japaneseVoices.find(voice => voice.name.includes('日本語')) ||
+            japaneseVoices[0];
+          
+          utterance.voice = selectedVoice;
+          console.log('Selected Japanese voice (desktop):', selectedVoice?.name);
+        } else {
+          console.warn('No Japanese voices found (desktop), using default');
+        }
+      } else {
+        // 英語音声のみから選択
+        const englishVoices = voices.filter(voice => 
+          voice.lang === 'en-US' || voice.lang.startsWith('en-')
+        );
+        
+        if (englishVoices.length > 0) {
+          const selectedVoice = 
+            englishVoices.find(voice => voice.name.includes('Google')) ||
+            englishVoices.find(voice => voice.name === 'Alex') || // macOSの高品質な音声
+            englishVoices.find(voice => voice.name.includes('Microsoft')) ||
+            englishVoices.find(voice => voice.name.includes('English')) ||
+            englishVoices.find(voice => voice.name.includes('US')) ||
+            englishVoices[0];
+          
+          utterance.voice = selectedVoice;
+        }
       }
     }
   }
 
   console.log('Speaking with voice:', utterance.voice?.name || 'default', 'lang:', utterance.lang);
+  
+  // 日本語音声が見つからない場合のフォールバック
+  if ((lang === 'ja' || lang === 'ja-JP') && !utterance.voice) {
+    console.warn('Japanese voice not found, trying fallback');
+    // フォールバック：言語だけ設定して音声はシステムデフォルト
+    utterance.lang = 'ja-JP';
+  }
+  
   synthesis.speak(utterance);
 };
 

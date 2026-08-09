@@ -4,12 +4,14 @@ import { db } from '../firebaseConfig';
 export const logStudySession = async (userId, payload) => {
   if (!userId || !payload) return;
   try {
-    await addDoc(collection(db, 'users', userId, 'logs'), {
+    console.log('💾 ログ保存開始:', { userId, payload });
+    const docRef = await addDoc(collection(db, 'users', userId, 'logs'), {
       timestamp: serverTimestamp(),
       ...payload,
     });
+    console.log('✅ ログ保存成功:', { docId: docRef.id, sessionType: payload.sessionType });
   } catch (error) {
-    console.error('Failed to log study session:', error);
+    console.error('❌ ログ保存失敗:', error);
   }
 };
 

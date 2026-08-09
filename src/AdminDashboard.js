@@ -5,10 +5,215 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import ProgressLamp from './ProgressLamp';
 import PrintableQuiz from './PrintableQuiz';
+import PrintableStory from './PrintableStory';
+import { FaChartLine } from 'react-icons/fa';
 import './AdminDashboard.css';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
+
+// 段階グラフコンポーネント
+const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
+  const getLevelInfo = (level) => {
+    const levelMap = {
+      0: { label: '未測定', subLabel: '', color: '#6b7280', icon: '❓' },
+      1: { label: '英検5級', subLabel: '中1レベル', color: '#ef4444', icon: '🔴' },
+      2: { label: '英検4級', subLabel: '中2レベル', color: '#f97316', icon: '🟠' },
+      3: { label: '英検3級', subLabel: '中3レベル', color: '#eab308', icon: '🟡' },
+      4: { label: '英検準2級', subLabel: '高1レベル', color: '#22c55e', icon: '🟢' },
+      5: { label: '英検2級', subLabel: '高2レベル', color: '#06b6d4', icon: '🔵' },
+      6: { label: '英検準1級', subLabel: '高3レベル', color: '#8b5cf6', icon: '🟣' },
+      7: { label: '英検1級', subLabel: '大学レベル', color: '#f59e0b', icon: '🟤' },
+      8: { label: '大学上級', subLabel: '大学上級レベル', color: '#ec4899', icon: '🌸' },
+      9: { label: '大学院', subLabel: '大学院レベル', color: '#6366f1', icon: '🎓' },
+      10: { label: 'ネイティブ', subLabel: 'ネイティブレベル', color: '#10b981', icon: '👑' }
+    };
+    return levelMap[level] || levelMap[0];
+  };
+
+  const getGoalInfo = (goal) => {
+    if (!goal || !goal.targets || goal.targets.length === 0) {
+      return { label: '目標未設定', color: '#6b7280' };
+    }
+    
+    const targetLabels = goal.targets.map(target => {
+      const targetMap = {
+        'hs1': '高校入試合格',
+        'hs2': '難関高校合格',
+        'hs3': '大学入試準備',
+        'hs4': '難関大学合格',
+        'hs5': '英語資格取得',
+        'uni1': '大学基礎英語',
+        'uni2': '大学応用英語',
+        'uni3': '大学院準備',
+        'career1': '就職活動',
+        'career2': 'キャリアアップ',
+        'eiken_pre1': '英検準1級取得',
+        'uni_top': '難関大学合格'
+      };
+      return targetMap[target.goalId] || '目標設定';
+    });
+    
+    return {
+      label: targetLabels.join(', '),
+      color: '#3b82f6'
+    };
+  };
+
+  const currentLevel = student.level || 0;
+  const goalInfo = getGoalInfo(student.goal);
+  const currentInfo = getLevelInfo(currentLevel);
+
+  // デバッグ用：生徒の目標データをログ出力
+  console.log('👤 生徒データ:', {
+    name: student.name,
+    level: currentLevel,
+    goal: student.goal,
+    targets: student.goal?.targets || []
+  });
+
+
+  return (
+    <div className="progress-stage-chart">
+      <div className="chart-header">
+        <h4>
+          <FaChartLine /> 学習進捗・目標
+        </h4>
+      </div>
+      
+      <div className="stage-container">
+        {/* 現在のレベル */}
+        <div className="current-stage">
+          <div className="stage-info">
+            <div className="stage-label">現在のレベル</div>
+            <div className="stage-value" style={{ color: currentInfo.color }}>
+              {currentInfo.label}
+            </div>
+          </div>
+        </div>
+
+        {/* 目標 */}
+        <div className="goal-stage">
+          <div className="stage-info">
+            <div className="stage-label">目標</div>
+            <div className="stage-value" style={{ color: goalInfo.color }}>
+              {goalInfo.label}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 階段グラフ */}
+      <div className="staircase-chart">
+        <div className="staircase-container">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level, index) => {
+            const info = getLevelInfo(level);
+            const isReached = level <= currentLevel;
+            const isCurrent = level === currentLevel;
+            // 目標レベルの判定を修正
+            let isTarget = false;
+            if (student.goal && student.goal.targets && student.goal.targets.length > 0) {
+              const goalLevels = { 
+                'hs1': 4, 'hs2': 5, 'hs3': 6, 'hs4': 7, 'hs5': 6,
+                'uni1': 5, 'uni2': 7, 'uni3': 8,
+                'career1': 6, 'career2': 7,
+                'eiken_pre1': 6, 'uni_top': 7
+              };
+              
+              // 目標の最小レベルを取得
+              const targetMinLevel = Math.min(...student.goal.targets.map(t => goalLevels[t.goalId] || 5));
+              isTarget = level === targetMinLevel;
+              
+              console.log('🎯 目標レベル判定:', {
+                level,
+                targetMinLevel,
+                isTarget,
+                goals: student.goal.targets.map(t => ({ goalId: t.goalId, expectedLevel: goalLevels[t.goalId] })),
+                allGoalLevels: student.goal.targets.map(t => goalLevels[t.goalId] || 5)
+              });
+            }
+            
+            // 階段の高さを計算（レベルに応じて段々高くなる）
+            const stepHeight = 40 + (level * 8);
+            const isLastStep = index === 9;
+            
+            return (
+              <div key={level} className="staircase-step-container">
+                {/* 階段の段 */}
+                <div 
+                  className={`staircase-step ${isReached ? 'reached' : ''} ${isCurrent ? 'current' : ''} ${isTarget ? 'target' : ''}`}
+                  style={{ 
+                    height: `${stepHeight}px`,
+                    backgroundColor: isCurrent ? info.color : 
+                                   isReached ? info.color : 
+                                   isTarget ? 'rgba(59, 130, 246, 0.1)' : '#f3f4f6',
+                    borderColor: isCurrent ? info.color : 
+                                isTarget ? '#3b82f6' : '#e5e7eb'
+                  }}
+                >
+                  <div className="step-content">
+                    <span className="step-number">{level}</span>
+                    <span className="step-label">{info.label}</span>
+                    <span className="step-sublabel">{info.subLabel}</span>
+                  </div>
+                  
+                  {/* 現在位置マーカー */}
+                  {isCurrent && (
+                    <div className="current-marker">
+                      <div className="marker-dot"></div>
+                      <div className="marker-text">現在</div>
+                    </div>
+                  )}
+                  
+                  {/* 目標マーカー */}
+                  {isTarget && (
+                    <div className="target-marker">
+                      <div className="marker-dot target-dot"></div>
+                      <div className="marker-text">目標</div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* 階段の接続部分（最後の段以外） */}
+                {!isLastStep && (
+                  <div 
+                    className="step-connector"
+                    style={{ 
+                      backgroundColor: isReached ? info.color : '#e5e7eb',
+                      height: '20px'
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* 凡例 */}
+        <div className="chart-legend">
+          <div className="legend-section">
+            <h5>階段グラフの表示</h5>
+            <div className="legend-items">
+              <div className="legend-item">
+                <div className="legend-dot current"></div>
+                <span>現在のレベル</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-dot target"></div>
+                <span>目標レベル</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-dot reached"></div>
+                <span>達成済み</span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --- Constants ---
 const GRADE_GROUPS = [
@@ -137,7 +342,7 @@ function AdminDashboard() {
   const [gradeInsight, setGradeInsight] = useState(null);
   const [unassignedStudents, setUnassignedStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentDetails, setStudentDetails] = useState({ logs: [], reviewWords: [] });
+  const [studentDetails, setStudentDetails] = useState({ logs: [], reviewWords: [], stories: [] });
   const [csvFile, setCsvFile] = useState(null);
   const [message, setMessage] = useState('');
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
@@ -154,6 +359,8 @@ function AdminDashboard() {
 
   // Modal State
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
+  const [isStoryModalOpen, setStoryModalOpen] = useState(false);
+  const [selectedStory, setSelectedStory] = useState(null);
 
   // --- Data Fetching ---
   const fetchInitialData = useCallback(async () => {
@@ -163,24 +370,47 @@ function AdminDashboard() {
         const q = query(usersCollectionRef, orderBy("name"));
         const usersSnapshot = await getDocs(q);
         const studentList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setStudents(studentList);
 
         const todayStr = new Date().toISOString().slice(0, 10);
         const studentWithCompletion = await Promise.all(studentList.map(async (student) => {
           const completionDocRef = doc(db, 'users', student.id, 'dailyCompletion', todayStr);
           const completionDoc = await getDoc(completionDocRef);
+          
+          // 全体のノルマ達成状況を計算
+          const completionCollectionRef = collection(db, 'users', student.id, 'dailyCompletion');
+          const completionSnapshot = await getDocs(completionCollectionRef);
+          const totalCompletionDays = completionSnapshot.size;
+          
+          // 過去30日間の達成状況を計算
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          const recentCompletions = completionSnapshot.docs.filter(doc => {
+            const dateStr = doc.id;
+            const docDate = new Date(dateStr);
+            return docDate >= thirtyDaysAgo;
+          });
+          
+          const recentCompletionRate = recentCompletions.length > 0 ? 
+            Math.round((recentCompletions.length / 30) * 100) : 0;
+          
           // progress がないときは扱いやすいよう初期値を設定
           const progress = student.progress || {};
           return {
             ...student,
             completedToday: completionDoc.exists(),
+            totalCompletionDays,
+            recentCompletionRate,
             progress: {
               percentage: progress.percentage || 0,
               currentVocabulary: progress.currentVocabulary || 0,
               targetVocabulary: progress.targetVocabulary || 0,
             },
+            testResultLevel: student.level || student.testResultLevel || 0,
           };
         }));
+
+        // 詳細データを含む学生リストをステートに設定
+        setStudents(studentWithCompletion);
 
         const groupedData = GRADE_GROUPS.reduce((acc, group) => {
           acc[group.label] = { total: 0, completed: 0, students: [] };
@@ -222,7 +452,7 @@ function AdminDashboard() {
     setSelectedStudent(student);
     setView('studentDetails');
     setIsFetchingDetails(true);
-    setStudentDetails({ logs: [], reviewWords: [] });
+    setStudentDetails({ logs: [], reviewWords: [], stories: [] });
     try {
       const logsColRef = collection(db, 'users', student.id, 'logs');
       const logsQuery = query(logsColRef, orderBy("timestamp", "desc"));
@@ -233,7 +463,12 @@ function AdminDashboard() {
       const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
       const reviewWords = reviewWordsSnapshot.docs.map(d => ({...d.data(), id: d.id}));
 
-      setStudentDetails({ logs, reviewWords });
+      const storiesColRef = collection(db, 'users', student.id, 'stories');
+      const storiesQuery = query(storiesColRef, orderBy("createdAt", "desc"));
+      const storiesSnapshot = await getDocs(storiesQuery);
+      const stories = storiesSnapshot.docs.map(d => ({...d.data(), id: d.id}));
+
+      setStudentDetails({ logs, reviewWords, stories });
     } catch (error) {
       console.error("Error fetching student details:", error);
       setMessage("生徒詳細の読み込みに失敗しました。");
@@ -591,16 +826,249 @@ function AdminDashboard() {
       case 'studentDetails':
         if (!selectedStudent) return <p>生徒を選択してください。</p>;
         const progress = selectedStudent.progress || {};
-        const { currentVocabulary = 0, targetVocabulary = 0 } = progress;
+        const { currentVocabulary = 0 } = progress;
+        
+        // 目標達成に必要な単語数を計算
+        const getTargetVocabularyForGoal = (student) => {
+          if (!student.goal || !student.goal.targets || student.goal.targets.length === 0) {
+            return 5000; // デフォルト目標
+          }
+          
+          const goalLevels = {
+            'hs1': 4000, 'hs2': 5000, 'hs3': 6000, 'hs4': 7000, 'hs5': 6000,
+            'uni1': 5000, 'uni2': 7000, 'uni3': 8000,
+            'career1': 6000, 'career2': 7000,
+            'eiken_pre1': 6000, 'uni_top': 7000
+          };
+          
+          // 目標の最大単語数を取得
+          const maxTargetVocabulary = Math.max(...student.goal.targets.map(t => goalLevels[t.goalId] || 5000));
+          return maxTargetVocabulary;
+        };
+        
+        const targetVocabulary = getTargetVocabularyForGoal(selectedStudent);
+        
+        // 単語数ベースの進捗率を計算
+        const vocabularyProgressPercentage = targetVocabulary > 0 ? Math.min((currentVocabulary / targetVocabulary) * 100, 100) : 0;
+        
+        // デバッグ情報をコンソールに出力
+        console.log('📊 学習目標計算:', {
+          studentName: selectedStudent.name,
+          currentVocabulary,
+          targetVocabulary,
+          vocabularyProgressPercentage: Math.round(vocabularyProgressPercentage),
+          goals: selectedStudent.goal?.targets || [],
+          calculation: `${currentVocabulary} / ${targetVocabulary} (目標達成に必要な単語数)`
+        });
         return (
           <div className="admin-card">
-            <h3>{selectedStudent.name} (ID: {selectedStudent.studentId})</h3>
             {isFetchingDetails ? <Spinner /> : (
               <>
-                <div className="student-stats-container">
-                  <div className="stat-item"><strong>学年</strong><span>{selectedStudent.grade || '未設定'}</span></div>
-                  <div className="stat-item"><strong>学習目標</strong><span>{currentVocabulary} / {targetVocabulary} 単語</span></div>
+                {/* 生徒情報ヘッダー */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '1.5rem',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '12px',
+                  marginBottom: '1.5rem',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <div>
+                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#495057', fontSize: '1.375rem', fontWeight: '600' }}>
+                      {selectedStudent.name}
+                    </h4>
+                    <div style={{ color: '#6c757d', fontSize: '0.9rem' }}>
+                      ID: {selectedStudent.studentId} | 学年: {selectedStudent.grade || '未設定'}
+                    </div>
+                  </div>
+                  
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ 
+                      fontSize: '1.5rem', 
+                      fontWeight: '700', 
+                      color: '#28a745',
+                      marginBottom: '0.25rem'
+                    }}>
+                      {currentVocabulary} / {targetVocabulary}
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.875rem', 
+                      color: '#6c757d',
+                      fontWeight: '500'
+                    }}>
+                      学習目標 (単語数)
+                    </div>
+                  </div>
                 </div>
+                
+                {/* ノルマ達成状況 */}
+                <div style={{
+                  padding: '1.5rem',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  marginBottom: '1.5rem',
+                  border: '1px solid #e5e7eb',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1rem'
+                  }}>
+                    <h5 style={{ 
+                      margin: '0', 
+                      fontSize: '1.375rem', 
+                      fontWeight: '600',
+                      color: '#374151'
+                    }}>
+                      ノルマ達成状況
+                    </h5>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      {selectedStudent.recentCompletionRate >= 80 ? (
+                        <>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#10b981'
+                          }}></div>
+                          <span style={{ 
+                            fontSize: '0.875rem', 
+                            fontWeight: '600',
+                            color: '#10b981' 
+                          }}>
+                            優秀
+                          </span>
+                        </>
+                      ) : selectedStudent.recentCompletionRate >= 50 ? (
+                        <>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#f59e0b'
+                          }}></div>
+                          <span style={{ 
+                            fontSize: '0.875rem', 
+                            fontWeight: '600',
+                            color: '#f59e0b' 
+                          }}>
+                            良好
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: '#ef4444'
+                          }}></div>
+                          <span style={{ 
+                            fontSize: '0.875rem', 
+                            fontWeight: '600',
+                            color: '#ef4444' 
+                          }}>
+                            要改善
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '1rem'
+                  }}>
+                    <div style={{
+                      padding: '0.75rem',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0'
+                    }}>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        fontWeight: '500',
+                        color: '#64748b',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        marginBottom: '0.25rem'
+                      }}>
+                        過去30日間達成率
+                      </div>
+                      <div style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '700',
+                        color: '#1e293b'
+                      }}>
+                        {selectedStudent.recentCompletionRate || 0}%
+                      </div>
+                    </div>
+                    
+                    {selectedStudent.totalCompletionDays > 0 && (
+                      <div style={{
+                        padding: '0.75rem',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0'
+                      }}>
+                        <div style={{
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
+                          color: '#64748b',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          marginBottom: '0.25rem'
+                        }}>
+                          総達成日数
+                        </div>
+                        <div style={{
+                          fontSize: '1.5rem',
+                          fontWeight: '700',
+                          color: '#1e293b'
+                        }}>
+                          {selectedStudent.totalCompletionDays}日
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div style={{
+                    marginTop: '1rem',
+                    padding: '0.75rem',
+                    backgroundColor: selectedStudent.recentCompletionRate >= 80 ? '#f0fdf4' : 
+                                   selectedStudent.recentCompletionRate >= 50 ? '#fffbeb' : '#fef2f2',
+                    borderRadius: '8px',
+                    border: `1px solid ${selectedStudent.recentCompletionRate >= 80 ? '#bbf7d0' : 
+                                        selectedStudent.recentCompletionRate >= 50 ? '#fed7aa' : '#fecaca'}`
+                  }}>
+                    <div style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: selectedStudent.recentCompletionRate >= 80 ? '#166534' : 
+                             selectedStudent.recentCompletionRate >= 50 ? '#92400e' : '#991b1b'
+                    }}>
+                      {selectedStudent.recentCompletionRate >= 80 ? (
+                        '素晴らしい継続力！目標に向かって順調に学習が進んでいます。'
+                      ) : selectedStudent.recentCompletionRate >= 50 ? (
+                        '良好なペースです。もう少し継続できれば目標達成が見えてきます。'
+                      ) : (
+                        '学習習慣の見直しをおすすめします。小さな目標から始めてみましょう。'
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 段階グラフ */}
+                <ProgressStageChart student={selectedStudent} vocabularyProgressPercentage={vocabularyProgressPercentage} />
                 <div className="student-details-grid">
                   <div className="detail-card">
                     <div className="card-header">
@@ -608,6 +1076,45 @@ function AdminDashboard() {
                       <button onClick={() => setQuizModalOpen(true)} disabled={studentDetails.reviewWords.length === 0} className="create-quiz-btn">テスト作成</button>
                     </div>
                     <ul>{studentDetails.reviewWords.map(word => <li key={word.id}>{word.word}: {word.meaning}</li>)}</ul>
+                  </div>
+                  <div className="detail-card">
+                    <div className="card-header">
+                      <h4>作成した長文 ({studentDetails.stories.length}作品)</h4>
+                    </div>
+                    <div className="story-list">
+                      {studentDetails.stories.length > 0 ? (
+                        studentDetails.stories.map(story => {
+                          const formatDate = (timestamp) => {
+                            if (!timestamp) return '日付不明';
+                            const date = timestamp.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
+                            return date.toLocaleDateString('ja-JP', {
+                              month: 'short',
+                              day: 'numeric'
+                            });
+                          };
+                          
+                          return (
+                            <div key={story.id} className="story-item">
+                              <div className="story-info">
+                                <span className="story-title">{story.title || 'タイトルなし'}</span>
+                                <span className="story-date">{formatDate(story.createdAt)}</span>
+                              </div>
+                              <button 
+                                onClick={() => {
+                                  setSelectedStory(story);
+                                  setStoryModalOpen(true);
+                                }}
+                                className="view-story-btn"
+                              >
+                                表示・印刷
+                              </button>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <p>まだ長文が作成されていません。</p>
+                      )}
+                    </div>
                   </div>
                   <div className="detail-card">
                     <h4>学習時間サマリー</h4>
@@ -750,7 +1257,11 @@ function AdminDashboard() {
                     <strong>{student.name}</strong>
                     <span>ID: {student.studentId}</span>
                   </div>
-                  <ProgressLamp percentage={student.progress?.percentage} />
+                  <ProgressLamp 
+                    percentage={student.progress?.percentage} 
+                    dailyCompletion={student.recentCompletionRate}
+                    title={`${student.name}: ${student.recentCompletionRate}%`}
+                  />
                 </div>
               ))}
             </div>
@@ -762,6 +1273,9 @@ function AdminDashboard() {
       </div>
       {isQuizModalOpen && selectedStudent && (
         <PrintableQuiz words={studentDetails.reviewWords} studentName={selectedStudent.name} onCancel={() => setQuizModalOpen(false)} />
+      )}
+      {isStoryModalOpen && selectedStory && selectedStudent && (
+        <PrintableStory story={selectedStory} studentName={selectedStudent.name} onCancel={() => setStoryModalOpen(false)} />
       )}
       {isCreateModalOpen && (
         <div className="modal-overlay">

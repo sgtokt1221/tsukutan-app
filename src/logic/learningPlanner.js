@@ -1,6 +1,6 @@
 import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
-import { collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowledgeAnalysis';
 
 // ▼▼▼【修正点1】テキストブックの定義を追加▼▼▼
@@ -26,6 +26,40 @@ const DAILY_LEARNING_GOAL_MINUTES = 30; // 1日の学習目標時間（分）
 const SECONDS_PER_NEW_WORD = 60;      // 新規単語1つあたりの学習時間（秒）
 const SECONDS_PER_REVIEW_WORD = 15;   // 復習単語1つあたりの学習時間（秒）
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+// やる気レベル別設定
+const MOTIVATION_LEVELS = {
+  low: {
+    name: 'そこそこ',
+    description: '無理せず続けたい',
+    easeFactorMultiplier: 1.2,
+    intervalMultiplier: 1.5,
+    masteredThreshold: 3,
+    dailyReviewQuota: 2,
+    adjacentWordsQuota: 5,
+    newWordsQuota: 15
+  },
+  normal: {
+    name: '普通',
+    description: 'バランスよく学習したい',
+    easeFactorMultiplier: 1.0,
+    intervalMultiplier: 1.0,
+    masteredThreshold: 5,
+    dailyReviewQuota: 3,
+    adjacentWordsQuota: 10,
+    newWordsQuota: 20
+  },
+  high: {
+    name: 'やる気満々',
+    description: '確実に覚えたい',
+    easeFactorMultiplier: 0.8,
+    intervalMultiplier: 0.7,
+    masteredThreshold: 7,
+    dailyReviewQuota: 5,
+    adjacentWordsQuota: 15,
+    newWordsQuota: 30
+  }
+};
 
 const toDateSafe = (possibleTimestamp) => {
   if (!possibleTimestamp) return null;
@@ -60,6 +94,7 @@ const enrichReviewWord = (word, today) => {
 export const generateDailyPlan = async (userData, userId) => {
   const neededWordsCount = await estimateNeededWords(userData);
   const targetDateStr = userData.goal?.targetDate;
+  const motivationLevel = userData.goal?.motivationLevel || 'normal';
 
   if (!targetDateStr) {
     return {
@@ -115,13 +150,13 @@ export const generateDailyPlan = async (userData, userId) => {
   // 5. 復習単語リストを最終化
   // a) 忘却防止のため、習得済みの単語をいくつか含める
   const scheduledIds = new Set(scheduledReviewWords.map(w => w.id));
-  const masteredWords = await getRandomMasteredWords(userId, scheduledIds);
+  const masteredWords = await getRandomMasteredWords(userId, scheduledIds, motivationLevel);
   
   // b) 隣接レベルの単語を追加
   let adjacentWords = [];
   if (userData.goal && userData.goal.targets && userData.goal.targets.length > 0) {
     const currentLearnedIds = new Set([...learnedWordIds, ...newWords.map(w => w.id), ...extraNewWords.map(w => w.id)]);
-    adjacentWords = await getAdjacentLevelWords(userData.goal.targets, currentLearnedIds);
+    adjacentWords = await getAdjacentLevelWords(userData.goal.targets, currentLearnedIds, motivationLevel);
   }
   const uniqueAdjacentWords = adjacentWords.filter(w => !scheduledIds.has(w.id));
   
@@ -149,9 +184,10 @@ export const generateDailyPlan = async (userData, userId) => {
  * @param {Set<string>} excludedIds 除外する単語IDのセット
  * @returns {Promise<object[]>}
  */
-const getRandomMasteredWords = async (userId, excludedIds) => {
-  const MASTERED_WORDS_QUOTA = 3; // 1日に復習する習得済み単語の数
-  const MASTERED_REPETITIONS = 5; // 習得済みと見なす復習回数
+const getRandomMasteredWords = async (userId, excludedIds, motivationLevel = 'normal') => {
+  const config = MOTIVATION_LEVELS[motivationLevel] || MOTIVATION_LEVELS.normal;
+  const MASTERED_WORDS_QUOTA = config.dailyReviewQuota; // やる気レベルに応じた復習数
+  const MASTERED_REPETITIONS = config.masteredThreshold; // やる気レベルに応じた習得基準
   
   try {
     const userWordsCollection = collection(db, 'users', userId, 'reviewWords');
@@ -182,8 +218,9 @@ const getRandomMasteredWords = async (userId, excludedIds) => {
 /**
  * ★新規追加：目標の隣接（下位）レベルから未学習の単語を取得します
  */
-const getAdjacentLevelWords = async (targets, learnedWordIds) => {
-  const ADJACENT_WORDS_QUOTA = 10;
+const getAdjacentLevelWords = async (targets, learnedWordIds, motivationLevel = 'normal') => {
+  const config = MOTIVATION_LEVELS[motivationLevel] || MOTIVATION_LEVELS.normal;
+  const ADJACENT_WORDS_QUOTA = config.adjacentWordsQuota;
   try {
     // 1. マスターデータから全目標を取得
     const goalsMasterRef = collection(db, 'goalsMaster');
@@ -275,7 +312,7 @@ const getNewWords = async (userId, quota, userLevel, learnedWordIds) => {
  * 忘却曲線に基づき、今日復習すべき単語のリストを取得します。
  */
 const getReviewWords = async (userId, enrichedReviewEntries) => {
-  const today = new Date();
+  // const today = new Date();
   try {
     const overdue = enrichedReviewEntries.filter(entry => entry.daysUntilNext != null && entry.daysUntilNext <= 0);
     const highForget = enrichedReviewEntries
