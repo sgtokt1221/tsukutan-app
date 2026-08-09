@@ -1,0 +1,204 @@
+/* ランクカード。ASSESSMENT_RANK_SYSTEM_PLAN.md 8.1 */
+
+.rank-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.rank-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.rank-card__summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.rank-card__label {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.rank-card__score {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-28);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  line-height: 1.1;
+}
+
+.rank-card__range {
+  margin-left: var(--space-8);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  font-weight: 400;
+  color: var(--color-olive-muted);
+}
+
+.rank-card__meta {
+  margin: var(--space-4) 0 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.rank-card__diff {
+  color: var(--color-ink-olive);
+}
+
+/* ---- 次ランクまで ---- */
+.rank-card__progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.rank-card__percent {
+  font-variant-numeric: tabular-nums;
+}
+
+.rank-card__bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-lime-soft);
+  overflow: hidden;
+}
+
+.rank-card__bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-brand-lime);
+  transition: width var(--motion-card) var(--ease-standard);
+}
+
+/* ---- 英検・TOEIC 換算（補助情報として小さく） ---- */
+.rank-card__equivalency {
+  padding-top: var(--space-8);
+  border-top: var(--border-subtle);
+}
+
+.rank-card__eq-line {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.rank-card__detail-toggle {
+  margin-top: var(--space-4);
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  color: var(--color-accent-blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.rank-card__detail {
+  margin-top: var(--space-8);
+  padding: var(--space-12);
+  border-radius: var(--radius-control);
+  background-color: var(--color-canvas-lime);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  line-height: var(--line-normal);
+}
+
+.rank-card__detail p {
+  margin: 0 0 var(--space-8);
+}
+
+.rank-card__detail dl {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.rank-card__detail dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.rank-card__detail dt {
+  margin: 0;
+}
+
+.rank-card__detail dd {
+  margin: 0;
+  color: var(--color-ink-olive);
+  text-align: right;
+}
+
+.rank-card__retest {
+  align-self: flex-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rank-card__bar-fill {
+    transition: none;
+  }
+}
+
+/* ---- ホーム用。1画面に収めるため行と余白を詰める ---- */
+.rank-card--compact {
+  gap: var(--space-4);
+}
+
+.rank-card--compact .rank-card__head {
+  gap: var(--space-12);
+}
+
+.rank-card--compact .rank-card__score {
+  font-size: var(--font-size-22);
+}
+
+.rank-card--compact .rank-card__equivalency {
+  padding-top: var(--space-4);
+}
+
+/* 換算の1行と「換算について」を同じ行に並べる */
+.rank-card--compact .rank-card__equivalency {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-8);
+}
+
+.rank-card--compact .rank-card__eq-line {
+  margin: 0;
+}
+
+.rank-card--compact .rank-card__detail-toggle {
+  margin-top: 0;
+}
+
+.rank-card--compact .rank-card__detail {
+  flex-basis: 100%;
+}
+
+/* 紋章は少し小さく */
+.rank-card--compact .rank-badge--medium {
+  width: 60px;
+  height: 60px;
+}
+
+.rank-card__retest-link {
+  margin-left: var(--space-8);
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  color: var(--color-accent-blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
