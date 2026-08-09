@@ -17,7 +17,7 @@ import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
 import { FaBook, FaSyncAlt, FaMagic, FaChartLine } from 'react-icons/fa';
-import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
+import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
@@ -617,64 +617,39 @@ export default function StudentDashboard() {
     );
   };
 
+  // 締切ブロックの数字は日次計画から引く。
+  // 以前はここで remainingWords / remainingDays / 推奨語数を独自に計算しており、
+  // 同じ「1日に何語やるか」が画面に 20 / 1 / 20 と3つ並んでいた（計画書10.4）。
   const scheduleMetrics = useMemo(() => {
-    if (!userData?.goal?.targetDate) return null;
-    const targetVocabulary = userData?.progress?.targetVocabulary;
-    if (!targetVocabulary || targetVocabulary <= 0) {
-      return {
-        targetVocabulary: 0,
-        mastered: userData?.progress?.currentVocabulary || 0,
-        remainingWords: 0,
-        remainingDays: 0,
-        recommendedPerDay: dailyPlan?.dailyTarget || 0,
-        todaysPlan: dailyPlan?.newWords?.length || 0,
-        status: 'completed',
-        deadlineLabel: '-'
-      };
-    }
+    if (!userData?.goal?.targetDate || !dailyPlan) return null;
 
-    const mastered = userData?.progress?.currentVocabulary || 0;
-    const remainingWords = Math.max(0, targetVocabulary - mastered);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const targetDate = new Date(userData.goal.targetDate);
-    targetDate.setHours(0, 0, 0, 0);
+    const targetDate = parseLocalDate(userData.goal.targetDate);
+    if (!targetDate) return null;
 
     const deadline = new Date(targetDate);
     deadline.setMonth(deadline.getMonth() - 1);
-    if (deadline < today) {
-      deadline.setTime(targetDate.getTime());
-    }
+    if (deadline < parseLocalDate(getTodayKey())) deadline.setTime(targetDate.getTime());
 
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const remainingDaysRaw = Math.ceil((deadline - today) / msPerDay);
-    const remainingDays = Number.isFinite(remainingDaysRaw) ? Math.max(1, remainingDaysRaw) : 1;
-
-    const recommendedPerDay = Math.max(1, Math.ceil(remainingWords / remainingDays));
-    const todaysPlan = dailyPlan?.newWords?.length || 0;
+    const remainingWords = dailyPlan.remainingWords ?? 0;
+    const remainingDays = dailyPlan.remainingDays ?? 0;
+    const todaysPlan = dailyPlan.newWords?.length ?? 0;
 
     let status = 'ontrack';
-    if (remainingWords === 0) {
-      status = 'completed';
-    } else if (todaysPlan < recommendedPerDay * 0.9) {
-      status = 'behind';
-    } else if (todaysPlan >= recommendedPerDay * 1.3) {
-      status = 'ahead';
-    }
-
-    const deadlineLabel = `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, '0')}-${String(deadline.getDate()).padStart(2, '0')}`;
+    if (remainingWords === 0) status = 'completed';
+    else if (dailyPlan.isFeasible === false) status = 'behind';
 
     return {
-      targetVocabulary,
-      mastered,
+      targetVocabulary: userData?.progress?.targetVocabulary ?? 0,
+      mastered: userData?.progress?.currentVocabulary ?? 0,
       remainingWords,
       remainingDays,
-      recommendedPerDay,
+      // 実際に今日出す語数と同じ値を見せる
+      recommendedPerDay: dailyPlan.plannedNewWords ?? todaysPlan,
+      requiredPerDay: dailyPlan.requiredNewWords ?? 0,
+      isFeasible: dailyPlan.isFeasible !== false,
       todaysPlan,
       status,
-      deadlineLabel,
+      deadlineLabel: getTokyoDateKey(deadline),
     };
   }, [userData, dailyPlan]);
 
@@ -1684,6 +1659,45 @@ export default function StudentDashboard() {
         return (
           <>
             <div className="section-card">
+              <h3 className="section-title">今日のタスク</h3>
+              {dailyPlan.isFeasible === false && (
+                <p className="plan-warning" role="status">
+                  今の期限だと1日 {dailyPlan.requiredNewWords} 語が必要で、達成が難しい設定です。
+                  今日は {dailyPlan.plannedNewWords} 語まで出しています。達成日を見直すか、やる気レベルを上げてください。
+                </p>
+              )}
+              {dailyPlan.isFeasible !== false
+                && dailyPlan.requiredNewWords > dailyPlan.preferredNewWords
+                && dailyPlan.preferredNewWords > 0 && (
+                <p className="plan-notice" role="status">
+                  期限に間に合わせるため、今日は希望の {dailyPlan.preferredNewWords} 語より多い
+                  {' '}{dailyPlan.plannedNewWords} 語を出しています。
+                </p>
+              )}
+               <div className="task-cards-container">
+                  {isDailyTaskCompleted ? (
+                    <div className="task-card okawari-card" onClick={startExtraNewWords}>
+                      <FaMagic className="task-icon okawari-icon" />
+                      <div className="task-info">
+                        <p>おかわり</p>
+                        <span>{dailyPlan.extraNewWords.length}</span>
+                      </div>
+                      <div className="okawari-label">スケジュール巻いてます！</div>
+                    </div>
+                  ) : (
+                    <div className="task-card" onClick={startDailyNewWords}>
+                        <FaBook className="task-icon new-word-icon" />
+                        <div className="task-info"><p>新規単語</p><span>{dailyPlan.newWords.length}</span></div>
+                    </div>
+                  )}
+                  <div className="task-card" onClick={startDailyReviewWords}>
+                      <FaSyncAlt className="task-icon review-word-icon" />
+                      <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}</span></div>
+                  </div>
+              </div>
+            </div>
+
+            <div className="section-card">
               <div className="dashboard-header" style={{ position: 'relative' }}>
                 <LevelBadge level={testResultLevel} />
                 {testResultLevel > 0 && (
@@ -1778,83 +1792,47 @@ export default function StudentDashboard() {
                   <span>総語彙 {userData?.progress?.targetVocabulary?.toLocaleString?.() || '-'} 語中 {userData?.progress?.currentVocabulary?.toLocaleString?.() || 0} 語</span>
                 </div>
 
-                {paceSuggestion && paceSuggestion.recommended > 0 && (
-                  <div className={`pace-advice pace-${paceSuggestion.status}`} style={{marginTop: '12px', padding: '10px', borderRadius: '6px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.9rem'}}>
-                    <p style={{margin: '0', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                      <span>学習ペース</span>
-                      <span style={{fontWeight: 'normal'}}>
-                        平均 <strong style={{fontSize: '1.1em'}}>{paceSuggestion.average.toFixed(1)}</strong> 語/日 (推奨 {paceSuggestion.recommended} 語)
-                      </span>
-                    </p>
-                    {paceSuggestion.status === 'ahead' && (
-                      <p style={{margin: '4px 0 0', color: '#16a34a', fontSize: '0.85rem'}}>
-                        素晴らしいペースです！「おかわり学習」で更に差をつけましょう。
-                      </p>
-                    )}
-                    {paceSuggestion.status === 'behind' && (
-                      <p style={{margin: '4px 0 0', color: '#dc2626', fontSize: '0.85rem'}}>
-                        少し遅れ気味です。まずは今日のタスクを完了させましょう。
-                      </p>
-                    )}
-                    {paceSuggestion.status === 'ontrack' && (
-                      <p style={{margin: '4px 0 0', color: '#65a30d', fontSize: '0.85rem'}}>
-                        目標通り進んでいます。この調子でいきましょう！
-                      </p>
-                    )}
-                  </div>
-                )}
               </div>
 
-
-              {/* やる気レベル表示 */}
-              {userData?.goal?.motivationLevel && (
-                <div style={{
-                  marginTop: '12px',
-                  padding: '8px 12px',
-                  backgroundColor: '#f0fdf4',
-                  border: '1px solid #bbf7d0',
-                  borderRadius: '6px',
-                  fontSize: '0.9rem'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    {/* 表示名も所要時間も共通設定から引く。
-                        ここに書き並べると目標設定画面と食い違う（実際17分と19分でずれていた）。 */}
-                    <span style={{ fontWeight: '500', color: '#166534' }}>
-                      やる気レベル: {getMotivationConfig(userData.goal.motivationLevel).name}
-                    </span>
-                    <span style={{ color: '#6b7280', fontSize: '0.8rem' }}>
-                      約{getMotivationConfig(userData.goal.motivationLevel).estimatedMinutesPerDay}分/日
-                    </span>
-                  </div>
+              {/* 締切と今日の語数を1行に。以前は別ブロックで独自計算していて、
+                  同じ「1日に何語」が画面に3つ並んでいた（計画書10.4 / 12.3）。 */}
+              {scheduleMetrics ? (
+                <div className={`schedule-line ${scheduleMetrics.status}`}>
+                  <span>締切 {scheduleMetrics.deadlineLabel}（残り {scheduleMetrics.remainingDays} 日）</span>
+                  <span>
+                    今日 <strong>{scheduleMetrics.todaysPlan}</strong> 語
+                    {scheduleMetrics.remainingWords > 0
+                      && `／のこり ${scheduleMetrics.remainingWords.toLocaleString()} 語`}
+                  </span>
                 </div>
+              ) : (
+                <p className="schedule-line">目標または締切が未設定です。</p>
               )}
 
-
-              <button
-                className="ghost-button"
-                style={{ alignSelf: 'flex-start', marginTop: '12px' }}
-                onClick={handleResetGoal}
-              >
-                目標を再設定する
-              </button>
-
-              <div className={`schedule-banner ${scheduleMetrics?.status}`}>
-                {scheduleMetrics ? (
-                  <>
-                    <div>
-                      <h4>締切: {scheduleMetrics.deadlineLabel}</h4>
-                      <p>残り {scheduleMetrics.remainingWords.toLocaleString()} 語 / {scheduleMetrics.remainingDays} 日</p>
-                    </div>
-                    <div className="schedule-math">
-                      <span>推奨 {scheduleMetrics.recommendedPerDay} 語/日</span>
-                      <span>今日 {scheduleMetrics.todaysPlan} 語</span>
-                    </div>
-                  </>
-                ) : (
-                  <p>目標または締切が未設定です。</p>
-                )}
-              </div>
-
+              {/* 常時見せる必要のない情報は畳む（計画書12.3） */}
+              <details className="home-details">
+                <summary>学習ペースと設定</summary>
+                <div className="home-details__body">
+                  {paceSuggestion && paceSuggestion.recommended > 0 && (
+                    <p className="home-details__row">
+                      <span>学習ペース</span>
+                      <span>平均 {paceSuggestion.average.toFixed(1)} 語/日（目安 {paceSuggestion.recommended} 語）</span>
+                    </p>
+                  )}
+                  {userData?.goal?.motivationLevel && (
+                    <p className="home-details__row">
+                      <span>やる気レベル</span>
+                      <span>
+                        {getMotivationConfig(userData.goal.motivationLevel).name}
+                        {' '}／ 約{getMotivationConfig(userData.goal.motivationLevel).estimatedMinutesPerDay}分/日
+                      </span>
+                    </p>
+                  )}
+                  <button className="ghost-button" onClick={handleResetGoal}>
+                    目標を再設定する
+                  </button>
+                </div>
+              </details>
             </div>
 
             {wordDataError && (
@@ -1873,62 +1851,15 @@ export default function StudentDashboard() {
               </div>
             )}
 
-            <div className="section-card">
-              <h3 className="section-title">今日のタスク</h3>
-              {dailyPlan.isFeasible === false && (
-                <p className="plan-warning" role="status">
-                  今の期限だと1日 {dailyPlan.requiredNewWords} 語が必要で、達成が難しい設定です。
-                  今日は {dailyPlan.plannedNewWords} 語まで出しています。達成日を見直すか、やる気レベルを上げてください。
-                </p>
-              )}
-              {dailyPlan.isFeasible !== false
-                && dailyPlan.requiredNewWords > dailyPlan.preferredNewWords
-                && dailyPlan.preferredNewWords > 0 && (
-                <p className="plan-notice" role="status">
-                  期限に間に合わせるため、今日は希望の {dailyPlan.preferredNewWords} 語より多い
-                  {' '}{dailyPlan.plannedNewWords} 語を出しています。
-                </p>
-              )}
-               <div className="task-cards-container">
-                  {isDailyTaskCompleted ? (
-                    <div className="task-card okawari-card" onClick={startExtraNewWords}>
-                      <FaMagic className="task-icon okawari-icon" />
-                      <div className="task-info">
-                        <p>おかわり</p>
-                        <span>{dailyPlan.extraNewWords.length}</span>
-                      </div>
-                      <div className="okawari-label">スケジュール巻いてます！</div>
-                    </div>
-                  ) : (
-                    <div className="task-card" onClick={startDailyNewWords}>
-                        <FaBook className="task-icon new-word-icon" />
-                        <div className="task-info"><p>新規単語</p><span>{dailyPlan.newWords.length}</span></div>
-                    </div>
-                  )}
-                  <div className="task-card" onClick={startDailyReviewWords}>
-                      <FaSyncAlt className="task-icon review-word-icon" />
-                      <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}</span></div>
-                  </div>
-              </div>
-            </div>
-
-            {outstandingSummary.show && (
-              <div className="alert-card info">
-                <div className="alert-pill">
-                  今日やること
-                </div>
-                <div className="alert-body">
-                  {outstandingSummary.hasOutstandingNew && (
-                    <p>新規単語がまだ {outstandingSummary.newWordCount} 語残っています。</p>
-                  )}
-                  {outstandingSummary.hasOutstandingReview && (
-                    <p>復習単語は {outstandingSummary.reviewCount} 語。忘れる前にチェックしましょう。</p>
-                  )}
-                  {!outstandingSummary.hasOutstandingNew && !outstandingSummary.hasOutstandingReview && (
-                    <p>本日の必須タスクは完了しました！おかわり学習でさらに前倒しできます。</p>
-                  )}
-                </div>
-              </div>
+            {/* 「今日やること」の帯は外した。すぐ上の「今日のタスク」が
+                同じ新規◯語・復習◯語を出していて重複していたため（計画書12.3）。
+                完了したときだけ、ねぎらいを一言だけ出す。 */}
+            {outstandingSummary.show
+              && !outstandingSummary.hasOutstandingNew
+              && !outstandingSummary.hasOutstandingReview && (
+              <p className="today-done" role="status">
+                今日のタスクは完了しました。おかわり学習で前倒しもできます。
+              </p>
             )}
 
 
