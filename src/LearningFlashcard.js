@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import AnswerControls from './components/learning/AnswerControls';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup } from 'react-icons/fa';
@@ -1225,7 +1226,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
           </div>
         </motion.div>
       </div>
-      
+
+      {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
+      <AnswerControls
+        onCorrect={handleCorrect}
+        onIncorrect={handleIncorrect}
+        hint="スワイプでも回答できます（右: わかった / 左: もう一度）"
+      />
+
       {/* プログレスバー */}
       <div style={{ 
         margin: '20px auto', 
