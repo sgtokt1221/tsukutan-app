@@ -75,6 +75,12 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // 赤シート機能のハンドラー
   const handleRevealStart = (cardIndex) => {
+    if (revealedCards.has(cardIndex)) return;
+    // 意味が見えるのと同時に読み上げる。
+    // 「答えを見る」ボタンの onClick に置くと鳴らない。カード面の
+    // onMouseDown が先に走ってボタンが外れ、click まで到達しないため。
+    const word = shuffledWords[cardIndex];
+    if (word) speakWordThenMeaning(word.word, word.meaning);
     setRevealedCards(prev => new Set([...prev, cardIndex]));
   };
 
@@ -875,11 +881,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                     <button
                       type="button"
                       className="wordbook-veil"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRevealStart(actualIndex);
-                        speakWordThenMeaning(word.word, word.meaning);
-                      }}
+                      onClick={(e) => { e.stopPropagation(); handleRevealStart(actualIndex); }}
                       aria-label={`${word.word} の答えを見る`}
                     >
                       答えを見る
