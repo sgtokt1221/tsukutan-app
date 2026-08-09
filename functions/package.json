@@ -7,7 +7,9 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "jest",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-tsukutan \"npx jest --testMatch '**/*.spec.js'\""
   },
   "engines": {
     "node": "20"
@@ -25,10 +27,18 @@
   },
   "devDependencies": {
     "eslint": "^8.15.0",
-    "firebase-functions-test": "^3.1.0"
+    "firebase-functions-test": "^3.1.0",
+    "jest": "^29.7.0",
+    "@firebase/rules-unit-testing": "^4.0.1"
   },
   "private": true,
   "overrides": {
     "protobufjs": "^7.6.5"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/*.test.js"
+    ]
   }
 }

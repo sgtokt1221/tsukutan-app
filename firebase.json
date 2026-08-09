@@ -15,7 +15,17 @@
   "emulators": {
     "hosting": {
       "port": 5055
-    }
+    },
+    "firestore": {
+      "port": 8085
+    },
+    "auth": {
+      "port": 9098
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
   },
   "hosting": {
     "public": "build",
@@ -30,5 +40,9 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }

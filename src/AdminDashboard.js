@@ -229,6 +229,9 @@ const GRADE_GROUPS = [
 const GRADE_ORDER = GRADE_GROUPS.map(group => group.label);
 const GRADE_SELECT_OPTIONS = ['小1','小2','小3','小4','小5','小6','中1','中2','中3','高1','高2','高3'];
 
+// replace モードで無効化を実行する前に、管理者にタイプさせる確認文言
+const REPLACE_CONFIRM_PHRASE = '無効化する';
+
 const convertFullWidthDigits = (value = '') =>
   value.replace(/[０-９]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0));
 
@@ -344,6 +347,13 @@ function AdminDashboard() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentDetails, setStudentDetails] = useState({ logs: [], reviewWords: [], stories: [] });
   const [csvFile, setCsvFile] = useState(null);
+  const [importMode, setImportMode] = useState('upsert');
+  const [importPreview, setImportPreview] = useState(null);
+  const [importResult, setImportResult] = useState(null);
+  const [importErrors, setImportErrors] = useState([]);
+  const [importWarnings, setImportWarnings] = useState([]);
+  const [replaceConfirmText, setReplaceConfirmText] = useState('');
+  const [isPreviewingImport, setIsPreviewingImport] = useState(false);
   const [message, setMessage] = useState('');
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
   const [isCreatingStudent, setIsCreatingStudent] = useState(false);
@@ -487,70 +497,131 @@ function AdminDashboard() {
     setView('import');
   }
 
-  const handleFileChange = (e) => {
-    setCsvFile(e.target.files[0]);
+  const resetImportState = () => {
+    setImportPreview(null);
+    setImportResult(null);
+    setImportErrors([]);
+    setImportWarnings([]);
+    setReplaceConfirmText('');
     setMessage('');
   };
 
-  const [importErrors, setImportErrors] = useState([]);
+  const handleFileChange = (e) => {
+    setCsvFile(e.target.files[0]);
+    resetImportState();
+  };
 
-  const handleImport = async () => {
-    if (!csvFile) {
-      setMessage('CSVファイルを選択してください。');
-      return;
+  const handleImportModeChange = (mode) => {
+    setImportMode(mode);
+    // モードが変わると差分が変わるので、確認結果を捨てて取り直させる
+    resetImportState();
+  };
+
+  const fileToBase64 = async (file) => {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i += 1) {
+      binary += String.fromCharCode(bytes[i]);
     }
-    setIsImporting(true);
-    setMessage('インポート処理を実行中...');
-    setImportErrors([]); // Reset errors on new import
+    return window.btoa(binary);
+  };
+
+  const callImportFunction = async ({ dryRun, operationId }) => {
+    const idToken = await auth.currentUser.getIdToken();
+    const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
+    const response = await fetch(functionUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({
+        mode: importMode,
+        dryRun,
+        operationId,
+        fileName: csvFile.name,
+        fileData: await fileToBase64(csvFile),
+      }),
+    });
+
+    const responseText = await response.text();
+    let payload;
+    try {
+      payload = responseText ? JSON.parse(responseText) : {};
+    } catch (parseError) {
+      throw new Error(responseText || 'サーバーからの応答を解析できませんでした。');
+    }
+    return { ok: response.ok, status: response.status, payload };
+  };
+
+  const formatImportError = (error) => {
+    if (typeof error === 'string') return error;
+    const line = error.line ? `${error.line}行目: ` : '';
+    const student = error.studentId ? `[ID ${error.studentId}] ` : '';
+    return `${line}${student}${error.message}`;
+  };
+
+  // 第1段階: 書き込まずに差分だけ取得する
+  const handlePreviewImport = async () => {
+    if (!csvFile || isPreviewingImport || isImporting) return;
+
+    setIsPreviewingImport(true);
+    setImportPreview(null);
+    setImportResult(null);
+    setImportErrors([]);
+    setImportWarnings([]);
+    setMessage('CSVの内容を確認しています...');
 
     try {
-      const idToken = await auth.currentUser.getIdToken();
-      const functionUrl = process.env.REACT_APP_IMPORT_USERS_URL || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/importUsers';
+      const { ok, status, payload } = await callImportFunction({ dryRun: true, operationId: null });
+      setImportWarnings(payload.warnings || []);
 
-      const arrayBuffer = await csvFile.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
-      let binary = '';
-      for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
+      if (!ok) {
+        setImportErrors(payload.errors || []);
+        setMessage(payload.message || `エラー: ${payload.error || `HTTPエラー: ${status}`}`);
+        return;
       }
-      const base64Data = window.btoa(binary);
 
-      const response = await fetch(functionUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          fileName: csvFile.name,
-          fileData: base64Data,
-        }),
+      setImportPreview(payload);
+      setMessage('内容を確認しました。まだ何も変更していません。');
+    } catch (error) {
+      console.error('Import preview error:', error);
+      setMessage(`確認に失敗しました: ${error.message}`);
+    } finally {
+      setIsPreviewingImport(false);
+    }
+  };
+
+  // 第2段階: 確認した operationId を指定して実行する
+  const handleExecuteImport = async () => {
+    if (!csvFile || !importPreview || isImporting || isPreviewingImport) return;
+
+    setIsImporting(true);
+    setMessage('取り込みを実行しています...');
+
+    try {
+      const { ok, status, payload } = await callImportFunction({
+        dryRun: false,
+        operationId: importPreview.operationId,
       });
 
-      const responseText = await response.text();
-      let result;
-      try {
-        result = responseText ? JSON.parse(responseText) : {};
-      } catch (parseError) {
-        throw new Error(responseText || 'サーバーからの応答を解析できませんでした。');
+      if (!ok) {
+        setImportErrors(payload.errors || []);
+        setMessage(`エラー: ${payload.error || `HTTPエラー: ${status}`}`);
+        // 確認記録は使い切られている可能性があるので、確認からやり直させる
+        setImportPreview(null);
+        return;
       }
 
-      if (!response.ok) {
-        // Use the detailed errors from the backend response if available
-        const errorMessage = result.error || `HTTPエラー: ${response.status}`;
-        setMessage(`エラー: ${errorMessage}`);
-        if (result.errors && result.errors.length > 0) {
-          setImportErrors(result.errors);
-        }
-      } else {
-        setMessage(`インポート完了: ${result.message || ''} (作成: ${result.created}, 更新: ${result.updated}, 失敗: ${result.failed})`);
-        if (result.errors && result.errors.length > 0) {
-          setImportErrors(result.errors);
-        }
-      }
+      setImportResult(payload.result);
+      setImportErrors(payload.errors || []);
+      setMessage(payload.message || '取り込みが完了しました。');
+      setImportPreview(null);
+      setReplaceConfirmText('');
+      await fetchInitialData();
     } catch (error) {
-      console.error('Import process error:', error);
-      setMessage(`予期せぬエラーが発生しました: ${error.message}`);
+      console.error('Import execute error:', error);
+      setMessage(`実行に失敗しました: ${error.message}`);
     } finally {
       setIsImporting(false);
     }
@@ -797,31 +868,151 @@ function AdminDashboard() {
           </div>
         );
 
-      case 'import':
+      case 'import': {
+        const summary = importPreview?.summary;
+        const needsReplaceConfirm = importMode === 'replace' && (summary?.disableCandidates ?? 0) > 0;
+        const replaceConfirmOk = !needsReplaceConfirm || replaceConfirmText.trim() === REPLACE_CONFIRM_PHRASE;
+
         return (
           <div className="admin-card">
             <h3>ユーザーインポート</h3>
-            <p>A列に4桁のID、B列にユーザー名、C列に学年を記載したCSVファイルをアップロードしてください。</p>
+            <p>1行目に <code>ID</code> / <code>氏名</code> / <code>学年</code> のヘッダーを付けたCSVをアップロードしてください。</p>
+            <p className="import-note">
+              内容を確認してから実行する2段階です。確認だけでは既存データは1件も変わりません。
+            </p>
+
+            <fieldset className="import-mode">
+              <legend>取り込みモード</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="import-mode"
+                  value="upsert"
+                  checked={importMode === 'upsert'}
+                  onChange={() => handleImportModeChange('upsert')}
+                />
+                追加と更新のみ（CSVにいない生徒はそのまま）
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="import-mode"
+                  value="replace"
+                  checked={importMode === 'replace'}
+                  onChange={() => handleImportModeChange('replace')}
+                />
+                CSVにいない生徒を無効化する（削除はしません）
+              </label>
+            </fieldset>
+
             <div className="import-controls">
               <input type="file" id="csv-upload" accept=".csv" onChange={handleFileChange} />
               <label htmlFor="csv-upload" className="file-upload-btn">{csvFile ? csvFile.name : 'ファイルを選択'}</label>
-              <button onClick={handleImport} disabled={isImporting} className="import-btn">
-                {isImporting ? '処理中...' : 'インポート実行'}
+              <button
+                onClick={handlePreviewImport}
+                disabled={!csvFile || isPreviewingImport || isImporting}
+                className="import-btn"
+              >
+                {isPreviewingImport ? '確認中...' : '内容を確認'}
+              </button>
+              <button
+                onClick={handleExecuteImport}
+                disabled={!importPreview || isImporting || isPreviewingImport || !replaceConfirmOk}
+                className="import-btn import-btn-execute"
+              >
+                {isImporting ? '実行中...' : '実行'}
               </button>
             </div>
-            {message && <p className={`message-box ${importErrors.length > 0 ? 'message-box-error' : 'message-box-success'}`}>{message}</p>}
+
+            {message && (
+              <p className={`message-box ${importErrors.length > 0 ? 'message-box-error' : 'message-box-success'}`}>{message}</p>
+            )}
+
+            {summary && (
+              <div className="import-summary">
+                <div className="import-summary-card"><span className="import-summary-count">{summary.create}</span><span>追加</span></div>
+                <div className="import-summary-card"><span className="import-summary-count">{summary.update}</span><span>更新</span></div>
+                <div className="import-summary-card"><span className="import-summary-count">{summary.unchanged}</span><span>変更なし</span></div>
+                <div className="import-summary-card"><span className="import-summary-count">{summary.disableCandidates}</span><span>無効化候補</span></div>
+              </div>
+            )}
+
+            {needsReplaceConfirm && (
+              <div className="import-confirm">
+                <p>
+                  {summary.disableCandidates}人がCSVに含まれていません。実行するとログインできなくなります
+                  （学習データは残ります）。続けるには <strong>{REPLACE_CONFIRM_PHRASE}</strong> と入力してください。
+                </p>
+                <input
+                  type="text"
+                  value={replaceConfirmText}
+                  onChange={(e) => setReplaceConfirmText(e.target.value)}
+                  placeholder={REPLACE_CONFIRM_PHRASE}
+                />
+              </div>
+            )}
+
+            {importPreview?.preview?.update?.length > 0 && (
+              <div className="import-detail">
+                <h4>更新される生徒</h4>
+                <ul>
+                  {importPreview.preview.update.map((row) => (
+                    <li key={row.studentId}>
+                      {row.line}行目 [{row.studentId}] {row.name}
+                      {Object.entries(row.changes || {}).map(([field, change]) => (
+                        <span key={field}> — {field}: {String(change.from ?? '未設定')} → {String(change.to)}</span>
+                      ))}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {importPreview?.preview?.disableCandidates?.length > 0 && (
+              <div className="import-detail">
+                <h4>無効化される生徒</h4>
+                <ul>
+                  {importPreview.preview.disableCandidates.map((row) => (
+                    <li key={row.studentId}>[{row.studentId}] {row.name}（{row.grade ?? '学年未設定'}）</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {importResult && (
+              <div className="import-detail">
+                <h4>実行結果</h4>
+                <p>
+                  追加 {importResult.created} / 更新 {importResult.updated} / 変更なし {importResult.unchanged}
+                  {' '}/ 無効化 {importResult.disabled} / 失敗 {importResult.errors}
+                </p>
+              </div>
+            )}
+
+            {importWarnings.length > 0 && (
+              <div className="import-detail">
+                <h4>注意</h4>
+                <ul>
+                  {importWarnings.map((warning, index) => (
+                    <li key={index}>{formatImportError(warning)}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {importErrors.length > 0 && (
               <div className="import-errors">
-                <h4>エラー詳細:</h4>
+                <h4>エラー詳細</h4>
                 <ul>
                   {importErrors.map((error, index) => (
-                    <li key={index}>{error}</li>
+                    <li key={index}>{formatImportError(error)}</li>
                   ))}
                 </ul>
               </div>
             )}
           </div>
         );
+      }
 
       case 'studentDetails':
         if (!selectedStudent) return <p>生徒を選択してください。</p>;
