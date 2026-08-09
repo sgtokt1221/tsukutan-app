@@ -195,15 +195,23 @@ const speak = (text, lang = 'en-US') => {
  * speak() を続けて呼ぶと 100ms 間隔のポーリングで待つ作りになっていて、
  * 順番が入れ替わることがある。ここは utterance の onend でつなぐ。
  *
- * @param {Array<{text: string, lang?: string}>} items 読み上げる順に並べる
+ * @param {Array<{text: string, lang?: string, onStart?: Function}>} items 読み上げる順に並べる
+ * @param {{onDone?: Function}} [options] 全部読み終えたときに呼ぶ
  */
-const speakSequence = (items) => {
+const speakSequence = (items, options = {}) => {
   const queue = (items || []).filter((item) => item && item.text);
-  if (queue.length === 0) return;
+  if (queue.length === 0) {
+    if (typeof options.onDone === 'function') options.onDone();
+    return;
+  }
 
   const speakAt = (index) => {
-    if (index >= queue.length) return;
-    const { text, lang = 'en-US' } = queue[index];
+    if (index >= queue.length) {
+      if (typeof options.onDone === 'function') options.onDone();
+      return;
+    }
+    const { text, lang = 'en-US', onStart } = queue[index];
+    if (typeof onStart === 'function') onStart();
     const utterance = buildUtterance(text, lang);
     // Chrome は発話中の utterance がGCされると途中で切れる。参照を残しておく。
     activeUtterance = utterance;
@@ -237,4 +245,10 @@ const speakWordThenMeaning = (word, meaning) =>
     { text: meaning, lang: 'ja-JP' },
   ]);
 
-export { initialize, speak, speakSequence, speakWordThenMeaning };
+/** 読み上げを止める。連続再生の途中でも打ち切る。 */
+const stopSpeaking = () => {
+  activeUtterance = null;
+  synthesis.cancel();
+};
+
+export { initialize, speak, speakSequence, speakWordThenMeaning, stopSpeaking };

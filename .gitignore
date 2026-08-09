@@ -27,7 +27,9 @@ yarn-error.log*
 serviceAccountKey.json
 
 # Firebase config
-src/firebaseConfig.js
+# src/firebaseConfig.js は追跡する。Firebase の web config は
+# クライアントに焼き込まれる公開値で、秘密ではない。ignore していたため
+# clone した環境でビルドが通らなかった（Vercel が314日間失敗していた）。
 
 # tooling cache
 .eslintcache

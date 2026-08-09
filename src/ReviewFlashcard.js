@@ -8,8 +8,10 @@ import AnswerControls from './components/learning/AnswerControls';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
+import BookmarkButton from './components/learning/BookmarkButton';
+import { useBookmarks } from './logic/useBookmarks';
 import { useWordbookZoom } from './logic/useWordbookZoom';
-import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
+import { initialize, speak, speakSequence, speakWordThenMeaning, stopSpeaking } from './logic/speechUtils';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 
@@ -32,8 +34,13 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
   const [autoPlay, setAutoPlay] = useState(false); // 自動読み上げ機能
   const autoPlayRef = useRef(null); // 自動読み上げのタイムアウト参照
+  // 読み上げの完了通知は止めたあとにも届く。state だとクロージャが
+  // 古いままなので ref で見る。
+  const autoPlayActiveRef = useRef(false);
 
   const auth = getAuth();
+  // 毎日みたい単語の登録状態
+  const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   const userId = auth.currentUser ? auth.currentUser.uid : null;
   const sessionStartTime = useRef(new Date());
 
@@ -74,50 +81,40 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 自動読み上げ機能
   const startAutoPlay = useCallback(() => {
     if (viewMode !== 'flashcard' || sessionWords.length === 0) return;
-    
+
+    autoPlayActiveRef.current = true;
     setAutoPlay(true);
-    
+
+    // 以前は「英語の完了待ち」と「日本語の完了待ち」を同時に走らせていた。
+    // どちらも synthesis.speaking を100ms間隔で見るだけなので、日本語が
+    // 鳴り終わる前に次の単語へ進み、英語と日本語がずれていった。
+    // onend で繋ぐ speakSequence に任せる。
     const playWordSequence = (index) => {
+      if (!autoPlayActiveRef.current) return;
       if (index >= sessionWords.length) {
+        autoPlayActiveRef.current = false;
         setAutoPlay(false);
         return;
       }
-      
+
       const word = sessionWords[index];
-      if (word) {
-        // 1. 英語を読み上げ
-        speak(word.word, 'en-US');
-        
-        // 2. 英語読み上げ完了を待ってからカードをめくる
-        const waitForEnglishComplete = () => {
-          const synthesis = window.speechSynthesis;
-          if (synthesis.speaking) {
-            setTimeout(waitForEnglishComplete, 100);
-          } else {
-            // 英語読み上げ完了後、0.5秒待ってからカードをめくる
-            setTimeout(() => {
-              setIsFlipped(true);
-              
-              // 3. カードがめくれた後、0.5秒待ってから日本語を読み上げ
-              setTimeout(() => {
-                const japaneseText = word.meaning || word.japanese || word.translation;
-                if (japaneseText) {
-                  logger.debug('Speaking Japanese (meaning):', japaneseText);
-                  speak(japaneseText, 'ja-JP');
-                }
-              }, 500);
-            }, 500);
-          }
-        };
-        waitForEnglishComplete();
-        
-        // 4. 日本語読み上げ完了を待ってから次の単語に進む
-        const waitForJapaneseComplete = () => {
-          const synthesis = window.speechSynthesis;
-          if (synthesis.speaking) {
-            setTimeout(waitForJapaneseComplete, 100);
-          } else {
-            // 日本語読み上げ完了後、1秒待ってから次の単語に進む
+      if (!word) {
+        autoPlayActiveRef.current = false;
+        setAutoPlay(false);
+        return;
+      }
+
+      const meaning = word.meaning || word.japanese || word.translation;
+
+      speakSequence(
+        [
+          { text: word.word, lang: 'en-US' },
+          // 意味を読み始めるのに合わせてカードをめくる
+          { text: meaning, lang: 'ja-JP', onStart: () => setIsFlipped(true) },
+        ],
+        {
+          onDone: () => {
+            if (!autoPlayActiveRef.current) return;
             autoPlayRef.current = setTimeout(() => {
               if (index < sessionWords.length - 1) {
                 setCurrentIndex(index + 1);
@@ -126,27 +123,27 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                 y.set(0);
                 playWordSequence(index + 1);
               } else {
+                autoPlayActiveRef.current = false;
                 setAutoPlay(false);
               }
             }, 1000);
-          }
-        };
-        
-        // 日本語読み上げ開始後、完了を待つ
-        setTimeout(waitForJapaneseComplete, 1000);
-      }
+          },
+        }
+      );
     };
-    
-    // 現在のインデックスから開始
+
     playWordSequence(currentIndex);
   }, [viewMode, sessionWords, currentIndex, x, y]);
 
   const stopAutoPlay = useCallback(() => {
+    autoPlayActiveRef.current = false;
     setAutoPlay(false);
     if (autoPlayRef.current) {
       clearTimeout(autoPlayRef.current);
       autoPlayRef.current = null;
     }
+    // 読み上げ中のぶんも打ち切る。止めたのに喋り続けるのを防ぐ。
+    stopSpeaking();
   }, []);
 
   // コンポーネントのアンマウント時に自動読み上げを停止
@@ -281,11 +278,13 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   }, []);
 
   // 正解・不正解処理関数
-  const handleCorrect = useCallback(async () => {
+  // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
+  // 'again' は handleIncorrect が受け持つ。
+  const handleAnswer = useCallback(async (quality) => {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      trackWrite(updateUserWordProgress(userId, currentWord, true));
+      trackWrite(updateUserWordProgress(userId, currentWord, quality));
       setGraduatedCount(prev => prev + 1);
     }
     
@@ -316,11 +315,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     }
   }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites]);
 
+  const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
+  const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
+
   const handleIncorrect = useCallback(async () => {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      trackWrite(updateUserWordProgress(userId, currentWord, false));
+      trackWrite(updateUserWordProgress(userId, currentWord, 'again'));
     }
     
     // 次の単語へ
@@ -852,6 +854,12 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
               <div className="wordbook-card__grid">
                 {/* 左側：英単語 */}
                 <div className="wordbook-card__side wordbook-card__left">
+                  <BookmarkButton
+                    size="inline"
+                    active={isBookmarked(word)}
+                    onToggle={() => toggleBookmark(word)}
+                    label={word.word}
+                  />
                   <button
                     type="button"
                     className="wordbook-word"
@@ -941,15 +949,24 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         onBack={handleBackButtonClick}
         backLabel="終了"
         actions={(
-          <button
-            type="button"
-            className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
-            onClick={autoPlay ? stopAutoPlay : startAutoPlay}
-            aria-pressed={autoPlay}
-            aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
-          >
-            {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
-          </button>
+          <>
+            {currentWord && (
+              <BookmarkButton
+                active={isBookmarked(currentWord)}
+                onToggle={() => toggleBookmark(currentWord)}
+                label={currentWord.word}
+              />
+            )}
+            <button
+              type="button"
+              className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
+              onClick={autoPlay ? stopAutoPlay : startAutoPlay}
+              aria-pressed={autoPlay}
+              aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
+            >
+              {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+            </button>
+          </>
         )}
       />
       <ModeTabs value="flashcard" onChange={setViewMode} />
@@ -999,6 +1016,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
+        onHard={handleHard}
       />
 
       {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く */}

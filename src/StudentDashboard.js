@@ -8,18 +8,18 @@ import { addWordToReview } from './logic/reviewLogic';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { logStudySession } from './logic/studyLogger';
 import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress } from './logic/freeStudyProgress';
-import { analyzeUserPerformance, generateLearningRecommendations } from './logic/basicAnalytics';
-import { predictPerformance } from './logic/predictionModel';
-import { generateSmartRecommendations } from './logic/recommendationEngine';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
+import AnalyticsPanel from './components/student/AnalyticsPanel';
+import StoryPanel from './components/student/StoryPanel';
+import { useBookmarks } from './logic/useBookmarks';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
-import { FaBook, FaSyncAlt, FaMagic, FaChartLine } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaMagic, FaStar } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
-import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
+import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster, loadManifest } from './logic/wordMaster';
 import logger from './logic/logger';
@@ -357,15 +357,6 @@ const highschoolLevelDescriptions = {
     3: { label: "高校応用", equivalent: "英検準1級 / B2-C1", wordsRequired: 1658 }
 };
 
-// 英検級レベル変換関数
-const getEikenLevel = (level) => {
-  const eikenMapping = {
-    1: '英検5級', 2: '英検4級', 3: '英検3級', 4: '英検準2級',
-    5: '英検2級', 6: '英検2級', 7: '英検準1級', 8: '英検1級',
-    9: '英検1級+', 10: 'ネイティブ'
-  };
-  return eikenMapping[level] || `レベル${level}`;
-};
 
 // 高校英語のサブレベル説明を生成する関数
 const getHighschoolSubLevelDescription = (subLevel) => {
@@ -521,6 +512,11 @@ export default function StudentDashboard() {
   // --- State宣言 ---
   const [allWords, setAllWords] = useState([]);
   const [loading, setLoading] = useState(true);
+  // 描画時の auth.currentUser は復元が終わるまで null で、
+  // 変わっても再描画されない。認証の通知で持つ。
+  const [userId, setUserId] = useState(null);
+  // 「毎日みる単語」。ホームの枚数表示と、開いたときの単語に使う。
+  const { items: bookmarks, reload: reloadBookmarks } = useBookmarks(userId);
   const [dashboardError, setDashboardError] = useState(null);
   const [viewMode, setViewMode] = useState('select');
   const [selectionMode, setSelectionMode] = useState('main');
@@ -601,21 +597,6 @@ export default function StudentDashboard() {
     return () => { cancelled = true; };
   }, []);
 
-  // 復習単語をハイライトする。生成物のHTMLを実行しないよう、
-  // 区間に分けて React の <mark> として組み立てる（計画書12.4）。
-  const highlightReviewWords = (text, usedWords) => {
-    const tokens = splitHighlightTokens(text, usedWords);
-    if (tokens.length === 0) return null;
-    return (
-      <>
-        {tokens.map((token, index) =>
-          token.highlight
-            ? <mark key={index} className="story-highlight">{token.text}</mark>
-            : <React.Fragment key={index}>{token.text}</React.Fragment>
-        )}
-      </>
-    );
-  };
 
   // 締切ブロックの数字は日次計画から引く。
   // 以前はここで remainingWords / remainingDays / 推奨語数を独自に計算しており、
@@ -820,6 +801,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
+      setUserId(user ? user.uid : null);
       if (user) {
         setLoading(true);
         Promise.all([
@@ -939,6 +921,8 @@ export default function StudentDashboard() {
 
     // Refresh dashboard data and reset view
     refreshDashboardData(user.uid);
+    // 学習中に登録／解除したぶんをホームの枚数へ反映する
+    reloadBookmarks();
     setViewMode('select');
     
     // 自由学習モードの場合は教材のレベル別ページに戻る
@@ -1485,6 +1469,21 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
 
+  const startBookmarkWords = () => {
+    if (bookmarks.length === 0) return;
+    setCurrentSessionInfo({
+      textbookId: '毎日みる単語',
+      filterType: 'ブックマーク',
+      filterValue: `${bookmarks.length}語`,
+      startIndex: 0
+    });
+    // 日次タスクの達成には数えない。自分で選んだ単語の復習なので、
+    // 今日のノルマとは別に扱う。
+    setCurrentLearningMode('bookmark');
+    setLearningWords(bookmarks);
+    setViewMode('learn');
+  };
+
   const startDailyReviewWords = () => {
     if (!dailyPlan.reviewWords || dailyPlan.reviewWords.length === 0) {
       alert('今日の復習単語はありません。');
@@ -1639,6 +1638,7 @@ export default function StudentDashboard() {
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
+                  title={currentLearningMode === 'bookmark' ? '毎日みる単語' : undefined}
                 />;
       case 'review':
         return <ReviewFlashcard 
@@ -1694,6 +1694,14 @@ export default function StudentDashboard() {
                       <FaSyncAlt className="task-icon review-word-icon" />
                       <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}</span></div>
                   </div>
+                  {/* 自分で登録した「毎日みたい単語」。0件のときは出さない。
+                      使っていない機能で今日のタスクの枠を埋めないため。 */}
+                  {bookmarks.length > 0 && (
+                    <div className="task-card" onClick={startBookmarkWords}>
+                        <FaStar className="task-icon bookmark-word-icon" />
+                        <div className="task-info"><p>毎日みる</p><span>{bookmarks.length}</span></div>
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -1886,7 +1894,16 @@ export default function StudentDashboard() {
       case 'home':
         return renderContent();
       case 'story':
-        return renderStoryContent();
+        return (
+          <StoryPanel
+            monthlyStory={monthlyStory}
+            pastStories={pastStories}
+            storiesLoading={storiesLoading}
+            isGeneratingStory={isGeneratingStory}
+            storyError={storyError}
+            onGenerate={handleGenerateStory}
+          />
+        );
       case 'free-study':
         return renderFreeStudyContent();
       case 'analytics':
@@ -1897,637 +1914,17 @@ export default function StudentDashboard() {
   };
 
   // 詳細分析コンポーネント
-  const AnalyticsContent = () => {
-  const [analyticsData, setAnalyticsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [recommendations, setRecommendations] = useState([]);
-  const [predictions, setPredictions] = useState(null);
-  const [smartRecommendations, setSmartRecommendations] = useState([]);
-
-    useEffect(() => {
-      const loadAnalytics = async () => {
-        setLoading(true);
-        try {
-          const user = auth.currentUser;
-          if (user) {
-            logger.debug('🔍 詳細分析開始:', user.uid);
-            
-            // まずユーザーデータを最新状態で取得
-            const userDocRef = doc(db, 'users', user.uid);
-            const userDoc = await getDoc(userDocRef);
-            let currentUserLevel = 0;
-            if (userDoc.exists()) {
-              const userData = userDoc.data();
-              logger.debug('👤 最新ユーザーデータ:', userData);
-              currentUserLevel = userData.level || 0;
-              logger.debug('📊 ユーザーデータから取得したレベル:', currentUserLevel);
-            }
-            
-            // 基本的な分析データを取得
-            const analysis = await analyzeUserPerformance(user.uid);
-            logger.debug('📊 分析結果:', analysis);
-            
-            // ユーザーデータのレベルを優先して使用
-            const correctedAnalysis = {
-              ...analysis,
-              currentLevel: currentUserLevel || analysis.currentLevel
-            };
-            
-            logger.debug('📊 詳細分析 - 修正後の現在のレベル:', correctedAnalysis.currentLevel);
-            logger.debug('📊 詳細分析 - テスト回数:', correctedAnalysis.totalTests);
-            logger.debug('📊 詳細分析 - 平均回答時間:', correctedAnalysis.averageResponseTime);
-            setAnalyticsData(correctedAnalysis);
-            
-            if (correctedAnalysis.hasData) {
-              const recs = generateLearningRecommendations(correctedAnalysis);
-              logger.debug('💡 推奨事項:', recs);
-              setRecommendations(recs);
-              
-              // 予測データを取得
-              const pred = await predictPerformance(user.uid);
-              logger.debug('🔮 予測結果:', pred);
-              setPredictions(pred);
-              
-              // スマート推奨を取得
-              const smartRecs = await generateSmartRecommendations(user.uid);
-              logger.debug('🎯 スマート推奨:', smartRecs);
-              setSmartRecommendations(smartRecs.recommendations || []);
-            } else {
-              logger.debug('❌ 分析データなし:', correctedAnalysis);
-            }
-          } else {
-            logger.debug('❌ ユーザーがログインしていません');
-          }
-        } catch (error) {
-          console.error('Failed to load analytics:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      loadAnalytics();
-    }, []); // 初回のみ実行
-
-    // 初回読み込み時のみデータを取得
-    // 定期更新や外部状態への依存を削除して他の機能への影響を防ぐ
-
-    if (loading) {
-      return (
-        <div className="analytics-tab-content">
-          <div className="section-card">
-            <h2 className="section-title">詳細分析</h2>
-            <div className="loading-state">
-              <div className="loading-spinner"></div>
-              <p>分析データを読み込み中...</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // デバッグ: 現在の状態を確認
-    logger.debug('🔍 詳細分析レンダリング時の状態:', {
-      analyticsData,
-      hasData: analyticsData?.hasData,
-      currentLevel: analyticsData?.currentLevel,
-      totalTests: analyticsData?.totalTests,
-      loading
-    });
-
-    if (!analyticsData || !analyticsData.hasData) {
-      return (
-        <div className="analytics-tab-content">
-          <div className="section-card">
-            <h2 className="section-title">詳細分析</h2>
-            <div className="empty-state">
-              <div className="empty-icon" aria-hidden="true"><FaChartLine /></div>
-              <p>まだテストデータがありません。</p>
-              <p>まずは単語力チェックテストを受けてください。</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="analytics-tab-content">
-        <div className="section-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <div>
-              <h2 className="section-title">詳細分析</h2>
-              <p className="section-description">あなたの学習データを詳しく分析しています。</p>
-            </div>
-          </div>
-          
-          {/* 基本統計 */}
-          <div className="analytics-section">
-            <div className="section-header">
-              <h3>基本統計</h3>
-              <div className="section-divider"></div>
-            </div>
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">現在のレベル</span>
-                  <div className="stat-icon level-icon">LV</div>
-                </div>
-                <div className="stat-value">
-                  {analyticsData.currentLevel === 0 ? (
-                    <span style={{ color: '#ef4444', fontSize: '1.2rem' }}>未測定</span>
-                  ) : analyticsData.currentLevel > 10 ? (
-                    <span style={{ color: '#ef4444', fontSize: '1.2rem' }}>データエラー</span>
-                  ) : (
-                    eikenLevelDescriptions[analyticsData.currentLevel]?.label || `レベル${analyticsData.currentLevel}`
-                  )}
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">テスト回数</span>
-                  <div className="stat-icon test-icon">TEST</div>
-                </div>
-                <div className="stat-value">{analyticsData.totalTests}</div>
-                <div className="stat-unit">回</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">レベル上昇</span>
-                  <div className="stat-icon growth-icon">↑</div>
-                </div>
-                <div className="stat-value">
-                  {analyticsData.improvementRate > 0 && '+'}{analyticsData.improvementRate}
-                  {analyticsData.improvementRate !== 0 && (
-                    <span className="level-change-detail">
-                      ({analyticsData.improvementRate > 0 ? '上昇' : '下降'})
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">平均回答時間</span>
-                  <div className="stat-icon time-icon">⏱</div>
-                </div>
-                <div className="stat-value">{Math.round(analyticsData.averageResponseTime / 1000)}</div>
-                <div className="stat-unit">秒</div>
-              </div>
-            </div>
-          </div>
-
-          {/* 苦手分野 */}
-          {analyticsData.weakAreas && analyticsData.weakAreas.length > 0 && (
-            <div className="analytics-section">
-              <div className="section-header">
-                <h3>苦手分野</h3>
-                <div className="section-divider"></div>
-              </div>
-              <div className="weak-areas-list">
-                {analyticsData.weakAreas.map((area, index) => {
-                  const eikenLevel = getEikenLevel(area.level);
-                  
-                  return (
-                    <div key={index} className="weak-area-item clickable" onClick={() => {
-                      logger.debug('苦手分野クリック:', { level: area.level, eikenLevel });
-                      
-                      // レベルに応じて適切な教材を選択
-                      let targetTextbookId = '';
-                      if (area.level <= 3) {
-                        targetTextbookId = 'osaka-koukou-nyuushi'; // 中学レベル
-                      } else if (area.level <= 7) {
-                        targetTextbookId = 'highschool-english'; // 高校レベル
-                      } else {
-                        targetTextbookId = 'osaka-koukou-nyuushi'; // その他
-                      }
-                      
-                      // 自由学習タブに切り替えて教材を選択
-                      setActiveTab('free-study');
-                      handleSelectTextbook(targetTextbookId);
-                      
-                      // 少し遅延してからレベル学習を開始
-                      setTimeout(() => {
-                        startLearning('level', area.level);
-                      }, 100);
-                    }}>
-                      <div className="weak-area-header">
-                        <span className="area-level">
-                          自由学習メニューの{eikenLevel}から始めましょう
-                        </span>
-                        <div className="accuracy-badge">{Math.round(area.accuracy)}%</div>
-                      </div>
-                      <div className="area-details">
-                        <span className="area-questions">{area.totalQuestions}問実施済み</span>
-                        <span className="click-hint">クリックして学習開始</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* 学習パターン */}
-          <div className="analytics-section">
-            <div className="section-header">
-              <h3>学習パターン</h3>
-              <div className="section-divider"></div>
-            </div>
-            <div className="study-patterns">
-              <div className="pattern-card">
-                <div className="pattern-label">最適な学習時間</div>
-                <div className="pattern-value">{analyticsData.optimalStudyTime?.optimalHour || 12}時</div>
-              </div>
-              <div className="pattern-card">
-                <div className="pattern-label">最適な学習曜日</div>
-                <div className="pattern-value">{analyticsData.optimalStudyTime?.optimalDay || '月'}曜日</div>
-              </div>
-              <div className="pattern-card">
-                <div className="pattern-label">平均学習間隔</div>
-                <div className="pattern-value">{Math.round(analyticsData.optimalStudyTime?.averageSessionInterval || 0)}日</div>
-              </div>
-            </div>
-          </div>
-
-          {/* 学習セッション分析 */}
-          {analyticsData.learningSessions && analyticsData.learningSessions.total > 0 && (
-            <div className="analytics-section">
-              <div className="section-header">
-                <h3>学習セッション分析</h3>
-                <div className="section-divider"></div>
-              </div>
-              <div className="learning-sessions-info">
-                <div className="session-summary">
-                  <div className="session-stat-card">
-                    <div className="session-stat-label">総学習セッション数</div>
-                    <div className="session-stat-value">{analyticsData.learningSessions.total}</div>
-                    <div className="session-stat-unit">回</div>
-                  </div>
-                  <div className="session-stat-card">
-                    <div className="session-stat-label">学習継続率</div>
-                    <div className="session-stat-value">{analyticsData.learningSessions.frequency}</div>
-                    <div className="session-stat-unit">%</div>
-                  </div>
-                </div>
-                
-                <div className="session-types">
-                  <h4>学習タイプ別統計</h4>
-                  <div className="type-list">
-                    {analyticsData.learningSessions.types.map((type, index) => (
-                      <div key={index} className="type-item">
-                        <div className="type-info">
-                          <span className="type-name">
-                            {type.type === 'learning_session' && '新規学習'}
-                            {type.type === 'review_session' && '復習学習'}
-                            {type.type === 'free_study_session' && '自由学習'}
-                            {type.type === 'placement_test' && '実力テスト'}
-                            {!['learning_session', 'review_session', 'free_study_session', 'placement_test'].includes(type.type) && type.type}
-                          </span>
-                          <span className="type-count">{type.count}回</span>
-                        </div>
-                        <div className="type-progress">
-                          <div className="progress-bar">
-                            <div className="progress-fill" style={{ width: `${type.percentage}%` }}></div>
-                          </div>
-                          <span className="type-percentage">{type.percentage}%</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 予測機能 */}
-          {predictions && predictions.hasData && (
-            <div className="analytics-section">
-              <div className="section-header">
-                <h3>学習予測</h3>
-                <div className="section-divider"></div>
-              </div>
-              <div className="prediction-card">
-                <div className="prediction-summary">
-                  <div className="prediction-item">
-                    <div className="prediction-label">1週間後の予測レベル</div>
-                    <div className="prediction-value">
-                      {predictions.nextWeekLevel > 7 ? (
-                        <span style={{ color: '#ef4444' }}>データエラー</span>
-                      ) : (
-                        levelDescriptions[predictions.nextWeekLevel]?.label || `レベル${predictions.nextWeekLevel}`
-                      )}
-                    </div>
-                  </div>
-                  <div className="prediction-item">
-                    <div className="prediction-label">予測の信頼度</div>
-                    <div className="prediction-value">{Math.round(predictions.confidence * 100)}%</div>
-                  </div>
-                </div>
-                {predictions.recommendations && predictions.recommendations.length > 0 && (
-                  <div className="prediction-recommendations">
-                    <h4>予測に基づくアドバイス</h4>
-                    <div className="recommendation-list">
-                      {predictions.recommendations.map((rec, index) => (
-                        <div key={index} className={`prediction-recommendation ${rec.priority}`}>
-                          <div className="recommendation-content">
-                            <span className="recommendation-message">{rec.message}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* スマート推奨 */}
-          {smartRecommendations.length > 0 && (
-            <div className="analytics-section">
-              <div className="section-header">
-                <h3>スマート推奨</h3>
-                <div className="section-divider"></div>
-              </div>
-              <div className="smart-recommendations-list">
-                {smartRecommendations.map((rec, index) => {
-                  // レベルベースの推奨の場合はクリック可能にする
-                  const isClickable = rec.type === 'focus_level' && rec.targetLevel;
-                  const handleClick = isClickable ? async () => {
-                    logger.debug('スマート推奨クリック:', { level: rec.targetLevel });
-                    
-                    // レベルに応じて適切な教材を選択
-                    let targetTextbookId = '';
-                    if (rec.targetLevel <= 3) {
-                      targetTextbookId = 'osaka-koukou-nyuushi'; // 中学レベル
-                    } else if (rec.targetLevel <= 7) {
-                      targetTextbookId = 'highschool-english'; // 高校レベル
-                    } else {
-                      targetTextbookId = 'osaka-koukou-nyuushi'; // その他
-                    }
-                    
-                    // 教材を選択してから学習を開始
-                    await handleSelectTextbook(targetTextbookId);
-                    await startLearning('level', rec.targetLevel);
-                  } : undefined;
-                  
-                  
-                  // タイトルと説明文を英検級レベルで表示するように変換
-                  const displayTitle = isClickable && rec.targetLevel 
-                    ? rec.title.replace(/レベル \d+/, getEikenLevel(rec.targetLevel))
-                    : rec.title;
-                  const displayDescription = isClickable && rec.targetLevel
-                    ? rec.description.replace(/レベル \d+/, getEikenLevel(rec.targetLevel))
-                    : rec.description;
-                  const displayTargetMetric = isClickable && rec.targetLevel
-                    ? rec.targetMetric?.replace(/レベル \d+/, getEikenLevel(rec.targetLevel))
-                    : rec.targetMetric;
-                  
-                  return (
-                    <div 
-                      key={index} 
-                      className={`smart-recommendation-item ${rec.priority} ${isClickable ? 'clickable' : ''}`}
-                      onClick={handleClick}
-                    >
-                      <div className="smart-recommendation-header">
-                        <h4 className="smart-recommendation-title">{displayTitle}</h4>
-                        <span className={`smart-priority-badge ${rec.priority}`}>
-                          {rec.priority === 'high' && '重要'}
-                          {rec.priority === 'medium' && '推奨'}
-                          {rec.priority === 'low' && '参考'}
-                        </span>
-                      </div>
-                      <p className="smart-recommendation-description">{displayDescription}</p>
-                      <div className="smart-recommendation-meta">
-                        <span className="estimated-time">{rec.estimatedTime}</span>
-                        {displayTargetMetric && <span className="target-metric">{displayTargetMetric}</span>}
-                        {isClickable && <span className="click-hint">クリックして学習開始</span>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* 従来の推奨事項 */}
-          {recommendations.length > 0 && (
-            <div className="analytics-section">
-              <div className="section-header">
-                <h3>学習推奨</h3>
-                <div className="section-divider"></div>
-              </div>
-              <div className="recommendations-list">
-                {recommendations.map((rec, index) => {
-                  
-                  // メッセージ内のレベル表記を英検級に変換
-                  const displayMessage = rec.message
-                    .replace(/レベル\s*(\d+)/g, (match, level) => getEikenLevel(parseInt(level)))
-                    .replace(/中学レベルの単語/g, '英検3級レベルの単語')
-                    .replace(/高校レベルの単語/g, '英検準2級〜2級レベルの単語')
-                    .replace(/大学レベルの単語/g, '英検準1級〜1級レベルの単語');
-                  
-                  return (
-                    <div key={index} className={`recommendation-item ${rec.priority}`}>
-                      <div className="recommendation-header">
-                        <span className="recommendation-type">
-                          {rec.type === 'basic' && '基礎学習'}
-                          {rec.type === 'intermediate' && '中級学習'}
-                          {rec.type === 'advanced' && '上級学習'}
-                          {rec.type === 'weakness' && '苦手克服'}
-                          {rec.type === 'speed' && '速度向上'}
-                          {rec.type === 'frequency' && '学習頻度'}
-                        </span>
-                        <span className={`priority-badge ${rec.priority}`}>
-                          {rec.priority === 'high' && '重要'}
-                          {rec.priority === 'medium' && '推奨'}
-                          {rec.priority === 'low' && '参考'}
-                        </span>
-                      </div>
-                      <p className="recommendation-message">{displayMessage}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   // 詳細分析タブのコンテンツ
-  const renderAnalyticsContent = () => {
-    return <AnalyticsContent />;
-  };
+  const renderAnalyticsContent = () => (
+    <AnalyticsPanel
+      onNavigateTab={setActiveTab}
+      onSelectTextbook={handleSelectTextbook}
+      onStartLearning={startLearning}
+    />
+  );
 
   // 長文タブのコンテンツ
-  const renderStoryContent = () => (
-    <div className="story-tab-content">
-      <div className="section-card">
-        <h2 className="section-title">君が世界で最も嫌いな長文</h2>
-        <p className="section-description">英文とその和訳を交互に表示する長文学習機能です。</p>
-              
-              {storyError && !isGeneratingStory && (
-          <p className="message-box message-box-error" role="alert">{storyError}</p>
-        )}
-        {storiesLoading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>長文データを読み込み中...</p>
-          </div>
-        ) : isGeneratingStory ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>長文を生成しています...</p>
-          </div>
-        ) : monthlyStory && monthlyStory.sentences && Array.isArray(monthlyStory.sentences) && monthlyStory.sentences.length > 0 ? (
-          <div className="story-content">
-            <div className="story-header">
-              <h3>{monthlyStory.title || '長文'}</h3>
-              <p className="story-date">
-                {monthlyStory.createdAt ? 
-                  (typeof monthlyStory.createdAt === 'object' && monthlyStory.createdAt.seconds ? 
-                    new Date(monthlyStory.createdAt.seconds * 1000).toLocaleDateString('ja-JP') :
-                    monthlyStory.createdAt.toString()
-                  ) : ''
-                }
-              </p>
-            </div>
-            <div className="story-text">
-              {monthlyStory.sentences.map((sentence, index) => (
-                <div key={index} className="sentence-pair">
-                  <div className="english-sentence">
-                    {sentence.english ? highlightReviewWords(sentence.english, monthlyStory.usedWords || []) : ''}
-                  </div>
-                  <div className="japanese-sentence">{sentence.japanese || ''}</div>
-                </div>
-              ))}
-            </div>
-            
-            {/* 使用できなかった復習単語の表示 */}
-            {monthlyStory.unusedWords && monthlyStory.unusedWords.length > 0 && (
-              <div className="unused-words-section" style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #e9ecef' }}>
-                <h4 style={{ margin: '0 0 10px 0', color: '#6c757d', fontSize: '0.9rem' }}>使用できなかった復習単語</h4>
-                <div className="unused-words-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {monthlyStory.unusedWords.map((word, index) => (
-                    <span key={index} className="unused-word-tag" style={{
-                      backgroundColor: '#e9ecef',
-                      color: '#6c757d',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.8rem',
-                      border: '1px solid #dee2e6'
-                    }}>
-                      {word}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-                <button 
-              className="story-generate-btn"
-                  onClick={handleGenerateStory} 
-            >
-              <FaMagic /> 新しい長文を生成
-            </button>
-            </div>
-        ) : (
-          <div className="no-story">
-            <p>まだ長文が生成されていません。</p>
-            <button 
-                  className="story-generate-btn"
-              onClick={handleGenerateStory}
-                >
-              <FaMagic /> 長文を生成する
-                </button>
-              </div>
-        )}
-              
-        {/* 過去の長文一覧 */}
-        {logger.debug('長文タブ - pastStories:', pastStories, 'storiesLoading:', storiesLoading, 'pastStories.length:', pastStories.length)}
-        {pastStories.length > 0 && (
-          <div className="section-card" style={{ marginTop: '20px' }}>
-            <h3 className="section-title">過去の長文一覧</h3>
-              {storiesLoading ? (
-              <div className="loading-container" style={{height: '50px'}}>
-                <div className="loading-spinner"></div>
-              </div>
-            ) : (
-                  <div className="past-stories-list">
-                {pastStories.map(story => {
-                  logger.debug('長文データ詳細:', story.id, story);
-                  return (
-                          <details key={story.id} className="past-story-item">
-                      <summary style={{ 
-                        padding: '1rem', 
-                        backgroundColor: '#f8f9fa', 
-                        cursor: 'pointer', 
-                        fontWeight: '600',
-                        borderRadius: '8px',
-                        marginBottom: '8px',
-                        border: '1px solid #e9ecef'
-                      }}>
-                        {story.id} の長文 {story.sentences ? `(${story.sentences.length}文)` : '(文なし)'}
-                      </summary>
-                      <div style={{ padding: '1rem', backgroundColor: 'white', borderRadius: '8px' }}>
-                        <div className="story-text">
-                          {story.sentences && story.sentences.length > 0 ? (
-                            <>
-                              {story.sentences.map((sentence, index) => (
-                                <div key={index} className="sentence-pair">
-                                  <div className="english-sentence">
-                                    {sentence.english ? highlightReviewWords(sentence.english, story.usedWords || []) : ''}
-                                  </div>
-                                  <div className="japanese-sentence">{sentence.japanese || ''}</div>
-                                </div>
-                              ))}
-                              
-                              {/* 使用できなかった復習単語の表示 */}
-                              {story.unusedWords && story.unusedWords.length > 0 && (
-                                <div className="unused-words-section" style={{ marginTop: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #e9ecef' }}>
-                                  <h5 style={{ margin: '0 0 8px 0', color: '#6c757d', fontSize: '0.8rem' }}>使用できなかった復習単語</h5>
-                                  <div className="unused-words-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                                    {story.unusedWords.map((word, index) => (
-                                      <span key={index} className="unused-word-tag" style={{
-                                        backgroundColor: '#e9ecef',
-                                        color: '#6c757d',
-                                        padding: '3px 6px',
-                                        borderRadius: '3px',
-                                        fontSize: '0.75rem',
-                                        border: '1px solid #dee2e6'
-                                      }}>
-                                        {word}
-                                      </span>
-                      ))}
-                  </div>
-                                </div>
-                              )}
-                </>
-              ) : (
-                            <p style={{ color: '#64748b', fontStyle: 'italic' }}>
-                              この長文には文が含まれていません。
-                </p>
-              )}
-            </div>
-                      </div>
-                          </details>
-                  );
-                })}
-                  </div>
-              )}
-            </div>
-        )}
-        
-        {/* 長文データが存在しない場合の表示 */}
-        {!storiesLoading && pastStories.length === 0 && (
-          <div className="section-card" style={{ marginTop: '20px' }}>
-            <h3 className="section-title">過去の長文一覧</h3>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', textAlign: 'center', padding: '2rem' }}>
-              過去に生成された長文はありません。
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
 
   // 自由学習タブのコンテンツ
   const renderFreeStudyContent = () => (
