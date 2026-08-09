@@ -2327,7 +2327,9 @@ select:focus-visible,
   gap: var(--space-12);
   min-height: 60px;
   padding: var(--space-12) var(--space-16);
-  background-color: var(--color-surface);
+  /* ロゴPNGの背景と同じ色にする。白地にすると、ロゴの周りだけ
+     淡い黄緑の四角が乗って継ぎ接ぎに見える（計画書4.5）。 */
+  background-color: var(--color-canvas-lime);
   border-bottom: var(--border-subtle);
 }
 
@@ -2411,4 +2413,198 @@ select:focus-visible,
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: var(--space-12);
+}
+
+/* 今日のタスク完了時のひとこと */
+.today-done {
+  margin: var(--space-16) 0 0 0;
+  padding: var(--space-12) var(--space-16);
+  background-color: var(--color-lime-soft);
+  border: 1px solid var(--color-lime-border);
+  border-radius: var(--radius-control);
+  color: var(--color-ink-olive);
+  line-height: var(--line-normal);
+}
+
+/* ===== 生徒ホーム: 1画面に収める（計画書12.3） ===== */
+.schedule-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin: var(--space-12) 0 0 0;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background-color: var(--color-lime-soft);
+  border: 1px solid var(--color-lime-border);
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+}
+
+.schedule-line.behind {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning-ink);
+}
+
+.home-details {
+  margin-top: var(--space-12);
+  border: var(--border-subtle);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+}
+
+.home-details > summary {
+  padding: var(--space-8) var(--space-12);
+  min-height: var(--tap-target);
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+.home-details__body {
+  padding: 0 var(--space-12) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.home-details__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+/* レベルカードと進捗を詰める */
+.dashboard-summary-card .progress-widget {
+  margin-top: var(--space-8);
+}
+
+.section-card {
+  margin-bottom: var(--space-12);
+}
+
+/* ===== ホームを1画面に収めるための圧縮（計画書12.3） =====
+   主役は「今日のタスク」。レベルカードは補助情報なので、
+   縦の占有を小さくする。 */
+.dashboard-summary-card .level-badge-container {
+  padding: var(--space-12);
+}
+
+.dashboard-header .level-badge-title {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--font-size-12);
+}
+
+.dashboard-header .level-badge-label {
+  font-size: var(--font-size-22);
+  line-height: var(--line-tight);
+}
+
+.task-card {
+  background-color: var(--color-surface);
+  padding: var(--space-12);
+  border-radius: var(--radius-card);
+  border: var(--border-default);
+  box-shadow: none;
+  transition: background-color var(--motion-fast) var(--ease-standard),
+              transform var(--motion-fast) var(--ease-standard);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-lime-soft);
+  box-shadow: var(--shadow-1);
+}
+
+.progress-widget {
+  margin-top: var(--space-8);
+}
+
+.progress-caption {
+  font-size: var(--font-size-12);
+}
+
+/* 残り約113pxを詰める。カード同士の間隔と内側の余白を締める。 */
+.card-main {
+  padding: var(--space-12);
+  gap: var(--space-12);
+}
+
+.dashboard-summary-card {
+  padding: var(--space-12);
+}
+
+.section-card {
+  padding: var(--space-12);
+  gap: var(--space-8);
+}
+
+.section-title {
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  font-size: var(--font-size-18);
+}
+
+.task-cards-container {
+  gap: var(--space-8);
+}
+
+.task-info p {
+  margin: 0;
+  font-size: var(--font-size-12);
+}
+
+.task-icon {
+  font-size: var(--font-size-22);
+  margin-bottom: 0;
+}
+
+.home-details {
+  margin-top: var(--space-8);
+}
+
+.schedule-line {
+  margin-top: var(--space-8);
+}
+
+/* あと少し。レベルバッジ内の余白と進捗バーを詰める。 */
+.dashboard-header .level-badge-details {
+  margin-top: var(--space-2);
+}
+
+.progress-bar {
+  height: 6px;
+}
+
+.progress-widget {
+  margin-top: var(--space-4);
+}
+
+.dashboard-header {
+  padding: var(--space-8) var(--space-12);
+  min-height: auto;
+}
+
+.home-details > summary {
+  min-height: 36px;
+  padding: var(--space-4) var(--space-12);
+}
+
+/* 残り29px。数字の行送りを詰める。 */
+.task-info span {
+  line-height: var(--line-tight);
+}
+
+.progress-caption {
+  margin-top: var(--space-4);
+}
+
+.dashboard-summary-card {
+  padding: var(--space-8) var(--space-12) var(--space-12);
 }

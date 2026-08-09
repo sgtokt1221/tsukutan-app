@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaHome, FaBookOpen, FaLayerGroup, FaChartLine } from 'react-icons/fa';
 import BrandLogo from '../brand/BrandLogo';
+import UserMenu from './UserMenu';
 import './StudentShell.css';
 
 /**
@@ -18,21 +19,14 @@ export const STUDENT_TABS = [
   { id: 'analytics', label: 'きろく', Icon: FaChartLine },
 ];
 
-export function StudentHeader({ userName, onLogout }) {
+export function StudentHeader({ userName, avatarUrl, onLogout }) {
   return (
     <header className="student-header">
-      <BrandLogo placement="student-header" priority decorative onSurface />
+      <BrandLogo placement="student-header" priority decorative />
       {/* ロゴ画像が読めない環境でも製品名が分かるようにする */}
       <h1 className="visually-hidden">つくたん</h1>
 
-      <div className="student-header-meta">
-        {userName && <span className="student-header-name">{userName}</span>}
-        {onLogout && (
-          <button type="button" onClick={onLogout} className="logout-btn">
-            ログアウト
-          </button>
-        )}
-      </div>
+      <UserMenu userName={userName} avatarUrl={avatarUrl} onLogout={onLogout} />
     </header>
   );
 }
