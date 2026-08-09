@@ -11,6 +11,7 @@ import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress } 
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
+import { buildThemeGroups, themeLabels, themeDescriptions } from './logic/themeMatcher';
 import AnalyticsPanel from './components/student/AnalyticsPanel';
 import StoryPanel from './components/student/StoryPanel';
 import { useBookmarks } from './logic/useBookmarks';
@@ -433,80 +434,6 @@ const posDescriptions = {
 };
 
 // テーマのラベルと説明
-const themeLabels = {
-  'seeing': '見る',
-  'opinion': '意見・考える',
-  'emotion': '感情',
-  'movement': '移動',
-  'effort': '学ぶ・努力'
-};
-
-const themeDescriptions = {
-  'seeing': '視覚に関する単語',
-  'opinion': '思考や意見に関する単語',
-  'emotion': '感情や気持ちに関する単語',
-  'movement': '動きや移動に関する単語',
-  'effort': '学習や努力に関する単語'
-};
-
-const THEME_DEFINITIONS = [
-  {
-    id: 'seeing',
-    label: '見る',
-    keywords: ['see', 'watch', 'look', 'view', 'glance', 'observe', 'glimpse', 'peek', 'stare', 'scan', 'survey', '見', '視', '観', '眺']
-  },
-  {
-    id: 'opinion',
-    label: '意見・考える',
-    keywords: ['think', 'believe', 'opine', 'suppose', 'consider', 'reckon', 'idea', '意見', '考', '思']
-  },
-  {
-    id: 'emotion',
-    label: '感情',
-    keywords: ['love', 'like', 'admire', 'hate', 'dislike', 'fear', 'worry', 'enjoy', 'emotion', '感情', '好き', '嫌', '恐']
-  },
-  {
-    id: 'movement',
-    label: '移動',
-    keywords: ['go', 'come', 'move', 'travel', 'run', 'walk', 'ride', 'fly', 'depart', 'arrive', '移動', '進', '歩']
-  },
-  {
-    id: 'effort',
-    label: '学ぶ・努力',
-    keywords: ['study', 'learn', 'practice', 'train', 'review', 'prepare', '努力', '学ぶ', '練習', '復習']
-  },
-];
-
-const buildSemanticGroups = (words) => {
-  const groups = {};
-  if (!Array.isArray(words)) return groups;
-
-  words.forEach((word) => {
-    const surface = (word.word || '').toLowerCase();
-    const combinedMeaning = [word.meaning, word.japanese]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-
-    THEME_DEFINITIONS.forEach((theme) => {
-      const matchesTheme = theme.keywords.some((keyword) => {
-        const normalized = keyword.toLowerCase();
-        return surface.includes(normalized) || combinedMeaning.includes(normalized);
-      });
-
-      if (matchesTheme) {
-        if (!groups[theme.id]) {
-          groups[theme.id] = { label: theme.label, words: [] };
-        }
-        if (!groups[theme.id].words.some((entry) => entry.id === word.id)) {
-          groups[theme.id].words.push(word);
-        }
-      }
-    });
-  });
-
-  return groups;
-};
 
 export default function StudentDashboard() {
   // --- State宣言 ---
@@ -559,7 +486,7 @@ export default function StudentDashboard() {
   const [showSubLevels, setShowSubLevels] = useState(false);
   
   const navigate = useNavigate();
-  const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
+  const themeGroups = useMemo(() => buildThemeGroups(allWords), [allWords]);
 
   // 単語マスターは初期バンドルに含めず、画面が開いたときに取りに行く（計画書13.5）。
   // 日次プランは Firestore から作るのでマスターが無くても出せる。
