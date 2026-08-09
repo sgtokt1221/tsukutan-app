@@ -1,0 +1,35 @@
+{
+  "low": {
+    "name": "そこそこ",
+    "description": "無理せず続けたい",
+    "newWordsQuota": 15,
+    "dailyReviewQuota": 2,
+    "adjacentWordsQuota": 5,
+    "masteredThreshold": 3,
+    "easeFactorMultiplier": 1.2,
+    "intervalMultiplier": 1.5,
+    "estimatedMinutesPerDay": 17
+  },
+  "normal": {
+    "name": "普通",
+    "description": "バランスよく学習したい",
+    "newWordsQuota": 20,
+    "dailyReviewQuota": 3,
+    "adjacentWordsQuota": 10,
+    "masteredThreshold": 5,
+    "easeFactorMultiplier": 1.0,
+    "intervalMultiplier": 1.0,
+    "estimatedMinutesPerDay": 23
+  },
+  "high": {
+    "name": "やる気満々",
+    "description": "確実に覚えたい",
+    "newWordsQuota": 30,
+    "dailyReviewQuota": 5,
+    "adjacentWordsQuota": 15,
+    "masteredThreshold": 7,
+    "easeFactorMultiplier": 0.8,
+    "intervalMultiplier": 0.7,
+    "estimatedMinutesPerDay": 35
+  }
+}

@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 認証済みのユーザーであれば、すべてのドキュメントの読み書きを許可します。
+    // 注意：これは開発用の設定です。本番リリース前にはより厳しいルールに変更してください。
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

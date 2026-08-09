@@ -1,0 +1,300 @@
+.session-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-16);
+  max-width: var(--width-reading);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.session-header__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.session-header__back {
+  flex-shrink: 0;
+}
+
+.session-header__title {
+  flex: 1;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  text-align: center;
+}
+
+.session-header__count {
+  flex-shrink: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.session-header__track {
+  height: 6px;
+  background-color: var(--color-olive-divider);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.session-header__fill {
+  height: 100%;
+  background-color: var(--color-brand-lime);
+  transition: width var(--motion-standard) var(--ease-standard);
+}
+
+/* ヘッダー直下に置く補助操作（単語帳モードなど） */
+.session-header--actions {
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-top: 0;
+}
+
+/* ===== 単語帳モード ===== */
+/* フラッシュカードと同じ地の色・同じヘッダー部品を使う。 */
+.wordbook-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-canvas-lime);
+  overflow: auto;
+}
+
+.wordbook-anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.wordbook-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-surface);
+  border-bottom: var(--border-subtle);
+}
+
+.session-header--actions {
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* ===== 単語帳の一覧とカード =====
+   文字だけでなく余白・高さも --wordbook-zoom に連動させる。
+   文字だけ縮めてもカードが同じ高さのままだと、1画面に入る語数が増えない。 */
+.wordbook-list {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(var(--space-16) * var(--wordbook-zoom, 1)) var(--space-16);
+}
+
+.wordbook-list__grid {
+  display: grid;
+  gap: calc(var(--space-16) * var(--wordbook-zoom, 1));
+}
+
+.wordbook-card {
+  position: relative;
+  overflow: hidden;
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  cursor: grab;
+  touch-action: none; /* ブラウザのデフォルトタッチ動作を無効化 */
+  transition: transform var(--motion-fast) var(--ease-standard),
+              background-color var(--motion-standard) var(--ease-standard);
+}
+
+.wordbook-card__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(120px * var(--wordbook-zoom, 1));
+}
+
+.wordbook-card__side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--space-24) * var(--wordbook-zoom, 1));
+}
+
+.wordbook-card__left {
+  border-right: var(--border-default);
+  background-color: var(--color-surface);
+}
+
+.wordbook-card__right {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wordbook-index {
+  margin-top: var(--space-4);
+  font-size: calc(var(--font-size-12) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+}
+
+@media (max-width: 767px) {
+  .wordbook-card__grid {
+    min-height: calc(80px * var(--wordbook-zoom, 1));
+  }
+
+  .wordbook-card__side {
+    padding: calc(var(--space-12) * var(--wordbook-zoom, 1));
+  }
+}
+
+/* 単語帳モードの赤シート。長押しではなくボタンで開閉する。 */
+.wordbook-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: none;
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  background-color: rgba(220, 38, 38, 0.85);
+  color: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: calc(var(--font-size-16) * var(--wordbook-zoom, 1));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wordbook-veil:hover {
+  background-color: rgba(220, 38, 38, 0.92);
+}
+
+.wordbook-veil-hide {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+  min-height: auto;
+  padding: var(--space-2) var(--space-8);
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-olive-muted);
+  font-size: var(--font-size-12);
+  cursor: pointer;
+}
+
+/* 先頭へ戻る。カードに重ならないよう本文の外側に寄せ、
+   下部ナビと安全領域のぶん持ち上げる。 */
+.wordbook-to-top {
+  position: fixed;
+  right: var(--space-16);
+  bottom: calc(var(--space-64) + env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+}
+
+.wordbook-to-top__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-olive-border);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.wordbook-to-top__button:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== 単語帳モードの文字サイズ ===== */
+.wordbook-zoom {
+  /* タブ行の右端。余った幅の範囲で伸び縮みさせる。 */
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--color-olive-muted);
+}
+
+.wordbook-zoom input[type="range"] {
+  flex: 1 1 auto;
+  min-width: 72px;
+  max-width: 140px;
+  accent-color: var(--color-brand-lime);
+}
+
+.wordbook-zoom__mark {
+  flex-shrink: 0;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.wordbook-zoom__mark--small {
+  font-size: var(--font-size-12);
+}
+
+.wordbook-zoom__mark--large {
+  font-size: var(--font-size-18);
+}
+
+/* 倍率はカード内の文字にだけ効かせる。レイアウトは崩さない。 */
+.wordbook-word {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: calc(var(--font-size-22) * var(--wordbook-zoom, 1));
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  line-height: 1.25;
+  margin-bottom: var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.wordbook-pronunciation {
+  font-size: calc(var(--font-size-14) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+  font-style: italic;
+}
+
+.wordbook-meaning {
+  font-size: calc(var(--font-size-16) * var(--wordbook-zoom, 1));
+  font-weight: 600;
+  color: var(--color-ink-olive);
+  line-height: 1.4;
+  margin-bottom: var(--space-8);
+  overflow-wrap: anywhere;
+}
+
+.wordbook-example__en {
+  font-size: calc(var(--font-size-14) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+  font-style: italic;
+  line-height: 1.4;
+  margin-bottom: var(--space-4);
+}
+
+.wordbook-example__ja {
+  font-size: calc(var(--font-size-12) * var(--wordbook-zoom, 1));
+  color: var(--color-olive-muted);
+  line-height: 1.4;
+}

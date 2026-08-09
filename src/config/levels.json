@@ -1,0 +1,65 @@
+[
+  {
+    "level": 1,
+    "label": "中学基礎",
+    "eiken": "英検5級",
+    "cefr": "Pre-A1",
+    "schoolYear": "中1レベル",
+    "wordsRequired": 600,
+    "color": "#ef4444"
+  },
+  {
+    "level": 2,
+    "label": "中学標準",
+    "eiken": "英検4級",
+    "cefr": "A1",
+    "schoolYear": "中2レベル",
+    "wordsRequired": 1300,
+    "color": "#f97316"
+  },
+  {
+    "level": 3,
+    "label": "中学卒業",
+    "eiken": "英検3級",
+    "cefr": "A2",
+    "schoolYear": "中3レベル",
+    "wordsRequired": 2100,
+    "color": "#eab308"
+  },
+  {
+    "level": 4,
+    "label": "高校基礎",
+    "eiken": "英検準2級",
+    "cefr": "A2",
+    "schoolYear": "高1レベル",
+    "wordsRequired": 3600,
+    "color": "#22c55e"
+  },
+  {
+    "level": 5,
+    "label": "高校標準",
+    "eiken": "英検2級",
+    "cefr": "B1",
+    "schoolYear": "高2レベル",
+    "wordsRequired": 5100,
+    "color": "#06b6d4"
+  },
+  {
+    "level": 6,
+    "label": "高校応用",
+    "eiken": "英検2級〜準1級",
+    "cefr": "B1-B2",
+    "schoolYear": "高3レベル",
+    "wordsRequired": 6000,
+    "color": "#3b82f6"
+  },
+  {
+    "level": 7,
+    "label": "大学中級",
+    "eiken": "英検準1級",
+    "cefr": "B2",
+    "schoolYear": "大学レベル",
+    "wordsRequired": 8000,
+    "color": "#8b5cf6"
+  }
+]

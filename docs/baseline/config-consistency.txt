@@ -1,0 +1,33 @@
+=== 1. 目標ID ===
+  正本 (setupMasterData.js): 14 件
+  正本に無い目標ID: 8 種類
+    - 'hs1'  src/AdminDashboard.js:41, src/AdminDashboard.js:117, src/AdminDashboard.js:838, src/StudentDashboard.js:264, src/StudentDashboard.js:270
+    - 'hs2'  src/AdminDashboard.js:42, src/AdminDashboard.js:117, src/AdminDashboard.js:838, src/StudentDashboard.js:264, src/StudentDashboard.js:270
+    - 'hs3'  src/AdminDashboard.js:43, src/AdminDashboard.js:117, src/AdminDashboard.js:838, src/StudentDashboard.js:264
+    - 'hs4'  src/AdminDashboard.js:44, src/AdminDashboard.js:117, src/AdminDashboard.js:838, src/StudentDashboard.js:264
+    - 'hs5'  src/AdminDashboard.js:45, src/AdminDashboard.js:117, src/AdminDashboard.js:838, src/StudentDashboard.js:264
+    - 'uni1'  src/AdminDashboard.js:46, src/AdminDashboard.js:118, src/AdminDashboard.js:839
+    - 'uni2'  src/AdminDashboard.js:47, src/AdminDashboard.js:118, src/AdminDashboard.js:839
+    - 'uni3'  src/AdminDashboard.js:48, src/AdminDashboard.js:118, src/AdminDashboard.js:839
+
+=== 2. 教材ID ===
+  実体のある教材: osaka-koukou-nyuushi, highschool-english
+  コース定義が指す教材: osaka-koukou-nyuushi, highschool-english
+  実体の無い教材への参照: なし
+  'osaka-koukou-nyuushi' のハードコード箇所: 18 箇所
+  'highschool-english' のハードコード箇所: 29 箇所
+
+=== 3. コレクション名 ===
+  検出: dailyCompletion, freeStudyProgress, generatedStories, goalsMaster, logs, reviewWords, stories, textbooks, users, words
+  大小文字の衝突: なし
+  スキーマ未記載: dailyCompletion, stories
+
+=== 4. 環境変数 ===
+  .env 定義       : REACT_APP_IMPORT_USERS_URL
+  コード参照      : REACT_APP_IMPORT_USERS_URL, REACT_APP_MANAGE_STUDENTS_URL
+  未定義（コード内の既定値で動作）: REACT_APP_MANAGE_STUDENTS_URL  src/AdminDashboard.js:599
+
+=== 判定 ===
+  1. 正本に存在しない目標IDが 8 種類使われています
+
+レポートを書き出しました: docs/baseline/config-consistency.json

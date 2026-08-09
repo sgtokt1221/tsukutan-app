@@ -1,0 +1,159 @@
+/* 読込中・空・エラー・帯・進捗・バッジ。値はすべてトークン参照。 */
+
+.state-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-32) var(--space-16);
+  text-align: center;
+  color: var(--color-ink-olive);
+}
+
+.state-view__title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+}
+
+.state-view__message {
+  margin: 0;
+  max-width: 34em;
+  color: var(--color-olive-muted);
+  line-height: var(--line-normal);
+}
+
+.state-view__icon {
+  font-size: var(--font-size-28);
+  color: var(--color-olive-subtle);
+}
+
+.state-view__spinner {
+  width: var(--icon-24);
+  height: var(--icon-24);
+  border: 3px solid var(--color-lime-muted);
+  border-top-color: var(--color-brand-lime);
+  border-radius: var(--radius-pill);
+  animation: state-view-spin 900ms linear infinite;
+}
+
+@keyframes state-view-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .state-view__spinner { animation: none; }
+}
+
+.state-view--error .state-view__title {
+  color: var(--color-danger-ink);
+}
+
+/* ===== 帯 ===== */
+.feedback-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
+  border: 1px solid;
+  line-height: var(--line-normal);
+}
+
+.feedback-banner__body { flex: 1; }
+
+.feedback-banner__close {
+  min-height: auto;
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-18);
+}
+
+.feedback-banner--info {
+  background-color: var(--color-blue-soft);
+  border-color: var(--color-blue-border);
+  color: var(--color-ink-olive);
+}
+.feedback-banner--success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-ink);
+}
+.feedback-banner--warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning-ink);
+}
+.feedback-banner--error {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-ink);
+}
+
+/* ===== 進捗 ===== */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.progress__track {
+  flex: 1;
+  height: 8px;
+  background-color: var(--color-olive-divider);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress__fill {
+  height: 100%;
+  background-color: var(--color-brand-lime);
+  border-radius: var(--radius-pill);
+  transition: width var(--motion-standard) var(--ease-standard);
+}
+
+.progress__label {
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ===== 状態バッジ ===== */
+/* 色だけで区別させない。枠線と文字で読み取れるようにする。 */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-8);
+  border-radius: var(--radius-pill);
+  border: 1px solid;
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-badge--neutral {
+  background-color: var(--color-surface);
+  border-color: var(--color-olive-border);
+  color: var(--color-olive-muted);
+}
+.status-badge--brand {
+  background-color: var(--color-lime-soft);
+  border-color: var(--color-lime-border);
+  color: var(--color-ink-olive);
+}
+.status-badge--info {
+  background-color: var(--color-blue-soft);
+  border-color: var(--color-blue-border);
+  color: var(--color-ink-olive);
+}
+.status-badge--warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning-ink);
+}
+.status-badge--danger {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-ink);
+}

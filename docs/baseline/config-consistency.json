@@ -1,0 +1,139 @@
+{
+  "problems": [
+    "正本に存在しない目標IDが 8 種類使われています"
+  ],
+  "goals": {
+    "canonical": [
+      "eiken_5",
+      "eiken_4",
+      "eiken_3",
+      "eiken_pre2",
+      "eiken_2",
+      "eiken_pre1",
+      "eiken_1",
+      "hs_45",
+      "hs_50",
+      "hs_60",
+      "hs_top",
+      "uni_50",
+      "uni_60",
+      "uni_top"
+    ],
+    "unknown": {
+      "hs1": [
+        "src/AdminDashboard.js:41",
+        "src/AdminDashboard.js:117",
+        "src/AdminDashboard.js:838",
+        "src/StudentDashboard.js:264",
+        "src/StudentDashboard.js:270"
+      ],
+      "hs2": [
+        "src/AdminDashboard.js:42",
+        "src/AdminDashboard.js:117",
+        "src/AdminDashboard.js:838",
+        "src/StudentDashboard.js:264",
+        "src/StudentDashboard.js:270"
+      ],
+      "hs3": [
+        "src/AdminDashboard.js:43",
+        "src/AdminDashboard.js:117",
+        "src/AdminDashboard.js:838",
+        "src/StudentDashboard.js:264"
+      ],
+      "hs4": [
+        "src/AdminDashboard.js:44",
+        "src/AdminDashboard.js:117",
+        "src/AdminDashboard.js:838",
+        "src/StudentDashboard.js:264"
+      ],
+      "hs5": [
+        "src/AdminDashboard.js:45",
+        "src/AdminDashboard.js:117",
+        "src/AdminDashboard.js:838",
+        "src/StudentDashboard.js:264"
+      ],
+      "uni1": [
+        "src/AdminDashboard.js:46",
+        "src/AdminDashboard.js:118",
+        "src/AdminDashboard.js:839"
+      ],
+      "uni2": [
+        "src/AdminDashboard.js:47",
+        "src/AdminDashboard.js:118",
+        "src/AdminDashboard.js:839"
+      ],
+      "uni3": [
+        "src/AdminDashboard.js:48",
+        "src/AdminDashboard.js:118",
+        "src/AdminDashboard.js:839"
+      ]
+    },
+    "unreferenced": []
+  },
+  "textbooks": {
+    "known": [
+      "osaka-koukou-nyuushi",
+      "highschool-english"
+    ],
+    "declared": {
+      "osaka-koukou-nyuushi": [
+        "src/StudentDashboard.js:352"
+      ],
+      "highschool-english": [
+        "src/StudentDashboard.js:353",
+        "src/StudentDashboard.js:354",
+        "src/StudentDashboard.js:355",
+        "src/StudentDashboard.js:356",
+        "src/StudentDashboard.js:357",
+        "src/StudentDashboard.js:358",
+        "src/StudentDashboard.js:359",
+        "src/StudentDashboard.js:360"
+      ]
+    },
+    "unknown": {},
+    "readVariables": [
+      "id"
+    ],
+    "literalUsage": {
+      "osaka-koukou-nyuushi": 18,
+      "highschool-english": 29
+    }
+  },
+  "collections": {
+    "found": {
+      "users": 25,
+      "dailyCompletion": 1,
+      "logs": 9,
+      "reviewWords": 3,
+      "stories": 1,
+      "generatedStories": 2,
+      "textbooks": 3,
+      "words": 3,
+      "freeStudyProgress": 1,
+      "goalsMaster": 2
+    },
+    "caseCollisions": [],
+    "unknown": [
+      "dailyCompletion",
+      "stories"
+    ]
+  },
+  "env": {
+    "referenced": {
+      "REACT_APP_IMPORT_USERS_URL": [
+        "src/AdminDashboard.js:508"
+      ],
+      "REACT_APP_MANAGE_STUDENTS_URL": [
+        "src/AdminDashboard.js:599"
+      ]
+    },
+    "defined": [
+      "REACT_APP_IMPORT_USERS_URL"
+    ],
+    "missingInEnv": [],
+    "fallbackOnly": [
+      "REACT_APP_MANAGE_STUDENTS_URL"
+    ],
+    "unusedInEnv": []
+  }
+}

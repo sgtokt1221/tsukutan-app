@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/functions/node_modules
 /.pnp
 .pnp.js
 
@@ -24,7 +25,28 @@ yarn-error.log*
 
 # Firebase service account key
 serviceAccountKey.json
-serviceAccountKey.json
 
 # Firebase config
 src/firebaseConfig.js
+
+# tooling cache
+.eslintcache
+
+# 単語データのバックアップ（削除せずローカル保管。docs/baseline/README.md の6章を参照）
+words_backup*.json
+highschool_backup*.json
+backups/
+
+# Firebase emulator / CLI artifacts
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+database-debug.log*
+pubsub-debug.log*
+ui-debug.log*
+
+
+.gstack/
+
+# 配信しない作業用ファイル（教室資料など）
+/local
