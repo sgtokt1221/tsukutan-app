@@ -42,32 +42,8 @@ const initialize = () => {
   return initializationPromise;
 };
 
-const speak = (text, lang = 'en-US') => {
-  if (!text) {
-    return;
-  }
-
-  // 進行中の発話がある場合は、読み上げ完了を待つ
-  if (synthesis.speaking) {
-    logger.debug('Speech already in progress, queuing next speech');
-    // 現在の読み上げが完了するまで待機
-    const checkSpeaking = () => {
-      if (synthesis.speaking) {
-        setTimeout(checkSpeaking, 100);
-      } else {
-        // 読み上げ完了後に新しい音声を開始
-        setTimeout(() => {
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = lang;
-          logger.debug('Speaking queued text:', text, 'with lang:', lang);
-          synthesis.speak(utterance);
-        }, 200); // 少し間隔を空ける
-      }
-    };
-    checkSpeaking();
-    return;
-  }
-
+/** テキストと言語から utterance を組み立てる。音声の選び方はここ1箇所に集める。 */
+const buildUtterance = (text, lang) => {
   const utterance = new SpeechSynthesisUtterance(text);
   
   // 言語を設定（デフォルトは英語）
@@ -177,7 +153,73 @@ const speak = (text, lang = 'en-US') => {
     utterance.lang = 'ja-JP';
   }
   
+  return utterance;
+};
+
+const speak = (text, lang = 'en-US') => {
+  if (!text) {
+    return;
+  }
+
+  // 進行中の発話がある場合は、読み上げ完了を待つ
+  if (synthesis.speaking) {
+    logger.debug('Speech already in progress, queuing next speech');
+    // 現在の読み上げが完了するまで待機
+    const checkSpeaking = () => {
+      if (synthesis.speaking) {
+        setTimeout(checkSpeaking, 100);
+      } else {
+        // 読み上げ完了後に新しい音声を開始
+        setTimeout(() => {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang;
+          logger.debug('Speaking queued text:', text, 'with lang:', lang);
+          synthesis.speak(utterance);
+        }, 200); // 少し間隔を空ける
+      }
+    };
+    checkSpeaking();
+    return;
+  }
+
+  const utterance = buildUtterance(text, lang);
+
   synthesis.speak(utterance);
 };
 
-export { initialize, speak };
+/**
+ * 英語→日本語のように、続けて読み上げる。
+ *
+ * speak() を続けて呼ぶと 100ms 間隔のポーリングで待つ作りになっていて、
+ * 順番が入れ替わることがある。ここは utterance の onend でつなぐ。
+ *
+ * @param {Array<{text: string, lang?: string}>} items 読み上げる順に並べる
+ */
+const speakSequence = (items) => {
+  const queue = (items || []).filter((item) => item && item.text);
+  if (queue.length === 0) return;
+
+  // 前の読み上げは打ち切る。カードを次々めくったときに溜まらないように。
+  synthesis.cancel();
+
+  const speakAt = (index) => {
+    if (index >= queue.length) return;
+    const { text, lang = 'en-US' } = queue[index];
+    const utterance = buildUtterance(text, lang);
+    utterance.onend = () => speakAt(index + 1);
+    // 読み上げに失敗しても次へ進める（音声が無い端末で止まらないように）
+    utterance.onerror = () => speakAt(index + 1);
+    synthesis.speak(utterance);
+  };
+
+  speakAt(0);
+};
+
+/** 英語を読んでから日本語の意味を読む。学習カードの標準の読み上げ方。 */
+const speakWordThenMeaning = (word, meaning) =>
+  speakSequence([
+    { text: word, lang: 'en-US' },
+    { text: meaning, lang: 'ja-JP' },
+  ]);
+
+export { initialize, speak, speakSequence, speakWordThenMeaning };

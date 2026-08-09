@@ -130,7 +130,7 @@
 
 .wordbook-card__left {
   border-right: var(--border-default);
-  background-color: var(--color-canvas-lime);
+  background-color: var(--color-surface);
 }
 
 .wordbook-card__right {

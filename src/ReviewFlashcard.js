@@ -5,7 +5,7 @@ import { updateUserWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup, FaPlay, FaStop } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
-import { initialize, speak } from './logic/speechUtils';
+import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 
@@ -241,16 +241,9 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       return !prev;
     });
     if (!isFlipped && sessionWords.length > 0) {
-      const wordToSpeak = sessionWords[currentIndex].word;
-      logger.debug('🔥 Speaking English:', wordToSpeak);
-      speak(wordToSpeak, 'en-US'); // 英語音声で読み上げ
-    } else if (isFlipped && sessionWords.length > 0) {
+      // 英語を読んでから意味を読む
       const word = sessionWords[currentIndex];
-      const japaneseText = word.meaning || word.japanese || word.translation;
-      logger.debug('🔥 Speaking Japanese:', japaneseText);
-      if (japaneseText) {
-        speak(japaneseText, 'ja-JP'); // 日本語音声で読み上げ
-      }
+      speakWordThenMeaning(word.word, word.meaning || word.japanese || word.translation);
     }
   }, [isFlipped, currentIndex, sessionWords, viewMode]);
 
@@ -1290,7 +1283,6 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
-        hint="スワイプでも回答できます（右: わかった / 左: もう一度）"
       />
 
       {/* プログレスバー */}
