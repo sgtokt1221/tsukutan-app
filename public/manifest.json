@@ -1,6 +1,8 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "つくたん",
+  "name": "つくたん - 中高生のための英単語学習アプリ",
+  "description": "目標と達成日から逆算した日次プランで英単語を学習するアプリです。",
+  "lang": "ja",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +20,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#A3E635",
+  "background_color": "#F7FEE7"
 }

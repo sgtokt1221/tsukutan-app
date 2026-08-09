@@ -19,34 +19,55 @@ function AppContent() {
   const [targetDate, setTargetDate] = useState('');
   
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
+  const [retryToken, setRetryToken] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        const isAdmin = user.email === 'tsukasafoods@gmail.com';
-        const role = isAdmin ? 'admin' : 'student';
-        setUserRole(role);
+    setLoading(true);
+    setAuthError(null);
 
-        if (!isAdmin) {
-          const userDocRef = doc(db, 'users', user.uid);
-          const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists() && userDoc.data().goal && userDoc.data().goal.isSet) {
-            setIsGoalSet(true);
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      async (user) => {
+        setCurrentUser(user);
+        try {
+          if (user) {
+            const isAdmin = user.email === 'tsukasafoods@gmail.com';
+            const role = isAdmin ? 'admin' : 'student';
+            setUserRole(role);
+
+            if (!isAdmin) {
+              const userDocRef = doc(db, 'users', user.uid);
+              const userDoc = await getDoc(userDocRef);
+              if (userDoc.exists() && userDoc.data().goal && userDoc.data().goal.isSet) {
+                setIsGoalSet(true);
+              } else {
+                setIsGoalSet(false);
+              }
+            }
           } else {
+            setUserRole(null);
             setIsGoalSet(false);
           }
+        } catch (error) {
+          // ここで throw すると setLoading(false) に到達せず無限ローディングになるため、
+          // 画面側で再試行できるエラー状態へ落とす。
+          console.error('ユーザー情報の読み込みに失敗しました:', error);
+          setAuthError('ユーザー情報を読み込めませんでした。通信状態を確認してください。');
+        } finally {
+          setLoading(false);
         }
-      } else {
-        setUserRole(null);
-        setIsGoalSet(false);
+      },
+      (error) => {
+        console.error('認証状態の監視に失敗しました:', error);
+        setAuthError('ログイン状態を確認できませんでした。通信状態を確認してください。');
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    );
 
     return () => unsubscribe();
-  }, []);
+  }, [retryToken]);
 
   useEffect(() => {
     if (userRole === 'student') {
@@ -92,7 +113,29 @@ function AppContent() {
   };
 
   if (loading) {
-    return <p>読み込み中...</p>;
+    return (
+      <div className="loading-container">
+        <p>読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (authError) {
+    return (
+      <div className="loading-container">
+        <div className="app-status-card">
+          <h1 className="app-status-title">つくたんを開けませんでした</h1>
+          <p className="app-status-message">{authError}</p>
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => setRetryToken((token) => token + 1)}
+          >
+            再試行する
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -355,6 +398,7 @@ function AppContent() {
             <Navigate to="/" />
           )
         } />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   );
@@ -362,7 +406,7 @@ function AppContent() {
 
 function App() {
   return (
-    <Router basename="/tsukutan-app">
+    <Router>
       <AppContent />
     </Router>
   );

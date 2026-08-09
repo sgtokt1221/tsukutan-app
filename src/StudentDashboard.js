@@ -1027,7 +1027,7 @@ export default function StudentDashboard() {
           
           try {
             // tsukutan-app/words.jsonから直接読み込み
-            const osakaWordsData = await fetch('/tsukutan-app/words.json').then(res => res.json());
+            const osakaWordsData = await fetch('/words.json').then(res => res.json());
             console.log('📚 大阪府公立入試英単語データ読み込み成功:', {
               総単語数: osakaWordsData.length,
               サンプル単語: osakaWordsData.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
@@ -1119,7 +1119,7 @@ export default function StudentDashboard() {
             
             // 2. words.jsonから取得（levelフィールドで振り分け）
             try {
-              const osakaWordsData = await fetch('/tsukutan-app/words.json').then(res => res.json());
+              const osakaWordsData = await fetch('/words.json').then(res => res.json());
               
               // words.jsonのlevelを英検級にマッピング
               const levelToEikenMapping = {

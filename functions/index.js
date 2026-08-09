@@ -1,6 +1,5 @@
 // Firebase SDK
-const { onRequest } = require("firebase-functions/v2/https");
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onRequest, HttpsError } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -11,7 +10,6 @@ const express = require('express');
 const cors = require('cors');
 const iconv = require('iconv-lite');
 const Papa = require('papaparse');
-const fetch = require('node-fetch');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 

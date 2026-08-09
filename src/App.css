@@ -35,6 +35,28 @@ body {
   color: var(--text-color);
 }
 
+/* ===== 起動時のエラー画面 ===== */
+.app-status-card {
+  background-color: var(--card-bg);
+  padding: 32px 24px;
+  margin: 0 16px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+.app-status-title {
+  font-size: 1.25rem;
+  margin: 0 0 12px 0;
+  color: var(--text-color);
+}
+.app-status-message {
+  margin: 0 0 24px 0;
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
 /* ===== ログイン画面のスタイル ===== */
 .login-container {
   display: flex;
