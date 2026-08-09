@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig.js';
+import BrandLogo from './components/brand/BrandLogo';
 
 /** Firebase のエラーコードを、生徒が読んで分かる文言にする */
 const messageForError = (error) => {
@@ -57,10 +58,10 @@ function LoginPage() {
     <div className="login-screen">
       <div className="login-hero">
         <div className="hero-pill">毎日の英語習慣を支える</div>
-        <h1 className="hero-title">
-          つくたん
-          <span>TSUKUTAN</span>
-        </h1>
+        {/* 画像の中の文字だけに見出しの意味を持たせない。
+            h1 は残し、視覚的にだけ隠す（計画書4.4）。 */}
+        <h1 className="visually-hidden">つくたん</h1>
+        <BrandLogo placement="login" priority decorative />
         <p className="hero-caption">
           単語学習・復習・ゴール設定をひとつのアプリで。
         </p>

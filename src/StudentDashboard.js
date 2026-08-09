@@ -20,6 +20,7 @@ import { FaBook, FaSyncAlt, FaMagic, FaChartLine } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
+import BrandLogo from './components/brand/BrandLogo';
 import { loadWordMaster } from './logic/wordMaster';
 import logger from './logic/logger';
 
@@ -3177,72 +3178,17 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: window.innerWidth < 768 ? '1rem' : '1rem 2rem',
-        backgroundColor: '#ffffff',
-        borderBottom: '1px solid #e5e7eb',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        minHeight: '60px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <h2 className='logo-title' style={{
-            fontSize: window.innerWidth < 768 ? '2rem' : '2.5rem',
-            fontWeight: 'bold',
-            color: '#A3E635',
-            margin: 0,
-            marginRight: window.innerWidth < 768 ? '0.5rem' : '1rem'
-          }}>
-            つくたん
-          </h2>
-        </div>
-        
-        <div className="user-info" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: window.innerWidth < 768 ? '0.5rem' : '1rem'
-        }}>
-          {userData && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: window.innerWidth < 768 ? '0.3rem 0.6rem' : '0.4rem 0.8rem',
-              backgroundColor: '#f3f4f6',
-              borderRadius: '20px',
-              fontSize: window.innerWidth < 768 ? '0.7rem' : '0.8rem',
-              color: '#374151'
-            }}>
-              <span style={{ fontWeight: '500' }}>{userData.name}</span>
-            </div>
-          )}
-                    <button
-            onClick={handleLogout} 
-            className="logout-btn"
-            style={{
-              padding: window.innerWidth < 768 ? '0.3rem 0.6rem' : '0.4rem 0.8rem',
-              backgroundColor: '#6b7280',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: window.innerWidth < 768 ? '0.7rem' : '0.8rem',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#4b5563';
-              e.target.style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#6b7280';
-              e.target.style.transform = 'translateY(0)';
-            }}
-          >
+      <header className="student-header">
+        <BrandLogo placement="student-header" priority decorative onSurface />
+        {/* ロゴ画像が読めない環境でも製品名が分かるようにする */}
+        <h1 className="visually-hidden">つくたん</h1>
+
+        <div className="student-header-meta">
+          {userData && <span className="student-header-name">{userData.name}</span>}
+          <button type="button" onClick={handleLogout} className="logout-btn">
             ログアウト
-                    </button>
-                </div>
+          </button>
+        </div>
       </header>
       
       {/* 初回テストと学習計画最適化のボタン */}

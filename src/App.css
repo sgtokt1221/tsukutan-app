@@ -158,10 +158,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  border-bottom: var(--border-subtle);
   flex-shrink: 0;
-  background-color: var(--card-bg);
+  background-color: var(--color-surface);
 }
 .dashboard-header h2 {
   margin: 0;
@@ -178,13 +179,22 @@ body {
   font-size: 0.9rem;
 }
 .logout-btn {
+  /* 常時強調しない。主導線と競合させない（計画書12.3） */
   width: auto;
-  padding: 5px 10px;
+  min-height: var(--tap-target);
+  padding: var(--space-8) var(--space-12);
   background: none;
-  border: 1px solid #e5e7eb;
-  border-radius: 5px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
   cursor: pointer;
-  color: var(--text-color);
+  color: var(--color-olive-muted);
+  font-size: var(--font-size-14);
+  transition: background-color var(--motion-fast) var(--ease-standard),
+              color var(--motion-fast) var(--ease-standard);
+}
+.logout-btn:hover {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
 }
 .card-main {
   flex-grow: 1;
@@ -195,13 +205,31 @@ body {
 }
 
 /* ===== カードの基本スタイル ===== */
+/* カードは3段階だけ。主役=feature、標準=card、補助=sub。
+   同じカードに太い境界・強い影・グラデーションを重ねない（計画書8）。 */
 .card-style {
-  background-color: var(--card-bg);
-  padding: 1.5rem;
-  border-radius: 16px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 32px var(--shadow-color);
+  background-color: var(--color-surface);
+  padding: var(--space-24);
+  border-radius: var(--radius-card);
+  margin-bottom: var(--space-24);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-1);
   text-align: left;
+}
+
+/* 主役カード: 1画面に1つだけ */
+.card-feature {
+  border-radius: var(--radius-feature);
+  border: 1px solid var(--color-lime-border);
+  box-shadow: var(--shadow-2);
+}
+
+/* 補助パネル: 影を持たせない */
+.card-sub {
+  border-radius: var(--radius-control);
+  border: var(--border-subtle);
+  box-shadow: none;
+  background-color: var(--color-canvas-lime);
 }
 
 /* ===== StudentDashboard固有のスタイル ===== */
@@ -344,26 +372,32 @@ body {
   font-size: 1.5rem;
 }
 
+/* この画面の主要行動なのでライムのPrimaryに揃える。
+   青は案内・診断に取っておく（計画書5.2 / 11.1）。 */
 .story-generate-btn {
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  background: #3b82f6;
-  color: white;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-24);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-lime-border);
+  background: var(--color-brand-lime);
+  color: var(--color-ink-olive);
+  font-weight: 700;
+  font-size: var(--font-size-16);
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard),
+              transform var(--motion-fast) var(--ease-standard);
 }
 
 .story-generate-btn:hover:not([disabled]) {
-  background: #2563eb;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.story-generate-btn:active:not([disabled]) {
+  transform: scale(0.98);
 }
 
 .story-generate-btn[disabled] {
@@ -1108,13 +1142,11 @@ input[type="file"] { display: none; }
 }
 
 .section-card {
-  background-color: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 24px;
-  padding: clamp(20px, 4vw, 28px);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-16);
+  box-shadow: var(--shadow-1);
+  border: var(--border-subtle);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1129,40 +1161,19 @@ input[type="file"] { display: none; }
   letter-spacing: -0.01em;
 }
 
-.primary-action,
-.secondary-action {
+/* 目標設定・ログインなど、幅いっぱいに置く場面での追加指定。
+   色・角丸・状態は primitives.css が持つ。ここでは幅だけ変える。 */
+.goal-footer .primary-action,
+.login-card .primary-action,
+.goal-footer .secondary-action,
+.login-card .secondary-action {
   width: 100%;
-  border-radius: 14px;
-  padding: clamp(14px, 3.8vw, 16px);
-  font-weight: 500;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  font-family: 'Poppins', sans-serif;
 }
 
-.primary-action {
-  background: linear-gradient(145deg, var(--primary-color), #0ea5e9);
-  color: #f8fafc;
-  box-shadow: 0 14px 30px rgba(14, 165, 233, 0.25);
-}
-
-.secondary-action {
-  background: rgba(15, 23, 42, 0.05);
-  color: #0f172a;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
-}
-
-.primary-action:active,
-.secondary-action:active {
-  transform: translateY(2px);
-}
+/* Primary はライム地にオリーブ文字。
+   以前はライムから水色へのグラデーションに白文字で、
+   ブランド外の色相が混ざるうえコントラストも足りなかった（計画書5.2 / 11.1）。
+   見た目そのものは primitives.css が持つので、ここでは上書きしない。 */
 
 .tab-switch {
   display: flex;
@@ -1199,11 +1210,15 @@ input[type="file"] { display: none; }
 .login-screen {
   padding: clamp(24px, 6vw, 40px);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: linear-gradient(180deg, rgba(14, 116, 144, 0.12), rgba(14, 165, 233, 0.08));
-  gap: 24px;
+  /* ロゴPNGに焼き込まれた淡い黄緑と地の色を合わせる（計画書4.5）。
+     以前は青緑のグラデーションで、ロゴの背景が四角く浮いて見えていた。
+     青緑はブランド色でもないので単色にする。 */
+  background: var(--color-canvas-lime);
+  gap: var(--space-24);
 }
 
 .login-hero {
@@ -2054,20 +2069,22 @@ input[type="file"] { display: none; }
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
-  border-top: 1px solid #e5e7eb;
+  background: var(--color-surface);
+  border-top: var(--border-default);
   display: flex;
   justify-content: space-around;
-  padding: 8px 0;
+  /* ホームバーのある端末で操作が隠れないようにする（計画書13.2） */
+  padding: var(--space-8) 0 calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
   z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-1);
 }
 
 .tab-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-16);
   border: none;
   background: transparent;
   cursor: pointer;
@@ -2078,12 +2095,16 @@ input[type="file"] { display: none; }
 }
 
 .tab-item:hover {
-  background: #f3f4f6;
+  background: var(--color-lime-soft);
 }
 
 .tab-item.active {
-  background: var(--primary-color);
-  color: white;
+  /* ライム背景に白文字はコントラストが足りない。オリーブ文字にする（計画書5.2）。
+     色だけに頼らないよう、太字と下線でも現在地を示す（計画書13.3）。 */
+  background: var(--color-brand-lime);
+  color: var(--color-ink-olive);
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--color-ink-olive);
 }
 
 .tab-label {
@@ -2294,4 +2315,65 @@ select:focus-visible,
 .word-data-error p {
   margin: 0 0 8px 0;
   line-height: 1.6;
+}
+
+/* ===== 生徒画面のヘッダー（計画書12.3） =====
+   ロゴ、現在のユーザー、ログアウトの3要素に絞る。
+   以前は window.innerWidth による分岐つきのインライン指定だった。 */
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 60px;
+  padding: var(--space-12) var(--space-16);
+  background-color: var(--color-surface);
+  border-bottom: var(--border-subtle);
+}
+
+.student-header-logo {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-28);
+  font-weight: 700;
+  color: var(--color-brand-lime);
+  line-height: var(--line-tight);
+}
+
+.student-header-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.student-header-name {
+  padding: var(--space-4) var(--space-12);
+  background-color: var(--color-lime-soft);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .student-header {
+    padding: var(--space-16) var(--space-32);
+  }
+  .student-header-logo {
+    font-size: var(--font-size-40);
+  }
+}
+
+/* 読み上げには残し、画面からは隠す */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
