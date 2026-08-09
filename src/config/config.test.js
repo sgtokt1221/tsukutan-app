@@ -240,9 +240,10 @@ describe('発音記号', () => {
   test('同じ綴りの語は同じ発音を持つ', () => {
     const byWord = new Map();
     for (const word of master) {
-      const seen = byWord.get(word.word);
-      if (seen) expect(word.pronunciation).toBe(seen);
-      else byWord.set(word.word, word.pronunciation);
+      if (!byWord.has(word.word)) byWord.set(word.word, new Set());
+      byWord.get(word.word).add(word.pronunciation);
     }
+    const inconsistent = [...byWord.entries()].filter(([, set]) => set.size > 1);
+    expect(inconsistent.map(([word]) => word)).toEqual([]);
   });
 });

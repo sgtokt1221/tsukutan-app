@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AnswerControls from './components/learning/AnswerControls';
 import SessionHeader from './components/learning/SessionHeader';
+import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { FaArrowUp, FaUndo, FaArrowLeft, FaBook, FaLayerGroup } from 'react-icons/fa';
+import { FaArrowUp, FaUndo, FaArrowLeft } from 'react-icons/fa';
 import { initialize, speak } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
+
+// 単語帳モードの文字サイズの下限・上限（%）。一覧で見渡したいときは小さく、
+// 1語ずつ確かめたいときは大きくできるよう幅を広めに取る。
+const MIN_ZOOM = 50;
+const MAX_ZOOM = 200;
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -34,7 +40,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   // 単語帳モードの文字サイズ。端末ごとに好みが違うので覚えておく。
   const [wordbookZoom, setWordbookZoom] = useState(() => {
     const saved = Number(localStorage.getItem('tsukutan.wordbookZoom'));
-    return Number.isFinite(saved) && saved >= 80 && saved <= 160 ? saved : 100;
+    return Number.isFinite(saved) && saved >= MIN_ZOOM && saved <= MAX_ZOOM ? saved : 100;
   });
   useEffect(() => {
     localStorage.setItem('tsukutan.wordbookZoom', String(wordbookZoom));
@@ -777,29 +783,22 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
           onBack={handleBackButtonClick}
           backLabel="終了"
         />
-        <div className="session-header session-header--actions">
-          <p className="wordbook-hint">
-            {isReviewMode
-              ? '「答えを見る」で意味を表示。上スワイプで復習完了にできます。'
-              : '「答えを見る」で意味を表示。右スワイプ=わかった / 左スワイプ=もう一度も使えます。'}
-          </p>
+        <ModeTabs value="wordbook" onChange={setViewMode}>
+          {/* 文字サイズ。小さいA〜大きいA は拡大縮小の慣用表記 */}
           <label className="wordbook-zoom">
-            <span className="wordbook-zoom__label">文字の大きさ</span>
+            <span className="wordbook-zoom__mark wordbook-zoom__mark--small" aria-hidden="true">A</span>
             <input
               type="range"
-              min="80"
-              max="160"
+              min={MIN_ZOOM}
+              max={MAX_ZOOM}
               step="10"
               value={wordbookZoom}
               onChange={(e) => setWordbookZoom(Number(e.target.value))}
               aria-label={`文字の大きさ ${wordbookZoom}%`}
             />
-            <span className="wordbook-zoom__value">{wordbookZoom}%</span>
+            <span className="wordbook-zoom__mark wordbook-zoom__mark--large" aria-hidden="true">A</span>
           </label>
-          <button type="button" className="secondary-action" onClick={() => setViewMode('flashcard')}>
-            <FaLayerGroup aria-hidden="true" /> フラッシュカード
-          </button>
-        </div>
+        </ModeTabs>
       </div>
 
       {/* 単語帳コンテンツ */}
@@ -1037,24 +1036,15 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
       {/* 戻る・セッション名・現在数・進捗をヘッダーにまとめる（計画書7.3 / 7.7）。
-          単語帳モードの切替は画面に浮かせず、ヘッダー内に収める（計画書12.5）。 */}
+          モード切替はヘッダー直下のアンダータブに置く。 */}
       <SessionHeader
         title={isReviewMode ? '復習単語' : '新規学習'}
         current={currentIndex + 1}
         total={shuffledWords.length}
         onBack={() => onBack(incorrectWords)}
         backLabel="終了"
-        actions={(
-          <button
-            type="button"
-            className="session-header__icon-btn"
-            onClick={() => setViewMode('wordbook')}
-            aria-label="単語帳モードに切り替える"
-          >
-            <FaBook aria-hidden="true" />
-          </button>
-        )}
       />
+      <ModeTabs value="flashcard" onChange={setViewMode} />
 
       <div id="flashcard-container">
         <motion.div
