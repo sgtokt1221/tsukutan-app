@@ -14,9 +14,10 @@ import { generateSmartRecommendations } from './logic/recommendationEngine';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 import LearningFlashcard from './LearningFlashcard';
+import { useBookmarks } from './logic/useBookmarks';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
-import { FaBook, FaSyncAlt, FaMagic, FaChartLine } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaMagic, FaChartLine, FaStar } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, LEVELS } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
@@ -521,6 +522,11 @@ export default function StudentDashboard() {
   // --- State宣言 ---
   const [allWords, setAllWords] = useState([]);
   const [loading, setLoading] = useState(true);
+  // 描画時の auth.currentUser は復元が終わるまで null で、
+  // 変わっても再描画されない。認証の通知で持つ。
+  const [userId, setUserId] = useState(null);
+  // 「毎日みる単語」。ホームの枚数表示と、開いたときの単語に使う。
+  const { items: bookmarks, reload: reloadBookmarks } = useBookmarks(userId);
   const [dashboardError, setDashboardError] = useState(null);
   const [viewMode, setViewMode] = useState('select');
   const [selectionMode, setSelectionMode] = useState('main');
@@ -820,6 +826,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
+      setUserId(user ? user.uid : null);
       if (user) {
         setLoading(true);
         Promise.all([
@@ -939,6 +946,8 @@ export default function StudentDashboard() {
 
     // Refresh dashboard data and reset view
     refreshDashboardData(user.uid);
+    // 学習中に登録／解除したぶんをホームの枚数へ反映する
+    reloadBookmarks();
     setViewMode('select');
     
     // 自由学習モードの場合は教材のレベル別ページに戻る
@@ -1485,6 +1494,21 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
 
+  const startBookmarkWords = () => {
+    if (bookmarks.length === 0) return;
+    setCurrentSessionInfo({
+      textbookId: '毎日みる単語',
+      filterType: 'ブックマーク',
+      filterValue: `${bookmarks.length}語`,
+      startIndex: 0
+    });
+    // 日次タスクの達成には数えない。自分で選んだ単語の復習なので、
+    // 今日のノルマとは別に扱う。
+    setCurrentLearningMode('bookmark');
+    setLearningWords(bookmarks);
+    setViewMode('learn');
+  };
+
   const startDailyReviewWords = () => {
     if (!dailyPlan.reviewWords || dailyPlan.reviewWords.length === 0) {
       alert('今日の復習単語はありません。');
@@ -1639,6 +1663,7 @@ export default function StudentDashboard() {
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
+                  title={currentLearningMode === 'bookmark' ? '毎日みる単語' : undefined}
                 />;
       case 'review':
         return <ReviewFlashcard 
@@ -1694,6 +1719,14 @@ export default function StudentDashboard() {
                       <FaSyncAlt className="task-icon review-word-icon" />
                       <div className="task-info"><p>復習単語</p><span>{dailyPlan.reviewWords.length}</span></div>
                   </div>
+                  {/* 自分で登録した「毎日みたい単語」。0件のときは出さない。
+                      使っていない機能で今日のタスクの枠を埋めないため。 */}
+                  {bookmarks.length > 0 && (
+                    <div className="task-card" onClick={startBookmarkWords}>
+                        <FaStar className="task-icon bookmark-word-icon" />
+                        <div className="task-info"><p>毎日みる</p><span>{bookmarks.length}</span></div>
+                    </div>
+                  )}
               </div>
             </div>
 

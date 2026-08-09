@@ -287,7 +287,9 @@ body {
 /* --- 今日のタスクカード --- */
 .task-cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  /* 「毎日みる」が増えても3枚が1行に収まるようにする。
+     折り返すとホームが1画面に収まらなくなる。 */
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
 }
 
@@ -2620,4 +2622,9 @@ select:focus-visible,
 
 .dashboard-summary-card {
   padding: var(--space-8) var(--space-12) var(--space-12);
+}
+
+/* 「毎日みる」タスクカードのアイコン。基準色の範囲で他と区別する。 */
+.bookmark-word-icon {
+  color: var(--color-ink-olive);
 }
