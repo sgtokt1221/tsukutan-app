@@ -2,16 +2,22 @@
 const { onRequest, HttpsError } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
 const admin = require("firebase-admin");
+const crypto = require("node:crypto");
 admin.initializeApp();
 const db = admin.firestore();
 
 // 外部ライブラリ
 const express = require('express');
 const cors = require('cors');
-const iconv = require('iconv-lite');
-const Papa = require('papaparse');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
+
+// 自前モジュール
+const {
+  decodeCsv,
+  parseStudentCsv,
+  buildImportPlan,
+} = require('./lib/studentImport');
 
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
@@ -36,161 +42,289 @@ const verifyAdmin = async (req) => {
   return decodedToken;
 };
 
+const IMPORT_BATCH_SIZE = 400;
+const IMPORT_OPERATION_TTL_MS = 30 * 60 * 1000;
+
+/** studentId を持つ users 文書だけを生徒とみなす（管理者などを巻き込まないため） */
+const fetchExistingStudents = async () => {
+  const snapshot = await db.collection('users').get();
+  return snapshot.docs
+    .map((docSnapshot) => ({ uid: docSnapshot.id, ...docSnapshot.data() }))
+    .filter((user) => typeof user.studentId === 'string' && user.studentId.trim() !== '')
+    .map((user) => ({
+      uid: user.uid,
+      studentId: user.studentId.trim(),
+      name: user.name ?? null,
+      grade: user.grade ?? null,
+    }));
+};
+
+const csvFingerprint = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
+
+const emptySummary = () => ({ create: 0, update: 0, unchanged: 0, disableCandidates: 0, errors: 0 });
+
+/** 400件ずつに切って commit する。Firestore のバッチ上限500に対する余裕分を残す。 */
+const commitInChunks = async (items, applyToBatch) => {
+  for (let i = 0; i < items.length; i += IMPORT_BATCH_SIZE) {
+    const chunk = items.slice(i, i + IMPORT_BATCH_SIZE);
+    const batch = db.batch();
+    chunk.forEach((item) => applyToBatch(batch, item));
+    await batch.commit();
+  }
+};
+
+/**
+ * 生徒CSVインポート。
+ *
+ * リクエスト: { mode: 'upsert'|'replace', dryRun: boolean, fileName, fileData(base64), operationId? }
+ *
+ * 重要な性質:
+ *   - 全行の検証が通るまで1件も書き込まない
+ *   - CSVにいない生徒を削除しない（replace でも無効化のみ）
+ *   - 既存生徒のパスワードを再設定しない
+ *   - パスワードをレスポンスにもログにも出さない
+ */
 importUsersApp.post('/', async (req, res) => {
   try {
-    await verifyAdmin(req);
+    const adminToken = await verifyAdmin(req);
 
-    const { fileName, fileData } = req.body || {};
+    const {
+      mode = 'upsert',
+      dryRun = true,
+      fileName = null,
+      fileData,
+      operationId = null,
+    } = req.body || {};
+
     if (!fileData) {
-      return res.status(400).json({ error: 'No file data provided.' });
+      return res.status(400).json({ error: 'ファイルが送信されていません。' });
+    }
+    if (mode !== 'upsert' && mode !== 'replace') {
+      return res.status(400).json({ error: `mode が不正です: ${mode}（upsert か replace）` });
     }
 
-    // リセット処理: 既存ユーザーを削除
-    const existingUsersSnapshot = await db.collection('users').get();
-    const deleteBatch = db.batch();
-    const authUsersToDelete = [];
-
-    existingUsersSnapshot.forEach((docSnapshot) => {
-      const data = docSnapshot.data();
-      const docRef = db.collection('users').doc(docSnapshot.id);
-      deleteBatch.delete(docRef);
-      if (data.studentId) {
-        const email = `${data.studentId}@tsukasafoods.com`;
-        authUsersToDelete.push(email);
-      }
-    });
-
-    await deleteBatch.commit();
-
-    for (const email of authUsersToDelete) {
-      try {
-        const existingAuthUser = await admin.auth().getUserByEmail(email);
-        await admin.auth().deleteUser(existingAuthUser.uid);
-      } catch (deleteError) {
-        if (deleteError.code !== 'auth/user-not-found') {
-          logger.warn(`Failed to delete auth user ${email}: ${deleteError.message}`);
-        }
-      }
+    const buffer = Buffer.from(fileData, 'base64');
+    if (buffer.length === 0) {
+      return res.status(400).json({ error: 'ファイルが空です。' });
     }
 
-    const fileBuffer = Buffer.from(fileData, 'base64');
-
-    let decodedCsv = '';
+    let text;
     try {
-      decodedCsv = iconv.decode(fileBuffer, 'shift_jis');
-      if (decodedCsv.includes('�')) {
-        // 文字化けが多い場合は UTF-8 と判断してフォールバック
-        decodedCsv = fileBuffer.toString('utf8');
-      }
+      text = decodeCsv(buffer);
     } catch (decodeError) {
-      decodedCsv = fileBuffer.toString('utf8');
+      return res.status(400).json({ error: decodeError.message });
     }
 
-    const parseResult = Papa.parse(decodedCsv, { skipEmptyLines: true });
-    // ヘッダーを検出（「ID」「氏名」「学年」）
-    let dataRows = parseResult.data;
-    const headerRow = dataRows[0].map(cell => String(cell || '').trim());
-    const hasHeader = headerRow.includes('ID') && headerRow.includes('氏名');
+    const { rows, errors, warnings } = parseStudentCsv(text);
+    const fingerprint = csvFingerprint(buffer);
 
-    if (hasHeader) {
-      const idIndex = headerRow.indexOf('ID');
-      const nameIndex = headerRow.indexOf('氏名');
-      const gradeIndex = headerRow.indexOf('学年');
-      dataRows = dataRows.slice(1).map(row => [row[idIndex], row[nameIndex], row[gradeIndex]]);
-    } else {
-      // 古い形式（ヘッダーなし）: 先頭3行をスキップ
-      dataRows = dataRows.slice(3);
+    // 検証優先。1件でもエラーがあれば既存データには一切触れない。
+    if (errors.length > 0) {
+      return res.status(400).json({
+        valid: false,
+        mode,
+        summary: { ...emptySummary(), errors: errors.length },
+        errors,
+        warnings,
+        message: 'CSVに問題があるため中止しました。既存データは変更していません。',
+      });
     }
 
-    const users = dataRows.filter((row) => row && row.length > 1 && row.some((cell) => cell && String(cell).trim() !== ''));
+    const existing = await fetchExistingStudents();
+    const plan = buildImportPlan(rows, existing, mode);
 
-    if (users.length === 0) {
-      return res.status(400).json({ error: 'CSVに有効なデータ行が見つかりませんでした。' });
+    //--------------------------------------------------------------------------
+    // ドライラン: 差分を返すだけ。書き込みは操作記録のみ。
+    //--------------------------------------------------------------------------
+    if (dryRun) {
+      const newOperationId = crypto.randomUUID();
+      await db.collection('importOperations').doc(newOperationId).set({
+        status: 'previewed',
+        mode,
+        fileName,
+        fingerprint,
+        rowCount: rows.length,
+        summary: plan.summary,
+        createdByUid: adminToken.uid ?? null,
+        createdByEmail: adminToken.email ?? null,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + IMPORT_OPERATION_TTL_MS),
+      });
+
+      return res.status(200).json({
+        operationId: newOperationId,
+        valid: true,
+        dryRun: true,
+        mode,
+        summary: plan.summary,
+        errors: [],
+        warnings,
+        preview: {
+          create: plan.create.map((row) => ({ line: row.line, studentId: row.studentId, name: row.name, grade: row.grade })),
+          update: plan.update.map((row) => ({ line: row.line, studentId: row.studentId, name: row.name, grade: row.grade, changes: row.changes })),
+          disableCandidates: mode === 'replace' ? plan.disableCandidates : [],
+        },
+      });
     }
 
-    let createdCount = 0;
-    let updatedCount = 0;
-    let failedCount = 0;
-    const errors = [];
+    //--------------------------------------------------------------------------
+    // 本実行: 確認済みの operationId と、確認したときと同じCSVであることを要求する。
+    //--------------------------------------------------------------------------
+    if (!operationId) {
+      return res.status(400).json({ error: '先に内容を確認してください（operationId がありません）。' });
+    }
 
-    for (const record of users) {
-      const rawStudentId = record[0];
-      const rawName = record[1];
-      const rawGrade = record[2];
+    const operationRef = db.collection('importOperations').doc(operationId);
+    const operationSnapshot = await operationRef.get();
+    if (!operationSnapshot.exists) {
+      return res.status(400).json({ error: '確認記録が見つかりません。もう一度内容を確認してください。' });
+    }
 
-      if (rawStudentId == null && rawName == null && rawGrade == null) {
-        continue;
-      }
+    const operation = operationSnapshot.data();
+    if (operation.status !== 'previewed') {
+      return res.status(409).json({ error: `この確認は既に処理されています（状態: ${operation.status}）。` });
+    }
+    if (operation.fingerprint !== fingerprint) {
+      return res.status(409).json({ error: '確認したCSVと内容が異なります。もう一度内容を確認してください。' });
+    }
+    if (operation.mode !== mode) {
+      return res.status(409).json({ error: `確認時のモード（${operation.mode}）と異なります。` });
+    }
+    if (operation.expiresAt && operation.expiresAt.toMillis() < Date.now()) {
+      return res.status(410).json({ error: '確認から時間が経ちすぎています。もう一度内容を確認してください。' });
+    }
 
-      let studentId = String(rawStudentId || '').trim();
-      const username = String(rawName || '').trim();
-      let grade = String(rawGrade || '').trim();
+    // 二重送信対策。previewed のときだけ running へ進めるトランザクション。
+    try {
+      await db.runTransaction(async (transaction) => {
+        const fresh = await transaction.get(operationRef);
+        if (!fresh.exists || fresh.data().status !== 'previewed') {
+          throw new HttpsError('aborted', 'already-running');
+        }
+        transaction.update(operationRef, {
+          status: 'running',
+          startedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      });
+    } catch (lockError) {
+      return res.status(409).json({ error: 'この取り込みは既に実行中です。' });
+    }
 
-      if (!/^\d{3,4}$/.test(studentId)) {
-        failedCount++;
-        errors.push(`IDが不正: ${record.join(',')}`);
-        continue;
-      }
-      if (studentId.length === 3) studentId = studentId.padStart(4, '0');
-      if (!username) {
-        failedCount++;
-        errors.push(`氏名が空: ${record.join(',')}`);
-        continue;
-      }
-      if (!grade) {
-        errors.push(`学年が空: ${record.join(',')}`);
-        failedCount++;
-        continue;
-      }
+    const executionErrors = [];
+    let created = 0;
+    let updated = 0;
+    let disabled = 0;
 
-      // 学年文字列をトリムし、全角→半角変換・大文字統一などが必要ならここで実施
-      grade = grade.replace(/\s+/g, '');
-
-      const email = `${studentId}@tsukasafoods.com`;
-      const password = `tsukuba${studentId}`;
-
+    // --- 新規作成 ---
+    for (const row of plan.create) {
+      const email = `${row.studentId}@tsukasafoods.com`;
+      let createdAuthUid = null;
       try {
-        const userRecord = await admin.auth().getUserByEmail(email).catch((e) => {
-          if (e.code === 'auth/user-not-found') return null;
-          throw e;
+        let userRecord = await admin.auth().getUserByEmail(email).catch((error) => {
+          if (error.code === 'auth/user-not-found') return null;
+          throw error;
         });
 
-        if (userRecord) {
-          await admin.auth().updateUser(userRecord.uid, { displayName: username, password });
-          await db.collection('users').doc(userRecord.uid).set({
-            name: username,
-            grade,
-            studentId,
-          }, { merge: true });
-          updatedCount++;
-        } else {
-          const newUserRecord = await admin.auth().createUser({ email, password, displayName: username });
-          await db.collection('users').doc(newUserRecord.uid).set({
-            name: username,
-            studentId,
-            grade,
-            level: 0,
-            goal: { targetExam: null, targetDate: null, isSet: false },
-            progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+        if (!userRecord) {
+          // 新規のときだけ初期パスワードを設定する。値はレスポンスにもログにも出さない。
+          userRecord = await admin.auth().createUser({
+            email,
+            password: `tsukuba${row.studentId}`,
+            displayName: row.name,
           });
-          createdCount++;
+          createdAuthUid = userRecord.uid;
         }
-      } catch (err) {
-        failedCount++;
-        errors.push(`処理失敗 ${email}: ${err.message}`);
-        logger.error('[Import] Error processing ${email}:', err);
+
+        await db.collection('users').doc(userRecord.uid).set({
+          name: row.name,
+          studentId: row.studentId,
+          grade: row.grade,
+          level: 0,
+          goal: { targets: [], isSet: false, targetDate: null, motivationLevel: null, setAt: null },
+          progress: { percentage: 0, currentVocabulary: 0, lastCheckedAt: null },
+        }, { merge: true });
+
+        created += 1;
+      } catch (error) {
+        // Firestore で失敗したら、このリクエストで作った Auth ユーザーだけ巻き戻す。
+        if (createdAuthUid) {
+          await admin.auth().deleteUser(createdAuthUid).catch((rollbackError) => {
+            logger.error('[Import] Auth ロールバックに失敗', { studentId: row.studentId, message: rollbackError.message });
+          });
+        }
+        executionErrors.push({ line: row.line, studentId: row.studentId, message: `作成に失敗しました: ${error.message}` });
       }
     }
 
+    // --- 更新（氏名・学年のみ。進捗・目標・ログ・ストーリーには触れない） ---
+    try {
+      await commitInChunks(plan.update, (batch, row) => {
+        batch.set(
+          db.collection('users').doc(row.uid),
+          { name: row.name, grade: row.grade, studentId: row.studentId },
+          { merge: true }
+        );
+      });
+      updated = plan.update.length;
+    } catch (error) {
+      executionErrors.push({ line: null, studentId: null, message: `更新に失敗しました: ${error.message}` });
+    }
+
+    // --- replace: CSVにいない生徒を無効化（削除はしない） ---
+    if (mode === 'replace' && plan.disableCandidates.length > 0) {
+      try {
+        await commitInChunks(plan.disableCandidates, (batch, candidate) => {
+          batch.set(
+            db.collection('users').doc(candidate.uid),
+            { disabledAt: admin.firestore.FieldValue.serverTimestamp(), disabledByOperationId: operationId },
+            { merge: true }
+          );
+        });
+        for (const candidate of plan.disableCandidates) {
+          try {
+            const userRecord = await admin.auth().getUserByEmail(`${candidate.studentId}@tsukasafoods.com`);
+            await admin.auth().updateUser(userRecord.uid, { disabled: true });
+            disabled += 1;
+          } catch (error) {
+            if (error.code !== 'auth/user-not-found') {
+              executionErrors.push({ line: null, studentId: candidate.studentId, message: `無効化に失敗しました: ${error.message}` });
+            }
+          }
+        }
+      } catch (error) {
+        executionErrors.push({ line: null, studentId: null, message: `無効化に失敗しました: ${error.message}` });
+      }
+    }
+
+    const result = {
+      created,
+      updated,
+      unchanged: plan.unchanged.length,
+      disabled,
+      errors: executionErrors.length,
+    };
+
+    await operationRef.update({
+      status: executionErrors.length ? 'completedWithErrors' : 'completed',
+      result,
+      executionErrors,
+      finishedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
     return res.status(200).json({
-      message: 'User import process finished.',
-      created: createdCount,
-      updated: updatedCount,
-      failed: failedCount,
-      errors,
+      operationId,
+      valid: true,
+      dryRun: false,
+      mode,
+      result,
+      errors: executionErrors,
+      warnings,
+      message: executionErrors.length
+        ? '一部の行で失敗しました。詳細を確認してください。'
+        : '取り込みが完了しました。',
     });
   } catch (error) {
-    const statusCode = error.statusCode || 500;
+    const statusCode = error instanceof HttpsError ? 403 : 500;
     logger.error('User import failed:', { errorMessage: error.message, errorStack: error.stack });
     return res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
   }

@@ -1,0 +1,91 @@
+rules_version = '2';
+
+// つくたん Firestore Security Rules
+//
+// 方針
+//   - 生徒は自分のデータだけを読み書きできる
+//   - 生徒は他の生徒のデータを読めない。生徒一覧も取得できない
+//   - マスターデータ（目標・教材の単語）は認証済みなら読めるが、クライアントからは書けない
+//   - Cloud Functions は Admin SDK なのでこのルールを迂回する。
+//     生徒の作成・無効化・CSV取り込みはすべて Functions 側で行う
+//
+// 管理者判定はメールアドレス。src/App.js と functions/index.js の verifyAdmin にも
+// 同じアドレスがハードコードされている。変更するときは3箇所すべて直すこと。
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'tsukasafoods@gmail.com';
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // 生徒が自分で書き換えてはいけないフィールド。
+    // studentId はログイン用メールと対応し、disabledAt は管理者による無効化の印。
+    function protectedFieldsUnchanged() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['studentId', 'disabledAt', 'disabledByOperationId']);
+    }
+
+    //--------------------------------------------------------------------------
+    // ユーザー
+    //--------------------------------------------------------------------------
+    match /users/{uid} {
+      // get は本人か管理者。list（一覧取得）は管理者だけ。
+      allow get: if isOwner(uid) || isAdmin();
+      allow list: if isAdmin();
+
+      // 生徒の作成・削除はクライアントからは行わない（Functions の Admin SDK 経由）
+      allow create, delete: if false;
+
+      allow update: if isAdmin()
+        || (isOwner(uid) && protectedFieldsUnchanged());
+
+      // サブコレクション（logs / reviewWords / dailyCompletion /
+      // freeStudyProgress / generatedStories など）
+      match /{subCollection}/{docId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid);
+      }
+    }
+
+    //--------------------------------------------------------------------------
+    // マスターデータ
+    //--------------------------------------------------------------------------
+    match /goalsMaster/{goalId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    match /textbooks/{textbookId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+
+      match /words/{wordId} {
+        allow read: if isSignedIn();
+        allow write: if false;
+      }
+    }
+
+    //--------------------------------------------------------------------------
+    // CSV取り込みの操作記録。Functions だけが触る。
+    //--------------------------------------------------------------------------
+    match /importOperations/{operationId} {
+      allow read, write: if false;
+    }
+
+    //--------------------------------------------------------------------------
+    // 上記以外はすべて拒否
+    //--------------------------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
