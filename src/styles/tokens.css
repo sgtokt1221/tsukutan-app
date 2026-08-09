@@ -1,0 +1,124 @@
+/*
+ * src/styles/tokens.css
+ *
+ * つくたんのデザイントークン。DESIGN_POLISH_PLAN.md の 5〜10章に対応する。
+ *
+ * ここが色・文字・余白・角丸・影・動きの唯一の出どころ。
+ * 画面固有のCSSで生の値を書かず、必ずこのトークンを参照する。
+ *
+ * 色相は変えない。ライム・淡い黄緑・オリーブ・青の4色は基準色で、
+ * 濃淡は透明度で作る。近似色を増やさない。
+ */
+
+:root {
+  /* ---- 5.1 変更禁止の基準色 ---- */
+  --color-brand-lime: #A3E635;
+  --color-canvas-lime: #F7FEE7;
+  --color-ink-olive: #36421E;
+  --color-accent-blue: #3B82F6;
+  --color-surface: #FFFFFF;
+
+  /* ---- 5.2 許可する派生（透明度のみ） ---- */
+  --color-lime-soft: rgba(163, 230, 53, 0.12);
+  --color-lime-muted: rgba(163, 230, 53, 0.24);
+  --color-lime-border: rgba(163, 230, 53, 0.46);
+  --color-olive-strong: #36421E;
+  --color-olive-muted: rgba(54, 66, 30, 0.68);
+  --color-olive-subtle: rgba(54, 66, 30, 0.48);
+  --color-olive-border: rgba(54, 66, 30, 0.14);
+  --color-olive-divider: rgba(54, 66, 30, 0.09);
+  --color-blue-soft: rgba(59, 130, 246, 0.10);
+  --color-blue-border: rgba(59, 130, 246, 0.34);
+  --color-focus-ring: rgba(59, 130, 246, 0.34);
+  --color-scrim: rgba(54, 66, 30, 0.46);
+
+  /* ---- 状態色。用途を状態表示に限る ---- */
+  --color-success-bg: #d1e7dd;
+  --color-success-border: #badbcc;
+  --color-success-ink: #0f5132;
+  --color-warning-bg: #fff8e1;
+  --color-warning-border: #ffc107;
+  --color-warning-ink: #7a5900;
+  --color-danger-bg: #f8d7da;
+  --color-danger-border: #f5c2c7;
+  --color-danger-ink: #842029;
+  --color-danger-action: #dc2626;
+
+  /* ---- 6. タイポグラフィ ---- */
+  --font-family-body: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+  --font-family-heading: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+  --font-size-12: 0.75rem;
+  --font-size-14: 0.875rem;
+  --font-size-16: 1rem;
+  --font-size-18: 1.125rem;
+  --font-size-22: 1.375rem;
+  --font-size-28: 1.75rem;
+  --font-size-40: 2.5rem;
+  --line-tight: 1.25;
+  --line-normal: 1.55;
+  --line-relaxed: 1.75;
+
+  /* ---- 7. スペーシング ---- */
+  --space-2: 0.125rem;
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+
+  /* ---- 7. レイアウト幅 ---- */
+  --width-login-card: 440px;
+  --width-reading: 720px;
+  --width-admin-sidebar: 280px;
+
+  /* ---- 8. Radius / Elevation / Border ---- */
+  --radius-control: 10px;
+  --radius-card: 16px;
+  --radius-feature: 24px;
+  --radius-pill: 999px;
+  --shadow-1: 0 1px 2px rgba(54, 66, 30, 0.06);
+  --shadow-2: 0 8px 24px rgba(54, 66, 30, 0.09);
+  --shadow-3: 0 16px 40px rgba(54, 66, 30, 0.13);
+  --border-subtle: 1px solid rgba(54, 66, 30, 0.09);
+  --border-default: 1px solid rgba(54, 66, 30, 0.14);
+
+  /* ---- 9. アイコン ---- */
+  --icon-16: 16px;
+  --icon-20: 20px;
+  --icon-24: 24px;
+  --tap-target: 44px;
+
+  /* ---- 10. Motion ---- */
+  --motion-fast: 120ms;
+  --motion-standard: 200ms;
+  --motion-card: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/*
+ * 旧変数との橋渡し。既存CSSは --primary-color などを参照しているので、
+ * 画面ごとの移行が終わるまでトークンへ向けておく。
+ * 移行が済んだら削除する。
+ */
+:root {
+  --primary-color: var(--color-brand-lime);
+  --background-color: var(--color-canvas-lime);
+  --text-color: var(--color-ink-olive);
+  --card-bg: var(--color-surface);
+  --shadow-color: rgba(54, 66, 30, 0.08);
+}
+
+/* 10. 動きを減らす設定では、装飾的な中間演出を止める */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
