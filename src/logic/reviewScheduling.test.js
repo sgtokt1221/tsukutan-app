@@ -194,3 +194,32 @@ describe('Ease Factor の暴走を防ぐ', () => {
     expect(high).toBe(expected);
   });
 });
+
+describe('習得済みの扱い', () => {
+  // 復習完了は文書削除ではなく status: mastered への変更にした。
+  // 計画側は「一度でも学習した単語」を新規から除くために全履歴を見て、
+  // 「復習候補」からだけ mastered を外す。この2つを取り違えると、
+  // 習得済みの単語が新規単語として出題し直される。
+  const entries = [
+    { id: 'a', status: undefined },
+    { id: 'b', status: 'mastered' },
+    { id: 'c', migratedTo: 'x' },
+  ];
+
+  const notMigrated = entries.filter((e) => !e.migratedTo);
+  const learnedIds = new Set(notMigrated.map((e) => e.id));
+  const reviewCandidates = notMigrated.filter((e) => e.status !== 'mastered');
+
+  test('習得済みも「学習済み」に数える（新規に戻さない）', () => {
+    expect(learnedIds.has('b')).toBe(true);
+  });
+
+  test('習得済みは復習候補には出さない', () => {
+    expect(reviewCandidates.map((e) => e.id)).toEqual(['a']);
+  });
+
+  test('移行済みの旧文書はどちらにも出さない', () => {
+    expect(learnedIds.has('c')).toBe(false);
+    expect(reviewCandidates.some((e) => e.id === 'c')).toBe(false);
+  });
+});

@@ -110,13 +110,20 @@ export const generateDailyPlan = async (userData, userId) => {
   // 復習対象
   //--------------------------------------------------------------------------
   const reviewSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
-  const enrichedReviewEntries = reviewSnapshot.docs
+  // 永続IDへ移行済みの旧文書は二重に出さない
+  const allProgressEntries = reviewSnapshot.docs
     .map((docSnapshot) => ({ id: docSnapshot.id, ...docSnapshot.data() }))
-    // 永続IDへ移行済みの旧文書は二重に出さない
-    .filter((entry) => !entry.migratedTo)
-    .map((entry) => enrichReviewWord(entry, today));
+    .filter((entry) => !entry.migratedTo);
 
-  const learnedWordIds = new Set(enrichedReviewEntries.map((entry) => entry.id));
+  // 一度でも学習した単語は新規に出さない。習得済みも含める。
+  // ここを復習候補から作ると、習得済みの単語が新規単語として
+  // 出題し直されてしまう。
+  const learnedWordIds = new Set(allProgressEntries.map((entry) => entry.id));
+
+  // 復習候補。習得済み（status: mastered）は履歴として残しているだけなので外す。
+  const enrichedReviewEntries = allProgressEntries
+    .filter((entry) => entry.status !== 'mastered')
+    .map((entry) => enrichReviewWord(entry, today));
 
   const dueForReview = sortReviewCandidates(
     enrichedReviewEntries.filter(

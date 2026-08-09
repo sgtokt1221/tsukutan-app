@@ -1,5 +1,5 @@
 import { db } from '../firebaseConfig';
-import { doc, setDoc, getDoc, updateDoc, runTransaction } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { logStudyEvent } from './studyLogger';
 import { MOTIVATION_LEVELS } from '../config';
 import { getTodayKey } from './dateKeys';
@@ -75,7 +75,7 @@ export const updateUserWordProgress = async (userId, word, answer, isReviewCompl
     today.setHours(0, 0, 0, 0); // 時間を正規化
     // 復習完了の場合は、完全に復習リストから除去
     if (isReviewComplete) {
-      await removeWordFromReview(userId, word.id);
+      await markWordAsMastered(userId, word.id);
       return { created: false, mastered: true };
     }
 
@@ -135,16 +135,10 @@ const addWordToDailyCache = async (userId, wordToCache) => {
     const dailyPlanSnap = await getDoc(dailyPlanRef);
 
     if (dailyPlanSnap.exists()) {
-      const currentPlan = dailyPlanSnap.data();
-      const reviewWords = currentPlan.reviewWords || [];
-      
-      const isAlreadyInList = reviewWords.some(w => w.id === wordToCache.id);
-
-      if (!isAlreadyInList) {
-        const updatedReviewWords = [...reviewWords, wordToCache];
-        await updateDoc(dailyPlanRef, { reviewWords: updatedReviewWords });
-        logger.debug(`キャッシュを更新しました: ${wordToCache.word}`);
-      }
+      // 日次計画は復習単語をIDの配列で持つ（dailyPlanRepository.js）。
+      // 以前は単語の中身の配列 reviewWords を持っていたので形が違う。
+      await updateDoc(dailyPlanRef, { reviewWordIds: arrayUnion(wordToCache.id) });
+      logger.debug(`今日の計画に戻しました: ${wordToCache.word}`);
     }
     // キャッシュが存在しない場合は何もしない。
     // 次回generateDailyPlanが呼ばれたときに、この単語を含んだ正しいプランが生成・キャッシュされるため。
@@ -158,7 +152,17 @@ const addWordToDailyCache = async (userId, wordToCache) => {
  * @param {string} userId ユーザーID
  * @param {string} wordId 削除する単語のID
  */
-export const removeWordFromReview = async (userId, wordId) => {
+/**
+ * 復習完了。文書は消さず status: mastered にする。
+ *
+ * 以前は削除していたため、習得済みだったという事実まで消えていた。
+ * 消えると「学習履歴の無い単語」に戻るので、新規単語として再び出題され、
+ * 習得語数の集計からも落ちる（計画書§2.1 / §6.1）。
+ *
+ * コレクション名は reviewWords のまま。改名は移行が必要なわりに
+ * 得られるのは名前だけで、履歴を残すという目的には要らない。
+ */
+export const markWordAsMastered = async (userId, wordId) => {
   if (!userId || !wordId) return;
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', wordId);
@@ -166,31 +170,26 @@ export const removeWordFromReview = async (userId, wordId) => {
   const dailyPlanRef = doc(db, 'users', userId, 'dailyPlans', todayStr);
 
   try {
-    // トランザクションを使用して、複数のドキュメント操作の原子性を保証
-    await runTransaction(db, async (transaction) => {
-      // 1. 最初にすべての読み取り操作を実行
-      const dailyPlanSnap = await transaction.get(dailyPlanRef);
-      
-      // 2. 次に書き込み操作を実行
-      // 復習リストから削除
-      transaction.delete(reviewWordRef);
+    await setDoc(reviewWordRef, {
+      status: 'mastered',
+      masteredAt: new Date(),
+      nextReviewDate: null,
+    }, { merge: true });
 
-      // 今日のキャッシュからも削除
-      if (dailyPlanSnap.exists()) {
-        const currentPlan = dailyPlanSnap.data();
-        const updatedReviewWords = currentPlan.reviewWords.filter(w => w.id !== wordId);
-        transaction.update(dailyPlanRef, { reviewWords: updatedReviewWords });
-      }
-    });
-    logger.debug(`単語(ID: ${wordId})が正常に削除されました。`);
-    
-    // 学習ログを記録
+    // 今日の計画からは外す
+    const dailyPlanSnap = await getDoc(dailyPlanRef);
+    if (dailyPlanSnap.exists()) {
+      await updateDoc(dailyPlanRef, { reviewWordIds: arrayRemove(wordId) });
+    }
+
+    logger.debug(`単語(ID: ${wordId})を習得済みにしました。`);
+
     await logStudyEvent(userId, {
       wordId: wordId,
       sessionType: 'review',
-      action: 'removed',
+      action: 'mastered',
     });
   } catch (error) {
-    console.error("単語の完全削除(トランザクション)に失敗しました:", error);
+    console.error('習得済みへの更新に失敗しました:', error);
   }
 };
