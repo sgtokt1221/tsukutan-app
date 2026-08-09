@@ -215,3 +215,34 @@ describe('levels.json', () => {
     }
   });
 });
+
+describe('発音記号', () => {
+  const master = require('../../public/data/words-master.json');
+  const pronunciations = require('../../public/data/pronunciations.json');
+
+  test('全語に発音記号が付いている', () => {
+    const missing = master.filter((word) => !word.pronunciation);
+    expect(missing.map((word) => word.word)).toEqual([]);
+  });
+
+  test('マスターの pronunciation は発音表と一致する', () => {
+    for (const word of master) {
+      expect(word.pronunciation).toBe(pronunciations[word.word]);
+    }
+  });
+
+  test('IPAに ARPAbet の記号が残っていない', () => {
+    // 変換漏れがあると "AH0" のような大文字が混ざる
+    const leftovers = master.filter((word) => /[A-Z]{2}[0-2]?/.test(word.pronunciation));
+    expect(leftovers.map((word) => word.word)).toEqual([]);
+  });
+
+  test('同じ綴りの語は同じ発音を持つ', () => {
+    const byWord = new Map();
+    for (const word of master) {
+      const seen = byWord.get(word.word);
+      if (seen) expect(word.pronunciation).toBe(seen);
+      else byWord.set(word.word, word.pronunciation);
+    }
+  });
+});

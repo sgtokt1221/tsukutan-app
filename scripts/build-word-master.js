@@ -44,6 +44,20 @@ const MAX_LEVEL = 7;
 
 const read = (relativePath) => JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'));
 
+/**
+ * 発音記号（IPA）。scripts/build-pronunciations.js が作る。
+ * 無くてもビルドは通す。発音は表示できなければ隠す作りにしてあるので、
+ * ここで落とすほどのものではない。
+ */
+const readPronunciations = () => {
+  const abs = path.join(ROOT, 'data-sources', 'pronunciations.json');
+  if (!fs.existsSync(abs)) {
+    console.warn('警告: data-sources/pronunciations.json がありません。発音記号なしで生成します。');
+    return {};
+  }
+  return JSON.parse(fs.readFileSync(abs, 'utf8'));
+};
+
 const normalize = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
 
 /** 出どころが違っても同じ項目だと判断するためのキー。レベルは含めない。 */
@@ -230,6 +244,27 @@ const main = () => {
   entries.sort((a, b) => fullKey(a).localeCompare(fullKey(b), 'en'));
 
   //--------------------------------------------------------------------------
+  // 3.5 発音記号を付ける
+  //--------------------------------------------------------------------------
+  // 同じ綴りの語（homograph）は同じ発音を共有する。読みが分かれる語
+  // （read /rid/ と /rɛd/ など）は綴りだけでは決まらないので、
+  // CMU辞書の第1候補に揃えている。
+  const pronunciations = readPronunciations();
+  let withPronunciation = 0;
+  for (const entry of entries) {
+    const ipa = pronunciations[entry.word];
+    if (ipa) {
+      entry.pronunciation = ipa;
+      withPronunciation += 1;
+    }
+  }
+  report.pronunciation = {
+    total: entries.length,
+    withPronunciation,
+    missing: entries.length - withPronunciation,
+  };
+
+  //--------------------------------------------------------------------------
   // 4. 教材ごとの収録範囲
   //--------------------------------------------------------------------------
   // 収録範囲は JSON と Firestore の和集合。
@@ -288,6 +323,16 @@ const main = () => {
     return { name, text };
   });
 
+  // 発音表もアプリから引けるところへ出す。日次学習の単語は Firestore から
+  // 来るので、マスターに焼いた pronunciation だけでは届かない。
+  const pronunciationText = `${JSON.stringify(pronunciations)}\n`;
+  manifest.files['pronunciations.json'] = {
+    count: Object.keys(pronunciations).length,
+    bytes: Buffer.byteLength(pronunciationText),
+    sha256: sha256(pronunciationText),
+  };
+  payloads.push({ name: 'pronunciations.json', text: pronunciationText });
+
   if (checkOnly) {
     let changed = false;
     for (const { name, text } of payloads) {
@@ -318,6 +363,7 @@ const main = () => {
   console.log('=== 単語マスターを生成しました ===');
   console.log(`  入力          : words.json ${master.length} / public/words.json ${osakaSource.length} / highschool.json ${highschoolSource.length}`);
   console.log(`  完全同一の統合: ${mergedDuplicates} 件（うち例文が違ったもの ${conflictingDuplicates.length} 件）`);
+  console.log(`  発音記号      : ${withPronunciation} / ${entries.length} 件`);
   console.log(`  public から追加: ${importedFromPublic.length} 件`);
   console.log(`  Firestore から追加: ${importedFromFirestore.length} 件`);
   if (report.skippedTextbooks.length) {

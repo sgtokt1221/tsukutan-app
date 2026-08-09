@@ -14663,8 +14663,13 @@
     "target-1900"
   ],
   "totalEntries": 7949,
-  "reusedIds": 6736,
+  "reusedIds": 7949,
   "idCollisions": [],
+  "pronunciation": {
+    "total": 7949,
+    "withPronunciation": 7949,
+    "missing": 0
+  },
   "textbooks": {
     "osaka-koukou-nyuushi": 3193,
     "highschool-english": 4789

@@ -751,6 +751,19 @@ body {
   font-family: 'Zen Kaku Gothic New', sans-serif;
   letter-spacing: 0.02em;
 }
+/* 発音記号。単語の下に控えめに置く（計画書2.3: 実データがある項目だけ出す） */
+.card-pronunciation {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  color: var(--color-olive-muted, #6b7280);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.card-back .card-pronunciation {
+  font-size: 0.9rem;
+}
+
 #card-back-word, .card-back-word { 
   font-size: 1.8rem; 
   margin: 0; 

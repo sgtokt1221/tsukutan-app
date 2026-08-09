@@ -7,6 +7,7 @@ import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup, FaPlay, FaStop } from 'react
 import AnswerControls from './components/learning/AnswerControls';
 import { initialize, speak } from './logic/speechUtils';
 import logger from './logic/logger';
+import { usePronunciation } from './logic/usePronunciation';
 
 function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -17,6 +18,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [revealedCards, setRevealedCards] = useState(new Set());
   const [longPressCards] = useState(new Set());
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
+  // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
+  const getPronunciation = usePronunciation();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -964,7 +967,9 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                     color: '#6b7280',
                     fontStyle: 'italic'
                   }}>
-                    {word.pronunciation ? `[${word.pronunciation}]` : ''}
+                    {(word.pronunciation || getPronunciation(word.word))
+                      ? `[${word.pronunciation || getPronunciation(word.word)}]`
+                      : ''}
                   </div>
                   <div style={{
                     fontSize: '0.75rem',
@@ -1264,9 +1269,15 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         >
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             <p id="card-front-text">{currentWord?.word}</p>
+            {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
+              <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
+            )}
           </div>
           <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word}</h3>
+            {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
+              <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
+            )}
             <p id="card-back-meaning">{currentWord?.japanese || currentWord?.meaning}</p>
             {(currentWord?.example || currentWord?.exampleJa) && <hr />}
             <p className="example-text">{currentWord?.example}</p>
