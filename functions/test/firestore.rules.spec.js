@@ -23,7 +23,6 @@ const STUDENT_B = 'student-b';
 let testEnv;
 
 const asStudentA = () => testEnv.authenticatedContext(STUDENT_A, { email: '1203@tsukasafoods.com' }).firestore();
-const asStudentB = () => testEnv.authenticatedContext(STUDENT_B, { email: '1204@tsukasafoods.com' }).firestore();
 const asAdmin = () => testEnv.authenticatedContext('admin-uid', { email: ADMIN_EMAIL }).firestore();
 const asAnonymous = () => testEnv.unauthenticatedContext().firestore();
 

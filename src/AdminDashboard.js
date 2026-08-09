@@ -448,10 +448,14 @@ function AdminDashboard() {
       const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
       const reviewWords = reviewWordsSnapshot.docs.map(d => ({...d.data(), id: d.id}));
 
-      const storiesColRef = collection(db, 'users', student.id, 'stories');
+      // 生徒側と Functions は generatedStories に書く。
+      // ここが 'stories' を読んでいたため、管理画面ではストーリーが常に空だった。
+      const storiesColRef = collection(db, 'users', student.id, 'generatedStories');
       const storiesQuery = query(storiesColRef, orderBy("createdAt", "desc"));
       const storiesSnapshot = await getDocs(storiesQuery);
-      const stories = storiesSnapshot.docs.map(d => ({...d.data(), id: d.id}));
+      const stories = storiesSnapshot.docs
+        .map(d => ({ ...d.data(), id: d.id }))
+        .filter(story => story.status !== 'failed' && story.status !== 'generating');
 
       setStudentDetails({ logs, reviewWords, stories });
     } catch (error) {

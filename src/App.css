@@ -2256,3 +2256,11 @@ input[type="file"] { display: none; }
 .test-nav-btn.leave {
   background-color: #dc2626;
 }
+
+/* ===== ストーリー内の復習単語ハイライト ===== */
+.story-highlight {
+  background-color: #ffeb3b;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+}

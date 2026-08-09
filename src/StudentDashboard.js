@@ -20,6 +20,7 @@ import LevelBadge from './LevelBadge';
 import { FaBook, FaSyncAlt, FaMagic } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds } from './config';
+import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
 
 // デバッグ: wordsDataの読み込み確認
 console.log('🔍 wordsData読み込み確認:', {
@@ -574,6 +575,7 @@ export default function StudentDashboard() {
   
   // ▼▼▼ 自由学習進捗管理用のState ▼▼▼
   const [freeStudyProgress, setFreeStudyProgress] = useState({});
+  const [storyError, setStoryError] = useState(null);
   
   // ▼▼▼ 親レベル選択用のState ▼▼▼
   const [selectedParentLevel, setSelectedParentLevel] = useState(null);
@@ -582,20 +584,20 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
 
-  // 復習単語をハイライトする関数
+  // 復習単語をハイライトする。生成物のHTMLを実行しないよう、
+  // 区間に分けて React の <mark> として組み立てる（計画書12.4）。
   const highlightReviewWords = (text, usedWords) => {
-    if (!usedWords || usedWords.length === 0) {
-      return text;
-    }
-    
-    let highlightedText = text;
-    usedWords.forEach(word => {
-      // 単語の境界を考慮した正規表現で置換
-      const regex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-      highlightedText = highlightedText.replace(regex, `<mark style="background-color: #ffeb3b; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${word}</mark>`);
-    });
-    
-    return <span dangerouslySetInnerHTML={{ __html: highlightedText }} />;
+    const tokens = splitHighlightTokens(text, usedWords);
+    if (tokens.length === 0) return null;
+    return (
+      <>
+        {tokens.map((token, index) =>
+          token.highlight
+            ? <mark key={index} className="story-highlight">{token.text}</mark>
+            : <React.Fragment key={index}>{token.text}</React.Fragment>
+        )}
+      </>
+    );
   };
 
   const scheduleMetrics = useMemo(() => {
@@ -679,34 +681,10 @@ export default function StudentDashboard() {
         const storiesColRef = collection(db, 'users', uid, 'generatedStories');
         const q = query(storiesColRef, orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
-        const stories = querySnapshot.docs.map(doc => {
-          const storyData = { id: doc.id, ...doc.data() };
-          
-          // createdAtフィールドがFirestoreのTimestampオブジェクトの場合は文字列に変換
-          if (storyData.createdAt && typeof storyData.createdAt === 'object' && storyData.createdAt.seconds) {
-            storyData.createdAt = new Date(storyData.createdAt.seconds * 1000).toLocaleDateString('ja-JP');
-          }
-          
-          // 既存のストーリーにsentences配列がない場合は作成
-          if (!storyData.sentences) {
-            const sentences = [];
-            if (storyData.story1 && storyData.translation1) {
-              sentences.push({
-                english: storyData.story1,
-                japanese: storyData.translation1
-              });
-            }
-            if (storyData.story2 && storyData.translation2) {
-              sentences.push({
-                english: storyData.story2,
-                japanese: storyData.translation2
-              });
-            }
-            storyData.sentences = sentences;
-          }
-          
-          return storyData;
-        });
+        const stories = querySnapshot.docs
+          .map(doc => normalizeStory({ id: doc.id, ...doc.data() }))
+          // 生成に失敗した記録や生成中の予約は一覧に出さない
+          .filter(isDisplayableStory);
         setPastStories(stories);
 
         const yearMonth = getCurrentMonthKey();
@@ -1553,106 +1531,46 @@ export default function StudentDashboard() {
       return;
     }
     setIsGeneratingStory(true);
+    setStoryError(null);
 
-    const callGenerateApi = async (words) => {
+    try {
       const user = auth.currentUser;
-      if (!user) throw new Error("ログインしていません。");
+      if (!user) throw new Error('ログインしていません。');
 
       const idToken = await user.getIdToken();
       const functionUrl = 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/generateStoryFromWords';
 
+      // 呼び出しは1回だけ。未使用単語の作り直しはサーバー側で同じ実行の中で行う。
+      // 以前はクライアントから2回呼んでいたが、1回目で月次ドキュメントが作られるため
+      // 2回目は必ず429で失敗していた（計画書12.5）。
       const response = await fetch(functionUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ words }),
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+        body: JSON.stringify({ words: wordsToUse }),
       });
 
+      const payload = await response.json().catch(() => ({}));
+
+      if (response.status === 429) {
+        // 今月分が既にある。サーバーが返した内容をそのまま表示する。
+        setMonthlyStory(normalizeStory({ id: getCurrentMonthKey(), ...payload }));
+        setStoryError('今月のストーリーは既に生成されています。');
+        return;
+      }
+      if (response.status === 409) {
+        setStoryError(payload.error || 'ストーリーを生成中です。しばらく待ってから開き直してください。');
+        return;
+      }
       if (!response.ok) {
-        let errorMsg = `ストーリーの生成に失敗しました (HTTP ${response.status})。`;
-        try {
-          const errorData = await response.json();
-          if (errorData.error) {
-            errorMsg = errorData.error;
-          }
-          if (response.status === 429 && (errorData.story || errorData.story1)) {
-             const err = new Error('今月のストーリーは既に生成されています。');
-             err.isRateLimit = true;
-             err.existingStory = { id: getCurrentMonthKey(), ...errorData };
-             throw err;
-          }
-        } catch (e) {
-           if (e.isRateLimit) throw e;
-          console.error("Could not parse error response as JSON.", e);
-          errorMsg = "サーバーで予期せぬエラーが発生しました。しばらくしてからもう一度お試しください。";
-        }
-        throw new Error(errorMsg);
-      }
-      return response.json();
-    };
-
-    try {
-      // First generation
-      const result1 = await callGenerateApi(wordsToUse);
-
-      let finalStoryData = {
-        story1: result1.story,
-        translation1: result1.translation,
-        story2: null,
-        translation2: null,
-        unusedWords: result1.unusedWords,
-        words: wordsToUse,
-      };
-
-      // Second generation if there are unused words
-      if (result1.unusedWords && result1.unusedWords.length > 0) {
-        const wordsForSecondAttempt = result1.unusedWords
-          .map(wordStr => wordsToUse.find(w => w.word === wordStr))
-          .filter(Boolean); // Filter out any null/undefined entries
-
-        if (wordsForSecondAttempt.length > 0) {
-            const result2 = await callGenerateApi(wordsForSecondAttempt);
-            finalStoryData.story2 = result2.story;
-            finalStoryData.translation2 = result2.translation;
-            finalStoryData.unusedWords = result2.unusedWords;
-        }
+        throw new Error(payload.error || `ストーリーの生成に失敗しました (HTTP ${response.status})。`);
       }
 
-      // sentences配列を作成
-      const sentences = [];
-      if (finalStoryData.story1 && finalStoryData.translation1) {
-        sentences.push({
-          english: finalStoryData.story1,
-          japanese: finalStoryData.translation1
-        });
-      }
-      if (finalStoryData.story2 && finalStoryData.translation2) {
-        sentences.push({
-          english: finalStoryData.story2,
-          japanese: finalStoryData.translation2
-        });
-      }
-
-      const newStory = { 
-        id: getCurrentMonthKey(), 
-        title: '今月の長文',
-        createdAt: new Date().toLocaleDateString('ja-JP'),
-        sentences: sentences,
-        ...finalStoryData 
-      };
+      const newStory = normalizeStory({ id: getCurrentMonthKey(), ...payload });
       setMonthlyStory(newStory);
-      setPastStories(prevStories => [newStory, ...prevStories.filter(s => s.id !== newStory.id)]);
-
+      setPastStories((prev) => [newStory, ...prev.filter((story) => story.id !== newStory.id)]);
     } catch (error) {
-      if (error.isRateLimit) {
-        setMonthlyStory(error.existingStory);
-        alert(error.message);
-      } else {
-        console.error("ストーリー生成エラー:", error);
-        alert(error.message);
-      }
+      console.error('ストーリー生成エラー:', error);
+      setStoryError(error.message || 'ストーリーを生成できませんでした。');
     } finally {
       setIsGeneratingStory(false);
     }
@@ -2527,7 +2445,10 @@ export default function StudentDashboard() {
         <h2 className="section-title">君が世界で最も嫌いな長文</h2>
         <p className="section-description">英文とその和訳を交互に表示する長文学習機能です。</p>
               
-              {storiesLoading ? (
+              {storyError && !isGeneratingStory && (
+          <p className="message-box message-box-error" role="alert">{storyError}</p>
+        )}
+        {storiesLoading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
             <p>長文データを読み込み中...</p>
@@ -2537,7 +2458,7 @@ export default function StudentDashboard() {
             <div className="loading-spinner"></div>
             <p>長文を生成しています...</p>
           </div>
-        ) : monthlyStory && monthlyStory.sentences && Array.isArray(monthlyStory.sentences) ? (
+        ) : monthlyStory && monthlyStory.sentences && Array.isArray(monthlyStory.sentences) && monthlyStory.sentences.length > 0 ? (
           <div className="story-content">
             <div className="story-header">
               <h3>{monthlyStory.title || '長文'}</h3>
