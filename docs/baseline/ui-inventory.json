@@ -1,0 +1,832 @@
+{
+  "css": {
+    "crossFileSelectors": [
+      {
+        "selector": ".message-box",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".message-box-success",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".message-box-error",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".dashboard-header",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".dashboard-header h2",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".user-info",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".logout-btn",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".progress-bar-container",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".okawari-card",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".okawari-label",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".admin-layout",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".admin-sidebar",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".admin-content",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".sidebar-header",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".sidebar-header h4",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".sidebar-nav-btn",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".sidebar-nav-btn:hover",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-list",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-list-item",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-list-item:hover",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-list-item.active",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-info",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-info strong",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-info span",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".admin-card",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".analytics-grid",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-stats-container",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".stat-item",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".stat-item strong",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".stat-item span",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".student-details-grid",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".detail-card",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".detail-card h4",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".detail-card ul",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".card-header",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".import-controls",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".file-upload-btn",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".import-btn",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      },
+      {
+        "selector": ".progress-bar",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css",
+          "src/Analytics.css"
+        ]
+      },
+      {
+        "selector": ".progress-fill",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css",
+          "src/Analytics.css"
+        ]
+      },
+      {
+        "selector": ".stat-icon",
+        "files": [
+          "src/App.css",
+          "src/Analytics.css"
+        ]
+      },
+      {
+        "selector": ".stat-label",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css",
+          "src/Analytics.css"
+        ]
+      },
+      {
+        "selector": ".stat-value",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css",
+          "src/Analytics.css"
+        ]
+      },
+      {
+        "selector": ".dashboard-container",
+        "files": [
+          "src/App.css",
+          "src/AdminDashboard.css"
+        ]
+      }
+    ],
+    "uniqueHexColors": 113,
+    "uniqueRgba": 84,
+    "uniqueRadius": 22,
+    "uniqueShadow": 45,
+    "uniqueFontSize": 39,
+    "hexColors": [
+      [
+        "#e5e7eb",
+        33
+      ],
+      [
+        "#ffffff",
+        23
+      ],
+      [
+        "#64748b",
+        22
+      ],
+      [
+        "#6b7280",
+        17
+      ],
+      [
+        "#3b82f6",
+        15
+      ],
+      [
+        "#f8fafc",
+        15
+      ],
+      [
+        "#e2e8f0",
+        14
+      ],
+      [
+        "#0f172a",
+        12
+      ],
+      [
+        "#1f2937",
+        11
+      ],
+      [
+        "#f1f5f9",
+        9
+      ],
+      [
+        "#334155",
+        9
+      ],
+      [
+        "#1e293b",
+        9
+      ],
+      [
+        "#dc2626",
+        9
+      ],
+      [
+        "#374151",
+        8
+      ],
+      [
+        "#94a3b8",
+        7
+      ],
+      [
+        "#a78bfa",
+        7
+      ],
+      [
+        "#ced4da",
+        7
+      ],
+      [
+        "#475569",
+        6
+      ],
+      [
+        "#f3f4f6",
+        6
+      ],
+      [
+        "#f8f9fa",
+        6
+      ],
+      [
+        "#dee2e6",
+        6
+      ],
+      [
+        "#0d6efd",
+        6
+      ],
+      [
+        "#2563eb",
+        5
+      ],
+      [
+        "#b91c1c",
+        4
+      ],
+      [
+        "#f59e0b",
+        4
+      ],
+      [
+        "#999999",
+        4
+      ],
+      [
+        "#f0fdf4",
+        4
+      ],
+      [
+        "#fff",
+        4
+      ],
+      [
+        "#9ca3af",
+        4
+      ],
+      [
+        "#f9fafb",
+        4
+      ],
+      [
+        "#fecaca",
+        4
+      ],
+      [
+        "#fef2f2",
+        4
+      ],
+      [
+        "#10b981",
+        4
+      ],
+      [
+        "#fffbeb",
+        3
+      ],
+      [
+        "#0c4a6e",
+        3
+      ],
+      [
+        "#facc15",
+        3
+      ],
+      [
+        "#c4b5fd",
+        3
+      ],
+      [
+        "#cbd5e1",
+        3
+      ],
+      [
+        "#f5f5f5",
+        3
+      ],
+      [
+        "#1d4ed8",
+        3
+      ],
+      [
+        "#fff8e1",
+        3
+      ],
+      [
+        "#ffc107",
+        3
+      ],
+      [
+        "#e9ecef",
+        3
+      ],
+      [
+        "#6c757d",
+        3
+      ],
+      [
+        "#fee2e2",
+        3
+      ],
+      [
+        "#d1e7dd",
+        2
+      ],
+      [
+        "#badbcc",
+        2
+      ],
+      [
+        "#0f5132",
+        2
+      ],
+      [
+        "#f8d7da",
+        2
+      ],
+      [
+        "#f5c2c7",
+        2
+      ],
+      [
+        "#842029",
+        2
+      ],
+      [
+        "#d97706",
+        2
+      ],
+      [
+        "#f0f9ff",
+        2
+      ],
+      [
+        "#854d0e",
+        2
+      ],
+      [
+        "#8b5cf6",
+        2
+      ],
+      [
+        "#e0e0e0",
+        2
+      ],
+      [
+        "#166534",
+        2
+      ],
+      [
+        "#0ea5e9",
+        2
+      ],
+      [
+        "#0284c7",
+        2
+      ],
+      [
+        "#adb5bd",
+        2
+      ],
+      [
+        "#495057",
+        2
+      ],
+      [
+        "#ccc",
+        2
+      ],
+      [
+        "#d1d5db",
+        2
+      ],
+      [
+        "#a3e635",
+        1
+      ],
+      [
+        "#f7fee7",
+        1
+      ],
+      [
+        "#36421e",
+        1
+      ],
+      [
+        "#6ee7b7",
+        1
+      ],
+      [
+        "#fcd34d",
+        1
+      ],
+      [
+        "#b45309",
+        1
+      ],
+      [
+        "#e0f2fe",
+        1
+      ],
+      [
+        "#fefce8",
+        1
+      ],
+      [
+        "#fef9c3",
+        1
+      ],
+      [
+        "#f5f3ff",
+        1
+      ],
+      [
+        "#ede9fe",
+        1
+      ],
+      [
+        "#6366f1",
+        1
+      ],
+      [
+        "#4a5568",
+        1
+      ],
+      [
+        "#cbd5e0",
+        1
+      ],
+      [
+        "#a0aec0",
+        1
+      ],
+      [
+        "#bbf7d0",
+        1
+      ],
+      [
+        "#dcfce7",
+        1
+      ],
+      [
+        "#86efac",
+        1
+      ],
+      [
+        "#fafafa",
+        1
+      ],
+      [
+        "#ecfdf5",
+        1
+      ],
+      [
+        "#667eea",
+        1
+      ],
+      [
+        "#764ba2",
+        1
+      ],
+      [
+        "#7a5900",
+        1
+      ],
+      [
+        "#eef6ff",
+        1
+      ],
+      [
+        "#b6d4fe",
+        1
+      ],
+      [
+        "#084298",
+        1
+      ],
+      [
+        "#d9f99d",
+        1
+      ],
+      [
+        "#65a30d",
+        1
+      ],
+      [
+        "#365314",
+        1
+      ],
+      [
+        "#7f1d1d",
+        1
+      ],
+      [
+        "#ffeb3b",
+        1
+      ],
+      [
+        "#f1f3f5",
+        1
+      ],
+      [
+        "#fbbf24",
+        1
+      ],
+      [
+        "#14b8a6",
+        1
+      ],
+      [
+        "#0f766e",
+        1
+      ],
+      [
+        "#198754",
+        1
+      ],
+      [
+        "#212529",
+        1
+      ],
+      [
+        "#991b1b",
+        1
+      ],
+      [
+        "#fef08a",
+        1
+      ],
+      [
+        "#a16207",
+        1
+      ],
+      [
+        "#ca8a04",
+        1
+      ],
+      [
+        "#ef4444",
+        1
+      ],
+      [
+        "#4b5563",
+        1
+      ],
+      [
+        "#dbeafe",
+        1
+      ],
+      [
+        "#1e40af",
+        1
+      ],
+      [
+        "#bae6fd",
+        1
+      ],
+      [
+        "#0369a1",
+        1
+      ],
+      [
+        "#fef3c7",
+        1
+      ],
+      [
+        "#d1fae5",
+        1
+      ],
+      [
+        "#059669",
+        1
+      ]
+    ]
+  },
+  "jsx": {
+    "inlineStyleTotal": 196,
+    "inlineStyleByFile": [
+      {
+        "file": "src/StudentDashboard.js",
+        "count": 67
+      },
+      {
+        "file": "src/LearningFlashcard.js",
+        "count": 49
+      },
+      {
+        "file": "src/ReviewFlashcard.js",
+        "count": 44
+      },
+      {
+        "file": "src/AdminDashboard.js",
+        "count": 29
+      },
+      {
+        "file": "src/VocabularyCheckTest.js",
+        "count": 4
+      },
+      {
+        "file": "src/TestResult.js",
+        "count": 2
+      },
+      {
+        "file": "src/ProgressLamp.js",
+        "count": 1
+      }
+    ],
+    "windowInnerWidth": [
+      "src/LearningFlashcard.js:886",
+      "src/LearningFlashcard.js:890",
+      "src/LearningFlashcard.js:898",
+      "src/LearningFlashcard.js:928",
+      "src/LearningFlashcard.js:1033",
+      "src/LearningFlashcard.js:1036",
+      "src/ReviewFlashcard.js:938",
+      "src/ReviewFlashcard.js:942",
+      "src/ReviewFlashcard.js:950",
+      "src/ReviewFlashcard.js:980",
+      "src/ReviewFlashcard.js:1045",
+      "src/ReviewFlashcard.js:1048",
+      "src/StudentDashboard.js:3196",
+      "src/StudentDashboard.js:3204",
+      "src/StudentDashboard.js:3208",
+      "src/StudentDashboard.js:3217",
+      "src/StudentDashboard.js:3223",
+      "src/StudentDashboard.js:3226",
+      "src/StudentDashboard.js:3236",
+      "src/StudentDashboard.js:3241"
+    ]
+  }
+}

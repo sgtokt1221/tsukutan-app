@@ -1,0 +1,187 @@
+{
+  "problems": [],
+  "fixedColors": {
+    "--color-brand-lime": "#a3e635",
+    "--color-canvas-lime": "#f7fee7",
+    "--color-ink-olive": "#36421e",
+    "--color-accent-blue": "#3b82f6",
+    "--color-surface": "#ffffff"
+  },
+  "rawHexInScreenCss": {
+    "byFile": {
+      "src/App.css": {
+        "total": 212,
+        "unique": 77
+      },
+      "src/AdminDashboard.css": {
+        "total": 140,
+        "unique": 58
+      },
+      "src/Analytics.css": {
+        "total": 68,
+        "unique": 30
+      }
+    },
+    "total": 420,
+    "unique": 110
+  },
+  "nearBrandColors": [
+    {
+      "hex": "#64748b",
+      "near": "--color-accent-blue",
+      "hue": 215
+    },
+    {
+      "hex": "#e2e8f0",
+      "near": "--color-accent-blue",
+      "hue": 214
+    },
+    {
+      "hex": "#f1f5f9",
+      "near": "--color-accent-blue",
+      "hue": 210
+    },
+    {
+      "hex": "#475569",
+      "near": "--color-accent-blue",
+      "hue": 215
+    },
+    {
+      "hex": "#94a3b8",
+      "near": "--color-accent-blue",
+      "hue": 215
+    },
+    {
+      "hex": "#0f172a",
+      "near": "--color-accent-blue",
+      "hue": 222
+    },
+    {
+      "hex": "#2563eb",
+      "near": "--color-accent-blue",
+      "hue": 221
+    },
+    {
+      "hex": "#f8fafc",
+      "near": "--color-accent-blue",
+      "hue": 210
+    },
+    {
+      "hex": "#cbd5e1",
+      "near": "--color-accent-blue",
+      "hue": 213
+    },
+    {
+      "hex": "#1f2937",
+      "near": "--color-accent-blue",
+      "hue": 215
+    },
+    {
+      "hex": "#4a5568",
+      "near": "--color-accent-blue",
+      "hue": 218
+    },
+    {
+      "hex": "#cbd5e0",
+      "near": "--color-accent-blue",
+      "hue": 211
+    },
+    {
+      "hex": "#a0aec0",
+      "near": "--color-accent-blue",
+      "hue": 214
+    },
+    {
+      "hex": "#334155",
+      "near": "--color-accent-blue",
+      "hue": 215
+    },
+    {
+      "hex": "#1e293b",
+      "near": "--color-accent-blue",
+      "hue": 217
+    },
+    {
+      "hex": "#1d4ed8",
+      "near": "--color-accent-blue",
+      "hue": 224
+    },
+    {
+      "hex": "#f9fafb",
+      "near": "--color-accent-blue",
+      "hue": 210
+    },
+    {
+      "hex": "#667eea",
+      "near": "--color-accent-blue",
+      "hue": 229
+    },
+    {
+      "hex": "#eef6ff",
+      "near": "--color-accent-blue",
+      "hue": 212
+    },
+    {
+      "hex": "#b6d4fe",
+      "near": "--color-accent-blue",
+      "hue": 215
+    },
+    {
+      "hex": "#084298",
+      "near": "--color-accent-blue",
+      "hue": 216
+    },
+    {
+      "hex": "#d9f99d",
+      "near": "--color-brand-lime",
+      "hue": 81
+    },
+    {
+      "hex": "#65a30d",
+      "near": "--color-brand-lime",
+      "hue": 85
+    },
+    {
+      "hex": "#365314",
+      "near": "--color-brand-lime",
+      "hue": 88
+    },
+    {
+      "hex": "#f8f9fa",
+      "near": "--color-accent-blue",
+      "hue": 210
+    },
+    {
+      "hex": "#e9ecef",
+      "near": "--color-accent-blue",
+      "hue": 210
+    },
+    {
+      "hex": "#f1f3f5",
+      "near": "--color-accent-blue",
+      "hue": 210
+    },
+    {
+      "hex": "#0d6efd",
+      "near": "--color-accent-blue",
+      "hue": 216
+    },
+    {
+      "hex": "#374151",
+      "near": "--color-accent-blue",
+      "hue": 217
+    },
+    {
+      "hex": "#dbeafe",
+      "near": "--color-accent-blue",
+      "hue": 214
+    },
+    {
+      "hex": "#1e40af",
+      "near": "--color-accent-blue",
+      "hue": 226
+    }
+  ],
+  "rawRadius": 136,
+  "rawShadow": 53
+}

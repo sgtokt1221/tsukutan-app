@@ -1,0 +1,156 @@
+/*
+ * src/styles/primitives.css
+ *
+ * 画面をまたいで使う部品の見た目。DESIGN_POLISH_PLAN.md の 11章に対応する。
+ *
+ * 新しいクラス名を増やさず、既存のクラス名に対して
+ * focus / hover / active / disabled / loading の状態をここで一括定義する。
+ * 画面固有CSSに同じセレクタを重複させない。
+ */
+
+/* ===== 11.1 ボタン ===== */
+.primary-action,
+.secondary-action,
+.ghost-button,
+.danger-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-24);
+  border-radius: var(--radius-control);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  line-height: var(--line-tight);
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard),
+              border-color var(--motion-fast) var(--ease-standard),
+              transform var(--motion-fast) var(--ease-standard);
+}
+
+/* Primary: 主要行動。1画面に原則1つ。 */
+.primary-action {
+  background-color: var(--color-brand-lime);
+  color: var(--color-ink-olive);
+  border: 1px solid var(--color-lime-border);
+}
+.primary-action:hover:not(:disabled) {
+  background-color: var(--color-brand-lime);
+  transform: translateY(-2px);
+}
+
+/* Secondary: 補助行動 */
+.secondary-action {
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  border: var(--border-default);
+}
+.secondary-action:hover:not(:disabled) {
+  background-color: var(--color-lime-soft);
+}
+
+/* Ghost: 戻る・編集・閉じる */
+.ghost-button {
+  background-color: transparent;
+  color: var(--color-olive-muted);
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+.ghost-button:hover:not(:disabled) {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+}
+
+/* Danger: 削除確認のあとの実行だけに使う */
+.danger-action {
+  background-color: var(--color-danger-action);
+  color: var(--color-surface);
+  border: 1px solid var(--color-danger-action);
+}
+
+.primary-action:active:not(:disabled),
+.secondary-action:active:not(:disabled),
+.ghost-button:active:not(:disabled),
+.danger-action:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.primary-action:disabled,
+.secondary-action:disabled,
+.ghost-button:disabled,
+.danger-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== 11.3 選択カード・チップ ===== */
+/* 選択状態を色だけで表さない。境界・背景・チェック・太字を併用する。 */
+.goal-chip[aria-pressed="true"],
+.motivation-option[aria-pressed="true"] {
+  border-color: var(--color-lime-border);
+  background-color: var(--color-lime-soft);
+  font-weight: 700;
+}
+.goal-chip[aria-pressed="true"]::before,
+.motivation-option[aria-pressed="true"]::before {
+  content: '✓ ';
+  font-weight: 700;
+}
+.goal-chip:hover:not(:disabled),
+.motivation-option:hover:not(:disabled) {
+  background-color: var(--color-lime-soft);
+}
+.goal-chip,
+.motivation-option {
+  min-height: var(--tap-target);
+  transition: background-color var(--motion-fast) var(--ease-standard),
+              border-color var(--motion-fast) var(--ease-standard);
+}
+
+/* ===== 11.4 フィードバック ===== */
+/* 以前は App.css と AdminDashboard.css の両方に別々の定義があり、
+   角丸と余白が画面ごとに違っていた。ここに一本化する。 */
+.message-box {
+  margin: var(--space-16) 0;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
+  border: 1px solid;
+  line-height: var(--line-normal);
+}
+.message-box-success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-ink);
+}
+.message-box-error {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-ink);
+}
+.message-box-warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning-ink);
+}
+
+.field-error {
+  margin: var(--space-8) 0 0 0;
+  color: var(--color-danger-ink);
+  font-size: var(--font-size-14);
+}
+
+/* ===== 入力欄（11.2） ===== */
+input,
+select,
+textarea {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
