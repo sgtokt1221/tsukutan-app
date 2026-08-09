@@ -18,6 +18,8 @@ import LearningFlashcard from './LearningFlashcard';
 import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
 import { FaBook, FaSyncAlt, FaMagic } from 'react-icons/fa';
+import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
+import { getRecommendedTextbooks, toGoalIds } from './config';
 
 // デバッグ: wordsDataの読み込み確認
 console.log('🔍 wordsData読み込み確認:', {
@@ -254,31 +256,13 @@ const isRecommendedLevel = (level, testLevel) => {
     return false;
   };
 
-  // 高校受験関連の目標を持っているかチェックする関数
+  // 大阪府公立入試教材を推奨すべき目標かどうか。
+  // 旧IDの手書きリスト（hs1〜hs5）ではなく、共通定義の recommendedTextbooks を見る。
   const isHighSchoolExamTarget = (userData) => {
     if (!userData?.goal?.targets || !Array.isArray(userData.goal.targets)) {
       return false;
     }
-    
-    // 高校受験関連の目標IDをチェック
-    const highSchoolGoalIds = ['hs1', 'hs2', 'hs3', 'hs4', 'hs5']; // 高校入試関連の目標ID
-    const hasHighSchoolGoal = userData.goal.targets.some(target => 
-      highSchoolGoalIds.includes(target.goalId)
-    );
-    
-    // 大阪府公立入試に特に関連する目標もチェック
-    const osakaSpecificGoals = ['hs1', 'hs2']; // 大阪府公立入試に関連する目標ID
-    const hasOsakaGoal = userData.goal.targets.some(target => 
-      osakaSpecificGoals.includes(target.goalId)
-    );
-    
-    console.log('🎯 高校受験目標チェック:', {
-      hasHighSchoolGoal,
-      hasOsakaGoal,
-      userGoals: userData.goal.targets.map(t => t.goalId)
-    });
-    
-    return hasHighSchoolGoal || hasOsakaGoal;
+    return getRecommendedTextbooks(toGoalIds(userData.goal.targets)).includes('osaka-koukou-nyuushi');
   };
 
 // 推奨バッジコンポーネント（カード内部表示用）
@@ -724,7 +708,7 @@ export default function StudentDashboard() {
         });
         setPastStories(stories);
 
-        const yearMonth = new Date().toISOString().slice(0, 7);
+        const yearMonth = getCurrentMonthKey();
         const currentMonthStory = stories.find(story => story.id === yearMonth);
         setMonthlyStory(currentMonthStory || null);
 
@@ -769,7 +753,7 @@ export default function StudentDashboard() {
         setDailyPlan(plan);
 
         // Check for daily completion
-        const todayStr = new Date().toISOString().slice(0, 10);
+        const todayStr = getTodayKey();
         const dailyCompletionDocRef = doc(db, 'users', uid, 'dailyCompletion', todayStr);
         const dailyCompletionDoc = await getDoc(dailyCompletionDocRef);
         setIsDailyTaskCompleted(dailyCompletionDoc.exists());
@@ -795,7 +779,7 @@ export default function StudentDashboard() {
             if (!logData) return;
             const ts = logData.timestamp?.toDate?.();
             if (!ts) return;
-            const dayKey = ts.toISOString().slice(0, 10);
+            const dayKey = getTokyoDateKey(ts);
 
             if (logData.sessionType === 'new' && logData.wordId) {
               const entry = dailyNewMap.get(dayKey) || new Set();
@@ -922,7 +906,7 @@ export default function StudentDashboard() {
 
   const markDailyTaskAsCompleted = async (userId) => {
       try {
-        const todayStr = new Date().toISOString().slice(0, 10);
+        const todayStr = getTodayKey();
         const docRef = doc(db, 'users', userId, 'dailyCompletion', todayStr);
         await setDoc(docRef, { completedAt: new Date() });
         setIsDailyTaskCompleted(true);
@@ -1603,7 +1587,7 @@ export default function StudentDashboard() {
           if (response.status === 429 && (errorData.story || errorData.story1)) {
              const err = new Error('今月のストーリーは既に生成されています。');
              err.isRateLimit = true;
-             err.existingStory = { id: new Date().toISOString().slice(0, 7), ...errorData };
+             err.existingStory = { id: getCurrentMonthKey(), ...errorData };
              throw err;
           }
         } catch (e) {
@@ -1659,7 +1643,7 @@ export default function StudentDashboard() {
       }
 
       const newStory = { 
-        id: new Date().toISOString().slice(0, 7), 
+        id: getCurrentMonthKey(), 
         title: '今月の長文',
         createdAt: new Date().toLocaleDateString('ja-JP'),
         sentences: sentences,

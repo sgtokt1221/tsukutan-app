@@ -18,6 +18,7 @@ const {
   parseStudentCsv,
   buildImportPlan,
 } = require('./lib/studentImport');
+const { getCurrentMonthKey } = require('./lib/dateKeys');
 
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
@@ -492,7 +493,7 @@ exports.generateStoryFromWords = onRequest(
         return res.status(404).json({ error: 'User not found.' });
       }
       const userData = userDoc.data();
-      const yearMonth = new Date().toISOString().slice(0, 7);
+      const yearMonth = getCurrentMonthKey();
       const storyDocRef = db.collection('users').doc(userId).collection('generatedStories').doc(yearMonth);
       const storyDoc = await storyDocRef.get();
       if (storyDoc.exists) {

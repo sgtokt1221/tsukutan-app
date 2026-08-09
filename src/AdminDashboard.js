@@ -8,6 +8,8 @@ import PrintableQuiz from './PrintableQuiz';
 import PrintableStory from './PrintableStory';
 import { FaChartLine } from 'react-icons/fa';
 import './AdminDashboard.css';
+import { getTodayKey } from './logic/dateKeys';
+import { getGoal, getTargetLevel, getRequiredVocabulary, toGoalIds } from './config';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -37,21 +39,9 @@ const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
     }
     
     const targetLabels = goal.targets.map(target => {
-      const targetMap = {
-        'hs1': '高校入試合格',
-        'hs2': '難関高校合格',
-        'hs3': '大学入試準備',
-        'hs4': '難関大学合格',
-        'hs5': '英語資格取得',
-        'uni1': '大学基礎英語',
-        'uni2': '大学応用英語',
-        'uni3': '大学院準備',
-        'career1': '就職活動',
-        'career2': 'キャリアアップ',
-        'eiken_pre1': '英検準1級取得',
-        'uni_top': '難関大学合格'
-      };
-      return targetMap[target.goalId] || '目標設定';
+      const master = getGoal(target.goalId);
+      // 共通定義に無い目標IDは、保存済みの表示名でしのぐ
+      return master?.displayName || target.displayName || '目標設定';
     });
     
     return {
@@ -113,24 +103,9 @@ const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
             // 目標レベルの判定を修正
             let isTarget = false;
             if (student.goal && student.goal.targets && student.goal.targets.length > 0) {
-              const goalLevels = { 
-                'hs1': 4, 'hs2': 5, 'hs3': 6, 'hs4': 7, 'hs5': 6,
-                'uni1': 5, 'uni2': 7, 'uni3': 8,
-                'career1': 6, 'career2': 7,
-                'eiken_pre1': 6, 'uni_top': 7
-              };
-              
-              // 目標の最小レベルを取得
-              const targetMinLevel = Math.min(...student.goal.targets.map(t => goalLevels[t.goalId] || 5));
-              isTarget = level === targetMinLevel;
-              
-              console.log('🎯 目標レベル判定:', {
-                level,
-                targetMinLevel,
-                isTarget,
-                goals: student.goal.targets.map(t => ({ goalId: t.goalId, expectedLevel: goalLevels[t.goalId] })),
-                allGoalLevels: student.goal.targets.map(t => goalLevels[t.goalId] || 5)
-              });
+              // 到達すべき単語レベルは共通定義から引く
+              const targetLevel = getTargetLevel(toGoalIds(student.goal.targets));
+              isTarget = targetLevel > 0 && level === targetLevel;
             }
             
             // 階段の高さを計算（レベルに応じて段々高くなる）
@@ -381,7 +356,7 @@ function AdminDashboard() {
         const usersSnapshot = await getDocs(q);
         const studentList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        const todayStr = new Date().toISOString().slice(0, 10);
+        const todayStr = getTodayKey();
         const studentWithCompletion = await Promise.all(studentList.map(async (student) => {
           const completionDocRef = doc(db, 'users', student.id, 'dailyCompletion', todayStr);
           const completionDoc = await getDoc(completionDocRef);
@@ -1025,16 +1000,9 @@ function AdminDashboard() {
             return 5000; // デフォルト目標
           }
           
-          const goalLevels = {
-            'hs1': 4000, 'hs2': 5000, 'hs3': 6000, 'hs4': 7000, 'hs5': 6000,
-            'uni1': 5000, 'uni2': 7000, 'uni3': 8000,
-            'career1': 6000, 'career2': 7000,
-            'eiken_pre1': 6000, 'uni_top': 7000
-          };
-          
-          // 目標の最大単語数を取得
-          const maxTargetVocabulary = Math.max(...student.goal.targets.map(t => goalLevels[t.goalId] || 5000));
-          return maxTargetVocabulary;
+          // 必要語彙数は共通定義から引く（goalsMaster と同じ値）
+          const required = getRequiredVocabulary(toGoalIds(student.goal.targets));
+          return required > 0 ? required : 5000;
         };
         
         const targetVocabulary = getTargetVocabularyForGoal(selectedStudent);

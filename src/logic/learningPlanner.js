@@ -2,6 +2,7 @@ import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowledgeAnalysis';
+import { MOTIVATION_LEVELS } from '../config';
 
 // ▼▼▼【修正点1】テキストブックの定義を追加▼▼▼
 // どのテキストブックから単語を探すかを定義します
@@ -28,38 +29,6 @@ const SECONDS_PER_REVIEW_WORD = 15;   // 復習単語1つあたりの学習時�
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 // やる気レベル別設定
-const MOTIVATION_LEVELS = {
-  low: {
-    name: 'そこそこ',
-    description: '無理せず続けたい',
-    easeFactorMultiplier: 1.2,
-    intervalMultiplier: 1.5,
-    masteredThreshold: 3,
-    dailyReviewQuota: 2,
-    adjacentWordsQuota: 5,
-    newWordsQuota: 15
-  },
-  normal: {
-    name: '普通',
-    description: 'バランスよく学習したい',
-    easeFactorMultiplier: 1.0,
-    intervalMultiplier: 1.0,
-    masteredThreshold: 5,
-    dailyReviewQuota: 3,
-    adjacentWordsQuota: 10,
-    newWordsQuota: 20
-  },
-  high: {
-    name: 'やる気満々',
-    description: '確実に覚えたい',
-    easeFactorMultiplier: 0.8,
-    intervalMultiplier: 0.7,
-    masteredThreshold: 7,
-    dailyReviewQuota: 5,
-    adjacentWordsQuota: 15,
-    newWordsQuota: 30
-  }
-};
 
 const toDateSafe = (possibleTimestamp) => {
   if (!possibleTimestamp) return null;

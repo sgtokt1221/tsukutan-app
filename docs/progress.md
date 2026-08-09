@@ -3,20 +3,23 @@
 `IMPLEMENTATION_PLAN.md` の工程ごとに、基準値からの変化を記録する。
 基準値そのものは `docs/baseline/` に置き、上書きしない。
 
-| 指標 | 基準（フェーズ0） | フェーズ1後 | フェーズ2後 |
-|---|---|---|---|
-| `npm run build` | 成功・警告あり | 成功・警告1件 | 成功・警告1件 |
-| `npm run lint` | **スクリプト未定義** | 定義済み・警告2件・エラー0 | 警告2件・エラー0 |
-| JSバンドル（gzip） | 766.17 kB | 766.36 kB | 767.64 kB |
-| ビルドの想定ホスト | `/tsukutan-app/` | **`/`** | `/` |
-| アプリ側 `npm test` | 0件のため失敗 | 変化なし | 変化なし（フェーズ9で対応） |
-| Functions ユニットテスト | なし | なし | **26件 成功** |
-| Rules 許可・拒否テスト | なし | なし | **21件 成功** |
-| アプリ依存監査 | 69件 / critical 4 | 変化なし | 変化なし（CRA由来。フェーズ8のVite移行で対応） |
-| Functions依存監査 | 22件 / critical 3 | **16件 / critical 0** | 16件 / critical 0 |
-| Functions Node.js | 18 | **20** | 20 |
-| 追跡中 `functions/node_modules` | 15,318ファイル | 0 | 0 |
-| Firestore Rules | **バージョン管理外** | 変化なし | **`firestore.rules` として管理** |
+| 指標 | 基準（フェーズ0） | フェーズ1後 | フェーズ2後 | フェーズ3後 |
+|---|---|---|---|---|
+| `npm run build` | 成功・警告あり | 成功・警告1件 | 成功・警告1件 | 成功・警告1件 |
+| `npm run lint` | **スクリプト未定義** | 定義済み・警告2件・エラー0 | 警告2件・エラー0 | 警告1件・エラー0 |
+| JSバンドル（gzip） | 766.17 kB | 766.36 kB | 767.64 kB | 768.54 kB |
+| ビルドの想定ホスト | `/tsukutan-app/` | **`/`** | `/` | `/` |
+| アプリ側 `npm test` | 0件のため失敗 | 変化なし | 変化なし（フェーズ9で対応） | **48件 成功** |
+| Functions ユニットテスト | なし | なし | **26件 成功** | 26件 成功 |
+| Rules 許可・拒否テスト | なし | なし | **21件 成功** | 21件 成功 |
+| アプリ依存監査 | 69件 / critical 4 | 変化なし | 変化なし（CRA由来。フェーズ8のVite移行で対応） | 変化なし |
+| Functions依存監査 | 22件 / critical 3 | **16件 / critical 0** | 16件 / critical 0 | 16件 / critical 0 |
+| Functions Node.js | 18 | **20** | 20 | 20 |
+| 追跡中 `functions/node_modules` | 15,318ファイル | 0 | 0 | 0 |
+| Firestore Rules | **バージョン管理外** | 変化なし | **`firestore.rules` として管理** | 管理下 |
+| 設定の不整合（`check-config-consistency`） | 目標ID 8種の不整合 | 変化なし | 変化なし | **不整合なし** |
+| `MOTIVATION_LEVELS` の定義箇所 | 3ファイルに重複 | 3ファイル | 3ファイル | **1ファイル** |
+| `src/App.js` | 370行 | 372行 | 372行 | **153行** |
 
 ---
 
@@ -211,3 +214,106 @@ Rules テストは Firestore エミュレータ上で実行する。macOS で Ja
   認証情報を持っていないため。Auth エミュレータを使った統合テスト（計画書14.3）で対応する。
 - importUsers のHTTP層そのものの統合テスト（エミュレータ上で実際にCSVを投げる）は未作成。
   現状は純粋ロジックのユニットテストと、削除系呼び出しが残っていないことの確認まで。
+
+## フェーズ3: 目標・やる気・日付処理の統一（完了）
+
+### 追加した正本
+
+| ファイル | 内容 |
+|---|---|
+| `src/config/goals.json` | 目標14件。id / category / displayName / requiredVocabulary / targetLevel / description / recommendedTextbooks |
+| `src/config/motivation.json` | やる気3段階。表示名・説明・新規語数・復習数・隣接語数・習得判定回数・間隔係数・推定時間 |
+| `src/config/index.js` | 上記を読む導出関数（getGoal / getRequiredVocabulary / getTargetLevel / getRecommendedTextbooks など） |
+| `src/logic/dateKeys.js` | 日本時間の日付キー |
+| `functions/lib/dateKeys.js` | 同じ仕様のFunctions版 |
+
+### 消した重複
+
+- `MOTIVATION_LEVELS` が `GoalSetter.js` / `logic/learningPlanner.js` / `logic/reviewLogic.js` の
+  **3箇所に同一内容でコピーされていた**。`src/config` の1箇所に集約した。
+- `App.js` の `/set-goal` ルートに目標画面がインラインで**丸ごと書かれていた**（370行中の約240行）。
+  `GoalSetter.js` は同じ画面を持ちながらどこからも import されていないデッドコードだった。
+  App.js のインライン版を削除し、`GoalSetter` を実際に使うようにした。**App.js は370行→153行。**
+- `setupMasterData.js` の目標一覧も `goals.json` を読むようにした。
+
+### 旧目標ID `hs1`〜`hs5` / `uni1`〜`uni3` の撤去
+
+`AdminDashboard.js` の3箇所（表示名・目標レベル・必要語彙数）と
+`StudentDashboard.js` の1箇所（大阪府教材の推奨判定）にあった手書きマッピングを、
+すべて共通定義からの導出に置き換えた。
+
+判明していた実害:
+
+- **`StudentDashboard.js:270` の大阪府教材の推奨が `['hs1','hs2']` を見ていた。**
+  現行の目標設定画面は `hs_45` などの新IDしか作らないので、
+  **高校入試を目標にしても大阪府教材が推奨されていなかった。**
+- `AdminDashboard.js` の必要語彙数マップは `eiken_pre1: 6000` としていたが、
+  `goalsMaster` と `goals.json` は 8000。管理画面の進捗率が実際とずれていた。
+
+### 日本時間への移行
+
+`new Date().toISOString().slice(0, 10)` は UTC を返すため、
+**日本の午前0時〜9時に学習すると前日のキーへ記録されていた。**
+
+```
+2026-08-08T23:00Z（= 8月9日 08:00 JST）
+  旧: 2026-08-08   ← 前日
+  新: 2026-08-09
+```
+
+置換した箇所: `AdminDashboard` 1、`StudentDashboard` 6、`reviewLogic` 2、
+`GoalSetter` 1、`App.js` 1、`functions/index.js` 1（ストーリーの月次キー）。
+
+**移行時の注意**: 切り替え当日の午前0時〜9時に学習済みの生徒は、
+旧キー（前日）に完了が記録されているため、その日は「未完了」に見える。
+翌日以降は自然に解消する。過去の記録は旧キーのまま残るので消えはしない。
+
+### 目標画面（計画書8.3）
+
+- 目標が0件、達成日が空、達成日が過去のいずれかなら保存ボタンを無効化
+- 保存中は二重送信できない
+- 保存後に `updateProgressPercentage` を呼んで進捗率を更新
+- **やる気レベル選択時の `alert()` を廃止**（旧App.js版は選ぶたびにブロッキングダイアログが出ていた）
+- 目標チップとやる気レベルに `aria-pressed` を付与
+- 失敗時は `alert` ではなく画面内にエラーを表示し、完了扱いにしない
+
+### やる気レベルの推定時間
+
+旧App.js版は 17 / 22 / 32 分とハードコードされていたが、
+GoalSetter 側の計算式（新規×60秒 + 復習×15秒）では 17 / 23 / 35 分になる。
+**両者が食い違っていた。** 計算式側の値を `motivation.json` に明示値として持たせたので、
+表示は 17 / 23 / 35 分に変わる。
+
+### targetLevel は新規に決めた値
+
+`goals.json` の `targetLevel`（到達すべき単語レベル1〜7）は既存コードに正本が無かったため、
+必要語彙数を英検級の帯に対応させて割り当てた。計画書8.2の例（`hs_45` → 3）に合わせてある。
+**学習内容に影響するので、値の妥当性は確認してほしい。**
+
+| 目標 | 必要語彙数 | targetLevel |
+|---|---:|---:|
+| eiken_5 / eiken_4 / eiken_3 | 600 / 1300 / 2100 | 1 / 2 / 3 |
+| eiken_pre2 / eiken_2 | 3600 / 5100 | 4 / 5 |
+| eiken_pre1 / eiken_1 | 8000 / 12000 | 6 / 7 |
+| hs_45 / hs_50 / hs_60 / hs_top | 1500 / 2000 / 3000 / 4000 | 3 / 3 / 4 / 4 |
+| uni_50 / uni_60 / uni_top | 4000 / 5500 / 7000 | 4 / 5 / 6 |
+
+### テスト
+
+`npm test` が**初めて成功する状態**になった。
+
+| ファイル | 件数 | 内容 |
+|---|---:|---|
+| `src/config/config.test.js` | 20 | 目標定義の整合性、導出関数、旧IDが存在しないこと |
+| `src/logic/dateKeys.test.js` | 12 | 日本時間の日付・月キー、日数差 |
+| `src/GoalSetter.test.js` | 16 | 保存条件、aria-pressed、二重送信防止、保存失敗時の扱い |
+
+CRA雛形の `src/App.test.js` はテストを1件も含まずスイート全体を失敗させていたので削除した。
+そのためだけにあった `package.json` の `jest.moduleNameMapper` も外した。
+（`src/__mocks__/react-router-dom.js` は参照されなくなったが、元からあるので残してある。）
+
+### 積み残し
+
+- 目標設定画面を実ブラウザで操作確認していない。生徒アカウントでのログインが必要なため。
+  コンポーネントテストで保存条件・選択状態・二重送信・失敗時の挙動は検証済み。
+- `newWordsQuota` を実際の日次計画で使う件（計画書10.2.2）はフェーズ5。
