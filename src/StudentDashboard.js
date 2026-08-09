@@ -18,7 +18,7 @@ import ReviewFlashcard from './ReviewFlashcard';
 import LevelBadge from './LevelBadge';
 import { FaBook, FaSyncAlt, FaMagic } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
-import { getRecommendedTextbooks, toGoalIds } from './config';
+import { getRecommendedTextbooks, toGoalIds, getMotivationConfig } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
 import { loadWordMaster } from './logic/wordMaster';
 import logger from './logic/logger';
@@ -1818,15 +1818,13 @@ export default function StudentDashboard() {
                   fontSize: '0.9rem'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* 表示名も所要時間も共通設定から引く。
+                        ここに書き並べると目標設定画面と食い違う（実際17分と19分でずれていた）。 */}
                     <span style={{ fontWeight: '500', color: '#166534' }}>
-                      やる気レベル: {userData.goal.motivationLevel === 'low' ? 'そこそこ' : 
-                                   userData.goal.motivationLevel === 'normal' ? '普通' : 
-                                   userData.goal.motivationLevel === 'high' ? 'やる気満々' : '不明'}
+                      やる気レベル: {getMotivationConfig(userData.goal.motivationLevel).name}
                     </span>
                     <span style={{ color: '#6b7280', fontSize: '0.8rem' }}>
-                      {userData.goal.motivationLevel === 'low' ? '約19分/日' : 
-                       userData.goal.motivationLevel === 'normal' ? '約27分/日' : 
-                       userData.goal.motivationLevel === 'high' ? '約40分/日' : ''}
+                      約{getMotivationConfig(userData.goal.motivationLevel).estimatedMinutesPerDay}分/日
                     </span>
                   </div>
                 </div>
