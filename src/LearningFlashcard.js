@@ -14,7 +14,7 @@ import { usePronunciation } from './logic/usePronunciation';
 
 // 単語帳モードの文字サイズの下限・上限（%）。一覧で見渡したいときは小さく、
 // 1語ずつ確かめたいときは大きくできるよう幅を広めに取る。
-const MIN_ZOOM = 30;
+const MIN_ZOOM = 20;
 const MAX_ZOOM = 200;
 
 // 配列をシャッフルするヘルパー関数
@@ -839,9 +839,6 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
                       [{word.pronunciation || getPronunciation(word.word)}]
                     </div>
                   )}
-                  <div className="wordbook-index">
-                    {index + 1} / {shuffledWords.length}
-                  </div>
                 </div>
 
                 {/* 右側：和訳・例文（赤シート機能付き + 復習モード長押し機能） */}
