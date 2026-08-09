@@ -12,6 +12,10 @@
  *   words.json          正本。7,205件、レベル1〜7（再分類済み）
  *   public/words.json   大阪府公立入試の収録範囲。旧レベル体系（1〜9）
  *   highschool.json     高校英語の収録範囲。既に words.json へマージ済み
+ *   data-sources/firestore-textbooks.json
+ *                       Firestore の textbooks/{id}/words のスナップショット。
+ *                       大阪府教材はJSON側より収録が多く、ここにしか無い単語がある。
+ *                       更新は scripts/export-firestore-textbooks.js
  *
  * 出力
  *   public/data/words-master.json      永続IDつきの全単語
@@ -147,6 +151,44 @@ const main = () => {
   report.importedEntries = importedFromPublic;
 
   //--------------------------------------------------------------------------
+  // 2b. Firestore の教材にしか無い単語を取り込む
+  //--------------------------------------------------------------------------
+  // target-1900 はアプリのどの画面からも参照されていないので入れない。
+  // 入れると語彙力チェックの出題プールが変わり、レベル判定に影響する。
+  const FIRESTORE_TEXTBOOKS = ['osaka-koukou-nyuushi', 'highschool-english'];
+
+  const firestorePath = path.join(ROOT, 'data-sources', 'firestore-textbooks.json');
+  const firestoreTextbooks = fs.existsSync(firestorePath)
+    ? JSON.parse(fs.readFileSync(firestorePath, 'utf8'))
+    : {};
+  const importedFromFirestore = [];
+
+  for (const textbookId of FIRESTORE_TEXTBOOKS) {
+    for (const entry of firestoreTextbooks[textbookId] || []) {
+      if (masterContentKeys.has(contentKey(entry))) continue;
+      // Firestore 側は旧レベル体系（最大10）なのでマスターの上限へ寄せる
+      const level = Math.min(entry.level, MAX_LEVEL);
+      const imported = { ...entry, level };
+      const key = fullKey(imported);
+      if (byFullKey.has(key)) continue;
+      byFullKey.set(key, imported);
+      masterContentKeys.add(contentKey(imported));
+      importedFromFirestore.push({
+        textbookId,
+        word: entry.word,
+        partOfSpeech: entry.partOfSpeech,
+        meaning: entry.meaning,
+        firestoreLevel: entry.level,
+        assignedLevel: level,
+      });
+    }
+  }
+
+  report.importedFromFirestore = importedFromFirestore.length;
+  report.importedFirestoreEntries = importedFromFirestore;
+  report.skippedTextbooks = Object.keys(firestoreTextbooks).filter((id) => !FIRESTORE_TEXTBOOKS.includes(id));
+
+  //--------------------------------------------------------------------------
   // 3. 永続IDを付ける。既存のIDがあれば必ずそれを維持する。
   //--------------------------------------------------------------------------
   const existingIdByFullKey = new Map();
@@ -190,8 +232,16 @@ const main = () => {
   //--------------------------------------------------------------------------
   // 4. 教材ごとの収録範囲
   //--------------------------------------------------------------------------
-  const osakaKeys = new Set(osakaSource.map(contentKey));
-  const highschoolKeys = new Set(highschoolSource.map(contentKey));
+  // 収録範囲は JSON と Firestore の和集合。
+  // 自由学習が読む words-osaka.json と、日次計画が読む Firestore がずれないようにする。
+  const osakaKeys = new Set([
+    ...osakaSource.map(contentKey),
+    ...(firestoreTextbooks['osaka-koukou-nyuushi'] || []).map(contentKey),
+  ]);
+  const highschoolKeys = new Set([
+    ...highschoolSource.map(contentKey),
+    ...(firestoreTextbooks['highschool-english'] || []).map(contentKey),
+  ]);
 
   const osaka = entries.filter((entry) => osakaKeys.has(contentKey(entry)));
   const highschool = entries.filter((entry) => highschoolKeys.has(contentKey(entry)));
@@ -269,6 +319,10 @@ const main = () => {
   console.log(`  入力          : words.json ${master.length} / public/words.json ${osakaSource.length} / highschool.json ${highschoolSource.length}`);
   console.log(`  完全同一の統合: ${mergedDuplicates} 件（うち例文が違ったもの ${conflictingDuplicates.length} 件）`);
   console.log(`  public から追加: ${importedFromPublic.length} 件`);
+  console.log(`  Firestore から追加: ${importedFromFirestore.length} 件`);
+  if (report.skippedTextbooks.length) {
+    console.log(`  取り込まなかった教材: ${report.skippedTextbooks.join(', ')}（アプリから未参照）`);
+  }
   console.log(`  マスター件数  : ${entries.length} 件`);
   console.log(`  IDの引き継ぎ  : ${reusedIds} 件（初回は0）`);
   console.log(`  レベル分布    : ${JSON.stringify(report.levelDistribution)}`);
