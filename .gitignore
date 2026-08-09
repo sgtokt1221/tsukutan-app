@@ -46,3 +46,4 @@ pubsub-debug.log*
 ui-debug.log*
 
 
+.gstack/

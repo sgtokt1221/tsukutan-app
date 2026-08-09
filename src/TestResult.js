@@ -198,7 +198,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
           >
             <button className="restart-btn" onClick={() => {
               console.log('TestResult: 前の画面に戻るボタンがクリックされました');
-              window.location.replace('/tsukutan-app/student-dashboard');
+              window.location.replace('/student-dashboard');
             }}>
               <span className="btn-icon">🏠</span>
               <span className="btn-text">ダッシュボードに戻る</span>

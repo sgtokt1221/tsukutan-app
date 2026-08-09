@@ -12,6 +12,11 @@
       ]
     }
   ],
+  "emulators": {
+    "hosting": {
+      "port": 5055
+    }
+  },
   "hosting": {
     "public": "build",
     "ignore": [

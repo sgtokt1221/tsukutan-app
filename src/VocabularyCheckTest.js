@@ -906,7 +906,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
               console.log('📊 テスト中断: 現在の進捗を保存します');
               await finishTestAndSave(currentLevel);
             }
-            window.location.replace('/tsukutan-app/student-dashboard');
+            window.location.replace('/student-dashboard');
           }}
           style={{
             flex: 1,
