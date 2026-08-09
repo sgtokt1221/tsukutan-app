@@ -447,7 +447,11 @@ function AdminDashboard() {
 
       const reviewWordsColRef = collection(db, 'users', student.id, 'reviewWords');
       const reviewWordsSnapshot = await getDocs(reviewWordsColRef);
-      const reviewWords = reviewWordsSnapshot.docs.map(d => ({...d.data(), id: d.id}));
+      // 永続IDへ移行した旧文書は残してあるので、そのまま数えると二重になる。
+      // 生徒側の日次プランと同じ条件で除外する。
+      const reviewWords = reviewWordsSnapshot.docs
+        .map(d => ({ ...d.data(), id: d.id }))
+        .filter(word => !word.migratedTo);
 
       // 生徒側と Functions は generatedStories に書く。
       // ここが 'stories' を読んでいたため、管理画面ではストーリーが常に空だった。
