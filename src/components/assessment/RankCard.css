@@ -51,7 +51,7 @@
 }
 
 /* ---- 次ランクまで ---- */
-.rank-card__progress-head {
+.rank-card__gauge-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -148,47 +148,22 @@
   }
 }
 
-/* ---- ホーム用。1画面に収めるため行と余白を詰める ---- */
+/* ---- ホーム用。紋章を主役にして、細かい文字は置かない ---- */
 .rank-card--compact {
-  gap: var(--space-4);
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-16);
 }
 
-.rank-card--compact .rank-card__head {
-  gap: var(--space-12);
+.rank-card--compact .rank-card__gauge {
+  flex: 1;
+  min-width: 0;
 }
 
-.rank-card--compact .rank-card__score {
-  font-size: var(--font-size-22);
-}
-
-.rank-card--compact .rank-card__equivalency {
-  padding-top: var(--space-4);
-}
-
-/* 換算の1行と「換算について」を同じ行に並べる */
-.rank-card--compact .rank-card__equivalency {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-8);
-}
-
-.rank-card--compact .rank-card__eq-line {
-  margin: 0;
-}
-
-.rank-card--compact .rank-card__detail-toggle {
-  margin-top: 0;
-}
-
-.rank-card--compact .rank-card__detail {
-  flex-basis: 100%;
-}
-
-/* 紋章は少し小さく */
-.rank-card--compact .rank-badge--medium {
-  width: 60px;
-  height: 60px;
+.rank-card--empty {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-16);
 }
 
 .rank-card__retest-link {
