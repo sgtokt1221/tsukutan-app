@@ -6,6 +6,7 @@ import { initialize, speak } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
+import logger from './logic/logger';
 
 // 配列をシャッフルするヘルパー関数
 const shuffleArray = (array) => {
@@ -72,7 +73,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const isReviewMode = sessionInfo?.filterType === '復習単語';
   
   // デバッグ: 復習モード判定
-  console.log('🔍 LearningFlashcard復習モード判定:', {
+  logger.debug('🔍 LearningFlashcard復習モード判定:', {
     sessionInfo,
     filterType: sessionInfo?.filterType,
     isReviewMode,
@@ -94,7 +95,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   };
 
   useEffect(() => {
-    console.log('LearningFlashcard words受信:', {
+    logger.debug('LearningFlashcard words受信:', {
       wordsLength: words?.length,
       sessionInfo: !!sessionInfo,
       sampleWords: words?.slice(0, 3)?.map(w => ({ word: w.word, level: w.level }))
@@ -111,7 +112,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     // currentIndexをリセット
     setCurrentIndex(initialIndex);
     
-    console.log('LearningFlashcard shuffledWords設定後:', {
+    logger.debug('LearningFlashcard shuffledWords設定後:', {
       shuffledWordsLength: words?.length,
       sessionInfo: !!sessionInfo,
       initialIndex
@@ -122,7 +123,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // shuffledWordsの状態変化を監視
   useEffect(() => {
-    console.log('LearningFlashcard shuffledWords状態変化:', {
+    logger.debug('LearningFlashcard shuffledWords状態変化:', {
       shuffledWordsLength: shuffledWords?.length,
       currentIndex,
       currentWord: shuffledWords?.[currentIndex]?.word
@@ -131,7 +132,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
 
   // initialIndexが変更された時にcurrentIndexを更新（無限ループを防ぐため、currentIndexを依存配列から除外）
   useEffect(() => {
-    console.log('LearningFlashcard initialIndex変更:', {
+    logger.debug('LearningFlashcard initialIndex変更:', {
       initialIndex: initialIndex,
       shuffledWordsLength: shuffledWords.length
     });
@@ -146,7 +147,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   const currentWord = shuffledWords?.[currentIndex];
 
   const handleBackButtonClick = useCallback(() => {
-    console.log('LearningFlashcard: 戻るボタンがクリックされました');
+    logger.debug('LearningFlashcard: 戻るボタンがクリックされました');
     
     const sessionEndTime = new Date();
     const sessionDuration = sessionEndTime - sessionStartTime.current;
@@ -284,7 +285,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     e.preventDefault();
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
-    console.log('🔥 Mouse down:', { x: e.clientX, y: e.clientY });
+    logger.debug('🔥 Mouse down:', { x: e.clientX, y: e.clientY });
     
     // 単語帳モードの場合、カードの位置をリセット
     if (viewMode === 'wordbook' && e.currentTarget) {
@@ -299,7 +300,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
     
-    console.log('🔥 Mouse move:', { deltaX, deltaY });
+    logger.debug('🔥 Mouse move:', { deltaX, deltaY });
     
     if (viewMode === 'flashcard') {
       // フラッシュカードモードの場合、motion valueを使用
@@ -345,16 +346,16 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         let limitedDeltaX = 0;
         let limitedDeltaY = 0;
         
-        console.log('🔥 LearningFlashcard Wordbook mode movement:', { deltaX, deltaY, absDeltaX: Math.abs(deltaX), absDeltaY: Math.abs(deltaY) });
+        logger.debug('🔥 LearningFlashcard Wordbook mode movement:', { deltaX, deltaY, absDeltaX: Math.abs(deltaX), absDeltaY: Math.abs(deltaY) });
         
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
           // 左右スワイプ（評価）の場合
           limitedDeltaX = Math.max(-150, Math.min(150, deltaX));
-          console.log('🔥 LearningFlashcard Allowing horizontal movement for evaluation:', limitedDeltaX);
+          logger.debug('🔥 LearningFlashcard Allowing horizontal movement for evaluation:', limitedDeltaX);
         } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
           // 上下スワイプ（削除）の場合
           limitedDeltaY = Math.max(-150, Math.min(150, deltaY));
-          console.log('🔥 LearningFlashcard Allowing vertical movement for deletion:', limitedDeltaY);
+          logger.debug('🔥 LearningFlashcard Allowing vertical movement for deletion:', limitedDeltaY);
         }
         
         activeCard.style.transform = `translate(${limitedDeltaX}px, ${limitedDeltaY}px)`;
@@ -366,15 +367,15 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
         if (limitedDeltaY < -15) {
           cardBackgroundColor = "#facc15"; // Yellow for swipe up (deletion)
           boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-          console.log('🔥 LearningFlashcard Yellow highlight for upward swipe (deletion)');
+          logger.debug('🔥 LearningFlashcard Yellow highlight for upward swipe (deletion)');
         } else if (limitedDeltaX > 30) {
           cardBackgroundColor = "#4ade80"; // Green for right swipe (correct)
           boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          console.log('🔥 LearningFlashcard Green highlight for right swipe (correct)');
+          logger.debug('🔥 LearningFlashcard Green highlight for right swipe (correct)');
         } else if (limitedDeltaX < -30) {
           cardBackgroundColor = "#ef4444"; // Red for left swipe (incorrect)
           boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          console.log('🔥 LearningFlashcard Red highlight for left swipe (incorrect)');
+          logger.debug('🔥 LearningFlashcard Red highlight for left swipe (incorrect)');
         }
         
         activeCard.style.setProperty('background-color', cardBackgroundColor, 'important');
@@ -391,7 +392,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
     
-    console.log('🔥 Mouse up:', { deltaX, deltaY });
+    logger.debug('🔥 Mouse up:', { deltaX, deltaY });
     
     // カードの色をリセット
     const flashcard = document.getElementById('flashcard');
@@ -513,7 +514,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     
     // マルチタッチの場合は無視
     if (e.touches.length > 1) {
-      console.log('🔥 LearningFlashcard Multi-touch detected, ignoring');
+      logger.debug('🔥 LearningFlashcard Multi-touch detected, ignoring');
       return;
     }
     
@@ -521,7 +522,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const currentTime = new Date().getTime();
     const tapLength = currentTime - lastTap;
     if (tapLength < 500 && tapLength > 0) {
-      console.log('🔥 Double tap detected on mobile!');
+      logger.debug('🔥 Double tap detected on mobile!');
       handleDoubleClick(e);
       setLastTap(0);
       return;
@@ -531,7 +532,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     setIsDragging(true);
     const touch = e.touches[0];
     setDragStart({ x: touch.clientX, y: touch.clientY });
-    console.log('🔥 LearningFlashcard Touch start:', { 
+    logger.debug('🔥 LearningFlashcard Touch start:', { 
       x: touch.clientX, 
       y: touch.clientY,
       target: e.target.tagName,
@@ -548,14 +549,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
     
-    console.log('🔥 Touch move:', { deltaX, deltaY, viewMode });
+    logger.debug('🔥 Touch move:', { deltaX, deltaY, viewMode });
     
     if (viewMode === 'flashcard') {
-      console.log('🔥 LearningFlashcard Touch move in flashcard mode:', { deltaX, deltaY });
+      logger.debug('🔥 LearningFlashcard Touch move in flashcard mode:', { deltaX, deltaY });
       // motion valueを更新
       x.set(deltaX);
       y.set(deltaY);
-      console.log('🔥 LearningFlashcard Motion values updated:', { xValue: x.get(), yValue: y.get() });
+      logger.debug('🔥 LearningFlashcard Motion values updated:', { xValue: x.get(), yValue: y.get() });
       
       // フラッシュカードの背景色を変更
       const flashcard = document.getElementById('flashcard');
@@ -605,7 +606,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
     
-    console.log('🔥 Touch end:', { deltaX, deltaY });
+    logger.debug('🔥 Touch end:', { deltaX, deltaY });
     
     // カードの色をリセット
     if (e.currentTarget) {
@@ -1080,14 +1081,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       }}>
         <button
           onClick={() => {
-            console.log('上に戻るボタンがクリックされました');
+            logger.debug('上に戻るボタンがクリックされました');
             
             // 単語帳モードのコンテナ要素を取得
             const wordbookContainer = document.querySelector('[style*="height: 100vh"][style*="overflow: auto"]');
-            console.log('単語帳コンテナ:', wordbookContainer);
+            logger.debug('単語帳コンテナ:', wordbookContainer);
             
             if (wordbookContainer) {
-              console.log('コンテナのスクロール位置:', wordbookContainer.scrollTop);
+              logger.debug('コンテナのスクロール位置:', wordbookContainer.scrollTop);
               
               // コンテナ要素にスクロール
               wordbookContainer.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1095,11 +1096,11 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
               // フォールバック
               setTimeout(() => {
                 wordbookContainer.scrollTop = 0;
-                console.log('フォールバック後の位置:', wordbookContainer.scrollTop);
+                logger.debug('フォールバック後の位置:', wordbookContainer.scrollTop);
               }, 100);
             } else {
               // フォールバック: ウィンドウスクロール
-              console.log('ウィンドウスクロール実行');
+              logger.debug('ウィンドウスクロール実行');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
@@ -1141,7 +1142,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   }
 
   // デバッグ: フラッシュカードモードのレンダリング
-  console.log('🎴 フラッシュカードモードレンダリング:', {
+  logger.debug('🎴 フラッシュカードモードレンダリング:', {
     isReviewMode,
     sessionInfo: sessionInfo?.filterType,
     ボタン表示予定: true

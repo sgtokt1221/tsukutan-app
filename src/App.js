@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import './App.css';
 import { auth, db } from './firebaseConfig.js';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -6,10 +6,18 @@ import { doc, getDoc } from 'firebase/firestore';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Component Imports
+// ダッシュボードは遅延読み込みにする。Chart.js は AdminDashboard からしか
+// 使わないので、管理者がその画面を開くまで取りに行かない（計画書13.5）。
 import LoginPage from './LoginPage.js';
-import StudentDashboard from './StudentDashboard.js';
-import AdminDashboard from './AdminDashboard.js';
-import GoalSetter from './GoalSetter.js';
+const StudentDashboard = lazy(() => import('./StudentDashboard.js'));
+const AdminDashboard = lazy(() => import('./AdminDashboard.js'));
+const GoalSetter = lazy(() => import('./GoalSetter.js'));
+
+const RouteFallback = () => (
+  <div className="loading-container">
+    <p>読み込み中...</p>
+  </div>
+);
 
 function AppContent() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -115,6 +123,7 @@ function AppContent() {
 
   return (
     <div className="App">
+      <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/" element={
           !currentUser ? (
@@ -139,6 +148,7 @@ function AppContent() {
         } />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { FaChartLine } from 'react-icons/fa';
 import './AdminDashboard.css';
 import { getTodayKey } from './logic/dateKeys';
 import { getGoal, getTargetLevel, getRequiredVocabulary, toGoalIds } from './config';
+import logger from './logic/logger';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -55,7 +56,7 @@ const ProgressStageChart = ({ student, vocabularyProgressPercentage = 0 }) => {
   const currentInfo = getLevelInfo(currentLevel);
 
   // デバッグ用：生徒の目標データをログ出力
-  console.log('👤 生徒データ:', {
+  logger.debug('👤 生徒データ:', {
     name: student.name,
     level: currentLevel,
     goal: student.goal,
@@ -1015,7 +1016,7 @@ function AdminDashboard() {
         const vocabularyProgressPercentage = targetVocabulary > 0 ? Math.min((currentVocabulary / targetVocabulary) * 100, 100) : 0;
         
         // デバッグ情報をコンソールに出力
-        console.log('📊 学習目標計算:', {
+        logger.debug('📊 学習目標計算:', {
           studentName: selectedStudent.name,
           currentVocabulary,
           targetVocabulary,

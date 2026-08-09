@@ -1268,6 +1268,11 @@ input[type="file"] { display: none; }
 }
 
 .login-card {
+  /* PCで横いっぱいに伸びないよう最大幅を決める（計画書13.1） */
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
   border-radius: 22px;
@@ -1299,10 +1304,21 @@ input[type="file"] { display: none; }
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.login-card input:focus-visible {
+  /* フォーカスリングは消さない。キーボード操作で現在位置が分かるようにする */
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
+  border-color: rgba(14, 165, 233, 0.6);
+}
+
 .login-card input:focus {
-  outline: none;
   border-color: rgba(14, 165, 233, 0.6);
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+}
+
+.login-card input:disabled {
+  background: rgba(241, 245, 249, 0.9);
+  color: #64748b;
 }
 
 .helper-text {
@@ -2263,4 +2279,28 @@ input[type="file"] { display: none; }
   padding: 2px 4px;
   border-radius: 3px;
   font-weight: bold;
+}
+
+/* ===== アクセシビリティの下地（計画書13.3） ===== */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
+}
+
+.primary-action,
+.ghost-button,
+.motivation-option,
+.goal-chip {
+  min-height: 44px;
+}
+
+/* 選択状態を色だけで表さない。押されている項目に印を付ける。 */
+.goal-chip[aria-pressed="true"]::before,
+.motivation-option[aria-pressed="true"]::before {
+  content: '✓ ';
+  font-weight: 700;
 }

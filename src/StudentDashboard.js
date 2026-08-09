@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import './Analytics.css';
-import wordsData from './wordsData.json';
 import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, updateDoc, increment, where } from "firebase/firestore";
 import { generateDailyPlan } from './logic/learningPlanner';
 import { addWordToReview } from './logic/reviewLogic';
@@ -21,16 +20,12 @@ import { FaBook, FaSyncAlt, FaMagic } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds } from './config';
 import { splitHighlightTokens, normalizeStory, isDisplayableStory } from './logic/storyView';
-
-// デバッグ: wordsDataの読み込み確認
-console.log('🔍 wordsData読み込み確認:', {
-  総単語数: wordsData ? wordsData.length : 'undefined',
-  サンプル: wordsData ? wordsData.slice(0, 2) : 'undefined'
-});
+import { loadWordMaster } from './logic/wordMaster';
+import logger from './logic/logger';
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
-const getEikenWordCount = (textbookId) => {
-  if (!wordsData) return 0;
+const getEikenWordCount = (textbookId, wordsData = []) => {
+  if (!wordsData.length) return 0;
   
   const levelPart = textbookId.split('-')[1];
   let targetEikenLevel;
@@ -42,7 +37,7 @@ const getEikenWordCount = (textbookId) => {
     targetEikenLevel = parseInt(levelPart);
   }
   
-  console.log('🎯 英検教材単語数計算:', { textbookId, targetEikenLevel });
+  logger.debug('🎯 英検教材単語数計算:', { textbookId, targetEikenLevel });
   
   // 実際の収録単語数（当該級 + 当該級未満、重複除去後）
   let actualCount = 0;
@@ -110,20 +105,20 @@ const getEikenWordCount = (textbookId) => {
       });
     }
     
-    console.log(`英検${levelPart}級の実際の収録単語数:`, actualCount);
+    logger.debug(`英検${levelPart}級の実際の収録単語数:`, actualCount);
   }
   
   return actualCount;
 };
 
 // 各教材の単語数を計算する関数
-const getTextbookWordCount = (textbookId) => {
-  console.log('📊 単語数計算開始:', { textbookId });
+const getTextbookWordCount = (textbookId, wordsData = []) => {
+  logger.debug('📊 単語数計算開始:', { textbookId });
   
   // 英検教材の場合は実際の処理ロジックを再現
   if (textbookId.startsWith('eiken-')) {
-    const count = getEikenWordCount(textbookId);
-    console.log('📊 英検教材単語数取得:', { textbookId, count });
+    const count = getEikenWordCount(textbookId, wordsData);
+    logger.debug('📊 英検教材単語数取得:', { textbookId, count });
     return count;
   }
   
@@ -132,17 +127,17 @@ const getTextbookWordCount = (textbookId) => {
       // 大阪府公立入試英単語：tsukutan-app/words.jsonから取得（固定値）
       // 実際の処理ではfetchで取得しているが、表示用なので固定値を使用
       const osakaCount = 1969; // tsukutan-app/words.jsonの実際の単語数
-      console.log('📚 大阪府公立入試英単語数:', osakaCount);
+      logger.debug('📚 大阪府公立入試英単語数:', osakaCount);
       return osakaCount;
     
     case 'highschool-english':
       // 高校英語：wordsData.jsonからレベル5-7の単語をカウント
-      if (!wordsData) return 0;
+      if (!wordsData.length) return 0;
       const highschoolCount = wordsData.filter(word => {
         const level = word.level || 1;
         return level >= 5 && level <= 7;
       }).length;
-      console.log('🎓 高校英語単語数:', highschoolCount);
+      logger.debug('🎓 高校英語単語数:', highschoolCount);
       return highschoolCount;
     
     
@@ -170,7 +165,7 @@ const getRecommendedLevels = (testLevel) => {
     recommendations.push({ level: testLevel - 1, type: 'review', priority: 'low' });
   }
   
-  console.log('🎯 推奨レベル計算:', {
+  logger.debug('🎯 推奨レベル計算:', {
     testLevel,
     recommendations: recommendations.map(r => ({ level: r.level, priority: r.priority }))
   });
@@ -189,7 +184,7 @@ const isRecommendedTextbook = (textbookId, testLevel, userData) => {
   if (textbookId === 'osaka-koukou-nyuushi') {
     const isHighSchoolTarget = isHighSchoolExamTarget(userData);
     if (!isHighSchoolTarget) {
-      console.log('🎯 大阪府公立入試英単語: 高校受験目標なしのため非推奨');
+      logger.debug('🎯 大阪府公立入試英単語: 高校受験目標なしのため非推奨');
       return false;
     }
   }
@@ -222,7 +217,7 @@ const isRecommendedLevel = (level, testLevel) => {
   
   // デバッグログ
   if (isRecommended) {
-    console.log('🎯 レベル推奨判定:', {
+    logger.debug('🎯 レベル推奨判定:', {
       level,
       testLevel,
       recommendations: recommendations.recommended,
@@ -550,7 +545,7 @@ export default function StudentDashboard() {
   
   // デバッグログ: testResultLevelの値を監視
   useEffect(() => {
-    console.log('🎯 testResultLevel更新:', testResultLevel);
+    logger.debug('🎯 testResultLevel更新:', testResultLevel);
   }, [testResultLevel]);
   const [learningWords, setLearningWords] = useState([]);
   const [filterTab, setFilterTab] = useState('level');
@@ -576,6 +571,7 @@ export default function StudentDashboard() {
   // ▼▼▼ 自由学習進捗管理用のState ▼▼▼
   const [freeStudyProgress, setFreeStudyProgress] = useState({});
   const [storyError, setStoryError] = useState(null);
+  const [masterWords, setMasterWords] = useState([]);
   
   // ▼▼▼ 親レベル選択用のState ▼▼▼
   const [selectedParentLevel, setSelectedParentLevel] = useState(null);
@@ -583,6 +579,18 @@ export default function StudentDashboard() {
   
   const navigate = useNavigate();
   const themeGroups = useMemo(() => buildSemanticGroups(allWords), [allWords]);
+
+  // 単語マスターは初期バンドルに含めず、画面が開いたときに取りに行く（計画書13.5）
+  useEffect(() => {
+    let cancelled = false;
+    loadWordMaster()
+      .then((words) => { if (!cancelled) setMasterWords(words); })
+      .catch((error) => {
+        console.error('単語マスターの読み込みに失敗しました:', error);
+        if (!cancelled) setDashboardError('単語データを読み込めませんでした。通信状態を確認してください。');
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   // 復習単語をハイライトする。生成物のHTMLを実行しないよう、
   // 区間に分けて React の <mark> として組み立てる（計画書12.4）。
@@ -711,7 +719,7 @@ export default function StudentDashboard() {
 
       if (userDoc.exists()) {
         const data = userDoc.data();
-        console.log('👤 ユーザーデータ取得:', {
+        logger.debug('👤 ユーザーデータ取得:', {
           level: data.level,
           testResultLevel: data.testResultLevel,
           finalLevel: data.finalLevel,
@@ -722,7 +730,7 @@ export default function StudentDashboard() {
         
         // testResultLevelの設定を詳細にログ出力
         const levelToSet = data.level || 0;
-        console.log('🎯 testResultLevel設定:', {
+        logger.debug('🎯 testResultLevel設定:', {
           dataLevel: data.level,
           levelToSet,
           willSetTestResultLevel: levelToSet
@@ -804,7 +812,7 @@ export default function StudentDashboard() {
         // const logsColRef = collection(db, 'users', uid, 'logs');
         // const q = query(logsColRef, orderBy("timestamp", "desc"), limit(1));
       } else {
-        console.log("No such document! Redirecting to test.");
+        logger.debug("No such document! Redirecting to test.");
         setViewMode('test'); 
       }
     } catch (error) {
@@ -819,7 +827,7 @@ export default function StudentDashboard() {
   const loadFreeStudyProgress = useCallback(async (uid) => {
     try {
       const progress = await getAllFreeStudyProgress(uid);
-      console.log('自由学習進捗読み込み:', progress);
+      logger.debug('自由学習進捗読み込み:', progress);
       setFreeStudyProgress(progress);
     } catch (error) {
       console.error('自由学習進捗の読み込みに失敗しました:', error);
@@ -848,20 +856,11 @@ export default function StudentDashboard() {
   const startCheckTest = async () => {
     setLoading(true);
     try {
-      let combinedWords = [];
-      
-      // wordsData.jsonから直接読み込み（全教材の単語を含む）
-      console.log('📚 単語力チェックテスト用wordsData.json読み込み成功:', {
-        総単語数: wordsData.length,
-        サンプル単語: wordsData.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
-      });
-      
-      const words = wordsData.map((word) => ({ 
-        sourceTextbook: 'words-master', 
-        ...word 
+      const master = masterWords.length > 0 ? masterWords : await loadWordMaster();
+      const combinedWords = master.map((word) => ({
+        sourceTextbook: 'words-master',
+        ...word,
       }));
-      combinedWords.push(...words);
-      console.log(`単語マスターから取得した単語数:`, words.length);
       
       // 表面語をキーにすると close(動/形/副) のような同綴語が消える。永続IDで一意化する。
       const uniqueWords = Array.from(new Map(combinedWords.map(w => [w.id, w])).values());
@@ -875,7 +874,7 @@ export default function StudentDashboard() {
   };
 
   const handleTestComplete = (finalLevel, responseTimes = []) => {
-    console.log('🎯 テスト完了処理開始:', finalLevel, responseTimes);
+    logger.debug('🎯 テスト完了処理開始:', finalLevel, responseTimes);
     setTestResultLevel(finalLevel);
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
@@ -909,7 +908,7 @@ export default function StudentDashboard() {
         const lastIndex = logData.index || 0;
         const level = currentSessionInfo.filterValue.replace('レベル', '');
         
-        console.log('進捗保存:', {
+        logger.debug('進捗保存:', {
           userId: user.uid,
           textbookId: selectedTextbookId,
           level: level,
@@ -926,7 +925,7 @@ export default function StudentDashboard() {
           [progressKey]: lastIndex
         }));
         
-        console.log('進捗保存完了:', progressKey, lastIndex);
+        logger.debug('進捗保存完了:', progressKey, lastIndex);
       }
     }
   };
@@ -976,25 +975,25 @@ export default function StudentDashboard() {
   const handleSelectTextbook = async (textbookId) => {
     setLoading(true);
     setSelectedTextbookId(textbookId);
-    console.log('教材選択:', textbookId);
+    logger.debug('教材選択:', textbookId);
     
     try {
         const option = freeStudyOptions.find(opt => opt.id === textbookId);
         const targetTextbookIds = option?.textbooks || [textbookId];
         
-        console.log('教材オプション:', option);
-        console.log('対象テキストブックIDs:', targetTextbookIds);
+        logger.debug('教材オプション:', option);
+        logger.debug('対象テキストブックIDs:', targetTextbookIds);
 
         let combinedWords = [];
         
         // 大阪府公立入試英単語の場合はtsukutan-app/words.jsonから直接読み込み
         if (textbookId === 'osaka-koukou-nyuushi') {
-          console.log('🏫 大阪府公立入試英単語の処理開始');
+          logger.debug('🏫 大阪府公立入試英単語の処理開始');
           
           try {
             // tsukutan-app/words.jsonから直接読み込み
             const osakaWordsData = await fetch('/data/words-osaka.json').then(res => res.json());
-            console.log('📚 大阪府公立入試英単語データ読み込み成功:', {
+            logger.debug('📚 大阪府公立入試英単語データ読み込み成功:', {
               総単語数: osakaWordsData.length,
               サンプル単語: osakaWordsData.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
             });
@@ -1004,29 +1003,21 @@ export default function StudentDashboard() {
               ...word 
             }));
             combinedWords.push(...words);
-            console.log(`大阪府公立入試英単語から取得した単語数:`, words.length);
+            logger.debug(`大阪府公立入試英単語から取得した単語数:`, words.length);
           } catch (error) {
             console.error('❌ 大阪府公立入試英単語データの読み込みに失敗:', error);
             throw new Error('大阪府公立入試英単語データの読み込みに失敗しました');
           }
         } else if (textbookId === 'highschool-english') {
-          // 高校英語の場合はwordsData.jsonからレベル5-7の単語を取得
-          console.log('🎓 高校英語の処理開始');
-          console.log('🔍 wordsData存在確認:', wordsData ? '存在' : 'undefined');
-          
-          if (!wordsData || !Array.isArray(wordsData)) {
-            console.error('❌ wordsDataが正しく読み込まれていません');
-            throw new Error('wordsDataの読み込みに失敗しました');
-          }
-          
-          // レベル5-7の単語をフィルタ（高校英語として分類された単語）
-          const highschoolWords = wordsData.filter(word => {
+          // 高校英語はマスターのレベル5〜7
+          const master = masterWords.length > 0 ? masterWords : await loadWordMaster();
+
+          const highschoolWords = master.filter(word => {
             const level = word.level || 1;
             return level >= 5 && level <= 7;
           });
           
-          console.log('📚 高校英語単語フィルタ成功:', {
-            総単語数: wordsData.length,
+          logger.debug('📚 高校英語単語フィルタ成功:', {
             高校英語単語数: highschoolWords.length,
             サンプル単語: highschoolWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
           });
@@ -1036,11 +1027,11 @@ export default function StudentDashboard() {
             ...word 
           }));
           combinedWords.push(...words);
-          console.log(`高校英語から取得した単語数:`, words.length);
+          logger.debug(`高校英語から取得した単語数:`, words.length);
         } else {
           // 英検教材の場合はwordsData.jsonとwords.jsonの両方から取得
           if (textbookId.startsWith('eiken-')) {
-            console.log('🎯 英検教材の処理開始:', textbookId);
+            logger.debug('🎯 英検教材の処理開始:', textbookId);
             
             // 英検級に応じてフィルタリング
             const levelPart = textbookId.split('-')[1];
@@ -1053,9 +1044,10 @@ export default function StudentDashboard() {
               targetEikenLevel = parseInt(levelPart);
             }
             
-            // 1. wordsData.jsonから取得（eikenLevelsフィールドあり）
-            if (wordsData && Array.isArray(wordsData)) {
-              const eikenWordsFromWordsData = wordsData.filter(word => {
+            // 1. マスターから取得（eikenLevels フィールドあり）
+            const master = masterWords.length > 0 ? masterWords : await loadWordMaster();
+            {
+              const eikenWordsFromWordsData = master.filter(word => {
                 if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
                   return word.eikenLevels.some(level => {
                     if (typeof targetEikenLevel === 'number') {
@@ -1071,7 +1063,6 @@ export default function StudentDashboard() {
                 return false;
               });
               
-              console.log(`wordsData.jsonから英検${levelPart}級以下の単語数:`, eikenWordsFromWordsData.length);
               
               const wordsFromWordsData = eikenWordsFromWordsData.map((word) => ({ 
                 sourceTextbook: textbookId, 
@@ -1112,7 +1103,7 @@ export default function StudentDashboard() {
                 return false;
               });
               
-              console.log(`words.jsonから英検${levelPart}級以下の単語数:`, eikenWordsFromWords.length);
+              logger.debug(`words.jsonから英検${levelPart}級以下の単語数:`, eikenWordsFromWords.length);
               
               const wordsFromWords = eikenWordsFromWords.map((word) => ({ 
                 sourceTextbook: textbookId, 
@@ -1123,14 +1114,14 @@ export default function StudentDashboard() {
               console.error('❌ words.jsonの読み込みに失敗:', error);
             }
             
-            console.log(`英検教材から取得した総単語数:`, combinedWords.length);
+            logger.debug(`英検教材から取得した総単語数:`, combinedWords.length);
           } else {
             // その他の教材はFirebaseから取得
         for (const id of targetTextbookIds) {
           const snapshot = await getDocs(collection(db, 'textbooks', id, 'words'));
           const words = snapshot.docs.map(d => ({ id: d.id, sourceTextbook: id, ...d.data() }));
           combinedWords.push(...words);
-          console.log(`テキストブック ${id} から取得した単語数:`, words.length);
+          logger.debug(`テキストブック ${id} から取得した単語数:`, words.length);
             }
           }
         }
@@ -1138,17 +1129,17 @@ export default function StudentDashboard() {
         // 永続IDで重複を除去する。表面語をキーにすると意味違いの同綴語が消える。
         const uniqueWords = Array.from(new Map(combinedWords.map(item => [item.id, item])).values());
         if (uniqueWords.length !== combinedWords.length) {
-          console.log(`${textbookId}: 重複除去 ${combinedWords.length} → ${uniqueWords.length}`);
+          logger.debug(`${textbookId}: 重複除去 ${combinedWords.length} → ${uniqueWords.length}`);
         }
 
         let filteredWords = uniqueWords;
         
         // 英検級の場合は全ての単語を保持（レベル別表示で個別にフィルタリング）
         if (option.id.startsWith('eiken-')) {
-          console.log('英検教材選択: 全単語を保持、レベル別表示で個別フィルタリング');
+          logger.debug('英検教材選択: 全単語を保持、レベル別表示で個別フィルタリング');
         } else if (option?.levels?.length) {
           // 通常のレベル別の場合は既存のlevelフィールドを使用
-          console.log('🔍 レベルフィルタリング開始:', {
+          logger.debug('🔍 レベルフィルタリング開始:', {
             対象レベル: option.levels,
             フィルタ前単語数: filteredWords.length,
             サンプル単語: filteredWords.slice(0, 5).map(w => ({ word: w.word, level: w.level }))
@@ -1160,14 +1151,14 @@ export default function StudentDashboard() {
               const level = word.level || 1;
               return level >= 5 && level <= 7;
             });
-            console.log('高校英語: レベル5-7の単語を保持、単語数:', filteredWords.length);
+            logger.debug('高校英語: レベル5-7の単語を保持、単語数:', filteredWords.length);
           } else {
             filteredWords = filteredWords.filter(word => {
               return option.levels.includes(word.level);
             });
           }
           
-          console.log('レベルフィルタ後:', {
+          logger.debug('レベルフィルタ後:', {
             フィルタ後単語数: filteredWords.length,
             レベル別分布: filteredWords.reduce((acc, word) => {
               acc[word.level] = (acc[word.level] || 0) + 1;
@@ -1178,7 +1169,7 @@ export default function StudentDashboard() {
 
         if (option?.topics?.length && filteredWords[0]?.topic !== undefined) {
           filteredWords = filteredWords.filter(word => option.topics.includes(word.topic));
-          console.log('トピックフィルタ後:', filteredWords.length);
+          logger.debug('トピックフィルタ後:', filteredWords.length);
         }
 
         // 固定順序でソート（教材選択時に一度だけ実行）
@@ -1193,7 +1184,7 @@ export default function StudentDashboard() {
           return a.id.localeCompare(b.id);
         });
 
-        console.log('📊 最終的な単語データ:', {
+        logger.debug('📊 最終的な単語データ:', {
           教材ID: textbookId,
           総単語数: filteredWords.length,
           レベル別分布: filteredWords.reduce((acc, word) => {
@@ -1229,7 +1220,7 @@ export default function StudentDashboard() {
               return word.eikenLevels.some(level => allowedLevels.includes(level));
             });
             setAllWords(eikenFilteredWords);
-            console.log(`英検${targetEikenLevel}級以下フィルタ後:`, eikenFilteredWords.length);
+            logger.debug(`英検${targetEikenLevel}級以下フィルタ後:`, eikenFilteredWords.length);
           } else {
             setAllWords(uniqueWords);
           }
@@ -1263,7 +1254,7 @@ export default function StudentDashboard() {
   const handleParentLevelClick = (parentLevel) => {
     setSelectedParentLevel(parentLevel);
     setShowSubLevels(true);
-    console.log('親レベル選択:', parentLevel);
+    logger.debug('親レベル選択:', parentLevel);
   };
 
   // サブレベル選択の処理
@@ -1288,7 +1279,7 @@ export default function StudentDashboard() {
     let sessionLabel = '';
     let startIndex = 0;
     
-    console.log('学習開始:', {
+    logger.debug('学習開始:', {
       filterType,
       value,
       selectedTextbookId,
@@ -1348,12 +1339,12 @@ export default function StudentDashboard() {
           if (filterType === 'sublevel' && selectedTextbookId === 'highschool-english') {
             // 高校英語のサブレベルの場合（5A, 5B, 5Cなど）
             filtered = parentLevelWords.filter(word => word.subLevel === value);
-            console.log(`🎓 高校英語サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
+            logger.debug(`🎓 高校英語サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
             sessionLabel = `サブレベル${value}`;
           } else {
             // 通常のレベルの場合
             filtered = parentLevelWords.filter(word => word.level === Number(value));
-            console.log(`サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
+            logger.debug(`サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
             sessionLabel = `レベル${value}`;
           }
         }
@@ -1410,24 +1401,24 @@ export default function StudentDashboard() {
               });
             }
           }
-          console.log(`英検${targetEikenLevel}級以下から取得した単語数:`, filtered.length);
+          logger.debug(`英検${targetEikenLevel}級以下から取得した単語数:`, filtered.length);
           sessionLabel = `英検${targetEikenLevel}級以下`;
         } else if (selectedTextbookId === 'osaka-koukou-nyuushi') {
           // 大阪府公立入試英単語の場合はlevelフィールドを基準にフィルタ
           filtered = allWords.filter(word => word.level === Number(value));
-          console.log('大阪府公立入試英単語から取得した単語数:', filtered.length);
+          logger.debug('大阪府公立入試英単語から取得した単語数:', filtered.length);
           sessionLabel = `レベル${value}`;
         } else {
           // 通常のレベル別学習の場合、levelフィールドを基準にフィルタ
           filtered = allWords.filter(word => word.level === Number(value));
-        console.log('allWordsから取得した単語数（固定順序）:', filtered.length);
+        logger.debug('allWordsから取得した単語数（固定順序）:', filtered.length);
           sessionLabel = `レベル${value}`;
         }
         
         // 前回の進捗を取得
         if (selectedTextbookId) {
           startIndex = await getFreeStudyProgress(auth.currentUser.uid, selectedTextbookId, String(value));
-          console.log('進捗取得:', {
+          logger.debug('進捗取得:', {
             userId: auth.currentUser.uid,
             textbookId: selectedTextbookId,
             level: value,
@@ -1459,7 +1450,7 @@ export default function StudentDashboard() {
     }
     
     const textbookLabel = freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId;
-    console.log('セッション情報設定:', {
+    logger.debug('セッション情報設定:', {
       textbookId: textbookLabel,
       filterType: filterType,
       filterValue: sessionLabel,
@@ -1588,7 +1579,7 @@ export default function StudentDashboard() {
     }
 
     try {
-      console.log('目標をリセットしています...');
+      logger.debug('目標をリセットしています...');
       
       // Reset goal data in Firestore
       const userDocRef = doc(db, 'users', user.uid);
@@ -1600,7 +1591,7 @@ export default function StudentDashboard() {
         }
       });
 
-      console.log('Firestoreの更新が完了しました');
+      logger.debug('Firestoreの更新が完了しました');
 
       // Clear local state
       setUserData(prev => ({
@@ -1612,13 +1603,13 @@ export default function StudentDashboard() {
         }
       }));
 
-      console.log('ローカル状態の更新が完了しました');
+      logger.debug('ローカル状態の更新が完了しました');
 
       // Show success message
       alert('目標がリセットされました。新しい目標を設定してください。');
 
       // Reload the page to trigger App.js useEffect
-      console.log('ページをリロードして目標設定画面に遷移します');
+      logger.debug('ページをリロードして目標設定画面に遷移します');
       window.location.reload();
     } catch (error) {
       console.error('目標リセットエラー:', error);
@@ -1990,7 +1981,7 @@ export default function StudentDashboard() {
         try {
           const user = auth.currentUser;
           if (user) {
-            console.log('🔍 詳細分析開始:', user.uid);
+            logger.debug('🔍 詳細分析開始:', user.uid);
             
             // まずユーザーデータを最新状態で取得
             const userDocRef = doc(db, 'users', user.uid);
@@ -1998,14 +1989,14 @@ export default function StudentDashboard() {
             let currentUserLevel = 0;
             if (userDoc.exists()) {
               const userData = userDoc.data();
-              console.log('👤 最新ユーザーデータ:', userData);
+              logger.debug('👤 最新ユーザーデータ:', userData);
               currentUserLevel = userData.level || 0;
-              console.log('📊 ユーザーデータから取得したレベル:', currentUserLevel);
+              logger.debug('📊 ユーザーデータから取得したレベル:', currentUserLevel);
             }
             
             // 基本的な分析データを取得
             const analysis = await analyzeUserPerformance(user.uid);
-            console.log('📊 分析結果:', analysis);
+            logger.debug('📊 分析結果:', analysis);
             
             // ユーザーデータのレベルを優先して使用
             const correctedAnalysis = {
@@ -2013,30 +2004,30 @@ export default function StudentDashboard() {
               currentLevel: currentUserLevel || analysis.currentLevel
             };
             
-            console.log('📊 詳細分析 - 修正後の現在のレベル:', correctedAnalysis.currentLevel);
-            console.log('📊 詳細分析 - テスト回数:', correctedAnalysis.totalTests);
-            console.log('📊 詳細分析 - 平均回答時間:', correctedAnalysis.averageResponseTime);
+            logger.debug('📊 詳細分析 - 修正後の現在のレベル:', correctedAnalysis.currentLevel);
+            logger.debug('📊 詳細分析 - テスト回数:', correctedAnalysis.totalTests);
+            logger.debug('📊 詳細分析 - 平均回答時間:', correctedAnalysis.averageResponseTime);
             setAnalyticsData(correctedAnalysis);
             
             if (correctedAnalysis.hasData) {
               const recs = generateLearningRecommendations(correctedAnalysis);
-              console.log('💡 推奨事項:', recs);
+              logger.debug('💡 推奨事項:', recs);
               setRecommendations(recs);
               
               // 予測データを取得
               const pred = await predictPerformance(user.uid);
-              console.log('🔮 予測結果:', pred);
+              logger.debug('🔮 予測結果:', pred);
               setPredictions(pred);
               
               // スマート推奨を取得
               const smartRecs = await generateSmartRecommendations(user.uid);
-              console.log('🎯 スマート推奨:', smartRecs);
+              logger.debug('🎯 スマート推奨:', smartRecs);
               setSmartRecommendations(smartRecs.recommendations || []);
             } else {
-              console.log('❌ 分析データなし:', correctedAnalysis);
+              logger.debug('❌ 分析データなし:', correctedAnalysis);
             }
           } else {
-            console.log('❌ ユーザーがログインしていません');
+            logger.debug('❌ ユーザーがログインしていません');
           }
         } catch (error) {
           console.error('Failed to load analytics:', error);
@@ -2066,7 +2057,7 @@ export default function StudentDashboard() {
     }
 
     // デバッグ: 現在の状態を確認
-    console.log('🔍 詳細分析レンダリング時の状態:', {
+    logger.debug('🔍 詳細分析レンダリング時の状態:', {
       analyticsData,
       hasData: analyticsData?.hasData,
       currentLevel: analyticsData?.currentLevel,
@@ -2167,7 +2158,7 @@ export default function StudentDashboard() {
                   
                   return (
                     <div key={index} className="weak-area-item clickable" onClick={() => {
-                      console.log('苦手分野クリック:', { level: area.level, eikenLevel });
+                      logger.debug('苦手分野クリック:', { level: area.level, eikenLevel });
                       
                       // レベルに応じて適切な教材を選択
                       let targetTextbookId = '';
@@ -2331,7 +2322,7 @@ export default function StudentDashboard() {
                   // レベルベースの推奨の場合はクリック可能にする
                   const isClickable = rec.type === 'focus_level' && rec.targetLevel;
                   const handleClick = isClickable ? async () => {
-                    console.log('スマート推奨クリック:', { level: rec.targetLevel });
+                    logger.debug('スマート推奨クリック:', { level: rec.targetLevel });
                     
                     // レベルに応じて適切な教材を選択
                     let targetTextbookId = '';
@@ -2522,7 +2513,7 @@ export default function StudentDashboard() {
         )}
               
         {/* 過去の長文一覧 */}
-        {console.log('長文タブ - pastStories:', pastStories, 'storiesLoading:', storiesLoading, 'pastStories.length:', pastStories.length)}
+        {logger.debug('長文タブ - pastStories:', pastStories, 'storiesLoading:', storiesLoading, 'pastStories.length:', pastStories.length)}
         {pastStories.length > 0 && (
           <div className="section-card" style={{ marginTop: '20px' }}>
             <h3 className="section-title">過去の長文一覧</h3>
@@ -2533,7 +2524,7 @@ export default function StudentDashboard() {
             ) : (
                   <div className="past-stories-list">
                 {pastStories.map(story => {
-                  console.log('長文データ詳細:', story.id, story);
+                  logger.debug('長文データ詳細:', story.id, story);
                   return (
                           <details key={story.id} className="past-story-item">
                       <summary style={{ 
@@ -2647,11 +2638,11 @@ export default function StudentDashboard() {
               );
               const priority = recommendationType ? recommendationType.priority : 'medium';
               
-              const wordCount = getTextbookWordCount(id);
+              const wordCount = getTextbookWordCount(id, masterWords);
               
               return (
                 <button key={id} className="tile-button" onClick={() => {
-                  console.log('🎯 教材選択ボタンクリック:', { id, label, isRecommended, wordCount });
+                  logger.debug('🎯 教材選択ボタンクリック:', { id, label, isRecommended, wordCount });
                   handleSelectTextbook(id);
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
@@ -2740,7 +2731,7 @@ export default function StudentDashboard() {
                           return word.eikenLevels.includes(currentLevelEiken);
                         });
                         
-                        console.log(`🔍 英検${currentLevelEiken}級フィルタリング:`, {
+                        logger.debug(`🔍 英検${currentLevelEiken}級フィルタリング:`, {
                           選択された級: targetEikenLevel,
                           表示レベル: level,
                           対応英検級: currentLevelEiken,
@@ -2754,7 +2745,7 @@ export default function StudentDashboard() {
                     const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
                     const targetLevel = highschoolLevelMapping[parseInt(level)];
                     levelWords = allWords.filter(word => word.level === targetLevel);
-                    console.log(`🔍 高校英語レベル${level}→${targetLevel}フィルタリング:`, {
+                    logger.debug(`🔍 高校英語レベル${level}→${targetLevel}フィルタリング:`, {
                       全単語数: allWords.length,
                       フィルタ後単語数: levelWords.length,
                       サンプル単語: levelWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
@@ -2762,7 +2753,7 @@ export default function StudentDashboard() {
                   } else if (selectedTextbookId === 'osaka-koukou-nyuushi') {
                     // 大阪府公立入試英単語の場合はlevelフィールドを基準にフィルタ
                     levelWords = allWords.filter(word => word.level === parseInt(level));
-                    console.log(`🔍 大阪府公立入試英単語レベル${level}フィルタリング:`, {
+                    logger.debug(`🔍 大阪府公立入試英単語レベル${level}フィルタリング:`, {
                       全単語数: allWords.length,
                       フィルタ後単語数: levelWords.length,
                       サンプル単語: levelWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
@@ -2770,7 +2761,7 @@ export default function StudentDashboard() {
                   } else {
                     // その他の教材の場合はlevelフィールドを基準にフィルタ
                     levelWords = allWords.filter(word => word.level === parseInt(level));
-                    console.log(`🔍 通常レベル${level}フィルタリング:`, {
+                    logger.debug(`🔍 通常レベル${level}フィルタリング:`, {
                       全単語数: allWords.length,
                       フィルタ後単語数: levelWords.length,
                       サンプル単語: levelWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
@@ -2814,7 +2805,7 @@ export default function StudentDashboard() {
                   const priority = recommendationType ? recommendationType.priority : 'medium';
                   
                                   // 詳細デバッグログ（すべてのレベルで出力）
-                  console.log('🎯 親レベル推奨判定詳細:', {
+                  logger.debug('🎯 親レベル推奨判定詳細:', {
                     level: Number(level),
                     testResultLevel,
                     isRecommended,
@@ -2888,7 +2879,7 @@ export default function StudentDashboard() {
                     const eikenLevelOrder = [5, 4, 3, 'pre2', 2, 'pre1', 1];
                     const targetEikenLevel = eikenLevelOrder[selectedParentLevel - 1];
                     
-                    console.log('🔍 英検級フィルタリング:', {
+                    logger.debug('🔍 英検級フィルタリング:', {
                       selectedTextbookId,
                       selectedParentLevel,
                       targetEikenLevel,
@@ -2921,18 +2912,18 @@ export default function StudentDashboard() {
                       return false;
                     });
                     
-                    console.log(`英検${targetEikenLevel}級の単語数:`, parentLevelWords.length);
+                    logger.debug(`英検${targetEikenLevel}級の単語数:`, parentLevelWords.length);
                     
                     // サンプル単語を表示
                     const sampleWords = parentLevelWords.slice(0, 5).map(w => w.word);
-                    console.log(`英検${targetEikenLevel}級のサンプル単語:`, sampleWords);
+                    logger.debug(`英検${targetEikenLevel}級のサンプル単語:`, sampleWords);
                   } else if (selectedTextbookId === 'highschool-english') {
                     // 高校英語の場合：選択された親レベル内の英単語をサブレベル別に分けて表示
                     // 高校英語のレベルマッピング: 1→5, 2→6, 3→7
                     const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
                     const targetLevel = highschoolLevelMapping[selectedParentLevel];
                     
-                    console.log('🎓 高校英語フィルタリング:', {
+                    logger.debug('🎓 高校英語フィルタリング:', {
                       selectedTextbookId,
                       selectedParentLevel,
                       targetLevel,
@@ -2942,15 +2933,15 @@ export default function StudentDashboard() {
                     // 選択された親レベル内の英単語を取得（当該レベルのみ）
                     parentLevelWords = allWords.filter(word => word.level === targetLevel);
                     
-                    console.log(`高校英語レベル${targetLevel}の単語数:`, parentLevelWords.length);
+                    logger.debug(`高校英語レベル${targetLevel}の単語数:`, parentLevelWords.length);
                     
                     // サンプル単語を表示
                     const sampleWords = parentLevelWords.slice(0, 5).map(w => w.word);
-                    console.log(`高校英語レベル${targetLevel}のサンプル単語:`, sampleWords);
+                    logger.debug(`高校英語レベル${targetLevel}のサンプル単語:`, sampleWords);
                   } else {
                     // その他の教材の場合：選択された親レベルの単語を取得
                     parentLevelWords = allWords.filter(word => word.level === selectedParentLevel);
-                    console.log(`レベル${selectedParentLevel}の単語数:`, parentLevelWords.length);
+                    logger.debug(`レベル${selectedParentLevel}の単語数:`, parentLevelWords.length);
                   }
                   
                   // levelに従ってランク分け
@@ -2988,7 +2979,7 @@ export default function StudentDashboard() {
                     }
                   });
                   
-                  console.log('サブレベル表示のランク分け:', {
+                  logger.debug('サブレベル表示のランク分け:', {
                     selectedTextbookId,
                     selectedParentLevel,
                     parentLevelWordsCount: parentLevelWords.length,
@@ -3001,7 +2992,7 @@ export default function StudentDashboard() {
                   // デバッグ：各レベルのサンプル単語を表示
                   Object.keys(levelGroups).forEach(level => {
                     const sampleWords = levelGroups[level].slice(0, 3).map(w => w.word);
-                    console.log(`レベル${level}のサンプル単語:`, sampleWords);
+                    logger.debug(`レベル${level}のサンプル単語:`, sampleWords);
                   });
                   
                   return (
@@ -3049,7 +3040,7 @@ export default function StudentDashboard() {
                         
                         // デバッグログ
                         if (isRecommended) {
-                          console.log('🎯 子レベル推奨バッジ表示:', {
+                          logger.debug('🎯 子レベル推奨バッジ表示:', {
                             level,
                             selectedParentLevel,
                             testResultLevel,
@@ -3120,7 +3111,7 @@ export default function StudentDashboard() {
                 (() => {
                   // デバッグ: サンプル単語の品詞データを確認
                   if (allWords.length > 0) {
-                    console.log('サンプル単語の品詞データ:', allWords.slice(0, 5).map(w => ({
+                    logger.debug('サンプル単語の品詞データ:', allWords.slice(0, 5).map(w => ({
                       word: w.word,
                       partOfSpeech: w.partOfSpeech,
                       type: typeof w.partOfSpeech
@@ -3140,7 +3131,7 @@ export default function StudentDashboard() {
                         const count = allWords.filter(w => {
                           return w.partOfSpeech && w.partOfSpeech.includes(posAbbr);
                         }).length;
-                        console.log(`品詞 ${pos} (${posAbbr}): ${count}語`);
+                        logger.debug(`品詞 ${pos} (${posAbbr}): ${count}語`);
                         return count;
                       })()}語
                     </span>

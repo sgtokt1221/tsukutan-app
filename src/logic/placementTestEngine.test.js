@@ -273,7 +273,7 @@ describe('estimateVocabulary', () => {
   });
 
   test('実際のマスターでも単調に増える', () => {
-    const master = require('../wordsData.json');
+    const master = require('../../public/data/words-master.json');
     const counts = [1, 2, 3, 4, 5, 6, 7].map((level) => estimateVocabulary(master, level));
     expect(counts).toEqual([...counts].sort((a, b) => a - b));
     expect(counts[6]).toBe(master.length);

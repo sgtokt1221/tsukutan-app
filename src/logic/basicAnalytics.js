@@ -1,5 +1,6 @@
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import logger from './logger';
 
 // 基本的な学習データ分析機能
 export const analyzeUserPerformance = async (userId) => {
@@ -32,7 +33,7 @@ export const analyzeUserPerformance = async (userId) => {
     // 分析用のログ（実力テストを優先、なければ学習セッションも含む）
     const logs = placementTestLogs.length > 0 ? placementTestLogs : allLogs;
     
-    console.log('📊 分析データ:', {
+    logger.debug('📊 分析データ:', {
       全ログ数: allLogs.length,
       実力テスト数: placementTestLogs.length,
       学習セッション数: learningSessions.length,
@@ -54,10 +55,10 @@ export const analyzeUserPerformance = async (userId) => {
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {});
-    console.log('🔍 セッションタイプ別カウント:', sessionTypeCounts);
+    logger.debug('🔍 セッションタイプ別カウント:', sessionTypeCounts);
     
     // デバッグ: 全ログの詳細を確認（最初の10件）
-    console.log('📋 全ログ詳細（最初の10件）:', allLogs.slice(0, 10).map(log => ({
+    logger.debug('📋 全ログ詳細（最初の10件）:', allLogs.slice(0, 10).map(log => ({
       id: log.id,
       sessionType: log.sessionType,
       finalLevel: log.finalLevel,
@@ -69,7 +70,7 @@ export const analyzeUserPerformance = async (userId) => {
     
     // デバッグ: 実力テスト以外のログも確認
     const nonPlacementLogs = allLogs.filter(log => log.sessionType !== 'placement_test');
-    console.log('🔍 実力テスト以外のログ:', nonPlacementLogs.slice(0, 5).map(log => ({
+    logger.debug('🔍 実力テスト以外のログ:', nonPlacementLogs.slice(0, 5).map(log => ({
       sessionType: log.sessionType,
       finalLevel: log.finalLevel,
       level: log.level,
@@ -78,7 +79,7 @@ export const analyzeUserPerformance = async (userId) => {
     
     // デバッグ: 実力テストの詳細を確認
     if (placementTestLogs.length > 0) {
-      console.log('🎯 実力テストログ詳細:', placementTestLogs.map(log => ({
+      logger.debug('🎯 実力テストログ詳細:', placementTestLogs.map(log => ({
         id: log.id,
         sessionType: log.sessionType,
         finalLevel: log.finalLevel,
@@ -88,7 +89,7 @@ export const analyzeUserPerformance = async (userId) => {
         全フィールド: Object.keys(log)
       })));
     } else {
-      console.log('❌ 実力テストログが見つかりません');
+      logger.debug('❌ 実力テストログが見つかりません');
     }
     
     // 実力テストがない場合は、ユーザーデータから情報を取得
@@ -101,7 +102,7 @@ export const analyzeUserPerformance = async (userId) => {
           const userData = userDoc.data();
           const userLevel = userData.level || 0;
           
-          console.log('👤 ユーザーデータからレベル取得:', { userLevel, userData });
+          logger.debug('👤 ユーザーデータからレベル取得:', { userLevel, userData });
           
           // ユーザーレベルが設定されている場合は、仮想的なテストデータとして扱う
           if (userLevel > 0) {
@@ -150,7 +151,7 @@ export const analyzeUserPerformance = async (userId) => {
     // レベル情報の取得（複数のフィールドをチェック）
     const currentLevel = logs[0].finalLevel || logs[0].level || logs[0].testResultLevel || 0;
     
-    console.log('📈 レベル情報:', {
+    logger.debug('📈 レベル情報:', {
       最新ログの全フィールド: Object.keys(logs[0]),
       finalLevel: logs[0].finalLevel,
       level: logs[0].level,
@@ -203,7 +204,7 @@ const calculateAverageResponseTime = (logs) => {
     .filter(log => log.responseTimes && Array.isArray(log.responseTimes))
     .flatMap(log => log.responseTimes.map(rt => rt.responseTime));
   
-  console.log('⏱️ 回答時間計算:', {
+  logger.debug('⏱️ 回答時間計算:', {
     ログ数: logs.length,
     responseTimesを持つログ: logs.filter(log => log.responseTimes && Array.isArray(log.responseTimes)).length,
     全回答時間データ: responseTimes,
@@ -274,7 +275,7 @@ const identifyWeakAreas = (logs) => {
     .sort((a, b) => a.accuracy - b.accuracy)
     .slice(0, 3); // 最大3つの苦手分野まで表示
   
-  console.log('🔍 苦手分野:', {
+  logger.debug('🔍 苦手分野:', {
     回答時間データ数: allResponseTimes.length,
     レベル別パフォーマンス: levelPerformance,
     苦手分野結果: weakLevels

@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import logger from './logger';
 
 /**
  * 自由学習の進捗を保存します
@@ -20,7 +21,7 @@ export const saveFreeStudyProgress = async (userId, textbookId, level, lastIndex
       lastIndex,
       lastUpdated: new Date(),
     }, { merge: true });
-    console.log('進捗保存成功:', `${textbookId}_${levelStr}`, lastIndex);
+    logger.debug('進捗保存成功:', `${textbookId}_${levelStr}`, lastIndex);
   } catch (error) {
     console.error('自由学習進捗の保存に失敗しました:', error);
   }
@@ -44,10 +45,10 @@ export const getFreeStudyProgress = async (userId, textbookId, level) => {
     if (progressDoc.exists()) {
       const data = progressDoc.data();
       const lastIndex = data.lastIndex || 0;
-      console.log('進捗取得成功:', `${textbookId}_${levelStr}`, lastIndex);
+      logger.debug('進捗取得成功:', `${textbookId}_${levelStr}`, lastIndex);
       return lastIndex;
     }
-    console.log('進捗なし:', `${textbookId}_${levelStr}`);
+    logger.debug('進捗なし:', `${textbookId}_${levelStr}`);
     return 0;
   } catch (error) {
     console.error('自由学習進捗の取得に失敗しました:', error);
@@ -73,11 +74,11 @@ export const getAllFreeStudyProgress = async (userId) => {
       if (doc.id !== 'all') { // 'all'ドキュメントは除外
         const data = doc.data();
         progressData[doc.id] = data.lastIndex || 0;
-        console.log('進捗ドキュメント:', doc.id, data.lastIndex);
+        logger.debug('進捗ドキュメント:', doc.id, data.lastIndex);
       }
     });
     
-    console.log('全進捗データ:', progressData);
+    logger.debug('全進捗データ:', progressData);
     return progressData;
   } catch (error) {
     console.error('全自由学習進捗の取得に失敗しました:', error);

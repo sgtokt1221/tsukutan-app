@@ -5,6 +5,7 @@ import { updateUserWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaBook, FaLayerGroup, FaPlay, FaStop } from 'react-icons/fa';
 import { initialize, speak } from './logic/speechUtils';
+import logger from './logic/logger';
 
 function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -90,7 +91,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
               setTimeout(() => {
                 const japaneseText = word.meaning || word.japanese || word.translation;
                 if (japaneseText) {
-                  console.log('Speaking Japanese (meaning):', japaneseText);
+                  logger.debug('Speaking Japanese (meaning):', japaneseText);
                   speak(japaneseText, 'ja-JP');
                 }
               }, 500);
@@ -227,22 +228,22 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
 
   const handleDoubleClick = useCallback((e) => {
-    console.log('🔥 Double click detected!', { viewMode, isFlipped, currentIndex });
+    logger.debug('🔥 Double click detected!', { viewMode, isFlipped, currentIndex });
     e.preventDefault();
     e.stopPropagation();
     
     setIsFlipped(prev => {
-      console.log('🔥 Setting isFlipped to:', !prev);
+      logger.debug('🔥 Setting isFlipped to:', !prev);
       return !prev;
     });
     if (!isFlipped && sessionWords.length > 0) {
       const wordToSpeak = sessionWords[currentIndex].word;
-      console.log('🔥 Speaking English:', wordToSpeak);
+      logger.debug('🔥 Speaking English:', wordToSpeak);
       speak(wordToSpeak, 'en-US'); // 英語音声で読み上げ
     } else if (isFlipped && sessionWords.length > 0) {
       const word = sessionWords[currentIndex];
       const japaneseText = word.meaning || word.japanese || word.translation;
-      console.log('🔥 Speaking Japanese:', japaneseText);
+      logger.debug('🔥 Speaking Japanese:', japaneseText);
       if (japaneseText) {
         speak(japaneseText, 'ja-JP'); // 日本語音声で読み上げ
       }
@@ -346,7 +347,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     e.preventDefault();
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
-    console.log('🔥 ReviewFlashcard Mouse down:', { x: e.clientX, y: e.clientY });
+    logger.debug('🔥 ReviewFlashcard Mouse down:', { x: e.clientX, y: e.clientY });
     
     // 単語帳モードの場合、カードの位置をリセット
     if (viewMode === 'wordbook' && e.currentTarget) {
@@ -361,7 +362,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
     
-    console.log('🔥 ReviewFlashcard Mouse move:', { deltaX, deltaY, viewMode });
+    logger.debug('🔥 ReviewFlashcard Mouse move:', { deltaX, deltaY, viewMode });
     
     if (viewMode === 'flashcard') {
       // フラッシュカードモードの場合、motion valueを使用
@@ -414,16 +415,16 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         let limitedDeltaX = 0;
         let limitedDeltaY = 0;
         
-        console.log('🔥 Wordbook mode movement:', { deltaX, deltaY, absDeltaX: Math.abs(deltaX), absDeltaY: Math.abs(deltaY) });
+        logger.debug('🔥 Wordbook mode movement:', { deltaX, deltaY, absDeltaX: Math.abs(deltaX), absDeltaY: Math.abs(deltaY) });
         
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
           // 左右スワイプ（評価）の場合
           limitedDeltaX = Math.max(-150, Math.min(150, deltaX));
-          console.log('🔥 Allowing horizontal movement for evaluation:', limitedDeltaX);
+          logger.debug('🔥 Allowing horizontal movement for evaluation:', limitedDeltaX);
         } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
           // 上下スワイプ（削除）の場合
           limitedDeltaY = Math.max(-150, Math.min(150, deltaY));
-          console.log('🔥 Allowing vertical movement for deletion:', limitedDeltaY);
+          logger.debug('🔥 Allowing vertical movement for deletion:', limitedDeltaY);
         }
         
         activeCard.style.transform = `translate(${limitedDeltaX}px, ${limitedDeltaY}px)`;
@@ -435,15 +436,15 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         if (limitedDeltaY < -15) {
           backgroundColor = "#facc15"; // Yellow for swipe up (deletion)
           boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-          console.log('🔥 Yellow highlight for upward swipe (deletion)');
+          logger.debug('🔥 Yellow highlight for upward swipe (deletion)');
         } else if (limitedDeltaX > 30) {
           backgroundColor = "#4ade80"; // Green for right swipe (correct)
           boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          console.log('🔥 Green highlight for right swipe (correct)');
+          logger.debug('🔥 Green highlight for right swipe (correct)');
         } else if (limitedDeltaX < -30) {
           backgroundColor = "#ef4444"; // Red for left swipe (incorrect)
           boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          console.log('🔥 Red highlight for left swipe (incorrect)');
+          logger.debug('🔥 Red highlight for left swipe (incorrect)');
         }
         
         activeCard.style.setProperty('background-color', backgroundColor, 'important');
@@ -514,11 +515,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
             // 左右スワイプ（評価）の場合
             if (deltaX > 30) {
               // 右スワイプ（正解）
-              console.log('🔥 Right swipe - correct answer');
+              logger.debug('🔥 Right swipe - correct answer');
               // 評価処理をここに追加
             } else if (deltaX < -30) {
               // 左スワイプ（不正解）
-              console.log('🔥 Left swipe - incorrect answer');
+              logger.debug('🔥 Left swipe - incorrect answer');
               // 評価処理をここに追加
             }
             
@@ -583,7 +584,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     
     // マルチタッチの場合は無視
     if (e.touches.length > 1) {
-      console.log('🔥 Multi-touch detected, ignoring');
+      logger.debug('🔥 Multi-touch detected, ignoring');
       return;
     }
     
@@ -591,7 +592,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     const currentTime = new Date().getTime();
     const tapLength = currentTime - lastTap;
     if (tapLength < 500 && tapLength > 0) {
-      console.log('🔥 Double tap detected on mobile!');
+      logger.debug('🔥 Double tap detected on mobile!');
       handleDoubleClick(e);
       setLastTap(0);
       return;
@@ -601,7 +602,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     setIsDragging(true);
     const touch = e.touches[0];
     setDragStart({ x: touch.clientX, y: touch.clientY });
-    console.log('🔥 ReviewFlashcard Touch start:', { 
+    logger.debug('🔥 ReviewFlashcard Touch start:', { 
       x: touch.clientX, 
       y: touch.clientY,
       target: e.target.tagName,
@@ -623,7 +624,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
     
-    console.log('🔥 ReviewFlashcard Touch move:', { 
+    logger.debug('🔥 ReviewFlashcard Touch move:', { 
       deltaX, 
       deltaY, 
       viewMode,
@@ -664,11 +665,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     
     // フラッシュカードモードでは全方向の動きを許可
     if (viewMode === 'flashcard') {
-      console.log('🔥 Touch move in flashcard mode:', { deltaX, deltaY });
+      logger.debug('🔥 Touch move in flashcard mode:', { deltaX, deltaY });
       // motion valueを更新
       x.set(deltaX);
       y.set(deltaY);
-      console.log('🔥 Motion values updated:', { xValue: x.get(), yValue: y.get() });
+      logger.debug('🔥 Motion values updated:', { xValue: x.get(), yValue: y.get() });
       
       // フラッシュカードの背景色を変更
       const flashcard = document.getElementById('flashcard');
@@ -705,7 +706,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
     
-    console.log('🔥 ReviewFlashcard Touch end:', { deltaX, deltaY });
+    logger.debug('🔥 ReviewFlashcard Touch end:', { deltaX, deltaY });
     
     // カードの色をリセット
     const flashcard = document.getElementById('flashcard');
@@ -735,15 +736,15 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
           // 左右スワイプ（評価）
           if (deltaX > 30) {
-            console.log('🔥 Wordbook: Right swipe - correct answer');
+            logger.debug('🔥 Wordbook: Right swipe - correct answer');
             // 評価処理をここに追加
           } else if (deltaX < -30) {
-            console.log('🔥 Wordbook: Left swipe - incorrect answer');
+            logger.debug('🔥 Wordbook: Left swipe - incorrect answer');
             // 評価処理をここに追加
           }
         } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
           // 上スワイプ（削除）
-          console.log('🔥 Wordbook: Up swipe - delete from review');
+          logger.debug('🔥 Wordbook: Up swipe - delete from review');
           // 削除処理は既にhandleMouseUpで実装済み
         }
       }
@@ -1101,14 +1102,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       }}>
         <button
           onClick={() => {
-            console.log('上に戻るボタンがクリックされました');
+            logger.debug('上に戻るボタンがクリックされました');
             
             // 単語帳モードのコンテナ要素を取得
             const wordbookContainer = document.querySelector('[style*="height: 100vh"][style*="overflow: auto"]');
-            console.log('単語帳コンテナ:', wordbookContainer);
+            logger.debug('単語帳コンテナ:', wordbookContainer);
             
             if (wordbookContainer) {
-              console.log('コンテナのスクロール位置:', wordbookContainer.scrollTop);
+              logger.debug('コンテナのスクロール位置:', wordbookContainer.scrollTop);
               
               // コンテナ要素にスクロール
               wordbookContainer.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1116,11 +1117,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
               // フォールバック
               setTimeout(() => {
                 wordbookContainer.scrollTop = 0;
-                console.log('フォールバック後の位置:', wordbookContainer.scrollTop);
+                logger.debug('フォールバック後の位置:', wordbookContainer.scrollTop);
               }, 100);
             } else {
               // フォールバック: ウィンドウスクロール
-              console.log('ウィンドウスクロール実行');
+              logger.debug('ウィンドウスクロール実行');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
