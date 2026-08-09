@@ -214,12 +214,14 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
   }, []);
 
   // 正解・不正解処理関数
-  const handleCorrect = useCallback(async () => {
+  // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
+  // 'again' は handleIncorrect が受け持つ。
+  const handleAnswer = useCallback(async (quality) => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
     
     if (user && currentWord) {
-      trackWrite(updateUserWordProgress(user.uid, currentWord, true));
+      trackWrite(updateUserWordProgress(user.uid, currentWord, quality));
     }
     
     // 次の単語へ
@@ -256,6 +258,9 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     }
   }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
 
+  const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
+  const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
+
   const handleIncorrect = useCallback(async () => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
@@ -263,7 +268,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
     // 不正解の場合、復習リストに追加
     if (currentWord) {
       if (user) {
-        trackWrite(updateUserWordProgress(user.uid, currentWord, false));
+        trackWrite(updateUserWordProgress(user.uid, currentWord, 'again'));
       }
       setIncorrectWords(prev => [...prev.filter(w => w.id !== currentWord.id), currentWord]);
     }
@@ -1028,6 +1033,7 @@ export default function LearningFlashcard({ words, onBack, initialIndex = 0, ses
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
+        onHard={handleHard}
       />
 
       {/* ナビゲーションボタン */}
