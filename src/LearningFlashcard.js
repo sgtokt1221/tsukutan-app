@@ -12,7 +12,7 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
-import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback } from './logic/swipeFeedback';
+import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlay } from './logic/useAutoPlay';
@@ -31,6 +31,15 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
+/** その座標にある単語帳カードを返す。掴んだカードを特定するのに使う。 */
+const findCardAtPoint = (x, y) => {
+  for (const card of document.querySelectorAll('[data-card-index]')) {
+    const rect = card.getBoundingClientRect();
+    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) return card;
+  }
+  return null;
+};
+
 export default function LearningFlashcard({
   words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion, title,
   // 日次学習のときだけ渡る。1語ずつ記録して、途中で閉じても再開できるようにする。
@@ -45,6 +54,8 @@ export default function LearningFlashcard({
   const [revealedCards, setRevealedCards] = useState(new Set()); // 赤シート機能で表示中のカード
   const [longPressCards, setLongPressCards] = useState(new Set()); // 長押し中のカード（復習モード用）
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
+  // 単語帳モードで左右スワイプした結果。どこまで進んだかを色で残す。
+  const [wordbookJudgements, setWordbookJudgements] = useState({});
   // 文字サイズは復習カードと共有する
   const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
   // 出題の向き（英→和 / 和→英）も復習カードと共有する
@@ -254,6 +265,34 @@ export default function LearningFlashcard({
   // 正解・不正解処理関数
   // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
   // 'again' は handleIncorrect が受け持つ。
+  /**
+   * 単語帳での左右スワイプ。その単語を採点し、結果を色で残す。
+   *
+   * 以前はカードを飛ばして wordbookProgress を1進めるだけで、
+   * 記録も残らず、掴んだカードと消えるカードも一致していなかった。
+   */
+  const judgeWordAt = useCallback((actualIndex, quality) => {
+    const word = shuffledWords[actualIndex];
+    const user = auth.currentUser;
+    if (!word) return;
+
+    if (user) {
+      trackWrite(
+        updateUserWordProgress(
+          user.uid, word, quality, false, undefined,
+          { revealed: revealedCards.has(actualIndex) },
+        ).then((result) => {
+          if (result?.created) newlyLearnedIdsRef.current.add(word.id);
+          onWordAnsweredRef.current?.(word.id);
+        })
+      );
+    }
+    setWordbookJudgements(prev => ({
+      ...prev,
+      [actualIndex]: quality === 'again' ? 'incorrect' : 'correct',
+    }));
+  }, [shuffledWords, auth, trackWrite, revealedCards]);
+
   const handleAnswer = useCallback(async (quality) => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
@@ -394,24 +433,7 @@ export default function LearningFlashcard({
       );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードの場合、直接DOM操作でカードの位置を更新
-      // 現在ドラッグ中のカードを特定
-      const allCards = document.querySelectorAll('[data-card-index]');
-      let activeCard = null;
-      
-      // ドラッグ開始位置に最も近いカードを特定
-      for (let card of allCards) {
-        const rect = card.getBoundingClientRect();
-        if (dragStart.x >= rect.left && dragStart.x <= rect.right &&
-            dragStart.y >= rect.top && dragStart.y <= rect.bottom) {
-          activeCard = card;
-          break;
-        }
-      }
-      
-      // カードが見つからない場合、最初のカードを使用
-      if (!activeCard && allCards.length > 0) {
-        activeCard = allCards[0];
-      }
+      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
         // 単語帳モードでは左右スワイプで評価、上下スワイプで削除
@@ -484,51 +506,19 @@ export default function LearningFlashcard({
       const threshold = 50;
       const isSwipe = Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold;
       
-      // 現在ドラッグ中のカードを特定
-      const allCards = document.querySelectorAll('[data-card-index]');
-      let activeCard = null;
-      
-      // ドラッグ開始位置に最も近いカードを特定
-      for (let card of allCards) {
-        const rect = card.getBoundingClientRect();
-        if (dragStart.x >= rect.left && dragStart.x <= rect.right &&
-            dragStart.y >= rect.top && dragStart.y <= rect.bottom) {
-          activeCard = card;
-          break;
-        }
-      }
+      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
-        if (isSwipe) {
-          // スワイプが完了した場合、カードを画面外に移動
-          if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // 左右スワイプ
-            const direction = deltaX > 0 ? 300 : -300;
-            activeCard.style.transform = `translate(${direction}px, 0px)`;
-            activeCard.style.opacity = '0';
-          } else {
-            // 上下スワイプ（上スワイプの場合のみ処理）
-            if (deltaY < -15) { // 上スワイプ（負の値）
-              activeCard.style.transform = `translate(0px, -300px)`;
-              activeCard.style.opacity = '0';
-            }
-          }
-          
-          // アニメーション後にカードを非表示にして次のカードに進む
-          setTimeout(() => {
-            activeCard.style.display = 'none';
-            // 次のカードに進む
-            setWordbookProgress(prev => prev + 1);
-          }, 300);
-        } else {
-          // スワイプが不十分な場合、元の位置に戻す
-          activeCard.style.transform = 'translate(0px, 0px)';
-          activeCard.style.setProperty('background-color', 'white', 'important');
-          activeCard.style.setProperty('box-shadow', 'none', 'important');
+        // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
+        // 見返せない。結果はカードの色で示す。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(Number(activeCard.dataset.cardIndex), deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -671,51 +661,19 @@ export default function LearningFlashcard({
       const threshold = 50;
       const isSwipe = Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold;
       
-      // 現在ドラッグ中のカードを特定
-      const allCards = document.querySelectorAll('[data-card-index]');
-      let activeCard = null;
-      
-      // ドラッグ開始位置に最も近いカードを特定
-      for (let card of allCards) {
-        const rect = card.getBoundingClientRect();
-        if (dragStart.x >= rect.left && dragStart.x <= rect.right &&
-            dragStart.y >= rect.top && dragStart.y <= rect.bottom) {
-          activeCard = card;
-          break;
-        }
-      }
+      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
-        if (isSwipe) {
-          // スワイプが完了した場合、カードを画面外に移動
-          if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // 左右スワイプ
-            const direction = deltaX > 0 ? 300 : -300;
-            activeCard.style.transform = `translate(${direction}px, 0px)`;
-            activeCard.style.opacity = '0';
-          } else {
-            // 上下スワイプ（上スワイプの場合のみ処理）
-            if (deltaY < -15) { // 上スワイプ（負の値）
-              activeCard.style.transform = `translate(0px, -300px)`;
-              activeCard.style.opacity = '0';
-            }
-          }
-          
-          // アニメーション後にカードを非表示にして次のカードに進む
-          setTimeout(() => {
-            activeCard.style.display = 'none';
-            // 次のカードに進む
-            setWordbookProgress(prev => prev + 1);
-          }, 300);
-        } else {
-          // スワイプが不十分な場合、元の位置に戻す
-          activeCard.style.transform = 'translate(0px, 0px)';
-          activeCard.style.setProperty('background-color', 'white', 'important');
-          activeCard.style.setProperty('box-shadow', 'none', 'important');
+        // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
+        // 見返せない。結果はカードの色で示す。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(Number(activeCard.dataset.cardIndex), deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
@@ -820,7 +778,7 @@ export default function LearningFlashcard({
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="wordbook-card"
+              className={`wordbook-card${wordbookJudgements[actualIndex] ? ` wordbook-card--${wordbookJudgements[actualIndex]}` : ''}`}
             >
                 <div className="wordbook-card__grid">
                 {/* 左側：問題。英→和なら英単語、和→英なら意味 */}

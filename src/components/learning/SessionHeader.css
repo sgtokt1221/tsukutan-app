@@ -423,3 +423,21 @@
   gap: var(--space-8);
   min-width: 0;
 }
+
+/* 採点済みのカード。どこまでやったかが一覧で分かるよう、
+   うっすら色を残す。スワイプ中の濃い色とは別で、こちらは残る。 */
+.wordbook-card--correct {
+  background-color: #f7fee7;
+  border-color: rgba(132, 204, 22, 0.45);
+}
+
+.wordbook-card--incorrect {
+  background-color: #fef2f2;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* 左の列は白地を持っているので、判定色を透かす */
+.wordbook-card--correct .wordbook-card__left,
+.wordbook-card--incorrect .wordbook-card__left {
+  background-color: inherit;
+}
