@@ -14,7 +14,6 @@ import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
-import { useFitWordbookText } from './logic/useFitWordbookText';
 import { useAutoPlay } from './logic/useAutoPlay';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 import DirectionToggle from './components/learning/DirectionToggle';
@@ -192,8 +191,6 @@ export default function LearningFlashcard({
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   // 先頭へ戻るのスクロール対象。スクロールするのは画面ではなくこの要素。
   const wordbookShellRef = useRef(null);
-  // 単語帳モードの問題文字を、カードいっぱいの大きさに合わせる
-  const wordbookGridRef = useFitWordbookText([shuffledWords, wordbookProgress, wordbookZoom, direction, viewMode]);
   // このセッションで初めて記録した単語のID。習得語数はここから数える。
   // 画面のインデックス数だと、戻る・再回答で二重に数えてしまう。
   const newlyLearnedIdsRef = useRef(new Set());
@@ -853,7 +850,7 @@ export default function LearningFlashcard({
 
       {/* 単語帳コンテンツ */}
       <div className="wordbook-list">
-        <div className="wordbook-list__grid" ref={wordbookGridRef}>
+        <div className="wordbook-list__grid">
           {shuffledWords.slice(wordbookProgress).map((word, index) => {
             const actualIndex = wordbookProgress + index;
             return (
@@ -880,7 +877,6 @@ export default function LearningFlashcard({
                   <button
                     type="button"
                     className={isJaToEn ? 'wordbook-word wordbook-word--ja' : 'wordbook-word'}
-                    data-fit-text=""
                     onClick={() => (isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word))}
                     aria-label={`${isJaToEn ? word.meaning : word.word} を読み上げる`}
                   >
