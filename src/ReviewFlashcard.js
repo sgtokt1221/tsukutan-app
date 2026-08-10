@@ -5,6 +5,7 @@ import { updateUserWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaArrowUp, FaPlay, FaStop } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
+import PeekNudge from './components/learning/PeekNudge';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
@@ -24,6 +25,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [viewMode, setViewMode] = useState('flashcard'); // 'flashcard' or 'wordbook'
   const [revealedCards, setRevealedCards] = useState(new Set());
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
+  // 答えを見たまま「わかった」を押した回数。吹き出しの発火に使う。
+  const [peekCount, setPeekCount] = useState(0);
   // 自動読み上げ。学習カードと同じ実装を共有する。
   const { autoPlay, start: startAutoPlay, stop: stopAutoPlay } = useAutoPlay({
     words: sessionWords,
@@ -216,10 +219,13 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
   // 'again' は handleIncorrect が受け持つ。
   const handleAnswer = useCallback(async (quality) => {
+    // 答えを見たまま「わかった」を押したら、止めはしないが気づかせる
+    if (isFlipped && quality === 'good') setPeekCount((prev) => prev + 1);
+
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      trackWrite(updateUserWordProgress(userId, currentWord, quality));
+      trackWrite(updateUserWordProgress(userId, currentWord, quality, false, undefined, { revealed: isFlipped }));
       setGraduatedCount(prev => prev + 1);
     }
     
@@ -248,7 +254,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       await flushWrites();
       onBack();
     }
-  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites]);
+  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites, isFlipped]);
 
   const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
   const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
@@ -257,7 +263,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
-      trackWrite(updateUserWordProgress(userId, currentWord, 'again'));
+      trackWrite(updateUserWordProgress(userId, currentWord, 'again', false, undefined, { revealed: isFlipped }));
     }
     
     // 次の単語へ
@@ -285,7 +291,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       await flushWrites();
       onBack();
     }
-  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites]);
+  }, [currentIndex, sessionWords, x, y, userId, graduatedCount, sessionInfo, onSaveLog, onBack, trackWrite, flushWrites, isFlipped]);
 
   // ネイティブドラッグイベントハンドラー
   const handleMouseDown = useCallback((e) => {
@@ -948,6 +954,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       </div>
 
       {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
+      <PeekNudge trigger={peekCount} />
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}

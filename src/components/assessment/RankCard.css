@@ -468,11 +468,7 @@
     box-shadow var(--motion-fast) var(--ease-standard);
 }
 
-.rank-card__retest-link::before {
-  content: '↻';
-  font-size: var(--font-size-16);
-  line-height: 1;
-}
+/* アイコンは JSX 側（FaRedo）で描く。ここで content を足すと二重になる。 */
 
 .rank-card__retest-link:hover {
   transform: translateY(-1px);

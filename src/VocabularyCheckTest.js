@@ -99,7 +99,9 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     try {
       await updateDoc(doc(db, 'users', user.uid), {
         level: finalLevel,
-        'progress.currentVocabulary': estimatedVocabulary,
+        // 到達語数そのものは updateProgressPercentage が和集合で数え直す。
+        // ここではテストの推定値だけを残す。
+        'progress.assessedVocabulary': estimatedVocabulary,
         'progress.lastCheckedAt': serverTimestamp(),
       });
 
@@ -137,7 +139,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     if (!currentWord || isSaving || engine.completed) return;
 
     const responseTime = questionStartTime ? Date.now() - questionStartTime : 0;
-    let next = recordAnswer(engine, { wordId: currentWord.id, isCorrect, responseTime });
+    // 答えを見てから「わかる」を押したかを残す。自己申告なので、
+    // 見たうえでの「わかる」は思い出せたことにならない（半分の得点）。
+    let next = recordAnswer(engine, {
+      wordId: currentWord.id,
+      isCorrect,
+      responseTime,
+      revealed: isFlipped,
+    });
 
     // 不正解の単語は復習リストへ
     const user = auth.currentUser;
@@ -165,7 +174,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     setQuestionStartTime(Date.now());
     x.set(0);
     y.set(0);
-  }, [questions, questionIndex, engine, questionStartTime, isSaving, finishTestAndSave, x, y]);
+  }, [questions, questionIndex, engine, questionStartTime, isSaving, isFlipped, finishTestAndSave, x, y]);
 
   const handleDragEnd = (event, info) => {
     if (Math.abs(info.offset.x) < 50) {
@@ -283,7 +292,9 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
         <p className="test-header-note">
           出題レベル: {engine.targetLevel} / 7　これまでの正答率: {accuracy}%（{answeredCount}問）
         </p>
-        <p>カードをダブルタップして答えを確認</p>
+        {/* 「確認してから答える」と案内すると、見てから「わかる」を押す流れに
+            なってしまう。まず答え、分からないときだけ見る、と伝える。 */}
+        <p>まず答えてください。分からないときはダブルタップで答えを見られます（得点は半分）</p>
         <p>わかる→右へスワイプ / わからない→左へスワイプ</p>
       </div>
 
