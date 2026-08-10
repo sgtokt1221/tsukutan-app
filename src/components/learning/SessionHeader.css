@@ -132,10 +132,9 @@
   position: relative;
   border-right: var(--border-default);
   background-color: var(--color-surface);
-  /* この列をコンテナにして、語の大きさを列の幅と高さの両方から決める。
-     size 指定なので列の中身は高さに影響しない。行の高さは右側（意味・
-     例文）と min-height で決まるため、循環しない。 */
-  container-type: size;
+  /* 幅だけをコンテナにする。size にすると列の高さが中身と切り離され、
+     長い語が行の高さに反映されずに切れてしまう。 */
+  container-type: inline-size;
 }
 
 .wordbook-card__right {
@@ -254,32 +253,26 @@
 
 /* 倍率はカード内の文字にだけ効かせる。レイアウトは崩さない。 */
 .wordbook-word {
-  /* 列の余りをこのボタンが占める。ここが「収めるべき箱」になり、
-     JS（useFitWordbookText）が中身をこの箱いっぱいまで大きくする。 */
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  align-items: center;
+  display: block;
   width: 100%;
   padding: 0;
   border: none;
   background: none;
   text-align: left;
   cursor: pointer;
-  /* JS が語ごとの大きさを入れる。読み込み前や JS が動かない場合の
-     控えめな既定値として、列の幅と高さから決めておく。 */
-  font-size: clamp(8px, min(20cqi, 46cqh), 40px);
+  /* どのカードも同じ大きさにする。以前は列の高さ(cqh)からも決めていて、
+     行の高さが違うと語ごとに大きさが変わっていた。倍率だけで決める。
+     英語でも日本語の意味でも同じ大きさ。 */
+  font-size: max(11px, calc(20px * var(--wordbook-zoom, 1)));
   font-weight: 700;
   color: var(--color-ink-olive);
-  line-height: 1.15;
+  line-height: 1.3;
   margin-bottom: var(--space-2);
   overflow-wrap: anywhere;
-  /* 見積もりが外れても、はみ出しは見せない（JS が縮めて追いつく） */
-  overflow: hidden;
 }
 
 .wordbook-pronunciation {
-  font-size: clamp(7px, min(13cqi, 28cqh), 22px);
+  font-size: max(9px, calc(13px * var(--wordbook-zoom, 1)));
   color: var(--color-olive-muted);
   font-style: italic;
 }
@@ -394,15 +387,6 @@
   min-height: 20px;
   font-size: calc(12px * var(--wordbook-zoom, 1) + 4px);
   border-radius: var(--radius-pill);
-}
-
-/* 和→英のとき、左は日本語の意味が問題になる。英単語向けの
-   大きな字送りのままだと長い意味が列からあふれるので、
-   右側の意味と同じ大きさに揃える。 */
-.wordbook-word--ja {
-  font-size: max(8px, calc(var(--font-size-16) * var(--wordbook-zoom, 1) * 1.5));
-  font-weight: 600;
-  line-height: 1.35;
 }
 
 /* 和→英のとき、右に出るのは答えの英単語。単語らしく見えるよう

@@ -1612,14 +1612,16 @@ export default function StudentDashboard() {
                 </p>
               )}
                <div className="task-cards-container">
-                  {isDailyTaskCompleted ? (
+                  {/* 今日のぶんが終わっていても、前倒しできる語が無ければ
+                      「おかわり 0」を出さない。押しても
+                      「追加の単語はありません」と言うだけの札になっていた。 */}
+                  {isDailyTaskCompleted && dailyPlan.extraNewWords.length > 0 ? (
                     <div className="task-card okawari-card" onClick={startExtraNewWords}>
                       <FaMagic className="task-icon okawari-icon" />
                       <div className="task-info">
                         <p>おかわり</p>
                         <span>{dailyPlan.extraNewWords.length}</span>
                       </div>
-                      <div className="okawari-label">スケジュール巻いてます！</div>
                     </div>
                   ) : (
                     <div className="task-card" onClick={startDailyNewWords}>
