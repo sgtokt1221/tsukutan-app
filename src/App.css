@@ -2802,3 +2802,150 @@ select:focus-visible,
 .goal-card__deadline.behind strong {
   color: var(--color-warning-ink);
 }
+
+/* ===== 自由学習 =====
+   見出しと「選択中の教材」を横並びにしていたため、狭い幅で本文へ
+   重なっていた。縦に積み、教材を選んだあとは説明文を出さない。 */
+.free-study-head {
+  margin-bottom: var(--space-12);
+}
+
+.free-study-head--selected {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.free-study-head .tile-caption {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.free-study-title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  overflow-wrap: anywhere;
+}
+
+.free-study-back {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  cursor: pointer;
+}
+
+.free-study-back:hover {
+  background-color: var(--color-lime-soft);
+}
+
+/* 絞り込みタブ。学習画面のアンダータブと同じ見た目にする。
+   以前は青いピル型で、この画面だけ配色が違っていた。 */
+.free-study-tabs {
+  display: flex;
+  margin-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-olive-border);
+}
+
+.free-study-tab {
+  padding: var(--space-8) var(--space-12);
+  border: none;
+  /* 選択中の下線ぶんを常に確保して、切り替えても行が動かないようにする */
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-14);
+  font-weight: 600;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.free-study-tab:hover {
+  color: var(--color-ink-olive);
+}
+
+.free-study-tab[aria-selected="true"] {
+  color: var(--color-ink-olive);
+  border-bottom-color: var(--color-brand-lime);
+}
+
+/* ===== 自由学習のレベルカード =====
+   中央寄せで4行積むと、どれが名前でどれが数字か読み取れなかった。
+   左に名前と目安、右に語数と進み具合を置く。 */
+.selection-grid .selection-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  text-align: left;
+}
+
+.selection-grid .selection-card:hover:not(.selection-card-disabled):not(:disabled) {
+  background-color: var(--color-lime-soft);
+  border-color: var(--color-lime-border);
+  transform: none;
+  box-shadow: none;
+}
+
+.selection-card-main {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.selection-card-titles {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.selection-grid .selection-card-level {
+  margin: 0;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.selection-grid .selection-card-desc {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.selection-card-side {
+  flex-shrink: 0;
+  display: grid;
+  justify-items: end;
+  gap: var(--space-2);
+  text-align: right;
+}
+
+.selection-grid .selection-card-meta {
+  margin: 0;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  font-variant-numeric: tabular-nums;
+}
+
+.selection-grid .selection-card-progress {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}

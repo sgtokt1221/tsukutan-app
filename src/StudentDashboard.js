@@ -17,7 +17,7 @@ import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
-import { FaBook, FaSyncAlt, FaMagic, FaStar } from 'react-icons/fa';
+import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
 import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
@@ -1883,24 +1883,31 @@ export default function StudentDashboard() {
   const renderFreeStudyContent = () => (
     <div className="free-study-tab-content">
             <div className="section-card">
-              <div className="tile-header">
-                <div>
-                  <h3 className="section-title">自由学習メニュー</h3>
-                  <p className="tile-caption">リラックスしながら、気になる教材を選んで学べます。</p>
+              {/* 見出しと「選択中の教材」を横に並べると、狭い幅で本文に
+                  重なっていた。縦に積んで、教材を選んだあとは説明文を出さない。 */}
+              {selectionMode === 'main' ? (
+                <div className="free-study-head">
+                  <h3 className="home-section-eyebrow">自由学習</h3>
+                  <p className="tile-caption">気になる教材を選んで、自分のペースで進められます。</p>
                 </div>
-                {selectionMode === 'filter' && (
-                  /* 選択中の教材と戻る導線。以前は横並び固定で、
-                     幅が足りないと文字が1字ずつ折り返されていた（計画書12.4）。 */
-                  <div className="textbook-context">
-                    <span className="textbook-context__current">
-                      選択中: {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
-                    </span>
-                    <button type="button" className="ghost-button textbook-context__back" onClick={handleBackToMainMenu}>
-                      教材選択に戻る
-                    </button>
+              ) : (
+                <div className="free-study-head free-study-head--selected">
+                  <button
+                    type="button"
+                    className="free-study-back"
+                    onClick={handleBackToMainMenu}
+                    aria-label="教材選択に戻る"
+                  >
+                    <FaArrowLeft aria-hidden="true" />
+                  </button>
+                  <div>
+                    <p className="home-section-eyebrow">自由学習</p>
+                    <p className="free-study-title">
+                      {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
+                    </p>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {selectionMode === 'main' ? (
                 <div className="list-group">
@@ -1946,21 +1953,30 @@ export default function StudentDashboard() {
                 </div>
               ) : (
                 <>
-                  <div className="tab-switch">
+                  <div className="free-study-tabs" role="tablist" aria-label="絞り込み">
                     <button
-                      className={filterTab === 'level' ? 'active' : ''}
+                      type="button"
+                      role="tab"
+                      aria-selected={filterTab === 'level'}
+                      className="free-study-tab"
                       onClick={() => setFilterTab('level')}
                     >
                       レベル別
                     </button>
                     <button
-                      className={filterTab === 'pos' ? 'active' : ''}
+                      type="button"
+                      role="tab"
+                      aria-selected={filterTab === 'pos'}
+                      className="free-study-tab"
                       onClick={() => setFilterTab('pos')}
                     >
                       品詞別
                     </button>
                     <button
-                      className={filterTab === 'theme' ? 'active' : ''}
+                      type="button"
+                      role="tab"
+                      aria-selected={filterTab === 'theme'}
+                      className="free-study-tab"
                       onClick={() => setFilterTab('theme')}
                     >
                       意味別
@@ -2105,11 +2121,15 @@ export default function StudentDashboard() {
                     userData: userData ? 'loaded' : 'not loaded',
                     userLevel: userData?.level
                         });
-                        
+
+                        // その教材に含まれないレベルは出さない。英検5級を選ぶと
+                        // 「対象外」の行が6つ並んで画面を埋めていた。
+                        if (isUnusedLevel || isEikenUnusedLevel) return null;
+
                         return (
                     <div key={level} style={{ position: 'relative' }}>
                           <button
-                        className={`selection-card ${isUnusedLevel || isEikenUnusedLevel ? 'selection-card-disabled' : ''}`}
+                        className="selection-card"
                         disabled={!levelWords.length || isUnusedLevel || isEikenUnusedLevel}
                         onClick={() => {
                           if (!isUnusedLevel && !isEikenUnusedLevel) {
@@ -2123,31 +2143,29 @@ export default function StudentDashboard() {
                           }
                         }}
                       >
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '8px',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap'
-                      }}>
-                            <span className="selection-card-level">{info.label}</span>
-                        {info.priority === 'high' && (
-                          <RecommendationBadge type="priority" priority="high" />
-                        )}
-                        {isRecommended && !isUnusedLevel && !isEikenUnusedLevel && (
-                          <RecommendationBadge type="level" priority={priority} />
-                        )}
-                      </div>
-                            <span className="selection-card-desc">{info.equivalent}</span>
-                      <span className="selection-card-meta">
-                        {isUnusedLevel || isEikenUnusedLevel ? '対象外' : `単語数: ${levelWords.length}語`}
-                        {!selectedTextbookId?.startsWith('eiken-') && !isUnusedLevel && !isEikenUnusedLevel && (
-                          <span style={{ fontSize: '0.8em', color: '#666' }}>
-                            (目安: {info.wordsRequired.toLocaleString()}語)
-                          </span>
-                        )}
+                      {/* 中央寄せで4行積むと階層が読めなかった。
+                          左に名前と目安、右に語数と進み具合を置く。
+                          「(目安: 1,335語)」は収録語数と紛らわしいので外した。 */}
+                      <span className="selection-card-main">
+                        <span className="selection-card-titles">
+                          <span className="selection-card-level">{info.label}</span>
+                          {info.priority === 'high' && (
+                            <RecommendationBadge type="priority" priority="high" />
+                          )}
+                          {isRecommended && !isUnusedLevel && !isEikenUnusedLevel && (
+                            <RecommendationBadge type="level" priority={priority} />
+                          )}
+                        </span>
+                        <span className="selection-card-desc">{info.equivalent}</span>
                       </span>
-                      <span className="selection-card-progress">{isUnusedLevel || isEikenUnusedLevel ? '対象外' : progressText}</span>
+                      <span className="selection-card-side">
+                        <span className="selection-card-meta">
+                          {isUnusedLevel || isEikenUnusedLevel ? '対象外' : `${levelWords.length}語`}
+                        </span>
+                        <span className="selection-card-progress">
+                          {isUnusedLevel || isEikenUnusedLevel ? '対象外' : progressText}
+                        </span>
+                      </span>
                           </button>
                     </div>
                         );
