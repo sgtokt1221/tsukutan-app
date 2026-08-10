@@ -13,6 +13,20 @@ import logger from './logger';
  * 発音は補助情報なので、読み込みに失敗しても学習は止めない。
  * 引けなかった語は undefined を返し、呼び出し側で非表示にする。
  */
+/**
+ * 単語帳で発音記号を単語と同じ行に並べる。並べきれない長い語は出さない。
+ *
+ * 綴りが長い語は発音記号も長く、横に並べると2行になってカードが伸びる。
+ * 発音は補助情報なので、行が増えるくらいなら落とす。
+ */
+const INLINE_PRONUNCIATION_MAX_LENGTH = 12;
+
+export const inlinePronunciation = (word, pronunciation) => {
+  if (!pronunciation) return null;
+  if (!word || word.length > INLINE_PRONUNCIATION_MAX_LENGTH) return null;
+  return pronunciation;
+};
+
 export const usePronunciation = () => {
   const [table, setTable] = useState(null);
 
