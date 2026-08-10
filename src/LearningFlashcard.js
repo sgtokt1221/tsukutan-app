@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AnswerControls from './components/learning/AnswerControls';
+import PeekNudge from './components/learning/PeekNudge';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
@@ -187,6 +188,8 @@ export default function LearningFlashcard({
   // このセッションで初めて記録した単語のID。習得語数はここから数える。
   // 画面のインデックス数だと、戻る・再回答で二重に数えてしまう。
   const newlyLearnedIdsRef = useRef(new Set());
+  // 答えを見たまま「わかった」を押した回数。吹き出しの発火に使う。
+  const [peekCount, setPeekCount] = useState(0);
   // 親から毎回新しい関数が来るので、依存に入れずに最新を参照する
   const onWordAnsweredRef = useRef(onWordAnswered);
   onWordAnsweredRef.current = onWordAnswered;
@@ -243,13 +246,17 @@ export default function LearningFlashcard({
   const handleAnswer = useCallback(async (quality) => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
-    
+
+    // 答えを見たまま「わかった」を押したら、止めはしないが気づかせる
+    if (isFlipped && quality === 'good') setPeekCount((prev) => prev + 1);
+
     if (user && currentWord) {
       trackWrite(
-        updateUserWordProgress(user.uid, currentWord, quality).then((result) => {
-          if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
-          onWordAnsweredRef.current?.(currentWord.id);
-        })
+        updateUserWordProgress(user.uid, currentWord, quality, false, undefined, { revealed: isFlipped })
+          .then((result) => {
+            if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
+            onWordAnsweredRef.current?.(currentWord.id);
+          })
       );
     }
     
@@ -285,7 +292,7 @@ export default function LearningFlashcard({
       // 親コンポーネントの戻る処理を呼び出し
       onBack(incorrectWords, newlyLearnedIdsRef.current.size);
     }
-  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
+  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser, isFlipped]);
 
   const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
   const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
@@ -298,10 +305,11 @@ export default function LearningFlashcard({
     if (currentWord) {
       if (user) {
         trackWrite(
-          updateUserWordProgress(user.uid, currentWord, 'again').then((result) => {
-            if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
-            onWordAnsweredRef.current?.(currentWord.id);
-          })
+          updateUserWordProgress(user.uid, currentWord, 'again', false, undefined, { revealed: isFlipped })
+            .then((result) => {
+              if (result?.created) newlyLearnedIdsRef.current.add(currentWord.id);
+              onWordAnsweredRef.current?.(currentWord.id);
+            })
         );
       }
       setIncorrectWords(prev => [...prev.filter(w => w.id !== currentWord.id), currentWord]);
@@ -339,7 +347,7 @@ export default function LearningFlashcard({
       // 親コンポーネントの戻る処理を呼び出し
       onBack(incorrectWords, newlyLearnedIdsRef.current.size);
     }
-  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser]);
+  }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser, isFlipped]);
 
   // ネイティブドラッグイベントハンドラー
   const handleMouseDown = useCallback((e) => {
@@ -1077,6 +1085,7 @@ export default function LearningFlashcard({
       </div>
 
       {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
+      <PeekNudge trigger={peekCount} />
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}

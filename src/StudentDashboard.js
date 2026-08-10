@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import './Analytics.css';
-import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, updateDoc, increment, where } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, updateDoc, where } from "firebase/firestore";
 import { generateDailyPlan } from './logic/learningPlanner';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { logStudySession } from './logic/studyLogger';
@@ -838,15 +838,14 @@ export default function StudentDashboard() {
     // 呼ぶと、積み上げた復習間隔を初期値へ上書きしてしまう。
 
     // Update vocabulary count and progress if new words were learned
+    // 到達語数は increment で足さない。実力テストが判定レベル以下を
+    // 一括計上しているところへ重ねると二重加算になり、収録語数を超える。
+    // updateProgressPercentage が和集合で数え直す。
     if (newlyLearnedCount > 0) {
-      const userDocRef = doc(db, 'users', user.uid);
       try {
-        await updateDoc(userDocRef, {
-          'progress.currentVocabulary': increment(newlyLearnedCount)
-        });
         await updateProgressPercentage(user.uid);
       } catch (error) {
-        console.error("Failed to update vocabulary count and progress:", error);
+        console.error('進捗の更新に失敗しました:', error);
       }
     }
 
@@ -1699,13 +1698,24 @@ export default function StudentDashboard() {
                 </div>
               )}
 
-              <div className="progress-widget">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${progressPercentage}%` }} />
+              {/* .progress-bar / .progress-fill は Analytics.css と
+                  AdminDashboard.css にも同名があり、後から読まれた方が勝って
+                  青いグラデーションが当たっていた。ホーム専用の名前にする。 */}
+              <div className="home-progress">
+                <div className="home-progress__bar">
+                  <div className="home-progress__fill" style={{ width: `${progressPercentage}%` }} />
                 </div>
-                <div className="progress-caption">
-                  <span>{progressPercentage}% 達成</span>
-                  <span>総語彙 {userData?.progress?.targetVocabulary?.toLocaleString?.() || '-'} 語中 {userData?.progress?.currentVocabulary?.toLocaleString?.() || 0} 語</span>
+                {/* 以前は「総語彙 7,000 語中 7,952 語」と出しており、
+                    語順が逆で目標のほうが多いように読めた。さらに
+                    targetVocabulary は総語彙ではなく目標語彙数。 */}
+                <div className="home-progress__caption">
+                  <span>
+                    いま <strong>{userData?.progress?.currentVocabulary?.toLocaleString?.() || 0}</strong> 語
+                  </span>
+                  <span>
+                    目標 {userData?.progress?.targetVocabulary?.toLocaleString?.() || '-'} 語
+                    <span className="progress-caption__percent">（{progressPercentage}%）</span>
+                  </span>
                 </div>
 
               </div>

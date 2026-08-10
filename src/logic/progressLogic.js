@@ -1,5 +1,7 @@
 import { db } from '../firebaseConfig';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
+import { loadWordMaster } from './wordMaster';
+import { achievementPercentage, reachedWordCount } from './vocabularyCount';
 import logger from './logger';
 
 /**
@@ -23,7 +25,7 @@ export const updateProgressPercentage = async (userId) => {
     const progress = userData.progress;
 
     // 目標が設定されていない、または現在の語彙数がなければ計算不可
-    if (!goal || !goal.targets || goal.targets.length === 0 || !progress || progress.currentVocabulary === undefined) {
+    if (!goal || !goal.targets || goal.targets.length === 0 || !progress) {
       logger.debug("進捗計算に必要なデータ（目標または現在の語彙数）がありません。");
       await updateDoc(userDocRef, { 'progress.percentage': 0 });
       return;
@@ -47,23 +49,35 @@ export const updateProgressPercentage = async (userId) => {
 
     const targetVocabulary = Math.max(...targetVocabularies);
     
-    // 2. 現在の語彙数を取得
-    const currentVocabulary = progress.currentVocabulary;
+    // 2. 到達語数を数え直す。
+    //    足し算ではなく和集合。実力テストの判定範囲と、そこから外れた
+    //    復習完了語だけを足す（二重加算をやめる）。
+    const assessedLevel = userData.level || 0;
+    const [master, reviewSnapshot] = await Promise.all([
+      loadWordMaster().catch(() => []),
+      getDocs(collection(db, 'users', userId, 'reviewWords')),
+    ]);
+    const reviewWords = reviewSnapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const reached = reachedWordCount({ master, reviewWords, assessedLevel });
 
     // 3. パーセンテージを計算
-    let percentage = 0;
-    if (targetVocabulary > 0) {
-      // 達成率が100%を超えないようにする
-      percentage = Math.min(100, Math.round((currentVocabulary / targetVocabulary) * 100));
-    }
-    
+    const percentage = achievementPercentage(reached.total, targetVocabulary);
+
     // 4. Firestoreを更新
     await updateDoc(userDocRef, {
       'progress.percentage': percentage,
-      'progress.targetVocabulary': targetVocabulary // 目標語彙数も保存しておく
+      'progress.targetVocabulary': targetVocabulary, // 目標語彙数も保存しておく
+      'progress.currentVocabulary': reached.total,
+      // 内訳も残す。表示と検証のため。
+      'progress.assessedVocabulary': reached.assessed,
+      'progress.masteredBeyondAssessment': reached.masteredBeyond,
+      'progress.assessedLevel': assessedLevel,
     });
 
-    logger.debug(`進捗を更新しました: ${percentage}% (現在:${currentVocabulary} / 目標:${targetVocabulary})`);
+    logger.debug(
+      `進捗を更新しました: ${percentage}% `
+      + `(到達:${reached.total} = テスト範囲${reached.assessed} + 復習完了${reached.masteredBeyond} / 目標:${targetVocabulary})`
+    );
 
   } catch (error) {
     console.error("進捗率の更新に失敗しました:", error);

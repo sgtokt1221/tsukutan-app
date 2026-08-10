@@ -1381,30 +1381,43 @@ input[type="file"] { display: none; }
   font-weight: 700;
 }
 
-.progress-widget {
+/* ホームの語彙進捗。.progress-bar / .progress-fill は他の画面のCSSと
+   名前がぶつかるので、ここだけ固有の名前にしてある。 */
+.home-progress {
   display: grid;
-  gap: 12px;
+  gap: var(--space-8);
 }
 
-.progress-bar {
+.home-progress__bar {
   width: 100%;
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.25);
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-lime-soft);
   overflow: hidden;
 }
 
-.progress-fill {
+.home-progress__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), #0ea5e9);
-  border-radius: 999px;
+  /* 青のグラデーションはランクカードと色味が合わないので、ブランドのライムにする */
+  background-color: var(--color-brand-lime);
+  border-radius: var(--radius-pill);
 }
 
-.progress-caption {
+.home-progress__caption {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
-  color: rgba(15, 23, 42, 0.55);
+  gap: var(--space-8);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.home-progress__caption strong {
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-14);
+}
+
+.progress-caption__percent {
+  margin-left: var(--space-4);
 }
 
 .schedule-banner {
@@ -2465,23 +2478,37 @@ select:focus-visible,
 }
 
 /* ===== 生徒ホーム: 1画面に収める（計画書12.3） ===== */
+/* 締切行。ランクカードと同じ面・角丸・余白に揃える。
+   以前はライムの帯だけが浮いて、上のカードと別物に見えていた。 */
 .schedule-line {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--space-8);
   margin: var(--space-12) 0 0 0;
-  padding: var(--space-8) var(--space-12);
-  border-radius: var(--radius-control);
-  background-color: var(--color-lime-soft);
-  border: 1px solid var(--color-lime-border);
-  font-size: var(--font-size-14);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  box-shadow: var(--shadow-1);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.schedule-line strong {
+  font-size: var(--font-size-16);
   color: var(--color-ink-olive);
 }
 
+/* 遅れているときだけ色で知らせる */
 .schedule-line.behind {
   background-color: var(--color-warning-bg);
   border-color: var(--color-warning-border);
+  color: var(--color-warning-ink);
+}
+
+.schedule-line.behind strong {
   color: var(--color-warning-ink);
 }
 
@@ -2616,11 +2643,11 @@ select:focus-visible,
   margin-top: var(--space-2);
 }
 
-.progress-bar {
+.home-progress__bar {
   height: 6px;
 }
 
-.progress-widget {
+.home-progress {
   margin-top: var(--space-4);
 }
 

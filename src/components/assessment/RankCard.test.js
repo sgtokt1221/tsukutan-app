@@ -51,7 +51,7 @@ describe('RankCard compact rank journey', () => {
     const onRetest = jest.fn();
     render(<RankCard score={610} compact onRetest={onRetest} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '測り直す' }));
+    fireEvent.click(screen.getByRole('button', { name: '実力を測り直す' }));
     expect(onRetest).toHaveBeenCalledTimes(1);
   });
 });

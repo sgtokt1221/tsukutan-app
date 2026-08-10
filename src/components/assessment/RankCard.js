@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaRedo } from 'react-icons/fa';
 import RankBadge from './RankBadge';
 import {
   DISCLAIMER,
@@ -186,8 +187,14 @@ export default function RankCard({
               )}
             </p>
             {onRetest && (
-              <button type="button" className="rank-card__retest-link" onClick={onRetest}>
-                測り直す
+              <button
+                type="button"
+                className="rank-card__retest-link"
+                onClick={onRetest}
+                aria-label="実力を測り直す"
+                title="実力を測り直す"
+              >
+                <FaRedo aria-hidden="true" />
               </button>
             )}
           </div>
