@@ -27,94 +27,59 @@ import { loadWordMaster, loadManifest } from './logic/wordMaster';
 import logger from './logic/logger';
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
-const getEikenWordCount = (textbookId, wordsData = []) => {
-  if (!wordsData.length) return 0;
-  
-  const levelPart = textbookId.split('-')[1];
-  let targetEikenLevel;
-  if (levelPart === 'pre2') {
-    targetEikenLevel = 'pre2';
-  } else if (levelPart === 'pre1') {
-    targetEikenLevel = 'pre1';
-  } else {
-    targetEikenLevel = parseInt(levelPart);
-  }
-  
-  logger.debug('🎯 英検教材単語数計算:', { textbookId, targetEikenLevel });
-  
-  // 実際の収録単語数（当該級 + 当該級未満、重複除去後）
-  let actualCount = 0;
-  
-  if (wordsData && Array.isArray(wordsData)) {
+/** 英検の級を、やさしい順に並べたもの。実データに1級の語は無い。 */
+export const EIKEN_ORDER = [5, 4, 3, 'pre2', 2, 'pre1'];
 
-    // 重複除去のためのSet
-    const seenWords = new Set();
-    
-    if (targetEikenLevel === 5) {
-      // 英検5級：5級のみ
-      wordsData.forEach(word => {
-        if (word.eikenLevels && word.eikenLevels.includes(5) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    } else if (targetEikenLevel === 4) {
-      // 英検4級：4級 + 5級
-      wordsData.forEach(word => {
-        if (word.eikenLevels && (word.eikenLevels.includes(4) || word.eikenLevels.includes(5)) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    } else if (targetEikenLevel === 3) {
-      // 英検3級：3級 + 4級 + 5級
-      wordsData.forEach(word => {
-        if (word.eikenLevels && (word.eikenLevels.includes(3) || word.eikenLevels.includes(4) || word.eikenLevels.includes(5)) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    } else if (targetEikenLevel === 'pre2') {
-      // 英検準2級：準2級 + 3級 + 4級 + 5級
-      wordsData.forEach(word => {
-        if (word.eikenLevels && (word.eikenLevels.includes('pre2') || word.eikenLevels.includes(3) || word.eikenLevels.includes(4) || word.eikenLevels.includes(5)) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    } else if (targetEikenLevel === 2) {
-      // 英検2級：2級 + 準2級 + 3級 + 4級 + 5級
-      wordsData.forEach(word => {
-        if (word.eikenLevels && (word.eikenLevels.includes(2) || word.eikenLevels.includes('pre2') || word.eikenLevels.includes(3) || word.eikenLevels.includes(4) || word.eikenLevels.includes(5)) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    } else if (targetEikenLevel === 'pre1') {
-      // 英検準1級：準1級 + 2級 + 準2級 + 3級 + 4級 + 5級
-      wordsData.forEach(word => {
-        if (word.eikenLevels && (word.eikenLevels.includes('pre1') || word.eikenLevels.includes(2) || word.eikenLevels.includes('pre2') || word.eikenLevels.includes(3) || word.eikenLevels.includes(4) || word.eikenLevels.includes(5)) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    } else if (targetEikenLevel === 1) {
-      // 英検1級：1級のみ（現在は存在しない）
-      wordsData.forEach(word => {
-        if (word.eikenLevels && word.eikenLevels.includes(1) && !seenWords.has(word.word)) {
-          seenWords.add(word.word);
-          actualCount++;
-        }
-      });
-    }
-    
-    logger.debug(`英検${levelPart}級の実際の収録単語数:`, actualCount);
-  }
-  
-  return actualCount;
+/**
+ * その単語が属する英検の級。複数の級に入っている語は
+ * 一番やさしい級のものとして扱う。
+ *
+ * 実データでは 2,462 件が複数の級に属していて（"a lot of" は 3級・4級・5級）、
+ * 級ごとに数えると同じ語を何度も数えてしまう。準1級だと合計 7,867 語と、
+ * 実際の収録 4,478 語の倍近くになっていた。
+ */
+export const easiestEikenLevel = (word) => {
+  if (!Array.isArray(word?.eikenLevels)) return null;
+  const known = word.eikenLevels.filter((level) => EIKEN_ORDER.includes(level));
+  if (known.length === 0) return null;
+  return known.reduce((a, b) => (EIKEN_ORDER.indexOf(a) < EIKEN_ORDER.indexOf(b) ? a : b));
 };
 
-// 各教材の単語数を計算する関数
+/** 教材ID（eiken-3 / eiken-pre2 など）からその級を取り出す。 */
+export const eikenTargetOf = (textbookId = '') => {
+  const levelPart = textbookId.split('-')[1];
+  if (levelPart === 'pre2' || levelPart === 'pre1') return levelPart;
+  const numeric = parseInt(levelPart, 10);
+  return Number.isNaN(numeric) ? null : numeric;
+};
+
+/**
+ * 英検教材に収録する語。その級以下（＝その級までにやさしい側）の語を集める。
+ *
+ * 級を表す数字は 5 → 1 と小さくなるほど難しい。以前はここを
+ * `level <= target` で比べていて、3級の教材に 2級・1級の語が入り、
+ * 5級・4級の語が落ちていた。並び順は EIKEN_ORDER に一本化する。
+ */
+export const eikenWordsUpTo = (textbookId, wordsData = []) => {
+  const targetIndex = EIKEN_ORDER.indexOf(eikenTargetOf(textbookId));
+  if (targetIndex < 0) return [];
+
+  const allowed = new Set(EIKEN_ORDER.slice(0, targetIndex + 1));
+  return wordsData.filter((word) => {
+    const level = easiestEikenLevel(word);
+    return level !== null && allowed.has(level);
+  });
+};
+
+/**
+ * 英検教材の収録語数。
+ *
+ * 綴りの重複は除去しない。同じ綴りでも意味が違えば別のカードとして
+ * 出題されるので、学ぶ枚数はカードの数と一致させる。
+ * （以前は一覧だけ綴りで重複除去していて、詳細ページと食い違っていた）
+ */
+const getEikenWordCount = (textbookId, wordsData = []) => eikenWordsUpTo(textbookId, wordsData).length;
+
 const getTextbookWordCount = (textbookId, wordsData = [], textbookCounts = {}) => {
   logger.debug('📊 単語数計算開始:', { textbookId });
   
@@ -329,15 +294,21 @@ const RecommendationBadge = ({ type, priority = 'medium' }) => {
 };
 
 // 既存の定数やヘルパー関数（すべて維持）
+/** 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
+export const FREE_STUDY_GROUPS = [
+  { id: 'school', label: '学年で選ぶ' },
+  { id: 'eiken', label: '英検で選ぶ' },
+];
+
 const freeStudyOptions = [
-  { id: 'osaka-koukou-nyuushi', label: '大阪府公立入試英単語', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
-  { id: 'highschool-english', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
-  { id: 'eiken-5', label: '英検5級', textbooks: ['highschool-english'] },
-  { id: 'eiken-4', label: '英検4級', textbooks: ['highschool-english'] },
-  { id: 'eiken-3', label: '英検3級', textbooks: ['highschool-english'] },
-  { id: 'eiken-pre2', label: '英検準2級', textbooks: ['highschool-english'] },
-  { id: 'eiken-2', label: '英検2級', textbooks: ['highschool-english'] },
-  { id: 'eiken-pre1', label: '英検準1級', textbooks: ['highschool-english'] }
+  { id: 'osaka-koukou-nyuushi', group: 'school', label: '中学英語（大阪府公立入試）', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
+  { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
+  { id: 'eiken-5', group: 'eiken', label: '英検5級', textbooks: ['highschool-english'] },
+  { id: 'eiken-4', group: 'eiken', label: '英検4級', textbooks: ['highschool-english'] },
+  { id: 'eiken-3', group: 'eiken', label: '英検3級', textbooks: ['highschool-english'] },
+  { id: 'eiken-pre2', group: 'eiken', label: '英検準2級', textbooks: ['highschool-english'] },
+  { id: 'eiken-2', group: 'eiken', label: '英検2級', textbooks: ['highschool-english'] },
+  { id: 'eiken-pre1', group: 'eiken', label: '英検準1級', textbooks: ['highschool-english'] }
   // 英検1級は置かない。実データに eikenLevels: 1 の単語が1語も無く、
   // 常に「0語」のカードになる（src/config/levels.json も準1級まで）。
 ];
@@ -938,91 +909,18 @@ export default function StudentDashboard() {
           combinedWords.push(...words);
           logger.debug(`高校英語から取得した単語数:`, words.length);
         } else {
-          // 英検教材の場合はwordsData.jsonとwords.jsonの両方から取得
+          // 英検教材はマスターだけを見る。words-osaka.json の語はすべて
+          // マスターにも同じIDで入っていて、級の情報もマスター側にある。
           if (textbookId.startsWith('eiken-')) {
             logger.debug('🎯 英検教材の処理開始:', textbookId);
-            
-            // 英検級に応じてフィルタリング
-            const levelPart = textbookId.split('-')[1];
-            let targetEikenLevel;
-            if (levelPart === 'pre2') {
-              targetEikenLevel = 'pre2';
-            } else if (levelPart === 'pre1') {
-              targetEikenLevel = 'pre1';
-            } else {
-              targetEikenLevel = parseInt(levelPart);
-            }
-            
-            // 1. マスターから取得（eikenLevels フィールドあり）
+
             const master = masterWords.length > 0 ? masterWords : await loadMasterWords();
-            {
-              const eikenWordsFromWordsData = master.filter(word => {
-                if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
-                  return word.eikenLevels.some(level => {
-                    if (typeof targetEikenLevel === 'number') {
-                      return level <= targetEikenLevel;
-                    } else if (targetEikenLevel === 'pre2') {
-                      return level <= 4; // 準2級はレベル4
-                    } else if (targetEikenLevel === 'pre1') {
-                      return level === 'pre1' || level === 2 || level === 'pre2' || level === 3 || level === 4 || level === 5; // 準1級は準1級 + 2級 + 準2級 + 3級 + 4級 + 5級
-                    }
-                    return false;
-                  });
-                }
-                return false;
-              });
-              
-              
-              const wordsFromWordsData = eikenWordsFromWordsData.map((word) => ({ 
-                sourceTextbook: textbookId, 
-                ...word 
-              }));
-              combinedWords.push(...wordsFromWordsData);
-            }
-            
-            // 2. words.jsonから取得（levelフィールドで振り分け）
-            try {
-              const osakaWordsData = await fetch('/data/words-osaka.json').then(res => res.json());
-              
-              // words.jsonのlevelを英検級にマッピング
-              const levelToEikenMapping = {
-                1: 5, // レベル1 → 英検5級
-                2: 4, // レベル2 → 英検4級
-                3: 3, // レベル3 → 英検3級
-                4: 2, // レベル4 → 英検準2級
-                5: 2, // レベル5 → 英検2級
-                6: 1, // レベル6 → 英検準1級
-                7: 1, // レベル7 → 英検1級
-                8: 1, // レベル8 → 英検1級
-                9: 1, // レベル9 → 英検1級
-                10: 1 // レベル10 → 英検1級
-              };
-              
-              const eikenWordsFromWords = osakaWordsData.filter(word => {
-                const wordLevel = word.level;
-                const mappedEikenLevel = levelToEikenMapping[wordLevel];
-                
-                if (typeof targetEikenLevel === 'number') {
-                  return mappedEikenLevel <= targetEikenLevel;
-                  } else if (targetEikenLevel === 'pre2') {
-                    return mappedEikenLevel <= 4; // 準2級はレベル4
-                  } else if (targetEikenLevel === 'pre1') {
-                    return mappedEikenLevel <= 2; // 準1級は2級以下（level 1-5）
-                }
-                return false;
-              });
-              
-              logger.debug(`words.jsonから英検${levelPart}級以下の単語数:`, eikenWordsFromWords.length);
-              
-              const wordsFromWords = eikenWordsFromWords.map((word) => ({ 
-                sourceTextbook: textbookId, 
-                ...word 
-              }));
-              combinedWords.push(...wordsFromWords);
-            } catch (error) {
-              console.error('❌ words.jsonの読み込みに失敗:', error);
-            }
-            
+            const eikenWords = eikenWordsUpTo(textbookId, master).map((word) => ({
+              sourceTextbook: textbookId,
+              ...word,
+            }));
+            combinedWords.push(...eikenWords);
+
             logger.debug(`英検教材から取得した総単語数:`, combinedWords.length);
           } else {
             // その他の教材はFirebaseから取得
@@ -1102,41 +1000,10 @@ export default function StudentDashboard() {
           }, {}),
           サンプル単語: filteredWords.slice(0, 5).map(w => ({ word: w.word, level: w.level }))
         });
-        // 英検教材の場合は選択された級以下の単語のみを設定
-        if (option.id.startsWith('eiken-')) {
-          // 英検級の識別子を取得
-          const levelPart = option.id.split('-')[1];
-          let targetEikenLevel;
-          if (levelPart === 'pre2') {
-            targetEikenLevel = 'pre2';
-          } else if (levelPart === 'pre1') {
-            targetEikenLevel = 'pre1';
-          } else {
-            targetEikenLevel = parseInt(levelPart);
-          }
-          
-          // 英検級のレベル順序を定義（5級が最も低い）
-          const eikenLevelOrder = [5, 4, 3, 'pre2', 2, 'pre1', 1];
-          const targetIndex = eikenLevelOrder.indexOf(targetEikenLevel);
-          
-          if (targetIndex !== -1) {
-            // 選択された級以下の単語のみをフィルタ
-            const allowedLevels = eikenLevelOrder.slice(0, targetIndex + 1);
-            const eikenFilteredWords = uniqueWords.filter(word => {
-              if (!word.eikenLevels || !Array.isArray(word.eikenLevels)) {
-                return false;
-              }
-              return word.eikenLevels.some(level => allowedLevels.includes(level));
-            });
-            setAllWords(eikenFilteredWords);
-            logger.debug(`英検${targetEikenLevel}級以下フィルタ後:`, eikenFilteredWords.length);
-          } else {
-            setAllWords(uniqueWords);
-          }
-        } else {
-          setAllWords(filteredWords); // フィルタ済み単語を設定
-        }
-        
+        // 英検教材の絞り込みは読み込み時（eikenWordsUpTo）で済んでいる。
+        setAllWords(filteredWords);
+
+
         if (filteredWords.length === 0) {
           alert('このメニューには該当する単語がまだ登録されていません。別のメニューを選んでください。');
           setSelectionMode('main');
@@ -1259,56 +1126,15 @@ export default function StudentDashboard() {
         }
         // レベル別学習の場合、教材に応じてフィルタリング
         else if (selectedTextbookId && selectedTextbookId.startsWith('eiken-')) {
-          // 英検級の場合はeikenLevelsを基準にフィルタ
-          const levelPart = selectedTextbookId.split('-')[1];
-          let targetEikenLevel;
-          if (levelPart === 'pre2') {
-            targetEikenLevel = 'pre2';
-          } else if (levelPart === 'pre1') {
-            targetEikenLevel = 'pre1';
-          } else {
-            targetEikenLevel = parseInt(levelPart);
-          }
-          
-          const eikenLevelOrder = [5, 4, 3, 'pre2', 2, 'pre1', 1];
-          const targetIndex = eikenLevelOrder.indexOf(targetEikenLevel);
-          
-          if (targetIndex !== -1) {
-            // 選択された級以下の全ての級を含む（復習として下位級も含む）
-            const allowedLevels = eikenLevelOrder.slice(0, targetIndex + 1);
-            
-            // 現在の表示レベルに対応する英検級を取得
-            const currentLevelEiken = eikenLevelOrder[Number(value) - 1];
-            
-            // 現在の表示レベルが選択された級以下の場合のみ表示
-            if (currentLevelEiken && allowedLevels.includes(currentLevelEiken)) {
-              filtered = allWords.filter(word => {
-                // eikenLevelsフィールドがある場合（wordsData.jsonから取得した単語）
-                if (word.eikenLevels && Array.isArray(word.eikenLevels)) {
-                  // 子レベルでは、そのレベルの単語のみを表示
-                  return word.eikenLevels.includes(currentLevelEiken);
-                }
-                
-                // eikenLevelsフィールドがない場合（words.jsonから取得した単語）
-                // levelフィールドを英検級にマッピングして判定
-                if (word.level) {
-                  const levelToEikenMapping = {
-                    1: 5, 2: 4, 3: 3, 4: 2, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1
-                  };
-                  const mappedEikenLevel = levelToEikenMapping[word.level];
-                  
-                  if (typeof currentLevelEiken === 'number') {
-                    return mappedEikenLevel === currentLevelEiken;
-                  } else if (currentLevelEiken === 'pre2') {
-                    return mappedEikenLevel === 4; // 英検準2級はレベル4
-                  } else if (currentLevelEiken === 'pre1') {
-                    return mappedEikenLevel === 7; // 英検準1級はレベル7
-                  }
-                }
-                
-                return false;
-              });
-            }
+          // 級ごとの行は「その級の語」だけを出す。一覧の語数と一致させるため、
+          // 判定はレベル別表示と同じ easiestEikenLevel に揃える。
+          const targetEikenLevel = eikenTargetOf(selectedTextbookId);
+          const targetIndex = EIKEN_ORDER.indexOf(targetEikenLevel);
+          const currentLevelEiken = EIKEN_ORDER[Number(value) - 1];
+
+          if (targetIndex !== -1 && currentLevelEiken !== undefined
+              && EIKEN_ORDER.indexOf(currentLevelEiken) <= targetIndex) {
+            filtered = allWords.filter((word) => easiestEikenLevel(word) === currentLevelEiken);
           }
           logger.debug(`英検${targetEikenLevel}級以下から取得した単語数:`, filtered.length);
           sessionLabel = `英検${targetEikenLevel}級以下`;
@@ -1910,46 +1736,51 @@ export default function StudentDashboard() {
               )}
 
               {selectionMode === 'main' ? (
-                <div className="list-group">
-            {freeStudyOptions.map(({ id, label }) => {
-              const isRecommended = isRecommendedTextbook(id, testResultLevel, userData);
-              const recommendations = getRecommendedLevels(testResultLevel);
-              const recommendationType = recommendations.recommended.find(rec => 
-                isRecommendedTextbook(id, rec.level, userData)
-              );
-              const priority = recommendationType ? recommendationType.priority : 'medium';
-              
-              const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
+                <div className="free-study-groups">
+                  {FREE_STUDY_GROUPS.map((group) => {
+                    const options = freeStudyOptions.filter((option) => {
+                      if (option.group !== group.id) return false;
+                      // 収録が0語の教材は出さない。選んでも何も学べない。
+                      // 単語データの読み込み前は判定できないので出したままにする。
+                      const count = getTextbookWordCount(option.id, masterWords, textbookCounts);
+                      return !(masterWords.length > 0 && count === 0);
+                    });
+                    if (options.length === 0) return null;
 
-              // 収録が0語の教材は出さない。選んでも何も学べない。
-              // 単語データの読み込み前（masterWords が空）は判定できないので、
-              // そのときは出したままにする。
-              if (masterWords.length > 0 && wordCount === 0) return null;
+                    return (
+                      <section key={group.id} className="free-study-group">
+                        <h4 className="home-section-eyebrow">{group.label}</h4>
+                        <div className="list-group">
+                          {options.map(({ id, label }) => {
+                            const isRecommended = isRecommendedTextbook(id, testResultLevel, userData);
+                            const recommendations = getRecommendedLevels(testResultLevel);
+                            const recommendationType = recommendations.recommended.find((rec) =>
+                              isRecommendedTextbook(id, rec.level, userData)
+                            );
+                            const priority = recommendationType ? recommendationType.priority : 'medium';
+                            const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
 
-              return (
-                <button key={id} className="tile-button" onClick={() => {
-                  logger.debug('🎯 教材選択ボタンクリック:', { id, label, isRecommended, wordCount });
-                  handleSelectTextbook(id);
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                      <span>{label}</span>
-                    {isRecommended && (
-                      <RecommendationBadge type="textbook" priority={priority} />
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ 
-                      fontSize: '0.875rem', 
-                      color: '#6b7280',
-                      fontWeight: '500'
-                    }}>
-                      {wordCount}語
-                    </span>
-                      <FaBook />
-                  </div>
-                    </button>
-              );
-            })}
+                            return (
+                              <button
+                                key={id}
+                                type="button"
+                                className="tile-button"
+                                onClick={() => handleSelectTextbook(id)}
+                              >
+                                <span className="tile-button__label">
+                                  {label}
+                                  {isRecommended && (
+                                    <RecommendationBadge type="textbook" priority={priority} />
+                                  )}
+                                </span>
+                                <span className="tile-button__count">{wordCount.toLocaleString()}語</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    );
+                  })}
                 </div>
               ) : (
                 <>
@@ -2017,14 +1848,11 @@ export default function StudentDashboard() {
                       
                       // 現在の表示レベルが選択された級以下の場合のみ表示
                       if (currentLevelEiken && allowedLevels.includes(currentLevelEiken)) {
-                        levelWords = allWords.filter(word => {
-                          if (!word.eikenLevels || !Array.isArray(word.eikenLevels)) {
-                            return false;
-                          }
-                          // 現在の表示レベルに対応する英検級の単語のみをフィルタ
-                          // 英検2級を選択した場合、レベル5では英検2級の単語のみを表示
-                          return word.eikenLevels.includes(currentLevelEiken);
-                        });
+                        // 一番やさしい級にだけ属させる。複数の級に入っている語を
+                        // 級ごとに出すと、同じ単語を何度も学ぶことになる。
+                        levelWords = allWords.filter(
+                          (word) => easiestEikenLevel(word) === currentLevelEiken
+                        );
                         
                         logger.debug(`🔍 英検${currentLevelEiken}級フィルタリング:`, {
                           選択された級: targetEikenLevel,
