@@ -1,6 +1,7 @@
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import logger from './logger';
+import { clampLevel } from '../config';
 
 // 基本的な学習データ分析機能
 export const analyzeUserPerformance = async (userId) => {
@@ -11,17 +12,23 @@ export const analyzeUserPerformance = async (userId) => {
     // インデックス問題を回避するため、orderByを使わずに取得してクライアント側でソート
     // キャッシュを無効化して最新データを取得
     const logsSnapshot = await getDocs(logsRef);
-    const allLogs = logsSnapshot.docs
+    const sortedLogs = logsSnapshot.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
       .sort((a, b) => {
         const timestampA = a.timestamp?.toDate?.() || new Date(a.timestamp);
         const timestampB = b.timestamp?.toDate?.() || new Date(b.timestamp);
         return timestampB - timestampA; // 降順ソート
-      })
-      .slice(0, 100); // より多くのデータを取得（100件に増加）
-    
-    // 実力テストデータを分離
-    const placementTestLogs = allLogs.filter(log => log.sessionType === 'placement_test');
+      });
+
+    // 実力テストは全期間から拾う。
+    // 以前はここで新しい100件に切ってから絞り込んでいた。1語答えるたびに
+    // イベントログが1件増えるので、100件はすぐ当日の学習で埋まり、
+    // 実力テストが1件も残らない。その結果「テスト回数1回・平均回答時間0秒・
+    // 推移グラフなし」になり、ランク表示とかみ合っていなかった。
+    const placementTestLogs = sortedLogs.filter(log => log.sessionType === 'placement_test');
+
+    // 直近の様子を見るぶんは新しい100件で足りる
+    const allLogs = sortedLogs.slice(0, 100);
     
     // その他の学習セッションデータも取得
     const learningSessions = allLogs.filter(log => 
@@ -149,7 +156,10 @@ export const analyzeUserPerformance = async (userId) => {
     }
     
     // レベル情報の取得（複数のフィールドをチェック）
-    const currentLevel = logs[0].finalLevel || logs[0].level || logs[0].testResultLevel || 0;
+    // 昔の実力テストはレベル8以上を返すことがあった。いまの単語データは
+    // 7段階までなので、そのまま出すと画面に「データエラー」と表示される。
+    const rawLevel = logs[0].finalLevel || logs[0].level || logs[0].testResultLevel || 0;
+    const currentLevel = rawLevel > 0 ? clampLevel(rawLevel) : 0;
     
     logger.debug('📈 レベル情報:', {
       最新ログの全フィールド: Object.keys(logs[0]),
@@ -170,11 +180,16 @@ export const analyzeUserPerformance = async (userId) => {
       hasData: true,
       totalTests: placementTestLogs.length, // 実力テストの回数のみを表示
       currentLevel: currentLevel,
-      levelProgression: logs.map(log => ({
-        level: log.finalLevel || log.level || log.testResultLevel || 0,
-        date: log.timestamp?.toDate?.() || new Date(log.timestamp),
-        vocabulary: log.estimatedVocabulary || 0
-      })),
+      // レベルを持つログだけを並べる。学習イベントには level が無く、
+      // 混ぜると推移グラフが0の平らな線になっていた。
+      levelProgression: logs
+        .map(log => ({
+          raw: log.finalLevel || log.level || log.testResultLevel || 0,
+          date: log.timestamp?.toDate?.() || new Date(log.timestamp),
+          vocabulary: log.estimatedVocabulary || 0
+        }))
+        .filter(point => point.raw > 0)
+        .map(({ raw, ...rest }) => ({ ...rest, level: clampLevel(raw) })),
       averageResponseTime: calculateAverageResponseTime(logs),
       accuracyTrend: calculateAccuracyTrend(logs),
       improvementRate: calculateImprovementRate(logs),
@@ -240,8 +255,11 @@ const calculateImprovementRate = (logs) => {
   
   const firstLevel = firstTest.finalLevel || firstTest.level || firstTest.testResultLevel || 0;
   const latestLevel = latestTest.finalLevel || latestTest.level || latestTest.testResultLevel || 0;
-  
-  return latestLevel - firstLevel;
+
+  // レベルを持たないログ同士だと 0-0 で「変化なし」に見えてしまう
+  if (firstLevel === 0 || latestLevel === 0) return 0;
+
+  return clampLevel(latestLevel) - clampLevel(firstLevel);
 };
 
 // 苦手分野の特定
