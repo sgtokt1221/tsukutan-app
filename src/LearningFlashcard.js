@@ -12,6 +12,7 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
+import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback } from './logic/swipeFeedback';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlay } from './logic/useAutoPlay';
@@ -169,7 +170,11 @@ export default function LearningFlashcard({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  const cardColor = useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]);
+  const cardColor = useTransform(
+    x,
+    [-100, 0, 100],
+    [SWIPE_FEEDBACK.incorrect.color, SWIPE_FEEDBACK.neutral.color, SWIPE_FEEDBACK.correct.color],
+  );
 
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
@@ -383,18 +388,10 @@ export default function LearningFlashcard({
       y.set(deltaY);
       
       // フラッシュカードの背景色を変更
-      const flashcard = document.getElementById('flashcard');
-      if (flashcard) {
-        let backgroundColor = 'white';
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          if (deltaX > 30) {
-            backgroundColor = "#4ade80"; // Green for right swipe
-          } else if (deltaX < -30) {
-            backgroundColor = "#ef4444"; // Red for left swipe
-          }
-        }
-        flashcard.style.setProperty('background-color', backgroundColor, 'important');
-      }
+      paintSwipeFeedback(
+        document.getElementById('flashcard'),
+        swipeFeedbackFor(deltaX, deltaY, false),
+      );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードの場合、直接DOM操作でカードの位置を更新
       // 現在ドラッグ中のカードを特定
@@ -435,29 +432,14 @@ export default function LearningFlashcard({
         
         activeCard.style.transform = `translate(${limitedDeltaX}px, ${limitedDeltaY}px)`;
         
-        // 単語帳モードでの視覚的フィードバック
-        let cardBackgroundColor = 'white';
-        let boxShadow = 'none';
+        // 単語帳モードでの視覚的フィードバック。
+        // 上スワイプ（復習完了）は復習単語のときだけ使える。
+        const feedback = swipeFeedbackFor(limitedDeltaX, limitedDeltaY, isReviewMode);
         
-        if (limitedDeltaY < -15) {
-          cardBackgroundColor = "#facc15"; // Yellow for swipe up (deletion)
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-          logger.debug('🔥 LearningFlashcard Yellow highlight for upward swipe (deletion)');
-        } else if (limitedDeltaX > 30) {
-          cardBackgroundColor = "#4ade80"; // Green for right swipe (correct)
-          boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          logger.debug('🔥 LearningFlashcard Green highlight for right swipe (correct)');
-        } else if (limitedDeltaX < -30) {
-          cardBackgroundColor = "#ef4444"; // Red for left swipe (incorrect)
-          boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          logger.debug('🔥 LearningFlashcard Red highlight for left swipe (incorrect)');
-        }
-        
-        activeCard.style.setProperty('background-color', cardBackgroundColor, 'important');
-        activeCard.style.setProperty('box-shadow', boxShadow, 'important');
+        paintSwipeFeedback(activeCard, feedback);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode]);
+  }, [isDragging, dragStart, x, y, viewMode, isReviewMode]);
 
   const handleMouseUp = useCallback((e) => {
     if (!isDragging) return;
@@ -633,42 +615,17 @@ export default function LearningFlashcard({
       logger.debug('🔥 LearningFlashcard Motion values updated:', { xValue: x.get(), yValue: y.get() });
       
       // フラッシュカードの背景色を変更
-      const flashcard = document.getElementById('flashcard');
-      if (flashcard) {
-        let backgroundColor = 'white';
-        let boxShadow = 'none';
-        
-        if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-        } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          if (deltaX > 30) {
-            backgroundColor = "#4ade80"; // Green for right swipe
-            boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          } else if (deltaX < -30) {
-            backgroundColor = "#ef4444"; // Red for left swipe
-            boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          }
-        }
-        
-        flashcard.style.setProperty('background-color', backgroundColor, 'important');
-        flashcard.style.setProperty('box-shadow', boxShadow, 'important');
-      }
+      paintSwipeFeedback(
+        document.getElementById('flashcard'),
+        swipeFeedbackFor(deltaX, deltaY, false),
+      );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードでは上下の動きのみ許可（左右は固定）
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        let backgroundColor = 'white';
-        if (deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up
-        }
-        
-        if (e.currentTarget) {
-          e.currentTarget.style.setProperty('background-color', backgroundColor, 'important');
-          e.currentTarget.style.setProperty('box-shadow', deltaY < -15 ? '0 4px 12px rgba(250, 204, 21, 0.3)' : 'none', 'important');
-        }
+        paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, isReviewMode));
       }
     }
-  }, [isDragging, dragStart, viewMode, x, y]);
+  }, [isDragging, dragStart, viewMode, x, y, isReviewMode]);
 
   const handleTouchEnd = useCallback((e) => {
     if (!isDragging) return;
