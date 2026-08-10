@@ -16,12 +16,14 @@ import { speakSequence, stopSpeaking } from './speechUtils';
  * @param {Array}    params.words 読み上げる単語の配列
  * @param {number}   params.currentIndex 開始位置
  * @param {string}   params.direction 出題の向き（'en-ja' | 'ja-en'）
+ * @param {number}   params.gapMs 1語読み終えてから次へ進むまでの間（ミリ秒）
  * @param {boolean}  params.enabled 使える画面か（単語帳モードでは false）
  * @param {Function} params.onRevealMeaning 答えを読み始めるときに呼ぶ（カードをめくる）
  * @param {Function} params.onAdvance 次の単語へ進むときに呼ぶ (nextIndex)
  */
 export const useAutoPlay = ({
-  words, currentIndex, direction = 'en-ja', enabled = true, onRevealMeaning, onAdvance,
+  words, currentIndex, direction = 'en-ja', gapMs = 1000,
+  enabled = true, onRevealMeaning, onAdvance,
 }) => {
   const [autoPlay, setAutoPlay] = useState(false);
   const timerRef = useRef(null);
@@ -84,14 +86,14 @@ export const useAutoPlay = ({
                 activeRef.current = false;
                 setAutoPlay(false);
               }
-            }, 1000);
+            }, gapMs);
           },
         }
       );
     };
 
     playAt(currentIndex);
-  }, [enabled, words, currentIndex, direction]);
+  }, [enabled, words, currentIndex, direction, gapMs]);
 
   // 画面を離れるときは必ず止める
   useEffect(() => stop, [stop]);

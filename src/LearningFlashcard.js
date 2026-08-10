@@ -16,9 +16,11 @@ import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedbac
 import { scrollWordbookToTop } from './logic/scrollHelpers';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
+import { useAutoPlaySpeed } from './logic/useAutoPlaySpeed';
 import { useAutoPlay } from './logic/useAutoPlay';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 import DirectionToggle from './components/learning/DirectionToggle';
+import AutoPlaySpeed from './components/learning/AutoPlaySpeed';
 import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
 
@@ -62,6 +64,8 @@ export default function LearningFlashcard({
   // 出題の向き（英→和 / 和→英）も復習カードと共有する
   const [direction, setDirection] = useCardDirection();
   const isJaToEn = direction === 'ja-en';
+  // 自動再生で次の単語へ進むまでの間。復習カードと共有する。
+  const [autoPlaySpeed, setAutoPlaySpeed, autoPlayGapMs] = useAutoPlaySpeed();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -195,6 +199,7 @@ export default function LearningFlashcard({
     words: shuffledWords,
     currentIndex,
     direction,
+    gapMs: autoPlayGapMs,
     enabled: viewMode === 'flashcard',
     onRevealMeaning: () => setIsFlipped(true),
     onAdvance: (nextIndex) => {
@@ -986,7 +991,11 @@ export default function LearningFlashcard({
         )}
       />
       <ModeTabs value="flashcard" onChange={setViewMode}>
-        <DirectionToggle value={direction} onChange={setDirection} />
+        <div className="mode-tabs__controls">
+          {/* 速さは自動再生中だけ出す。止まっているときは関係がない */}
+          {autoPlay && <AutoPlaySpeed value={autoPlaySpeed} onChange={setAutoPlaySpeed} />}
+          <DirectionToggle value={direction} onChange={setDirection} />
+        </div>
       </ModeTabs>
 
       <div id="flashcard-container">
