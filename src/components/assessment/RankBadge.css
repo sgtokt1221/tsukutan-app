@@ -1,25 +1,74 @@
 /*
  * ランク紋章。ASSESSMENT_RANK_SYSTEM_PLAN.md 8.3。
  *
- * 基準色（ライム / キャンバス / オリーブ / アクセントブルー / 白）は増やさない。
- * ランク差は枠・面・光沢・縁光の付け方だけで表す。
+ * 方針: ベタ塗り一枚。グラデーション / 内側の二重リング / ぼかした縁光は使わない。
+ * 「面をランク色で塗り、白で文字を抜く」だけにして、装飾で格を出すのをやめる。
+ *
+ * 格の上げ方は3つの軸で、色だけに頼らない（色が見分けにくい生徒にも伝わるように）。
+ *   1. シルエット: 角丸四角(E,D) → 円(C,B) → 六角(A,S) → 尖り六角(SS)
+ *   2. 縁（リム）: 同じシルエットの中では、リム無し → リム有り で1段上がる
+ *   3. 大きさ: 段が上がるほど枠いっぱいに近づく（0.90 → 0.95 → 1.00）。
+ *      リムの太さも上の段ほど太い（D 1.0u → B 1.25u → S/SS 1.5u）。
+ *
+ * 前提: ranks.json の color は「白抜きで 4.5:1 以上になる濃さ」であること。
+ * 面の色をここで持つと正本が二重になるので、色は必ず --rank-color を使う。
+ * 現行の推奨値: E #64748B / D #9A3412 / C #475569 / B #A16207 /
+ *               A #4D7C0F / S #2563EB / SS #6D28D9
+ *
+ * 動き: この紋章はトランジションもアニメーションも持たない（常時点滅の禁止）。
  */
 
 .rank-badge {
+  /* ---- ランク・サイズごとに上書きする値。ここは既定値 ---- */
+  --rank-solid: var(--rank-color, var(--color-canvas-lime)); /* 面の色 */
+  --rank-ink: var(--color-surface);                          /* 文字色 */
+  --rank-unit: 3px;                                          /* リムの基準幅 */
+  --rank-rim: 0px;                                           /* リムの幅 */
+  --rank-radius: 30%;
+  --rank-letter: var(--font-size-28);
+  --rank-letter-scale: 1;
+  --rank-scale: 1; /* 見た目の大きさ。レイアウトの箱は size クラスのまま変えない。 */
+  /* リムは面と同色相のまま暗くしただけ。新しい色は増やさない。 */
+  --rank-rim-color: color-mix(in srgb, var(--rank-solid) 55%, #000);
+
+  position: relative;
+  box-sizing: border-box;
+  flex: none;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-card);
-  background-color: var(--color-surface);
-  color: var(--color-ink-olive);
+  border-radius: var(--rank-radius);
+  transform: scale(var(--rank-scale));
+  /* 素の背景がリム。面は ::before が内側に重なる。 */
+  background-color: var(--rank-rim-color);
+  color: var(--rank-ink);
   font-family: var(--font-family-heading);
   line-height: 1;
+  text-align: center;
+}
+
+/* 面。リムの内側をベタで塗る。親の形（border-radius / clip-path）を受け継ぐ。 */
+.rank-badge::before {
+  content: '';
+  position: absolute;
+  inset: var(--rank-rim);
+  border-radius: inherit;
+  clip-path: inherit;
+  background-color: var(--rank-solid);
+}
+
+/* 文字は面より上に置く。::before は位置指定済みなので z-index が要る。 */
+.rank-badge__letter,
+.rank-badge__caption {
+  position: relative;
+  z-index: 1;
 }
 
 .rank-badge__letter {
+  font-size: calc(var(--rank-letter) * var(--rank-letter-scale));
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .rank-badge__caption {
@@ -27,101 +76,149 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-12);
   font-weight: 400;
-  color: var(--color-olive-muted);
+  color: currentColor;
 }
 
-/* ---- 大きさ ---- */
+/* ---- 大きさ ----
+   リム幅も文字も基準単位から出すので、44px でも 108px でも比率が崩れない。 */
 .rank-badge--small {
   width: 44px;
   height: 44px;
-}
-.rank-badge--small .rank-badge__letter {
-  font-size: var(--font-size-18);
+  --rank-unit: 2px;
+  --rank-letter: var(--font-size-18);
 }
 
 .rank-badge--medium {
   width: 72px;
   height: 72px;
-}
-.rank-badge--medium .rank-badge__letter {
-  font-size: var(--font-size-28);
+  --rank-unit: 3px;
+  --rank-letter: var(--font-size-28);
 }
 
 .rank-badge--large {
   width: 108px;
   height: 108px;
-}
-.rank-badge--large .rank-badge__letter {
-  font-size: var(--font-size-40);
+  --rank-unit: 4px;
+  --rank-letter: var(--font-size-40);
 }
 
-/* ---- ランクごとの表現（計画書8.3の表） ---- */
+/* ホームの主役。 */
+.rank-badge--xlarge {
+  width: 92px;
+  height: 92px;
+  --rank-unit: 4px;
+  --rank-letter: 2.75rem;
+}
 
-/* E: 細い1本枠、影なし */
+/* 44px / 72px にキャプションを入れると必ずはみ出すので出さない。
+   キャプションが出るのは large / xlarge だけ。 */
+.rank-badge--small .rank-badge__caption,
+.rank-badge--medium .rank-badge__caption {
+  display: none;
+}
+
+/* ---- 段1: 角丸四角（E, D）----
+   一番素朴なシルエット。まだ紋章になっていない状態を表す。
+   枠に対して一番小さく置き、上の段ほど大きく見えるようにする。 */
+
+/* E: 面だけ */
 .rank-badge--plain {
-  border: 1px solid var(--color-olive-border);
+  --rank-radius: 30%;
+  --rank-rim: 0px;
+  --rank-scale: 0.9;
 }
 
-/* D: 1本枠、薄い面 */
+/* D: 同じ四角にリムが1本入る */
 .rank-badge--soft {
-  border: 1px solid var(--color-olive-border);
-  background-color: var(--color-lime-soft);
+  --rank-radius: 30%;
+  --rank-rim: var(--rank-unit);
+  --rank-scale: 0.9;
 }
 
-/* C: 二重枠 */
+/* ---- 段2: 円（C, B）----
+   メダルの形になる。四角より一段上で、少し大きい。 */
+
+/* C: 円、リム無し */
 .rank-badge--double {
-  border: 2px solid var(--color-lime-border);
-  box-shadow: inset 0 0 0 4px var(--color-surface), inset 0 0 0 5px var(--color-lime-border);
-  background-color: var(--color-lime-soft);
+  --rank-radius: 50%;
+  --rank-rim: 0px;
+  --rank-scale: 0.95;
 }
 
-/* B: 二重枠と小さな光沢 */
+/* B: 円にリム。段が上がるのでリムも少し太い。 */
 .rank-badge--double-gloss {
-  border: 2px solid var(--color-lime-border);
-  box-shadow:
-    inset 0 0 0 4px var(--color-surface),
-    inset 0 0 0 5px var(--color-lime-border),
-    inset 0 12px 16px -12px rgba(255, 255, 255, 0.9);
-  background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
+  --rank-radius: 50%;
+  --rank-rim: calc(var(--rank-unit) * 1.25);
+  --rank-scale: 0.95;
 }
 
-/* A: 太い枠と立体的な紋章 */
+/* ---- 段3: 六角（A, S）----
+   紋章 / 宝石のシルエット。左右が尖る。
+   頂点を 18% まで広げてあるのは、六角のままだと円より小さく見えて
+   「格が上がった」感じが出ないため。 */
+
+/* A: 六角、リム無し */
 .rank-badge--bold {
-  border: 3px solid var(--color-brand-lime);
-  box-shadow:
-    inset 0 0 0 5px var(--color-surface),
-    var(--shadow-2);
-  background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
+  --rank-rim: 0px;
+  clip-path: polygon(18% 0%, 82% 0%, 100% 50%, 82% 100%, 18% 100%, 0% 50%);
 }
 
-/* S: ブルーの縁光と静かなシマー */
+/* S: 六角にリム。段3なのでリムが最も太い。 */
 .rank-badge--aura {
-  border: 3px solid var(--color-brand-lime);
-  box-shadow:
-    inset 0 0 0 5px var(--color-surface),
-    0 0 0 3px rgba(59, 130, 246, 0.28),
-    var(--shadow-2);
-  background-image: linear-gradient(160deg, var(--color-lime-muted), var(--color-lime-soft));
+  --rank-rim: calc(var(--rank-unit) * 1.5);
+  clip-path: polygon(18% 0%, 82% 0%, 100% 50%, 82% 100%, 18% 100%, 0% 50%);
 }
 
-/* SS: ライムとブルーの二重光、専用紋章 */
+/* ---- 段4: 尖り六角（SS）----
+   上下が尖る。S までとシルエットが90度違うので、色が分からなくても最上位だと分かる。 */
 .rank-badge--crest {
-  border: 3px solid var(--color-brand-lime);
-  box-shadow:
-    inset 0 0 0 5px var(--color-surface),
-    0 0 0 3px rgba(163, 230, 53, 0.55),
-    0 0 0 6px rgba(59, 130, 246, 0.35),
-    var(--shadow-3);
-  background-image: linear-gradient(160deg, var(--color-lime-muted), rgba(59, 130, 246, 0.10));
+  --rank-rim: calc(var(--rank-unit) * 1.5);
+  /* SS は2文字。尖り六角は上下が細いので、少しだけ字を締める。 */
+  --rank-letter-scale: 0.9;
+  clip-path: polygon(50% 0%, 100% 18%, 100% 82%, 50% 100%, 0% 82%, 0% 18%);
+  letter-spacing: -0.02em;
 }
 
-/* 未解放。見せてもよいが、獲得済みには見せない（計画書2.3） */
+/* color-mix が無い環境では、リムをオリーブ1色に落とす。
+   面と文字（白抜き）のコントラストには影響しない。 */
+@supports not (color: color-mix(in srgb, red 50%, transparent)) {
+  .rank-badge {
+    --rank-rim-color: var(--color-ink-olive);
+  }
+}
+
+/* ---- 状態 ----
+   locked と unmeasured は「まだ持っていない枠」。塗りを外して淡い面にし、
+   獲得済みのベタ塗りとはっきり分ける。シルエットは残すので、
+   どのランクの枠なのかは分かる。（計画書2.3） */
 .rank-badge--locked {
-  opacity: 0.55;
-  filter: grayscale(0.35);
+  --rank-solid: var(--rank-face, var(--color-canvas-lime));
+  --rank-rim-color: var(--color-olive-subtle);
+  --rank-rim: var(--rank-unit);
+  /* 淡い面には濃いオリーブ。薄い文字にすると 4.5:1 を割るので落とさない。 */
+  --rank-ink: var(--color-ink-olive);
 }
 
+/* キャプション（「測定準備中」）が入るサイズだけ、字を小さくして同居させる。
+   2クラス指定なので --crest の 0.9 より優先される。 */
+.rank-badge--locked.rank-badge--large,
+.rank-badge--locked.rank-badge--xlarge {
+  --rank-letter-scale: 0.55;
+}
+
+/* 未測定。中身が「—」だけなので、空き枠に見せる破線で表す。 */
 .rank-badge--unmeasured {
-  border: 1px dashed var(--color-olive-border);
-  color: var(--color-olive-muted);
+  --rank-solid: var(--color-surface);
+  --rank-rim: 0px;
+  --rank-ink: var(--color-ink-olive);
+  background-color: transparent;
+  border: 2px dashed var(--color-olive-border);
+}
+
+/* この紋章は動かないが、将来トランジションを足されても止まるようにしておく。 */
+@media (prefers-reduced-motion: reduce) {
+  .rank-badge,
+  .rank-badge::before {
+    transition: none;
+  }
 }
