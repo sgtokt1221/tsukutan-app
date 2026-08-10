@@ -71,6 +71,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 先頭へ戻るのスクロール対象
   const wordbookShellRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  // 1回のスワイプを1回だけ処理するための掛け金。
+  // カード自身の onMouseUp と document の mouseup が両方走るので、
+  // 掛け金が無いと卒業が2回動き、隣の単語まで消えていた。
+  const swipeHandledRef = useRef(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
 
@@ -319,7 +323,9 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
     trackWrite(handleReviewRemove(word));
     setGraduatedCount(prev => prev + 1);
-    setSessionWords(prev => prev.filter((_, index) => index !== actualIndex));
+    // 取り除くのは番号ではなく単語そのもの。同じスワイプで2回走っても
+    // 2枚目が消えないようにする。
+    setSessionWords(prev => prev.filter((entry) => entry !== word));
   }, [sessionWords, handleReviewRemove, trackWrite]);
 
   /**
@@ -379,6 +385,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   // ネイティブドラッグイベントハンドラー
   const handleMouseDown = useCallback((e) => {
+    swipeHandledRef.current = false;
     e.preventDefault();
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
@@ -458,6 +465,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       const threshold = 50;
       const isSwipe = Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold;
       
+      // 同じスワイプで2回処理しない（卒業が2回動くと隣の単語まで消える）
+      if (swipeHandledRef.current) return;
+      swipeHandledRef.current = true;
+
       const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
@@ -532,6 +543,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const handleTouchStart = useCallback((e) => {
+    swipeHandledRef.current = false;
     // スマホでのタッチイベントを確実に処理するため、passive: falseで登録
     e.preventDefault();
     e.stopPropagation();
@@ -648,6 +660,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       // 以前はここがログだけで、採点も卒業も handleMouseUp 頼みだった。
       // スマホにはマウスイベントが来ないので、実機では何も起きていなかった。
       const threshold = 50;
+      // 同じスワイプで2回処理しない（卒業が2回動くと隣の単語まで消える）
+      if (swipeHandledRef.current) return;
+      swipeHandledRef.current = true;
+
       const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
 
       if (activeCard) {
@@ -751,7 +767,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
             
             return (
             <motion.div
-              key={actualIndex}
+              key={word.id || actualIndex}
               data-card-index={actualIndex}
               className={`wordbook-card${wordbookJudgements[actualIndex] ? ` wordbook-card--${wordbookJudgements[actualIndex]}` : ''}`}
               onMouseDown={handleMouseDown}

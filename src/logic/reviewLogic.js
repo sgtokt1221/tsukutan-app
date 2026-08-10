@@ -85,6 +85,12 @@ export const updateUserWordProgress = async (
     today.setHours(0, 0, 0, 0); // 時間を正規化
     // 復習完了の場合は、完全に復習リストから除去
     if (isReviewComplete) {
+      // まだ一度も出会っていない語をそのまま卒業させると、単語の中身が
+      // 入っていない文書だけが残る（レベルも綴りも無いので、到達語数の
+      // 集計にも定着の内訳にも乗らない）。先に中身を書いておく。
+      if (isFirstTime) {
+        await setDoc(reviewWordRef, { ...wordData, lastReviewed: today }, { merge: true });
+      }
       await markWordAsMastered(userId, word.id);
       return { created: false, mastered: true };
     }
