@@ -18,6 +18,7 @@ import { useAutoPlay } from './logic/useAutoPlay';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
+import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback } from './logic/swipeFeedback';
 
 function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -117,31 +118,37 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   };
 
 
-  const handleReviewRemove = useCallback(async (cardIndex) => {
-    const word = sessionWords[cardIndex];
-    
-    // 復習リストから除去
-    if (userId && word) {
-      try {
-        await updateUserWordProgress(userId, word, true, true);
-      } catch (error) {
-        console.error('Error removing word from review list:', error);
-      }
+  /**
+   * 上スワイプ。その単語を復習リストから卒業させる。
+   *
+   * 受け取るのは単語そのもの。以前は引数名が cardIndex で、
+   * フラッシュカードからは番号、単語帳からは綴りの文字列が渡っていた。
+   * 文字列で sessionWords[...] を引くと undefined になり、
+   * 画面上は消えたのに記録されない沈黙失敗になっていた。
+   */
+  const handleReviewRemove = useCallback(async (word) => {
+    if (!userId || !word) return;
+    try {
+      await updateUserWordProgress(userId, word, true, true);
+    } catch (error) {
+      console.error('Error removing word from review list:', error);
     }
-  }, [userId, sessionWords]);
+  }, [userId]);
 
 
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const cardColor = useTransform(
     [x, y],
     ([latestX, latestY]) => {
-      if (latestY < -40) {
-        return "#facc15"; // Yellow for swipe up
-      }
-      // Interpolate between red, white, and green for horizontal swipe
+      if (latestY < -40) return SWIPE_FEEDBACK.graduate.color;
+
       const xRange = [-100, 0, 100];
-      const colorRange = ["#ef4444", "#ffffff", "#4ade80"];
-      
+      const colorRange = [
+        SWIPE_FEEDBACK.incorrect.color,
+        SWIPE_FEEDBACK.neutral.color,
+        SWIPE_FEEDBACK.correct.color,
+      ];
+
       const N = colorRange.length;
       const xAsNumber = typeof latestX === 'number' ? latestX : 0;
 
@@ -150,7 +157,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
       let i = 0;
       while (xAsNumber > xRange[i+1]) i++;
-      
+
       const range = xRange[i+1] - xRange[i];
       const proportion = (xAsNumber - xRange[i]) / range;
 
@@ -160,7 +167,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       const r = Math.round(parseInt(fromColor.slice(1, 3), 16) * (1 - proportion) + parseInt(toColor.slice(1, 3), 16) * proportion);
       const g = Math.round(parseInt(fromColor.slice(3, 5), 16) * (1 - proportion) + parseInt(toColor.slice(3, 5), 16) * proportion);
       const b = Math.round(parseInt(fromColor.slice(5, 7), 16) * (1 - proportion) + parseInt(toColor.slice(5, 7), 16) * proportion);
-      
+
       return `rgb(${r}, ${g}, ${b})`;
     }
   );
@@ -265,6 +272,37 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
   const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
 
+  /** 単語帳での上スワイプ。その単語を卒業させ、一覧から取り除く。 */
+  const graduateWordAt = useCallback((actualIndex) => {
+    const word = sessionWords[actualIndex];
+    if (!word) return;
+
+    trackWrite(handleReviewRemove(word));
+    setGraduatedCount(prev => prev + 1);
+    setSessionWords(prev => prev.filter((_, index) => index !== actualIndex));
+  }, [sessionWords, handleReviewRemove, trackWrite]);
+
+  /**
+   * フラッシュカードでの上スワイプ。卒業させて次のカードへ進む。
+   * 以前は記録だけして進まず、同じ単語が残り続けていた。
+   */
+  const handleGraduateCurrent = useCallback(() => {
+    const currentWord = sessionWords?.[currentIndex];
+    if (!currentWord) return;
+
+    trackWrite(handleReviewRemove(currentWord));
+    setGraduatedCount(prev => prev + 1);
+
+    if (currentIndex < sessionWords.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setIsFlipped(false);
+      x.set(0);
+      y.set(0);
+    } else {
+      flushWrites().then(onBack);
+    }
+  }, [currentIndex, sessionWords, handleReviewRemove, trackWrite, flushWrites, onBack, x, y]);
+
   const handleIncorrect = useCallback(async () => {
     const currentWord = sessionWords?.[currentIndex];
     
@@ -327,25 +365,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       y.set(deltaY);
       
       // フラッシュカードの背景色を変更
-      const flashcard = document.getElementById('flashcard');
-      if (flashcard) {
-        let backgroundColor = 'white';
-        let boxShadow = 'none';
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          if (deltaX > 30) {
-            backgroundColor = "#4ade80"; // Green for right swipe
-            boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          } else if (deltaX < -30) {
-            backgroundColor = "#ef4444"; // Red for left swipe
-            boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          }
-        } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-        }
-        flashcard.style.setProperty('background-color', backgroundColor, 'important');
-        flashcard.style.setProperty('box-shadow', boxShadow, 'important');
-      }
+      paintSwipeFeedback(
+        document.getElementById('flashcard'),
+        swipeFeedbackFor(deltaX, deltaY),
+      );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードの場合、直接DOM操作でカードの位置を更新
       // 現在ドラッグ中のカードを特定
@@ -387,25 +410,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         activeCard.style.transform = `translate(${limitedDeltaX}px, ${limitedDeltaY}px)`;
         
         // 単語帳モードでの視覚的フィードバック
-        let backgroundColor = 'white';
-        let boxShadow = 'none';
-        
-        if (limitedDeltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up (deletion)
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-          logger.debug('🔥 Yellow highlight for upward swipe (deletion)');
-        } else if (limitedDeltaX > 30) {
-          backgroundColor = "#4ade80"; // Green for right swipe (correct)
-          boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          logger.debug('🔥 Green highlight for right swipe (correct)');
-        } else if (limitedDeltaX < -30) {
-          backgroundColor = "#ef4444"; // Red for left swipe (incorrect)
-          boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          logger.debug('🔥 Red highlight for left swipe (incorrect)');
-        }
-        
-        activeCard.style.setProperty('background-color', backgroundColor, 'important');
-        activeCard.style.setProperty('box-shadow', boxShadow, 'important');
+        paintSwipeFeedback(activeCard, swipeFeedbackFor(limitedDeltaX, limitedDeltaY));
       }
     }
   }, [isDragging, dragStart, x, y, viewMode]);
@@ -452,22 +457,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       if (activeCard) {
         if (isSwipe) {
           if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
-            // 上スワイプ（削除）の場合
+            // 上スワイプ（卒業）。掴んでいたカードの単語を外す。
+            // 以前は「先頭の単語を消して wordbookProgress を1進める」
+            // だったので、途中のカードを上げると別の単語が消えていた。
             activeCard.style.transform = `translate(0px, -300px)`;
             activeCard.style.opacity = '0';
-            
-            // 復習単語の場合は削除処理を追加
-            if (words.length > 0 && wordbookProgress < words.length) {
-              const currentWord = words[wordbookProgress];
-              handleReviewRemove(currentWord.word);
-            }
-            
-            // アニメーション後にカードを非表示にして次のカードに進む
-            setTimeout(() => {
-              activeCard.style.display = 'none';
-              // 次のカードに進む
-              setWordbookProgress(prev => prev + 1);
-            }, 300);
+
+            const swipedIndex = Number(activeCard.dataset.cardIndex);
+            setTimeout(() => graduateWordAt(swipedIndex), 300);
           } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
             // 左右スワイプ（評価）の場合
             if (deltaX > 30) {
@@ -507,7 +504,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     }
     
     setDragStart({ x: 0, y: 0 });
-  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleReviewRemove, wordbookProgress, words]);
+  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, graduateWordAt]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -593,30 +590,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     
     // 単語帳モードでは左右スワイプで評価、上下スワイプで削除
     if (viewMode === 'wordbook') {
-      let backgroundColor = 'white';
-      let boxShadow = 'none';
-      
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // 左右スワイプ（評価）
-        if (deltaX > 30) {
-          backgroundColor = "#4ade80"; // Green for right swipe (correct)
-          boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-        } else if (deltaX < -30) {
-          backgroundColor = "#ef4444"; // Red for left swipe (incorrect)
-          boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-        }
-      } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        // 上下スワイプ（削除）
-        if (deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up (deletion)
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-        }
-      }
-      
-      if (e.currentTarget) {
-        e.currentTarget.style.setProperty('background-color', backgroundColor, 'important');
-        e.currentTarget.style.setProperty('box-shadow', boxShadow, 'important');
-      }
+      paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY));
       return;
     }
     
@@ -629,27 +603,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       logger.debug('🔥 Motion values updated:', { xValue: x.get(), yValue: y.get() });
       
       // フラッシュカードの背景色を変更
-      const flashcard = document.getElementById('flashcard');
-      if (flashcard) {
-        let backgroundColor = 'white';
-        let boxShadow = 'none';
-        
-        if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-        } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          if (deltaX > 30) {
-            backgroundColor = "#4ade80"; // Green for right swipe
-            boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          } else if (deltaX < -30) {
-            backgroundColor = "#ef4444"; // Red for left swipe
-            boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          }
-        }
-        
-        flashcard.style.setProperty('background-color', backgroundColor, 'important');
-        flashcard.style.setProperty('box-shadow', boxShadow, 'important');
-      }
+      paintSwipeFeedback(
+        document.getElementById('flashcard'),
+        swipeFeedbackFor(deltaX, deltaY),
+      );
     }
   }, [isDragging, dragStart, viewMode, x, y]);
 
@@ -683,8 +640,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           handleIncorrect();
         }
       } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold && deltaY < -15) {
-        // 上スワイプ（復習リストから削除）
-        handleReviewRemove(currentIndex);
+        // 上スワイプ（復習リストから卒業）。次のカードへも進む。
+        handleGraduateCurrent();
       }
     } else if (viewMode === 'wordbook') {
       // 単語帳モードでのスワイプ判定
@@ -709,7 +666,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     
     setDragStart({ x: 0, y: 0 });
     
-  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleReviewRemove, currentIndex]);
+  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleGraduateCurrent]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
