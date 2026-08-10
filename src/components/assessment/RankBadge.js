@@ -5,8 +5,13 @@ import './RankBadge.css';
 /**
  * ランクの紋章。ASSESSMENT_RANK_SYSTEM_PLAN.md 8.3。
  *
- * 色は増やさない。ランク差は枠の太さ・二重線・光沢・縁光で表す。
- * 常時点滅はしない。SSでも本文の可読性を優先する。
+ * ランクごとに色を変える。色は src/config/ranks.json が正本で、
+ * ここでは CSS 変数に流すだけ。銅→銀→金→ライム→青→紫と、
+ * 段が上がるほど「素材が上がる」並びにしてある。
+ *
+ * 枠の太さ・二重線・光沢・縁光の差も併用する。色だけで区別すると
+ * 色が見分けにくい生徒に伝わらないため。
+ * 常時点滅はしない。文字の可読性を優先する。
  */
 export default function RankBadge({ rankId, size = 'medium', locked = false }) {
   const rank = getRank(rankId);
@@ -27,8 +32,13 @@ export default function RankBadge({ rankId, size = 'medium', locked = false }) {
     locked || rank.locked ? 'rank-badge--locked' : '',
   ].filter(Boolean).join(' ');
 
+  const colorVars = {
+    '--rank-color': rank.color,
+    '--rank-face': rank.faceColor,
+  };
+
   return (
-    <div className={className} aria-label={`ランク ${rank.id}`}>
+    <div className={className} style={colorVars} aria-label={`ランク ${rank.id}`}>
       <span className="rank-badge__letter">{rank.id}</span>
       {(locked || rank.locked) && <span className="rank-badge__caption">測定準備中</span>}
     </div>

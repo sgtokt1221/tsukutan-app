@@ -7,6 +7,8 @@ import { predictPerformance } from '../../logic/predictionModel';
 import { generateSmartRecommendations } from '../../logic/recommendationEngine';
 import { getLevel, MAX_WORD_LEVEL } from '../../config';
 import TrendChart from './TrendChart';
+import RankCard from '../assessment/RankCard';
+import { scoreFromLegacyLevel } from '../../logic/rankLogic';
 import logger from '../../logic/logger';
 
 /**
@@ -153,6 +155,16 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
             </div>
           </div>
           
+          {/* ランクと換算の根拠。ホームでは紋章だけにしているので、
+              数値・英検/TOEIC換算・注記はここでまとめて出す。 */}
+          <div className="analytics-section">
+            <div className="section-header">
+              <h3>いまのランク</h3>
+              <div className="section-divider"></div>
+            </div>
+            <RankCard score={scoreFromLegacyLevel(analyticsData.currentLevel)} />
+          </div>
+
           {/* 基本統計 */}
           <div className="analytics-section">
             <div className="section-header">
