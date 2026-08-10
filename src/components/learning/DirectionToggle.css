@@ -1,0 +1,35 @@
+/*
+ * 出題方向の小さなセグメント。モードタブと同じ行に収めるため、
+ * 高さはタブの文字に合わせて詰める。
+ */
+
+.direction-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+.direction-toggle__option {
+  padding: var(--space-4) var(--space-12);
+  border: none;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.direction-toggle__option:hover {
+  color: var(--color-ink-olive);
+}
+
+.direction-toggle__option[aria-pressed="true"] {
+  background-color: var(--color-brand-lime);
+  color: var(--color-ink-olive);
+}

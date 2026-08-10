@@ -9,14 +9,20 @@ import { speakSequence, stopSpeaking } from './speechUtils';
  * 「日本語の完了待ち」を同時に走らせていたため、日本語が鳴り終わる前に
  * 次へ進んで英語と日本語がずれていた。読み上げの連結は onend に任せる。
  *
+ * 和→英のときは日本語 → 英語の順に読む。問題を先に読まないと、
+ * 聞くだけで答えが分かってしまい、めくる意味が無くなるため。
+ *
  * @param {object}   params
  * @param {Array}    params.words 読み上げる単語の配列
  * @param {number}   params.currentIndex 開始位置
+ * @param {string}   params.direction 出題の向き（'en-ja' | 'ja-en'）
  * @param {boolean}  params.enabled 使える画面か（単語帳モードでは false）
- * @param {Function} params.onRevealMeaning 意味を読み始めるときに呼ぶ（カードをめくる）
+ * @param {Function} params.onRevealMeaning 答えを読み始めるときに呼ぶ（カードをめくる）
  * @param {Function} params.onAdvance 次の単語へ進むときに呼ぶ (nextIndex)
  */
-export const useAutoPlay = ({ words, currentIndex, enabled = true, onRevealMeaning, onAdvance }) => {
+export const useAutoPlay = ({
+  words, currentIndex, direction = 'en-ja', enabled = true, onRevealMeaning, onAdvance,
+}) => {
   const [autoPlay, setAutoPlay] = useState(false);
   const timerRef = useRef(null);
   // 読み上げの完了通知は止めたあとにも届く。state だとクロージャが
@@ -54,15 +60,17 @@ export const useAutoPlay = ({ words, currentIndex, enabled = true, onRevealMeani
       }
 
       const meaning = word.meaning || word.japanese || word.translation;
+      const english = { text: word.word, lang: 'en-US' };
+      const japanese = { text: meaning, lang: 'ja-JP' };
+      // 問題を先に、答えをあとに読む。答え側でカードをめくる。
+      const [question, answer] = direction === 'ja-en'
+        ? [japanese, english]
+        : [english, japanese];
 
       speakSequence(
         [
-          { text: word.word, lang: 'en-US' },
-          {
-            text: meaning,
-            lang: 'ja-JP',
-            onStart: () => handlersRef.current.onRevealMeaning?.(),
-          },
+          question,
+          { ...answer, onStart: () => handlersRef.current.onRevealMeaning?.() },
         ],
         {
           onDone: () => {
@@ -83,7 +91,7 @@ export const useAutoPlay = ({ words, currentIndex, enabled = true, onRevealMeani
     };
 
     playAt(currentIndex);
-  }, [enabled, words, currentIndex]);
+  }, [enabled, words, currentIndex, direction]);
 
   // 画面を離れるときは必ず止める
   useEffect(() => stop, [stop]);

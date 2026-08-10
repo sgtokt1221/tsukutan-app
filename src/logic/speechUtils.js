@@ -238,12 +238,17 @@ const speakSequence = (items, options = {}) => {
   speakAt(0);
 };
 
-/** 英語を読んでから日本語の意味を読む。学習カードの標準の読み上げ方。 */
-const speakWordThenMeaning = (word, meaning) =>
-  speakSequence([
-    { text: word, lang: 'en-US' },
-    { text: meaning, lang: 'ja-JP' },
-  ]);
+/**
+ * 単語と意味を続けて読む。学習カードの標準の読み上げ方。
+ *
+ * 既定は英語 → 日本語。和→英で出題しているときは、問題（日本語）を
+ * 先に読まないと、聞くだけで答えが分かってしまうので順を入れ替える。
+ */
+const speakWordThenMeaning = (word, meaning, direction = 'en-ja') => {
+  const english = { text: word, lang: 'en-US' };
+  const japanese = { text: meaning, lang: 'ja-JP' };
+  return speakSequence(direction === 'ja-en' ? [japanese, english] : [english, japanese]);
+};
 
 /** 読み上げを止める。連続再生の途中でも打ち切る。 */
 const stopSpeaking = () => {
