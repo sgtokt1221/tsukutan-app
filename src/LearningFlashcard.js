@@ -11,10 +11,16 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
-import { usePronunciation } from './logic/usePronunciation';
+import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
+import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
+import { scrollWordbookToTop } from './logic/scrollHelpers';
 import { useWordbookZoom } from './logic/useWordbookZoom';
+import { useCardDirection } from './logic/useCardDirection';
+import { useAutoPlaySpeed } from './logic/useAutoPlaySpeed';
 import { useAutoPlay } from './logic/useAutoPlay';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
+import DirectionToggle from './components/learning/DirectionToggle';
+import AutoPlaySpeed from './components/learning/AutoPlaySpeed';
 import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
 
@@ -26,6 +32,15 @@ const shuffleArray = (array) => {
     [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
   return newArray;
+};
+
+/** その座標にある単語帳カードを返す。掴んだカードを特定するのに使う。 */
+const findCardAtPoint = (x, y) => {
+  for (const card of document.querySelectorAll('[data-card-index]')) {
+    const rect = card.getBoundingClientRect();
+    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) return card;
+  }
+  return null;
 };
 
 export default function LearningFlashcard({
@@ -42,8 +57,15 @@ export default function LearningFlashcard({
   const [revealedCards, setRevealedCards] = useState(new Set()); // 赤シート機能で表示中のカード
   const [longPressCards, setLongPressCards] = useState(new Set()); // 長押し中のカード（復習モード用）
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
+  // 単語帳モードで左右スワイプした結果。どこまで進んだかを色で残す。
+  const [wordbookJudgements, setWordbookJudgements] = useState({});
   // 文字サイズは復習カードと共有する
   const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
+  // 出題の向き（英→和 / 和→英）も復習カードと共有する
+  const [direction, setDirection] = useCardDirection();
+  const isJaToEn = direction === 'ja-en';
+  // 自動再生で次の単語へ進むまでの間。復習カードと共有する。
+  const [autoPlaySpeed, setAutoPlaySpeed, autoPlayGapMs] = useAutoPlaySpeed();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -79,7 +101,7 @@ export default function LearningFlashcard({
     // 「答えを見る」ボタンの onClick に置くと鳴らない。カード面の
     // onMouseDown が先に走ってボタンが外れ、click まで到達しないため。
     const word = shuffledWords[cardIndex];
-    if (word) speakWordThenMeaning(word.word, word.meaning);
+    if (word) speakWordThenMeaning(word.word, word.meaning, direction);
     setRevealedCards(prev => new Set([...prev, cardIndex]));
   };
 
@@ -164,7 +186,11 @@ export default function LearningFlashcard({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  const cardColor = useTransform(x, [-100, 0, 100], ["#fecaca", "#ffffff", "#d9f99d"]);
+  const cardColor = useTransform(
+    x,
+    [-100, 0, 100],
+    [SWIPE_FEEDBACK.incorrect.color, SWIPE_FEEDBACK.neutral.color, SWIPE_FEEDBACK.correct.color],
+  );
 
   // 単語の出どころ（マスター / Firestore / 復習の写し）によらず発音を出す
   const getPronunciation = usePronunciation();
@@ -172,6 +198,8 @@ export default function LearningFlashcard({
   const { autoPlay, start: startAutoPlay, stop: stopAutoPlay } = useAutoPlay({
     words: shuffledWords,
     currentIndex,
+    direction,
+    gapMs: autoPlayGapMs,
     enabled: viewMode === 'flashcard',
     onRevealMeaning: () => setIsFlipped(true),
     onAdvance: (nextIndex) => {
@@ -243,6 +271,34 @@ export default function LearningFlashcard({
   // 正解・不正解処理関数
   // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
   // 'again' は handleIncorrect が受け持つ。
+  /**
+   * 単語帳での左右スワイプ。その単語を採点し、結果を色で残す。
+   *
+   * 以前はカードを飛ばして wordbookProgress を1進めるだけで、
+   * 記録も残らず、掴んだカードと消えるカードも一致していなかった。
+   */
+  const judgeWordAt = useCallback((actualIndex, quality) => {
+    const word = shuffledWords[actualIndex];
+    const user = auth.currentUser;
+    if (!word) return;
+
+    if (user) {
+      trackWrite(
+        updateUserWordProgress(
+          user.uid, word, quality, false, undefined,
+          { revealed: revealedCards.has(actualIndex) },
+        ).then((result) => {
+          if (result?.created) newlyLearnedIdsRef.current.add(word.id);
+          onWordAnsweredRef.current?.(word.id);
+        })
+      );
+    }
+    setWordbookJudgements(prev => ({
+      ...prev,
+      [actualIndex]: quality === 'again' ? 'incorrect' : 'correct',
+    }));
+  }, [shuffledWords, auth, trackWrite, revealedCards]);
+
   const handleAnswer = useCallback(async (quality) => {
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
@@ -377,38 +433,13 @@ export default function LearningFlashcard({
       y.set(deltaY);
       
       // フラッシュカードの背景色を変更
-      const flashcard = document.getElementById('flashcard');
-      if (flashcard) {
-        let backgroundColor = 'white';
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          if (deltaX > 30) {
-            backgroundColor = "#4ade80"; // Green for right swipe
-          } else if (deltaX < -30) {
-            backgroundColor = "#ef4444"; // Red for left swipe
-          }
-        }
-        flashcard.style.setProperty('background-color', backgroundColor, 'important');
-      }
+      paintSwipeFeedback(
+        document.getElementById('flashcard'),
+        swipeFeedbackFor(deltaX, deltaY, false),
+      );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードの場合、直接DOM操作でカードの位置を更新
-      // 現在ドラッグ中のカードを特定
-      const allCards = document.querySelectorAll('[data-card-index]');
-      let activeCard = null;
-      
-      // ドラッグ開始位置に最も近いカードを特定
-      for (let card of allCards) {
-        const rect = card.getBoundingClientRect();
-        if (dragStart.x >= rect.left && dragStart.x <= rect.right &&
-            dragStart.y >= rect.top && dragStart.y <= rect.bottom) {
-          activeCard = card;
-          break;
-        }
-      }
-      
-      // カードが見つからない場合、最初のカードを使用
-      if (!activeCard && allCards.length > 0) {
-        activeCard = allCards[0];
-      }
+      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
         // 単語帳モードでは左右スワイプで評価、上下スワイプで削除
@@ -429,29 +460,14 @@ export default function LearningFlashcard({
         
         activeCard.style.transform = `translate(${limitedDeltaX}px, ${limitedDeltaY}px)`;
         
-        // 単語帳モードでの視覚的フィードバック
-        let cardBackgroundColor = 'white';
-        let boxShadow = 'none';
+        // 単語帳モードでの視覚的フィードバック。
+        // 上スワイプ（復習完了）は復習単語のときだけ使える。
+        const feedback = swipeFeedbackFor(limitedDeltaX, limitedDeltaY, isReviewMode);
         
-        if (limitedDeltaY < -15) {
-          cardBackgroundColor = "#facc15"; // Yellow for swipe up (deletion)
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-          logger.debug('🔥 LearningFlashcard Yellow highlight for upward swipe (deletion)');
-        } else if (limitedDeltaX > 30) {
-          cardBackgroundColor = "#4ade80"; // Green for right swipe (correct)
-          boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          logger.debug('🔥 LearningFlashcard Green highlight for right swipe (correct)');
-        } else if (limitedDeltaX < -30) {
-          cardBackgroundColor = "#ef4444"; // Red for left swipe (incorrect)
-          boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          logger.debug('🔥 LearningFlashcard Red highlight for left swipe (incorrect)');
-        }
-        
-        activeCard.style.setProperty('background-color', cardBackgroundColor, 'important');
-        activeCard.style.setProperty('box-shadow', boxShadow, 'important');
+        paintSwipeFeedback(activeCard, feedback);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode]);
+  }, [isDragging, dragStart, x, y, viewMode, isReviewMode]);
 
   const handleMouseUp = useCallback((e) => {
     if (!isDragging) return;
@@ -496,51 +512,19 @@ export default function LearningFlashcard({
       const threshold = 50;
       const isSwipe = Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold;
       
-      // 現在ドラッグ中のカードを特定
-      const allCards = document.querySelectorAll('[data-card-index]');
-      let activeCard = null;
-      
-      // ドラッグ開始位置に最も近いカードを特定
-      for (let card of allCards) {
-        const rect = card.getBoundingClientRect();
-        if (dragStart.x >= rect.left && dragStart.x <= rect.right &&
-            dragStart.y >= rect.top && dragStart.y <= rect.bottom) {
-          activeCard = card;
-          break;
-        }
-      }
+      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
-        if (isSwipe) {
-          // スワイプが完了した場合、カードを画面外に移動
-          if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // 左右スワイプ
-            const direction = deltaX > 0 ? 300 : -300;
-            activeCard.style.transform = `translate(${direction}px, 0px)`;
-            activeCard.style.opacity = '0';
-          } else {
-            // 上下スワイプ（上スワイプの場合のみ処理）
-            if (deltaY < -15) { // 上スワイプ（負の値）
-              activeCard.style.transform = `translate(0px, -300px)`;
-              activeCard.style.opacity = '0';
-            }
-          }
-          
-          // アニメーション後にカードを非表示にして次のカードに進む
-          setTimeout(() => {
-            activeCard.style.display = 'none';
-            // 次のカードに進む
-            setWordbookProgress(prev => prev + 1);
-          }, 300);
-        } else {
-          // スワイプが不十分な場合、元の位置に戻す
-          activeCard.style.transform = 'translate(0px, 0px)';
-          activeCard.style.setProperty('background-color', 'white', 'important');
-          activeCard.style.setProperty('box-shadow', 'none', 'important');
+        // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
+        // 見返せない。結果はカードの色で示す。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(Number(activeCard.dataset.cardIndex), deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -572,9 +556,9 @@ export default function LearningFlashcard({
     if (!isFlipped && shuffledWords.length > 0 && shuffledWords[currentIndex]) {
       const word = shuffledWords[currentIndex];
       // 英語を読んでから意味を読む。音だけで確認できるようにする。
-      speakWordThenMeaning(word?.word, word?.japanese || word?.meaning);
+      speakWordThenMeaning(word?.word, word?.japanese || word?.meaning, direction);
     }
-  }, [isFlipped, currentIndex, shuffledWords]);
+  }, [isFlipped, currentIndex, shuffledWords, direction]);
 
   const handleTouchStart = useCallback((e) => {
     e.preventDefault();
@@ -627,42 +611,17 @@ export default function LearningFlashcard({
       logger.debug('🔥 LearningFlashcard Motion values updated:', { xValue: x.get(), yValue: y.get() });
       
       // フラッシュカードの背景色を変更
-      const flashcard = document.getElementById('flashcard');
-      if (flashcard) {
-        let backgroundColor = 'white';
-        let boxShadow = 'none';
-        
-        if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up
-          boxShadow = '0 4px 12px rgba(250, 204, 21, 0.3)';
-        } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          if (deltaX > 30) {
-            backgroundColor = "#4ade80"; // Green for right swipe
-            boxShadow = '0 4px 12px rgba(74, 222, 128, 0.3)';
-          } else if (deltaX < -30) {
-            backgroundColor = "#ef4444"; // Red for left swipe
-            boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-          }
-        }
-        
-        flashcard.style.setProperty('background-color', backgroundColor, 'important');
-        flashcard.style.setProperty('box-shadow', boxShadow, 'important');
-      }
+      paintSwipeFeedback(
+        document.getElementById('flashcard'),
+        swipeFeedbackFor(deltaX, deltaY, false),
+      );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードでは上下の動きのみ許可（左右は固定）
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        let backgroundColor = 'white';
-        if (deltaY < -15) {
-          backgroundColor = "#facc15"; // Yellow for swipe up
-        }
-        
-        if (e.currentTarget) {
-          e.currentTarget.style.setProperty('background-color', backgroundColor, 'important');
-          e.currentTarget.style.setProperty('box-shadow', deltaY < -15 ? '0 4px 12px rgba(250, 204, 21, 0.3)' : 'none', 'important');
-        }
+        paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, isReviewMode));
       }
     }
-  }, [isDragging, dragStart, viewMode, x, y]);
+  }, [isDragging, dragStart, viewMode, x, y, isReviewMode]);
 
   const handleTouchEnd = useCallback((e) => {
     if (!isDragging) return;
@@ -708,51 +667,19 @@ export default function LearningFlashcard({
       const threshold = 50;
       const isSwipe = Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold;
       
-      // 現在ドラッグ中のカードを特定
-      const allCards = document.querySelectorAll('[data-card-index]');
-      let activeCard = null;
-      
-      // ドラッグ開始位置に最も近いカードを特定
-      for (let card of allCards) {
-        const rect = card.getBoundingClientRect();
-        if (dragStart.x >= rect.left && dragStart.x <= rect.right &&
-            dragStart.y >= rect.top && dragStart.y <= rect.bottom) {
-          activeCard = card;
-          break;
-        }
-      }
+      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
-        if (isSwipe) {
-          // スワイプが完了した場合、カードを画面外に移動
-          if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // 左右スワイプ
-            const direction = deltaX > 0 ? 300 : -300;
-            activeCard.style.transform = `translate(${direction}px, 0px)`;
-            activeCard.style.opacity = '0';
-          } else {
-            // 上下スワイプ（上スワイプの場合のみ処理）
-            if (deltaY < -15) { // 上スワイプ（負の値）
-              activeCard.style.transform = `translate(0px, -300px)`;
-              activeCard.style.opacity = '0';
-            }
-          }
-          
-          // アニメーション後にカードを非表示にして次のカードに進む
-          setTimeout(() => {
-            activeCard.style.display = 'none';
-            // 次のカードに進む
-            setWordbookProgress(prev => prev + 1);
-          }, 300);
-        } else {
-          // スワイプが不十分な場合、元の位置に戻す
-          activeCard.style.transform = 'translate(0px, 0px)';
-          activeCard.style.setProperty('background-color', 'white', 'important');
-          activeCard.style.setProperty('box-shadow', 'none', 'important');
+        // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
+        // 見返せない。結果はカードの色で示す。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(Number(activeCard.dataset.cardIndex), deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
@@ -835,7 +762,10 @@ export default function LearningFlashcard({
           backLabel="終了"
         />
         <ModeTabs value="wordbook" onChange={setViewMode}>
-          <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
+          <div className="mode-tabs__controls">
+            <DirectionToggle value={direction} onChange={setDirection} />
+            <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
+          </div>
         </ModeTabs>
       </div>
 
@@ -854,10 +784,10 @@ export default function LearningFlashcard({
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="wordbook-card"
+              className={`wordbook-card${wordbookJudgements[actualIndex] ? ` wordbook-card--${wordbookJudgements[actualIndex]}` : ''}`}
             >
                 <div className="wordbook-card__grid">
-                {/* 左側：英単語 */}
+                {/* 左側：問題。英→和なら英単語、和→英なら意味 */}
                 <div className="wordbook-card__side wordbook-card__left">
                   <BookmarkButton
                     size="inline"
@@ -867,17 +797,23 @@ export default function LearningFlashcard({
                   />
                   <button
                     type="button"
-                    className="wordbook-word"
-                    onClick={() => speak(word.word)}
-                    aria-label={`${word.word} を読み上げる`}
+                    className={isJaToEn ? 'wordbook-word wordbook-word--ja' : 'wordbook-word'}
+                    onClick={() => (isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word))}
+                    aria-label={`${isJaToEn ? word.meaning : word.word} を読み上げる`}
                   >
-                    {word.word}
+                    <span className="wordbook-word__text">
+                      {isJaToEn ? word.meaning : word.word}
+                    </span>
+                    {/* 発音記号は英単語の手がかりになるので、和→英では隠す。
+                        英→和でも、行が増える長い語では出さない。 */}
+                    {!isJaToEn && inlinePronunciation(
+                      word.word, word.pronunciation || getPronunciation(word.word),
+                    ) && (
+                      <span className="wordbook-pronunciation">
+                        [{word.pronunciation || getPronunciation(word.word)}]
+                      </span>
+                    )}
                   </button>
-                  {(word.pronunciation || getPronunciation(word.word)) && (
-                    <div className="wordbook-pronunciation">
-                      [{word.pronunciation || getPronunciation(word.word)}]
-                    </div>
-                  )}
                 </div>
 
                 {/* 右側：和訳・例文（赤シート機能付き + 復習モード長押し機能） */}
@@ -965,7 +901,20 @@ export default function LearningFlashcard({
                     opacity: revealedCards.has(index) ? 1 : 0.3,
                     transition: 'opacity 0.2s ease'
                   }}>
-                    <div className="wordbook-meaning">{word.meaning}</div>
+                    {isJaToEn ? (
+                      <div className="wordbook-answer-word">
+                        <span className="wordbook-meaning wordbook-meaning--en">{word.word}</span>
+                        {inlinePronunciation(
+                          word.word, word.pronunciation || getPronunciation(word.word),
+                        ) && (
+                          <span className="wordbook-pronunciation">
+                            [{word.pronunciation || getPronunciation(word.word)}]
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="wordbook-meaning">{word.meaning}</div>
+                    )}
 
                     {word.example && (
                       <div className="wordbook-example">
@@ -988,7 +937,7 @@ export default function LearningFlashcard({
       <div className="wordbook-to-top">
         <button
           type="button"
-          onClick={() => wordbookShellRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => scrollWordbookToTop(wordbookShellRef.current)}
           className="wordbook-to-top__button"
           aria-label="先頭へ戻る"
         >
@@ -1041,7 +990,13 @@ export default function LearningFlashcard({
           </>
         )}
       />
-      <ModeTabs value="flashcard" onChange={setViewMode} />
+      <ModeTabs value="flashcard" onChange={setViewMode}>
+        <div className="mode-tabs__controls">
+          {/* 速さは自動再生中だけ出す。止まっているときは関係がない */}
+          {autoPlay && <AutoPlaySpeed value={autoPlaySpeed} onChange={setAutoPlaySpeed} />}
+          <DirectionToggle value={direction} onChange={setDirection} />
+        </div>
+      </ModeTabs>
 
       <div id="flashcard-container">
         <motion.div
@@ -1066,8 +1021,13 @@ export default function LearningFlashcard({
           onDoubleClick={handleDoubleClick}
         >
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
-            <p id="card-front-text">{currentWord?.word || 'Loading...'}</p>
-            {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
+            {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
+            <p id="card-front-text" className={isJaToEn ? 'card-front-text--ja' : undefined}>
+              {isJaToEn
+                ? (currentWord?.japanese || currentWord?.meaning || 'Loading...')
+                : (currentWord?.word || 'Loading...')}
+            </p>
+            {!isJaToEn && (currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
               <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
             )}
           </div>
