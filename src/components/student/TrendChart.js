@@ -25,8 +25,12 @@ const GRID = 'rgba(54, 66, 30, 0.10)';
  * どこにも出していなかった。数字だけ並ぶ画面になっていた原因。
  *
  * @param {Array<{date: Date|string, value: number}>} points 古い順
+ * @param {Function} [formatValue] 目盛とツールチップの表示。ランクのように
+ *   数値そのものに意味が無いときに渡す（0→E, 6→SS など）
  */
-export default function TrendChart({ points, label, unit = '', max, min = 0, height = 160 }) {
+export default function TrendChart({
+  points, label, unit = '', max, min = 0, height = 160, formatValue,
+}) {
   const data = useMemo(() => ({
     labels: points.map((p) => {
       const key = getTokyoDateKey(p.date instanceof Date ? p.date : new Date(p.date));
@@ -57,7 +61,9 @@ export default function TrendChart({ points, label, unit = '', max, min = 0, hei
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (ctx) => `${label}: ${Math.round(ctx.parsed.y * 10) / 10}${unit}`,
+          label: (ctx) => (formatValue
+            ? `${label}: ${formatValue(ctx.parsed.y)}`
+            : `${label}: ${Math.round(ctx.parsed.y * 10) / 10}${unit}`),
         },
       },
     },
@@ -71,10 +77,16 @@ export default function TrendChart({ points, label, unit = '', max, min = 0, hei
         max,
         grid: { color: GRID },
         border: { display: false },
-        ticks: { color: 'rgba(54, 66, 30, 0.68)', maxTicksLimit: 4, font: { size: 10 } },
+        ticks: {
+          color: 'rgba(54, 66, 30, 0.68)',
+          maxTicksLimit: 4,
+          font: { size: 10 },
+          // ランクは 0〜6 の並び順で描くので、目盛には記号を出す
+          ...(formatValue ? { stepSize: 1, callback: (value) => formatValue(value) } : {}),
+        },
       },
     },
-  }), [label, unit, max, min]);
+  }), [label, unit, max, min, formatValue]);
 
   if (!points || points.length < 2) return null;
 

@@ -5,11 +5,11 @@ import { FaChartLine } from 'react-icons/fa';
 import { analyzeUserPerformance, generateLearningRecommendations } from '../../logic/basicAnalytics';
 import { predictPerformance } from '../../logic/predictionModel';
 import { generateSmartRecommendations } from '../../logic/recommendationEngine';
-import { getLevel, MAX_WORD_LEVEL } from '../../config';
+import { clampLevel, getLevel } from '../../config';
 import TrendChart from './TrendChart';
 import RetentionBar from './RetentionBar';
 import RankCard from '../assessment/RankCard';
-import { scoreFromLegacyLevel } from '../../logic/rankLogic';
+import { RANK_IDS, rankForScore, scoreFromLegacyLevel } from '../../logic/rankLogic';
 import { retentionBreakdown } from '../../logic/retentionBreakdown';
 import logger from '../../logic/logger';
 
@@ -109,10 +109,19 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
     .filter((entry) => entry && Number.isFinite(entry.accuracy) && entry.date)
     .map((entry) => ({ date: entry.date, value: entry.accuracy }));
 
-  const levelPoints = (analyticsData?.levelProgression || [])
+  // 生徒に見せるのはランク。レベルは内部の段階なので画面には出さない。
+  const rankPoints = (analyticsData?.levelProgression || [])
     .filter((entry) => entry && Number.isFinite(entry.level) && entry.date)
-    .map((entry) => ({ date: entry.date, value: entry.level }))
+    .map((entry) => {
+      const rank = rankForScore(scoreFromLegacyLevel(entry.level));
+      return rank ? { date: entry.date, value: RANK_IDS.indexOf(rank.id) } : null;
+    })
+    .filter(Boolean)
     .reverse(); // levelProgression は新しい順で来る
+
+  const rankIdAt = (index) => RANK_IDS[index] || '';
+  const firstRankId = rankPoints.length ? rankIdAt(rankPoints[0].value) : null;
+  const latestRankId = rankPoints.length ? rankIdAt(rankPoints[rankPoints.length - 1].value) : null;
 
   if (loading) {
       return (
@@ -181,41 +190,25 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-header">
-                  <span className="stat-label">現在のレベル</span>
-                  <div className="stat-icon level-icon">LV</div>
-                </div>
-                <div className="stat-value">
-                  {analyticsData.currentLevel === 0 ? (
-                    <span style={{ color: '#ef4444', fontSize: '1.2rem' }}>未測定</span>
-                  ) : analyticsData.currentLevel > MAX_WORD_LEVEL ? (
-                    <span style={{ color: '#ef4444', fontSize: '1.2rem' }}>データエラー</span>
-                  ) : (
-                    getLevel(analyticsData.currentLevel)?.label || `レベル${analyticsData.currentLevel}`
-                  )}
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-header">
                   <span className="stat-label">テスト回数</span>
                   <div className="stat-icon test-icon">TEST</div>
                 </div>
                 <div className="stat-value">{analyticsData.totalTests}</div>
                 <div className="stat-unit">回</div>
               </div>
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">レベル上昇</span>
-                  <div className="stat-icon growth-icon">↑</div>
+              {firstRankId && latestRankId && (
+                <div className="stat-card">
+                  <div className="stat-header">
+                    <span className="stat-label">はじめから今まで</span>
+                    <div className="stat-icon growth-icon">↑</div>
+                  </div>
+                  <div className="stat-value">
+                    {firstRankId === latestRankId
+                      ? latestRankId
+                      : `${firstRankId} → ${latestRankId}`}
+                  </div>
                 </div>
-                <div className="stat-value">
-                  {analyticsData.improvementRate > 0 && '+'}{analyticsData.improvementRate}
-                  {analyticsData.improvementRate !== 0 && (
-                    <span className="level-change-detail">
-                      ({analyticsData.improvementRate > 0 ? '上昇' : '下降'})
-                    </span>
-                  )}
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -236,7 +229,7 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
 
           {/* 推移。accuracyTrend / levelProgression は前から計算していたのに
               どこにも出していなかった。数字だけの画面になっていた原因。 */}
-          {(accuracyPoints.length > 1 || levelPoints.length > 1) && (
+          {(accuracyPoints.length > 1 || rankPoints.length > 1) && (
             <div className="analytics-section">
               <div className="section-header">
                 <h3>これまでの推移</h3>
@@ -252,13 +245,19 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
                     <TrendChart points={accuracyPoints} label="正答率" unit="%" min={0} max={100} />
                   </div>
                 )}
-                {levelPoints.length > 1 && (
+                {rankPoints.length > 1 && (
                   <div className="trend-card">
                     <div className="trend-card__head">
-                      <span className="trend-card__label">レベル</span>
-                      <span className="trend-card__now">{levelPoints[levelPoints.length - 1].value}</span>
+                      <span className="trend-card__label">ランク</span>
+                      <span className="trend-card__now">{latestRankId}</span>
                     </div>
-                    <TrendChart points={levelPoints} label="レベル" min={0} max={MAX_WORD_LEVEL} />
+                    <TrendChart
+                      points={rankPoints}
+                      label="ランク"
+                      min={0}
+                      max={RANK_IDS.length - 1}
+                      formatValue={rankIdAt}
+                    />
                   </div>
                 )}
               </div>
@@ -347,13 +346,9 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
               <div className="prediction-card">
                 <div className="prediction-summary">
                   <div className="prediction-item">
-                    <div className="prediction-label">1週間後の予測レベル</div>
+                    <div className="prediction-label">1週間後の予測ランク</div>
                     <div className="prediction-value">
-                      {predictions.nextWeekLevel > 7 ? (
-                        <span style={{ color: '#ef4444' }}>データエラー</span>
-                      ) : (
-                        getLevel(predictions.nextWeekLevel)?.label || `レベル${predictions.nextWeekLevel}`
-                      )}
+                      {rankForScore(scoreFromLegacyLevel(clampLevel(predictions.nextWeekLevel)))?.id || '—'}
                     </div>
                   </div>
                   <div className="prediction-item">
