@@ -31,6 +31,22 @@ export const STABLE_STAGES_FOR_EARLY_FINISH = 2;
 const PASS_RATE = 0.7;
 const FAIL_RATE = 0.3;
 
+/**
+ * 答えを見てから「わかる」を押した回答の重み。
+ *
+ * 自己申告なので、見てから「知っていた」と答えたのか、本当に思い出せたのかが
+ * 区別できなかった。全部「わかる」を押せばレベル7まで行ける状態だった。
+ * 画面が「ダブルタップで答えを確認」と案内している以上、見たこと自体を
+ * 不正解にはしない。思い出せた回答の半分として数える。
+ */
+export const REVEALED_ANSWER_WEIGHT = 0.5;
+
+/** 回答1件の得点。答えを見ていたら半分。 */
+export const answerScore = (answer) => {
+  if (!answer || !answer.isCorrect) return 0;
+  return answer.revealed ? REVEALED_ANSWER_WEIGHT : 1;
+};
+
 const clampLevel = (level) => Math.min(MAX_LEVEL, Math.max(MIN_LEVEL, level));
 
 /** そのステージの問題数 */
@@ -100,12 +116,14 @@ export const seededRandom = (seed = 1) => {
 /**
  * 1問の回答を記録する。ここでは難易度を変えないし、何も初期化しない。
  */
-export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0 }) => {
+export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revealed = false }) => {
   if (state.completed) return state;
 
   const answer = {
     wordId,
     isCorrect: Boolean(isCorrect),
+    // 答えを見てから答えたか。見たうえでの「わかる」は思い出せたことにならない。
+    revealed: Boolean(revealed),
     responseTime,
     stage: state.stage,
     level: state.targetLevel,
@@ -137,8 +155,10 @@ export const undoLastAnswer = (state) => {
 export const isStageComplete = (state) =>
   state.stageAnswers.length >= questionsForStage(state.stage);
 
-export const stageScore = (state) => state.stageAnswers.filter((answer) => answer.isCorrect).length;
-export const totalScore = (state) => state.allAnswers.filter((answer) => answer.isCorrect).length;
+export const stageScore = (state) =>
+  state.stageAnswers.reduce((sum, answer) => sum + answerScore(answer), 0);
+export const totalScore = (state) =>
+  state.allAnswers.reduce((sum, answer) => sum + answerScore(answer), 0);
 
 export const overallAccuracy = (state) =>
   state.allAnswers.length === 0 ? 0 : totalScore(state) / state.allAnswers.length;

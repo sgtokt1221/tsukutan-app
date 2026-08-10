@@ -300,3 +300,34 @@ describe('computeResultLevel', () => {
     expect(computeResultLevel({ targetLevel: 3, allAnswers: [] })).toBe(3);
   });
 });
+
+describe('答えを見てからの回答', () => {
+  const { answerScore, REVEALED_ANSWER_WEIGHT } = require('./placementTestEngine');
+
+  test('思い出せた正解は満点', () => {
+    expect(answerScore({ isCorrect: true, revealed: false })).toBe(1);
+  });
+
+  test('答えを見てからの「わかる」は半分', () => {
+    // 自己申告なので、見てから「知っていた」と答えると実力より甘くなる。
+    // 画面が答えを見られる作りである以上、見たこと自体は不正解にしない。
+    expect(answerScore({ isCorrect: true, revealed: true })).toBe(REVEALED_ANSWER_WEIGHT);
+  });
+
+  test('不正解は見ていても0点', () => {
+    expect(answerScore({ isCorrect: false, revealed: true })).toBe(0);
+    expect(answerScore({ isCorrect: false, revealed: false })).toBe(0);
+  });
+
+  test('全部「見てからわかる」だと最高レベルに届かない', () => {
+    const { createInitialState, recordAnswer, completeStage } = require('./placementTestEngine');
+    let state = createInitialState();
+    for (let i = 0; i < 60; i += 1) {
+      state = recordAnswer(state, { wordId: `w${i}`, isCorrect: true, revealed: true });
+      if (state.stageAnswers.length >= 10) state = completeStage(state);
+      if (state.completed) break;
+    }
+    // 半分の得点では正答率0.5で、レベルアップの閾値0.7に届かない
+    expect(state.targetLevel).toBeLessThanOrEqual(3);
+  });
+});

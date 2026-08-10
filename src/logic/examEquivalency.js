@@ -51,6 +51,8 @@ export const buildEquivalency = ({ score, confidence = 'low' } = {}) => {
     locked: false,
     cefr: rank.cefr,
     eiken: rank.eiken,
+    // 狭い場所用に級だけ取り出したもの。「英検準1級相当の目安」→「英検準1級」
+    eikenShort: rank.eiken.replace(/相当の目安$/, ''),
     toeic: {
       min: roundToeic(rank.toeic.min),
       max: roundToeic(rank.toeic.max),
