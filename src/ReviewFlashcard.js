@@ -10,10 +10,12 @@ import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 import DirectionToggle from './components/learning/DirectionToggle';
+import AutoPlaySpeed from './components/learning/AutoPlaySpeed';
 import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
+import { useAutoPlaySpeed } from './logic/useAutoPlaySpeed';
 import { useAutoPlay } from './logic/useAutoPlay';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
@@ -45,11 +47,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 出題の向き（英→和 / 和→英）は学習カードと共有する
   const [direction, setDirection] = useCardDirection();
   const isJaToEn = direction === 'ja-en';
+  // 自動再生で次の単語へ進むまでの間。学習カードと共有する。
+  const [autoPlaySpeed, setAutoPlaySpeed, autoPlayGapMs] = useAutoPlaySpeed();
   // 自動読み上げ。学習カードと同じ実装を共有する。
   const { autoPlay, start: startAutoPlay, stop: stopAutoPlay } = useAutoPlay({
     words: sessionWords,
     currentIndex,
     direction,
+    gapMs: autoPlayGapMs,
     enabled: viewMode === 'flashcard',
     onRevealMeaning: () => setIsFlipped(true),
     onAdvance: (nextIndex) => {
@@ -894,7 +899,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         )}
       />
       <ModeTabs value="flashcard" onChange={setViewMode}>
-        <DirectionToggle value={direction} onChange={setDirection} />
+        <div className="mode-tabs__controls">
+          {/* 速さは自動再生中だけ出す。止まっているときは関係がない */}
+          {autoPlay && <AutoPlaySpeed value={autoPlaySpeed} onChange={setAutoPlaySpeed} />}
+          <DirectionToggle value={direction} onChange={setDirection} />
+        </div>
       </ModeTabs>
 
       <div id="flashcard-container">

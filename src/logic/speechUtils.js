@@ -2,8 +2,12 @@ import logger from './logger';
 const synthesis = window.speechSynthesis;
 let voices = [];
 let initializationPromise = null;
-// 発話中の utterance。GC で読み上げが切れるのを防ぐために保持する。
+// 発話中の utterance。GC で読み上げが切れるのを防ぐために保持するだけで、
+// 読み出すことはない（Chrome は参照が消えると途中で音が切れる）。
+// eslint-disable-next-line no-unused-vars
 let activeUtterance = null;
+// 実行中の読み上げの並び。打ち切ったあとに古いイベントで進まないようにする。
+let activeSequence = null;
 
 const initialize = () => {
   if (initializationPromise) {
@@ -186,14 +190,21 @@ const speak = (text, lang = 'en-US') => {
 
   const utterance = buildUtterance(text, lang);
 
+  // 連続読み上げと同じく、GC で切れないよう参照を残す
+  activeUtterance = utterance;
   synthesis.speak(utterance);
 };
 
 /**
  * 英語→日本語のように、続けて読み上げる。
  *
- * speak() を続けて呼ぶと 100ms 間隔のポーリングで待つ作りになっていて、
- * 順番が入れ替わることがある。ここは utterance の onend でつなぐ。
+ * ぜんぶまとめて speak() に積む。1つ読み終えてから次を積むと、
+ * Google の音声（サーバー側で合成する localService: false の声）では
+ * そこで毎回200〜400msの取得待ちが入る。先に積んでおけば、
+ * 1つ目を読んでいる間に2つ目の音声が用意される。
+ *
+ * 順番はブラウザのキューが保つ。onStart / onDone は各 utterance の
+ * イベントで拾うので、積む順と鳴る順はずれない。
  *
  * @param {Array<{text: string, lang?: string, onStart?: Function}>} items 読み上げる順に並べる
  * @param {{onDone?: Function}} [options] 全部読み終えたときに呼ぶ
@@ -205,37 +216,52 @@ const speakSequence = (items, options = {}) => {
     return;
   }
 
-  const speakAt = (index) => {
-    if (index >= queue.length) {
+  const enqueueAll = () => {
+    // 打ち切られたあとに古いキューのイベントで先へ進まないよう、
+    // この呼び出しぶんだけを見分ける印を持たせる。
+    const token = {};
+    activeSequence = token;
+    const pending = [];
+
+    const finish = () => {
+      if (activeSequence !== token) return;
+      activeSequence = null;
       if (typeof options.onDone === 'function') options.onDone();
-      return;
-    }
-    const { text, lang = 'en-US', onStart } = queue[index];
-    if (typeof onStart === 'function') onStart();
-    const utterance = buildUtterance(text, lang);
-    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残しておく。
-    activeUtterance = utterance;
-    utterance.onend = () => {
-      if (activeUtterance === utterance) activeUtterance = null;
-      speakAt(index + 1);
     };
-    // 読み上げに失敗しても次へ進める（音声が無い端末で止まらないように）
-    utterance.onerror = () => {
-      if (activeUtterance === utterance) activeUtterance = null;
-      speakAt(index + 1);
-    };
-    synthesis.speak(utterance);
+
+    queue.forEach((item, index) => {
+      const utterance = buildUtterance(item.text, item.lang || 'en-US');
+      const isLast = index === queue.length - 1;
+
+      utterance.onstart = () => {
+        if (activeSequence !== token) return;
+        if (typeof item.onStart === 'function') item.onStart();
+      };
+      utterance.onend = () => {
+        if (isLast) finish();
+      };
+      // 読み上げに失敗しても止めない（音声が無い端末で固まらないように）
+      utterance.onerror = () => {
+        if (isLast) finish();
+      };
+
+      pending.push(utterance);
+    });
+
+    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残す。
+    activeUtterance = pending;
+    pending.forEach((utterance) => synthesis.speak(utterance));
   };
 
   if (synthesis.speaking || synthesis.pending) {
     // 前の読み上げは打ち切る。カードを次々めくったときに溜まらないように。
     synthesis.cancel();
     // cancel() の直後に speak() を呼ぶと Chrome が無視することがあるので間を置く。
-    setTimeout(() => speakAt(0), 100);
+    setTimeout(enqueueAll, 100);
     return;
   }
 
-  speakAt(0);
+  enqueueAll();
 };
 
 /**
@@ -253,6 +279,7 @@ const speakWordThenMeaning = (word, meaning, direction = 'en-ja') => {
 /** 読み上げを止める。連続再生の途中でも打ち切る。 */
 const stopSpeaking = () => {
   activeUtterance = null;
+  activeSequence = null;
   synthesis.cancel();
 };
 
