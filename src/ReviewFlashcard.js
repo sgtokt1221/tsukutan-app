@@ -17,7 +17,7 @@ import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlay } from './logic/useAutoPlay';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
-import { usePronunciation } from './logic/usePronunciation';
+import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 
 function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -816,14 +816,19 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                     onClick={() => (isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word, 'en-US'))}
                     aria-label={`${isJaToEn ? word.meaning : word.word} を読み上げる`}
                   >
-                    {isJaToEn ? word.meaning : word.word}
+                    <span className="wordbook-word__text">
+                      {isJaToEn ? word.meaning : word.word}
+                    </span>
+                    {/* 発音記号は英単語の手がかりになるので、和→英では隠す。
+                        英→和でも、行が増える長い語では出さない。 */}
+                    {!isJaToEn && inlinePronunciation(
+                      word.word, word.pronunciation || getPronunciation(word.word),
+                    ) && (
+                      <span className="wordbook-pronunciation">
+                        [{word.pronunciation || getPronunciation(word.word)}]
+                      </span>
+                    )}
                   </button>
-                  {/* 発音記号は英単語の手がかりになるので、和→英では隠す */}
-                  {!isJaToEn && (word.pronunciation || getPronunciation(word.word)) && (
-                    <div className="wordbook-pronunciation">
-                      [{word.pronunciation || getPronunciation(word.word)}]
-                    </div>
-                  )}
                 </div>
 
                 {/* 右側：和訳・例文（復習モード長押し機能 + 赤シート機能） */}
@@ -852,14 +857,16 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
                   <div className={revealedCards.has(index) ? 'wordbook-answer' : 'wordbook-answer wordbook-answer--hidden'}>
                     {isJaToEn ? (
-                      <>
-                        <div className="wordbook-meaning wordbook-meaning--en">{word.word}</div>
-                        {(word.pronunciation || getPronunciation(word.word)) && (
-                          <div className="wordbook-pronunciation">
+                      <div className="wordbook-answer-word">
+                        <span className="wordbook-meaning wordbook-meaning--en">{word.word}</span>
+                        {inlinePronunciation(
+                          word.word, word.pronunciation || getPronunciation(word.word),
+                        ) && (
+                          <span className="wordbook-pronunciation">
                             [{word.pronunciation || getPronunciation(word.word)}]
-                          </div>
+                          </span>
                         )}
-                      </>
+                      </div>
                     ) : (
                       <div className="wordbook-meaning">{word.meaning}</div>
                     )}

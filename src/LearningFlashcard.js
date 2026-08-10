@@ -11,7 +11,7 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
-import { usePronunciation } from './logic/usePronunciation';
+import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlay } from './logic/useAutoPlay';
@@ -880,14 +880,19 @@ export default function LearningFlashcard({
                     onClick={() => (isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word))}
                     aria-label={`${isJaToEn ? word.meaning : word.word} を読み上げる`}
                   >
-                    {isJaToEn ? word.meaning : word.word}
+                    <span className="wordbook-word__text">
+                      {isJaToEn ? word.meaning : word.word}
+                    </span>
+                    {/* 発音記号は英単語の手がかりになるので、和→英では隠す。
+                        英→和でも、行が増える長い語では出さない。 */}
+                    {!isJaToEn && inlinePronunciation(
+                      word.word, word.pronunciation || getPronunciation(word.word),
+                    ) && (
+                      <span className="wordbook-pronunciation">
+                        [{word.pronunciation || getPronunciation(word.word)}]
+                      </span>
+                    )}
                   </button>
-                  {/* 発音記号は英単語の手がかりになるので、和→英では隠す */}
-                  {!isJaToEn && (word.pronunciation || getPronunciation(word.word)) && (
-                    <div className="wordbook-pronunciation">
-                      [{word.pronunciation || getPronunciation(word.word)}]
-                    </div>
-                  )}
                 </div>
 
                 {/* 右側：和訳・例文（赤シート機能付き + 復習モード長押し機能） */}
@@ -976,14 +981,16 @@ export default function LearningFlashcard({
                     transition: 'opacity 0.2s ease'
                   }}>
                     {isJaToEn ? (
-                      <>
-                        <div className="wordbook-meaning wordbook-meaning--en">{word.word}</div>
-                        {(word.pronunciation || getPronunciation(word.word)) && (
-                          <div className="wordbook-pronunciation">
+                      <div className="wordbook-answer-word">
+                        <span className="wordbook-meaning wordbook-meaning--en">{word.word}</span>
+                        {inlinePronunciation(
+                          word.word, word.pronunciation || getPronunciation(word.word),
+                        ) && (
+                          <span className="wordbook-pronunciation">
                             [{word.pronunciation || getPronunciation(word.word)}]
-                          </div>
+                          </span>
                         )}
-                      </>
+                      </div>
                     ) : (
                       <div className="wordbook-meaning">{word.meaning}</div>
                     )}

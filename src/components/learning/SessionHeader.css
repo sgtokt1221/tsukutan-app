@@ -253,7 +253,12 @@
 
 /* 倍率はカード内の文字にだけ効かせる。レイアウトは崩さない。 */
 .wordbook-word {
-  display: block;
+  /* 単語と発音記号を同じ行に並べる。段にすると1行ぶんカードが伸びる。
+     入りきらない長い語では発音記号を出さない（inlinePronunciation）。 */
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 var(--space-8);
   width: 100%;
   padding: 0;
   border: none;
@@ -275,6 +280,20 @@
   font-size: max(9px, calc(13px * var(--wordbook-zoom, 1)));
   color: var(--color-olive-muted);
   font-style: italic;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* 和→英の答え側。英単語と発音記号を単語帳の左と同じ並びにする。 */
+.wordbook-answer-word {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 var(--space-8);
+}
+
+.wordbook-answer-word .wordbook-meaning {
+  margin-bottom: 0;
 }
 
 .wordbook-meaning {
