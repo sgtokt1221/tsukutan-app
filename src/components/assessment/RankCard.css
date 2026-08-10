@@ -148,16 +148,296 @@
   }
 }
 
-/* ---- ホーム用。紋章を主役にして、細かい文字は置かない ---- */
+/* ---- ホーム用。現在の紋章と E → SS の全景を一枚にする ---- */
 .rank-card--compact {
-  flex-direction: row;
+  --current-rank-color: var(--color-brand-lime);
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-areas:
+    "hero summary"
+    "journey journey";
   align-items: center;
-  gap: var(--space-16);
+  gap: var(--space-12) var(--space-24);
+  padding: var(--space-16);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--current-rank-color) 24%, transparent);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(128deg, var(--color-surface) 0 58%, color-mix(in srgb, var(--current-rank-color) 8%, var(--color-surface)) 100%);
 }
 
-.rank-card--compact .rank-card__gauge {
-  flex: 1;
+/* 右肩上がりの背景。現在地から先へ登る感覚だけを薄く添える。 */
+.rank-card--compact::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -42px;
+  bottom: -56px;
+  width: 72%;
+  height: 150px;
+  transform: rotate(-8deg);
+  border-radius: 50% 50% 0 0;
+  background-color: color-mix(in srgb, var(--current-rank-color) 7%, transparent);
+}
+
+.rank-card--compact::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -70px;
+  right: -54px;
+  width: 160px;
+  height: 160px;
+  border: 28px solid color-mix(in srgb, var(--current-rank-color) 7%, transparent);
+  border-radius: 50%;
+}
+
+.rank-card__hero {
+  grid-area: hero;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.rank-card__eyebrow {
+  font-family: var(--font-family-heading);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--color-olive-subtle);
+  letter-spacing: 0.12em;
+}
+
+.rank-card__hero-badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  animation: rank-card-arrive 480ms var(--ease-standard) both;
+}
+
+.rank-card__hero-badge::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 6px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--current-rank-color) 14%, transparent);
+  animation: rank-card-arrive-ring 560ms var(--ease-standard) both;
+}
+
+.rank-card__compact-summary {
+  grid-area: summary;
   min-width: 0;
+}
+
+.rank-card__compact-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.rank-card__compact-position {
+  margin: var(--space-4) 0 0;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+.rank-card__compact-heading .rank-card__compact-position {
+  margin: 0;
+}
+
+.rank-card__compact-position strong {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  color: var(--color-ink-olive);
+}
+
+.rank-card__next-message {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-12) 0 0;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-lime-soft);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.rank-card__next-message > span {
+  color: var(--color-accent-blue);
+  font-size: var(--font-size-16);
+  line-height: 1;
+}
+
+/* ---- E → SS 全体マップ ---- */
+.rank-card__journey {
+  grid-area: journey;
+  position: relative;
+  padding: var(--space-8) var(--space-4) 0;
+}
+
+.rank-card__journey-rail {
+  position: absolute;
+  top: 25px;
+  left: calc(var(--space-4) + 3.5%);
+  right: calc(var(--space-4) + 3.5%);
+  height: 5px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-olive-divider);
+}
+
+.rank-card__journey-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-brand-lime), var(--current-rank-color));
+  transition: width 680ms var(--ease-standard);
+}
+
+.rank-card__journey-steps {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rank-card__journey-step {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--color-olive-subtle);
+}
+
+.rank-card__journey-node {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  transition:
+    opacity var(--motion-card) var(--ease-standard),
+    transform var(--motion-card) var(--ease-standard);
+}
+
+.rank-card__journey-step--passed .rank-card__journey-node {
+  opacity: 0.82;
+}
+
+.rank-card__journey-step--current .rank-card__journey-node {
+  transform: translateY(-3px) scale(1.16);
+}
+
+.rank-card__journey-step--current .rank-card__journey-node::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--color-surface),
+              0 0 0 6px color-mix(in srgb, var(--journey-rank-color) 38%, transparent);
+}
+
+.rank-card__journey-step--future .rank-badge__image {
+  opacity: 0.34;
+  filter: grayscale(0.22) drop-shadow(0 1px 1px rgba(54, 66, 30, 0.06));
+}
+
+.rank-card__journey-state {
+  min-height: 1em;
+  overflow: hidden;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rank-card__journey-step--current .rank-card__journey-state {
+  color: var(--journey-rank-color);
+}
+
+.rank-card--unmeasured {
+  --current-rank-color: var(--color-brand-lime);
+}
+
+.rank-card__start-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--tap-target);
+  margin-top: var(--space-12);
+  padding: var(--space-8) var(--space-24);
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-brand-lime);
+  box-shadow: var(--shadow-1);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  cursor: pointer;
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+
+.rank-card__start-action::after {
+  content: '→';
+  font-size: var(--font-size-18);
+  line-height: 1;
+}
+
+.rank-card__start-action:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+
+.rank-card__start-action:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
+}
+
+.rank-card__start-action:focus-visible,
+.rank-card__retest-link:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@keyframes rank-card-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rank-card-arrive-ring {
+  from {
+    opacity: 0;
+    transform: scale(0.74);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .rank-card--empty {
@@ -167,19 +447,134 @@
 }
 
 .rank-card__retest-link {
-  margin-left: var(--space-8);
-  padding: 0;
-  border: none;
-  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: var(--tap-target);
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--color-blue-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-1);
   font-family: var(--font-family-body);
   font-size: var(--font-size-12);
+  font-weight: 700;
   color: var(--color-accent-blue);
-  text-decoration: underline;
   cursor: pointer;
+  transition:
+    transform var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.rank-card__retest-link::before {
+  content: '↻';
+  font-size: var(--font-size-16);
+  line-height: 1;
+}
+
+.rank-card__retest-link:hover {
+  transform: translateY(-1px);
+  background-color: var(--color-blue-soft);
+  box-shadow: var(--shadow-2);
+}
+
+.rank-card__retest-link:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
 }
 
 .rank-card__locked-note {
   margin: 0;
   font-size: var(--font-size-12);
   color: var(--color-olive-muted);
+}
+
+@supports not (color: color-mix(in srgb, red 50%, transparent)) {
+  .rank-card--compact {
+    border-color: var(--color-lime-border);
+    background: var(--color-canvas-lime);
+  }
+
+  .rank-card--compact::before,
+  .rank-card--compact::after {
+    display: none;
+  }
+
+  .rank-card__hero-badge::before {
+    background-color: var(--color-lime-soft);
+  }
+
+}
+
+@media (max-width: 520px) {
+  .rank-card--compact {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: var(--space-8) var(--space-12);
+    padding: var(--space-12) var(--space-8);
+  }
+
+  .rank-card__compact-heading {
+    align-items: center;
+  }
+
+  .rank-card__compact-position {
+    font-size: var(--font-size-12);
+  }
+
+  .rank-card__compact-position strong {
+    font-size: var(--font-size-18);
+  }
+
+  .rank-card__retest-link {
+    min-height: 38px;
+    padding: var(--space-4) var(--space-8);
+  }
+
+  .rank-card__next-message {
+    margin-top: var(--space-8);
+  }
+
+  .rank-card__journey {
+    padding-inline: 0;
+  }
+
+  .rank-card__journey-rail {
+    left: 3.5%;
+    right: 3.5%;
+  }
+
+  .rank-card__journey-node {
+    width: 32px;
+    height: 32px;
+  }
+
+  .rank-card__journey-node .rank-badge--micro {
+    width: 32px;
+    height: 32px;
+  }
+
+  .rank-card__journey-rail {
+    top: 23px;
+  }
+}
+
+/* 英検・TOEIC相当の並び。TOEIC側は補足なので少し小さく。
+   狭い幅では行で折り返すが、「相当」が単独で割れないようにする。 */
+.rank-card__compact-position {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-8);
+}
+
+.rank-card__compact-eiken {
+  white-space: nowrap;
+}
+
+.rank-card__compact-toeic {
+  font-size: 0.92em;
+  color: var(--color-olive-muted);
+  white-space: nowrap;
 }
