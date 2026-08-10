@@ -19,6 +19,7 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
+import { scrollWordbookToTop } from './logic/scrollHelpers';
 
 /** その座標にある単語帳カードを返す。掴んだカードを特定するのに使う。 */
 const findCardAtPoint = (x, y) => {
@@ -845,7 +846,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       <div className="wordbook-to-top">
         <button
           type="button"
-          onClick={() => wordbookShellRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => scrollWordbookToTop(wordbookShellRef.current)}
           className="wordbook-to-top__button"
           aria-label="先頭へ戻る"
         >

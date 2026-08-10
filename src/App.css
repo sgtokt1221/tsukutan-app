@@ -2366,9 +2366,9 @@ select:focus-visible,
   gap: var(--space-12);
   min-height: 60px;
   padding: var(--space-8) var(--space-16);
-  /* ロゴPNGの背景と同じ色にする。白地にすると、ロゴの周りだけ
-     淡い黄緑の四角が乗って継ぎ接ぎに見える（計画書4.5）。 */
-  background-color: var(--color-canvas-lime);
+  /* 学習画面のヘッダーと同じ白に揃える。ロゴPNGの地色も
+     白へ焼き直してある（v3）ので、ロゴの周りに四角は出ない。 */
+  background-color: var(--color-surface);
   border-bottom: var(--border-subtle);
 }
 
