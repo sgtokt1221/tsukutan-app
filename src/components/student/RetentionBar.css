@@ -1,0 +1,70 @@
+/* 定着の内訳。帯1本と、その読み方を並べる。 */
+
+.retention {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.retention__bar {
+  display: flex;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background-color: var(--color-olive-divider);
+}
+
+.retention__segment {
+  height: 100%;
+  /* 1語しかない区分でも見えるように、最低幅を持たせる */
+  min-width: 3px;
+}
+
+.retention__legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retention__item {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  align-items: baseline;
+  gap: var(--space-8);
+}
+
+.retention__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.retention__label {
+  font-size: var(--font-size-14);
+  font-weight: 600;
+  color: var(--color-ink-olive);
+}
+
+.retention__count {
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 区分の意味。2行目に小さく回す。 */
+.retention__note {
+  grid-column: 2 / -1;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.retention__total {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  text-align: right;
+}
