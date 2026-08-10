@@ -254,23 +254,28 @@
 
 /* 倍率はカード内の文字にだけ効かせる。レイアウトは崩さない。 */
 .wordbook-word {
-  display: block;
+  /* 列の余りをこのボタンが占める。ここが「収めるべき箱」になり、
+     JS（useFitWordbookText）が中身をこの箱いっぱいまで大きくする。 */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
   width: 100%;
   padding: 0;
   border: none;
   background: none;
   text-align: left;
   cursor: pointer;
-  /* 倍率で伸ばしつつ、列幅(18cqi)と下限(15px)で挟む。
-     縮めたときも読める大きさを保ち、長い語は列からはみ出させない。 */
-  /* カードの高さを使い切る。幅(20cqi)と高さ(46cqh)の小さい方まで伸ばす。
-     カードの高さ自体が倍率に連動するので、スライダーはそのまま効く。 */
+  /* JS が語ごとの大きさを入れる。読み込み前や JS が動かない場合の
+     控えめな既定値として、列の幅と高さから決めておく。 */
   font-size: clamp(8px, min(20cqi, 46cqh), 40px);
   font-weight: 700;
   color: var(--color-ink-olive);
-  line-height: 1.2;
+  line-height: 1.15;
   margin-bottom: var(--space-2);
   overflow-wrap: anywhere;
+  /* 見積もりが外れても、はみ出しは見せない（JS が縮めて追いつく） */
+  overflow: hidden;
 }
 
 .wordbook-pronunciation {
