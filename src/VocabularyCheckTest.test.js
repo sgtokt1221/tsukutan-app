@@ -199,7 +199,10 @@ describe('保存', () => {
     const [, payload] = mockUpdateDoc.mock.calls[0];
     expect(payload.level).toBeGreaterThanOrEqual(1);
     expect(payload.level).toBeLessThanOrEqual(7);
-    expect(payload['progress.currentVocabulary']).toBeGreaterThan(0);
+    // 到達語数そのものは updateProgressPercentage が和集合で数え直す。
+    // ここではテストの推定値だけを保存する。
+    expect(payload['progress.assessedVocabulary']).toBeGreaterThan(0);
+    expect(payload['progress.currentVocabulary']).toBeUndefined();
 
     expect(mockLogStudySession).toHaveBeenCalled();
     expect(mockUpdateProgress).toHaveBeenCalledWith('student-a');

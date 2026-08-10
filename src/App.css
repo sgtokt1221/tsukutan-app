@@ -1381,30 +1381,43 @@ input[type="file"] { display: none; }
   font-weight: 700;
 }
 
-.progress-widget {
+/* ホームの語彙進捗。.progress-bar / .progress-fill は他の画面のCSSと
+   名前がぶつかるので、ここだけ固有の名前にしてある。 */
+.home-progress {
   display: grid;
-  gap: 12px;
+  gap: var(--space-8);
 }
 
-.progress-bar {
+.home-progress__bar {
   width: 100%;
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.25);
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-lime-soft);
   overflow: hidden;
 }
 
-.progress-fill {
+.home-progress__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), #0ea5e9);
-  border-radius: 999px;
+  /* 青のグラデーションはランクカードと色味が合わないので、ブランドのライムにする */
+  background-color: var(--color-brand-lime);
+  border-radius: var(--radius-pill);
 }
 
-.progress-caption {
+.home-progress__caption {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
-  color: rgba(15, 23, 42, 0.55);
+  gap: var(--space-8);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.home-progress__caption strong {
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-14);
+}
+
+.progress-caption__percent {
+  margin-left: var(--space-4);
 }
 
 .schedule-banner {
@@ -2364,7 +2377,7 @@ select:focus-visible,
   align-items: center;
   gap: var(--space-12);
   min-height: 60px;
-  padding: var(--space-12) var(--space-16);
+  padding: var(--space-8) var(--space-16);
   /* ロゴPNGの背景と同じ色にする。白地にすると、ロゴの周りだけ
      淡い黄緑の四角が乗って継ぎ接ぎに見える（計画書4.5）。 */
   background-color: var(--color-canvas-lime);
@@ -2465,23 +2478,37 @@ select:focus-visible,
 }
 
 /* ===== 生徒ホーム: 1画面に収める（計画書12.3） ===== */
+/* 締切行。ランクカードと同じ面・角丸・余白に揃える。
+   以前はライムの帯だけが浮いて、上のカードと別物に見えていた。 */
 .schedule-line {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--space-8);
   margin: var(--space-12) 0 0 0;
-  padding: var(--space-8) var(--space-12);
-  border-radius: var(--radius-control);
-  background-color: var(--color-lime-soft);
-  border: 1px solid var(--color-lime-border);
-  font-size: var(--font-size-14);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  border: var(--border-default);
+  box-shadow: var(--shadow-1);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.schedule-line strong {
+  font-size: var(--font-size-16);
   color: var(--color-ink-olive);
 }
 
+/* 遅れているときだけ色で知らせる */
 .schedule-line.behind {
   background-color: var(--color-warning-bg);
   border-color: var(--color-warning-border);
+  color: var(--color-warning-ink);
+}
+
+.schedule-line.behind strong {
   color: var(--color-warning-ink);
 }
 
@@ -2616,11 +2643,11 @@ select:focus-visible,
   margin-top: var(--space-2);
 }
 
-.progress-bar {
+.home-progress__bar {
   height: 6px;
 }
 
-.progress-widget {
+.home-progress {
   margin-top: var(--space-4);
 }
 
@@ -2691,4 +2718,261 @@ select:focus-visible,
 .card-face.card-back {
   padding: 14px;
   gap: 0;
+}
+
+/* ===== 目標カード =====
+   ヘッダーのすぐ下に置く。何のために学んでいるかを最初に見せる。
+   締切と再設定もここへ集約した（以前は締切が下、再設定は折りたたみの中）。 */
+.goal-card {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.goal-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+/* 見出しはランクカードの .rank-card__eyebrow と同じ作りに揃える。
+   ホームの3枚（目標 / 現在のランク / 今日のタスク）で見出しの
+   大きさ・色・字間がばらばらだと、別のアプリの部品に見える。 */
+.goal-card__eyebrow,
+.home-section-eyebrow {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-family-heading);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-olive-muted);
+}
+
+.goal-card__title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  line-height: var(--line-tight);
+  color: var(--color-ink-olive);
+  overflow-wrap: anywhere;
+}
+
+.goal-card__edit {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: var(--space-4) var(--space-12);
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+.goal-card__edit:hover {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+}
+
+/* 緑の帯にすると、この行だけが浮いて主役に見えてしまう。
+   区切りは上罫線だけにして、締切は目標の補足に留める。 */
+.goal-card__deadline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: var(--border-subtle);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.goal-card__remaining strong {
+  font-size: var(--font-size-18);
+  color: var(--color-ink-olive);
+}
+
+/* 遅れているときだけ色で知らせる */
+.goal-card__deadline.behind {
+  color: var(--color-warning-ink);
+}
+
+.goal-card__deadline.behind strong {
+  color: var(--color-warning-ink);
+}
+
+/* ===== 自由学習 =====
+   見出しと「選択中の教材」を横並びにしていたため、狭い幅で本文へ
+   重なっていた。縦に積み、教材を選んだあとは説明文を出さない。 */
+.free-study-head {
+  margin-bottom: var(--space-12);
+}
+
+.free-study-head--selected {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.free-study-head .tile-caption {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.free-study-title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  overflow-wrap: anywhere;
+}
+
+.free-study-back {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  cursor: pointer;
+}
+
+.free-study-back:hover {
+  background-color: var(--color-lime-soft);
+}
+
+/* 絞り込みタブ。学習画面のアンダータブと同じ見た目にする。
+   以前は青いピル型で、この画面だけ配色が違っていた。 */
+.free-study-tabs {
+  display: flex;
+  margin-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-olive-border);
+}
+
+.free-study-tab {
+  padding: var(--space-8) var(--space-12);
+  border: none;
+  /* 選択中の下線ぶんを常に確保して、切り替えても行が動かないようにする */
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-14);
+  font-weight: 600;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.free-study-tab:hover {
+  color: var(--color-ink-olive);
+}
+
+.free-study-tab[aria-selected="true"] {
+  color: var(--color-ink-olive);
+  border-bottom-color: var(--color-brand-lime);
+}
+
+/* ===== 自由学習のレベルカード =====
+   中央寄せで4行積むと、どれが名前でどれが数字か読み取れなかった。
+   左に名前と目安、右に語数と進み具合を置く。 */
+.selection-grid .selection-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  text-align: left;
+}
+
+.selection-grid .selection-card:hover:not(.selection-card-disabled):not(:disabled) {
+  background-color: var(--color-lime-soft);
+  border-color: var(--color-lime-border);
+  transform: none;
+  box-shadow: none;
+}
+
+.selection-card-main {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.selection-card-titles {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.selection-grid .selection-card-level {
+  margin: 0;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.selection-grid .selection-card-desc {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.selection-card-side {
+  flex-shrink: 0;
+  display: grid;
+  justify-items: end;
+  gap: var(--space-2);
+  text-align: right;
+}
+
+.selection-grid .selection-card-meta {
+  margin: 0;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  font-variant-numeric: tabular-nums;
+}
+
+.selection-grid .selection-card-progress {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+/* 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
+.free-study-groups {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.free-study-group > .home-section-eyebrow {
+  margin-bottom: var(--space-8);
+}
+
+.tile-button__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.tile-button__count {
+  flex-shrink: 0;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  font-variant-numeric: tabular-nums;
 }

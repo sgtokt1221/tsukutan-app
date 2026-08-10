@@ -29,14 +29,15 @@
   width: clamp(200px, 56vw, 280px);
 }
 
-/* 生徒ヘッダー: 高さを44〜50px以内に収める */
+/* 生徒ヘッダー。ヘッダーの高さ(60px)は変えずに、画像側の余白を削って
+   ロゴ本体を大きくしてある。 */
 .brand-logo--student-header {
-  width: clamp(126px, 34vw, 150px);
+  width: clamp(140px, 38vw, 168px);
 }
 
-/* 学習ヘッダー: 単語カードより弱くする */
+/* 学習ヘッダー: 単語カードより弱くする。生徒ヘッダーより一回り小さい。 */
 .brand-logo--study-header {
-  width: clamp(108px, 30vw, 132px);
+  width: clamp(124px, 32vw, 148px);
 }
 
 /* 管理サイドバー */

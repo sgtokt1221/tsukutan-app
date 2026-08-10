@@ -54,8 +54,18 @@ export const addWordToReview = async (userId, word) => {
  *   旧来の真偽値も受け取れる（true=good, false=again）。
  * @param {boolean} isReviewComplete 復習完了（復習リストから除去）するかどうか
  * @param {string} motivationLevel やる気レベル
+ * @param {{revealed?: boolean}} [options] 答えを見てから答えたか。
+ *   見たうえでの「わかった」は思い出せたことにならないので、記録に残して
+ *   後から精度を測れるようにする。
  */
-export const updateUserWordProgress = async (userId, word, answer, isReviewComplete = false, motivationLevel = 'normal') => {
+export const updateUserWordProgress = async (
+  userId,
+  word,
+  answer,
+  isReviewComplete = false,
+  motivationLevel = 'normal',
+  { revealed = false } = {}
+) => {
   if (!userId || !word || !word.id) return { created: false, mastered: false };
 
   const reviewWordRef = doc(db, 'users', userId, 'reviewWords', word.id);
@@ -94,6 +104,7 @@ export const updateUserWordProgress = async (userId, word, answer, isReviewCompl
       interval,
       easeFactor,
       repetitions,
+      lastAnswerRevealed: revealed,
     }, { merge: true });
 
     // 「もう一度」は今日のうちにもう一度出す
@@ -107,6 +118,8 @@ export const updateUserWordProgress = async (userId, word, answer, isReviewCompl
       wordId: word.id,
       sessionType: 'review',
       action: actionForQuality(quality),
+      // 答えを見てから答えたか。分析で「見て正解」を除けるようにする。
+      revealed,
       repetitions: repetitions,
       interval: interval,
       easeFactor: easeFactor,

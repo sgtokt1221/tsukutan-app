@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "ASSESSMENT_RANK_SYSTEM_PLAN.md 3.2 の初期換算テーブル。正式な境界は実測データで再調整する。 紋章はベタ塗り＋白抜き文字。色はすべて白文字でコントラスト比4.5:1以上を満たす濃さにしてある。",
+  "note": "ASSESSMENT_RANK_SYSTEM_PLAN.md 3.2 の初期換算テーブル。正式な境界は実測データで再調整する。紋章色は選定済みのポップなゲームバッヂV3に合わせる。",
   "scoreMin": 0,
   "scoreMax": 1000,
   "ranks": [
@@ -16,8 +16,8 @@
       },
       "style": "plain",
       "locked": false,
-      "color": "#64748B",
-      "faceColor": "#F1F5F9"
+      "color": "#14B8A6",
+      "faceColor": "#F0FDFA"
     },
     {
       "id": "D",
@@ -31,7 +31,7 @@
       },
       "style": "soft",
       "locked": false,
-      "color": "#9A3412",
+      "color": "#F97316",
       "faceColor": "#FFF7ED"
     },
     {
@@ -46,8 +46,8 @@
       },
       "style": "double",
       "locked": false,
-      "color": "#475569",
-      "faceColor": "#F8FAFC"
+      "color": "#38BDF8",
+      "faceColor": "#F0F9FF"
     },
     {
       "id": "B",
@@ -61,8 +61,8 @@
       },
       "style": "double-gloss",
       "locked": false,
-      "color": "#A16207",
-      "faceColor": "#FEFCE8"
+      "color": "#FBBF24",
+      "faceColor": "#FFFBEB"
     },
     {
       "id": "A",
@@ -76,7 +76,7 @@
       },
       "style": "bold",
       "locked": false,
-      "color": "#4D7C0F",
+      "color": "#84CC16",
       "faceColor": "#F7FEE7"
     },
     {
@@ -91,7 +91,7 @@
       },
       "style": "aura",
       "locked": false,
-      "color": "#2563EB",
+      "color": "#3B82F6",
       "faceColor": "#EFF6FF"
     },
     {
@@ -107,8 +107,8 @@
       "style": "crest",
       "locked": true,
       "lockedReason": "C1相当の問題バンクが未整備のため、正式判定は行わない（計画書2.3）",
-      "color": "#6D28D9",
-      "faceColor": "#F5F3FF"
+      "color": "#A855F7",
+      "faceColor": "#FAF5FF"
     }
   ],
   "levelToScore": {
