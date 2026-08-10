@@ -2376,9 +2376,8 @@ select:focus-visible,
   justify-content: space-between;
   align-items: center;
   gap: var(--space-12);
-  /* ロゴを大きくしたぶん、ヘッダーの高さも上げる */
-  min-height: 76px;
-  padding: var(--space-12) var(--space-16);
+  min-height: 60px;
+  padding: var(--space-8) var(--space-16);
   /* ロゴPNGの背景と同じ色にする。白地にすると、ロゴの周りだけ
      淡い黄緑の四角が乗って継ぎ接ぎに見える（計画書4.5）。 */
   background-color: var(--color-canvas-lime);
@@ -2719,4 +2718,87 @@ select:focus-visible,
 .card-face.card-back {
   padding: 14px;
   gap: 0;
+}
+
+/* ===== 目標カード =====
+   ヘッダーのすぐ下に置く。何のために学んでいるかを最初に見せる。
+   締切と再設定もここへ集約した（以前は締切が下、再設定は折りたたみの中）。 */
+.goal-card {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.goal-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+/* 見出しはランクカードの .rank-card__eyebrow と同じ作りに揃える。
+   ホームの3枚（目標 / 現在のランク / 今日のタスク）で見出しの
+   大きさ・色・字間がばらばらだと、別のアプリの部品に見える。 */
+.goal-card__eyebrow,
+.home-section-eyebrow {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-family-heading);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-olive-muted);
+}
+
+.goal-card__title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  line-height: var(--line-tight);
+  color: var(--color-ink-olive);
+  overflow-wrap: anywhere;
+}
+
+.goal-card__edit {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: var(--space-4) var(--space-12);
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+.goal-card__edit:hover {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+}
+
+/* 緑の帯にすると、この行だけが浮いて主役に見えてしまう。
+   区切りは上罫線だけにして、締切は目標の補足に留める。 */
+.goal-card__deadline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: var(--border-subtle);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.goal-card__remaining strong {
+  font-size: var(--font-size-18);
+  color: var(--color-ink-olive);
+}
+
+/* 遅れているときだけ色で知らせる */
+.goal-card__deadline.behind {
+  color: var(--color-warning-ink);
+}
+
+.goal-card__deadline.behind strong {
+  color: var(--color-warning-ink);
 }

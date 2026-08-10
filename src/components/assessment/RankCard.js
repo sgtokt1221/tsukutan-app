@@ -102,7 +102,7 @@ export default function RankCard({
       return (
         <div className="rank-card rank-card--compact rank-card--unmeasured">
           <div className="rank-card__hero">
-            <span className="rank-card__eyebrow">CURRENT RANK</span>
+            <span className="rank-card__eyebrow">現在のランク</span>
             <RankBadge rankId={null} size="medium" />
           </div>
           <div className="rank-card__compact-summary">
@@ -159,7 +159,7 @@ export default function RankCard({
         style={{ '--current-rank-color': rank.color }}
       >
         <div className="rank-card__hero">
-          <span className="rank-card__eyebrow">CURRENT RANK</span>
+          <span className="rank-card__eyebrow">現在のランク</span>
           <div className="rank-card__hero-badge">
             <RankBadge rankId={rank.id} size="xlarge" />
           </div>

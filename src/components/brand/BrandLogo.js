@@ -17,13 +17,18 @@ import './BrandLogo.css';
  *   ロゴ領域だけ淡い黄緑のブロックにする。
  */
 
-const SRC_WEBP = '/brand/tsukutan-logo-lockup-v1.webp';
-const SRC_WEBP_SMALL = '/brand/tsukutan-logo-lockup-v1@440.webp';
-const SRC_PNG = '/brand/tsukutan-logo-lockup-v1.png';
+// v2 は原本から余白を落としたもの。v1 は上下36%・左右24%が余白で、
+// 箱の大きさに対してロゴが小さく見えていた。ヘッダーを高くせずに
+// ロゴを大きく見せるため、余白の側を削っている。
+// 背景もヘッダーの地色（--color-canvas-lime）ぴったりに塗り直してあり、
+// v1 にあったわずかな色ずれの継ぎ目が出ない。
+const SRC_WEBP = '/brand/tsukutan-logo-lockup-v2.webp';
+const SRC_WEBP_SMALL = '/brand/tsukutan-logo-lockup-v2@440.webp';
+const SRC_PNG = '/brand/tsukutan-logo-lockup-v2.png';
 
 // 原本の比率。width/height を必ず渡して読込時のレイアウトずれを防ぐ。
-const ASPECT_WIDTH = 2172;
-const ASPECT_HEIGHT = 724;
+const ASPECT_WIDTH = 1706;
+const ASPECT_HEIGHT = 506;
 
 const PLACEMENTS = ['login', 'student-header', 'study-header', 'admin-sidebar'];
 
