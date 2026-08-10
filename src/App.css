@@ -2976,3 +2976,13 @@ select:focus-visible,
   color: var(--color-ink-olive);
   font-variant-numeric: tabular-nums;
 }
+
+/* 和→英のとき、カードのおもてに出るのは日本語の意味。
+   英単語向けの clamp(13cqi) のままだと長い意味がカードから
+   はみ出すので、字を小さめに取り直して和文書体にする。 */
+#card-front-text.card-front-text--ja {
+  font-size: clamp(0.8rem, 7cqi, 1.5rem);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 600;
+  line-height: 1.35;
+}

@@ -390,3 +390,28 @@
   font-size: calc(12px * var(--wordbook-zoom, 1) + 4px);
   border-radius: var(--radius-pill);
 }
+
+/* 和→英のとき、左は日本語の意味が問題になる。英単語向けの
+   大きな字送りのままだと長い意味が列からあふれるので、
+   右側の意味と同じ大きさに揃える。 */
+.wordbook-word--ja {
+  font-size: max(8px, calc(var(--font-size-16) * var(--wordbook-zoom, 1) * 1.5));
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* 和→英のとき、右に出るのは答えの英単語。単語らしく見えるよう
+   欧文書体と太さを与える。 */
+.wordbook-meaning--en {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* 単語帳モードのタブ行に、向きの切り替えと文字サイズを並べて置く */
+.mode-tabs__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 0;
+}

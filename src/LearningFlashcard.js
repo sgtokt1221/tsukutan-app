@@ -13,8 +13,10 @@ import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation } from './logic/usePronunciation';
 import { useWordbookZoom } from './logic/useWordbookZoom';
+import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlay } from './logic/useAutoPlay';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
+import DirectionToggle from './components/learning/DirectionToggle';
 import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
 
@@ -44,6 +46,9 @@ export default function LearningFlashcard({
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
   // 文字サイズは復習カードと共有する
   const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
+  // 出題の向き（英→和 / 和→英）も復習カードと共有する
+  const [direction, setDirection] = useCardDirection();
+  const isJaToEn = direction === 'ja-en';
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -79,7 +84,7 @@ export default function LearningFlashcard({
     // 「答えを見る」ボタンの onClick に置くと鳴らない。カード面の
     // onMouseDown が先に走ってボタンが外れ、click まで到達しないため。
     const word = shuffledWords[cardIndex];
-    if (word) speakWordThenMeaning(word.word, word.meaning);
+    if (word) speakWordThenMeaning(word.word, word.meaning, direction);
     setRevealedCards(prev => new Set([...prev, cardIndex]));
   };
 
@@ -172,6 +177,7 @@ export default function LearningFlashcard({
   const { autoPlay, start: startAutoPlay, stop: stopAutoPlay } = useAutoPlay({
     words: shuffledWords,
     currentIndex,
+    direction,
     enabled: viewMode === 'flashcard',
     onRevealMeaning: () => setIsFlipped(true),
     onAdvance: (nextIndex) => {
@@ -572,9 +578,9 @@ export default function LearningFlashcard({
     if (!isFlipped && shuffledWords.length > 0 && shuffledWords[currentIndex]) {
       const word = shuffledWords[currentIndex];
       // 英語を読んでから意味を読む。音だけで確認できるようにする。
-      speakWordThenMeaning(word?.word, word?.japanese || word?.meaning);
+      speakWordThenMeaning(word?.word, word?.japanese || word?.meaning, direction);
     }
-  }, [isFlipped, currentIndex, shuffledWords]);
+  }, [isFlipped, currentIndex, shuffledWords, direction]);
 
   const handleTouchStart = useCallback((e) => {
     e.preventDefault();
@@ -835,7 +841,10 @@ export default function LearningFlashcard({
           backLabel="終了"
         />
         <ModeTabs value="wordbook" onChange={setViewMode}>
-          <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
+          <div className="mode-tabs__controls">
+            <DirectionToggle value={direction} onChange={setDirection} />
+            <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
+          </div>
         </ModeTabs>
       </div>
 
@@ -857,7 +866,7 @@ export default function LearningFlashcard({
               className="wordbook-card"
             >
                 <div className="wordbook-card__grid">
-                {/* 左側：英単語 */}
+                {/* 左側：問題。英→和なら英単語、和→英なら意味 */}
                 <div className="wordbook-card__side wordbook-card__left">
                   <BookmarkButton
                     size="inline"
@@ -867,13 +876,14 @@ export default function LearningFlashcard({
                   />
                   <button
                     type="button"
-                    className="wordbook-word"
-                    onClick={() => speak(word.word)}
-                    aria-label={`${word.word} を読み上げる`}
+                    className={isJaToEn ? 'wordbook-word wordbook-word--ja' : 'wordbook-word'}
+                    onClick={() => (isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word))}
+                    aria-label={`${isJaToEn ? word.meaning : word.word} を読み上げる`}
                   >
-                    {word.word}
+                    {isJaToEn ? word.meaning : word.word}
                   </button>
-                  {(word.pronunciation || getPronunciation(word.word)) && (
+                  {/* 発音記号は英単語の手がかりになるので、和→英では隠す */}
+                  {!isJaToEn && (word.pronunciation || getPronunciation(word.word)) && (
                     <div className="wordbook-pronunciation">
                       [{word.pronunciation || getPronunciation(word.word)}]
                     </div>
@@ -965,7 +975,18 @@ export default function LearningFlashcard({
                     opacity: revealedCards.has(index) ? 1 : 0.3,
                     transition: 'opacity 0.2s ease'
                   }}>
-                    <div className="wordbook-meaning">{word.meaning}</div>
+                    {isJaToEn ? (
+                      <>
+                        <div className="wordbook-meaning wordbook-meaning--en">{word.word}</div>
+                        {(word.pronunciation || getPronunciation(word.word)) && (
+                          <div className="wordbook-pronunciation">
+                            [{word.pronunciation || getPronunciation(word.word)}]
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="wordbook-meaning">{word.meaning}</div>
+                    )}
 
                     {word.example && (
                       <div className="wordbook-example">
@@ -1041,7 +1062,9 @@ export default function LearningFlashcard({
           </>
         )}
       />
-      <ModeTabs value="flashcard" onChange={setViewMode} />
+      <ModeTabs value="flashcard" onChange={setViewMode}>
+        <DirectionToggle value={direction} onChange={setDirection} />
+      </ModeTabs>
 
       <div id="flashcard-container">
         <motion.div
@@ -1066,8 +1089,13 @@ export default function LearningFlashcard({
           onDoubleClick={handleDoubleClick}
         >
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
-            <p id="card-front-text">{currentWord?.word || 'Loading...'}</p>
-            {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
+            {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
+            <p id="card-front-text" className={isJaToEn ? 'card-front-text--ja' : undefined}>
+              {isJaToEn
+                ? (currentWord?.japanese || currentWord?.meaning || 'Loading...')
+                : (currentWord?.word || 'Loading...')}
+            </p>
+            {!isJaToEn && (currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
               <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
             )}
           </div>
