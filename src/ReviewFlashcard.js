@@ -14,6 +14,7 @@ import BookmarkButton from './components/learning/BookmarkButton';
 import { useBookmarks } from './logic/useBookmarks';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
+import { useFitWordbookText } from './logic/useFitWordbookText';
 import { useAutoPlay } from './logic/useAutoPlay';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import logger from './logic/logger';
@@ -52,6 +53,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
   // 先頭へ戻るのスクロール対象
   const wordbookShellRef = useRef(null);
+  // 単語帳モードの問題文字を、カードいっぱいの大きさに合わせる
+  const wordbookGridRef = useFitWordbookText([sessionWords, wordbookProgress, wordbookZoom, direction, viewMode]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
@@ -785,7 +788,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       </div>
 
       <div className="wordbook-list">
-        <div className="wordbook-list__grid">
+        <div className="wordbook-list__grid" ref={wordbookGridRef}>
           {sessionWords.slice(wordbookProgress).map((word, index) => {
             const actualIndex = wordbookProgress + index;
             
@@ -813,6 +816,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                   <button
                     type="button"
                     className={isJaToEn ? 'wordbook-word wordbook-word--ja' : 'wordbook-word'}
+                    data-fit-text=""
                     onClick={() => (isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word, 'en-US'))}
                     aria-label={`${isJaToEn ? word.meaning : word.word} を読み上げる`}
                   >
