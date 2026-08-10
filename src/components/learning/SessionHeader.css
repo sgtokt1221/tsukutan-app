@@ -6,6 +6,9 @@
   max-width: var(--width-reading);
   margin: 0 auto;
   width: 100%;
+  /* ヘッダーは白。地の色のままだと、すぐ下のモードタブ（白）と
+     段差ができて、フラッシュカードのときだけ帯が2色に割れて見える。 */
+  background-color: var(--color-surface);
 }
 
 .session-header__row {
@@ -59,10 +62,16 @@
 .wordbook-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  /* 高さは親（.card-main）に合わせる。100vh を指定すると、上部のアプリ
+     ヘッダーと下部ナビのぶんだけ親からはみ出し、親にもスクロールバーが
+     出る。スクロール領域が二重になると、外側が動いたときに
+     position: sticky のヘッダーごと画面外へずれていく。 */
+  min-height: 100%;
+  /* 親（.card-main）は縦の flex なので、既定だと中身に合わせて縮められ、
+     枠が画面の高さで止まる。すると position: sticky のヘッダーも枠の中
+     でしか止まらず、少しスクロールしただけで上へ流れていく。 */
+  flex-shrink: 0;
   background-color: var(--color-canvas-lime);
-  overflow: auto;
 }
 
 .wordbook-anchor {
@@ -71,6 +80,12 @@
   left: 0;
   width: 1px;
   height: 1px;
+}
+
+/* 単語帳は自前のヘッダーを画面の上端に貼り付ける。親（.card-main）の
+   上余白が残っていると、その隙間からスクロール中のカードが覗く。 */
+.card-main:has(> .wordbook-shell) {
+  padding-top: 0;
 }
 
 .wordbook-header {
@@ -231,8 +246,10 @@
 }
 
 .wordbook-zoom input[type="range"] {
-  flex: 1 1 auto;
-  min-width: 72px;
+  /* 縮む余地を残す。72px を下限にしていたので、向きの切り替えと
+     並べたときにタブ行がはみ出し、横スクロールが出ていた。 */
+  flex: 1 1 40px;
+  min-width: 40px;
   max-width: 140px;
   accent-color: var(--color-brand-lime);
 }
@@ -422,6 +439,8 @@
   align-items: center;
   gap: var(--space-8);
   min-width: 0;
+  /* 折り返したときも右寄せのまま */
+  margin-left: auto;
 }
 
 /* 採点済みのカード。どこまでやったかが一覧で分かるよう、

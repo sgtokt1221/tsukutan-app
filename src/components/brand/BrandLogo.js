@@ -22,9 +22,9 @@ import './BrandLogo.css';
 // ロゴを大きく見せるため、余白の側を削っている。
 // 背景もヘッダーの地色（--color-canvas-lime）ぴったりに塗り直してあり、
 // v1 にあったわずかな色ずれの継ぎ目が出ない。
-const SRC_WEBP = '/brand/tsukutan-logo-lockup-v2.webp';
-const SRC_WEBP_SMALL = '/brand/tsukutan-logo-lockup-v2@440.webp';
-const SRC_PNG = '/brand/tsukutan-logo-lockup-v2.png';
+const SRC_WEBP = '/brand/tsukutan-logo-lockup-v3.webp';
+const SRC_WEBP_SMALL = '/brand/tsukutan-logo-lockup-v3@440.webp';
+const SRC_PNG = '/brand/tsukutan-logo-lockup-v3.png';
 
 // 原本の比率。width/height を必ず渡して読込時のレイアウトずれを防ぐ。
 const ASPECT_WIDTH = 1706;

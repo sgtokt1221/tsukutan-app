@@ -13,6 +13,7 @@ import { updateUserWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
+import { scrollWordbookToTop } from './logic/scrollHelpers';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlay } from './logic/useAutoPlay';
@@ -931,7 +932,7 @@ export default function LearningFlashcard({
       <div className="wordbook-to-top">
         <button
           type="button"
-          onClick={() => wordbookShellRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => scrollWordbookToTop(wordbookShellRef.current)}
           className="wordbook-to-top__button"
           aria-label="先頭へ戻る"
         >
