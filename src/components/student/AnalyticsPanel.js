@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../firebaseConfig';
 import { FaChartLine } from 'react-icons/fa';
 import { analyzeUserPerformance, generateLearningRecommendations } from '../../logic/basicAnalytics';
 import { predictPerformance } from '../../logic/predictionModel';
 import { generateSmartRecommendations } from '../../logic/recommendationEngine';
-import { getLevel, MAX_WORD_LEVEL } from '../../config';
+import { clampLevel, getLevel } from '../../config';
 import TrendChart from './TrendChart';
+import RetentionBar from './RetentionBar';
 import RankCard from '../assessment/RankCard';
-import { scoreFromLegacyLevel } from '../../logic/rankLogic';
+import { RANK_IDS, rankForScore, scoreFromLegacyLevel } from '../../logic/rankLogic';
+import { retentionBreakdown } from '../../logic/retentionBreakdown';
 import logger from '../../logic/logger';
 
 /**
@@ -29,6 +31,7 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
   const [recommendations, setRecommendations] = useState([]);
   const [predictions, setPredictions] = useState(null);
   const [smartRecommendations, setSmartRecommendations] = useState([]);
+  const [retention, setRetention] = useState(null);
 
     useEffect(() => {
       const loadAnalytics = async () => {
@@ -49,6 +52,10 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
               logger.debug('📊 ユーザーデータから取得したレベル:', currentUserLevel);
             }
             
+            // 定着の内訳。復習単語の状態から出す。
+            const reviewSnapshot = await getDocs(collection(db, 'users', user.uid, 'reviewWords'));
+            setRetention(retentionBreakdown(reviewSnapshot.docs.map((d) => d.data())));
+
             // 基本的な分析データを取得
             const analysis = await analyzeUserPerformance(user.uid);
             logger.debug('📊 分析結果:', analysis);
@@ -102,10 +109,19 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
     .filter((entry) => entry && Number.isFinite(entry.accuracy) && entry.date)
     .map((entry) => ({ date: entry.date, value: entry.accuracy }));
 
-  const levelPoints = (analyticsData?.levelProgression || [])
+  // 生徒に見せるのはランク。レベルは内部の段階なので画面には出さない。
+  const rankPoints = (analyticsData?.levelProgression || [])
     .filter((entry) => entry && Number.isFinite(entry.level) && entry.date)
-    .map((entry) => ({ date: entry.date, value: entry.level }))
+    .map((entry) => {
+      const rank = rankForScore(scoreFromLegacyLevel(entry.level));
+      return rank ? { date: entry.date, value: RANK_IDS.indexOf(rank.id) } : null;
+    })
+    .filter(Boolean)
     .reverse(); // levelProgression は新しい順で来る
+
+  const rankIdAt = (index) => RANK_IDS[index] || '';
+  const firstRankId = rankPoints.length ? rankIdAt(rankPoints[0].value) : null;
+  const latestRankId = rankPoints.length ? rankIdAt(rankPoints[rankPoints.length - 1].value) : null;
 
   if (loading) {
       return (
@@ -174,55 +190,46 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-header">
-                  <span className="stat-label">現在のレベル</span>
-                  <div className="stat-icon level-icon">LV</div>
-                </div>
-                <div className="stat-value">
-                  {analyticsData.currentLevel === 0 ? (
-                    <span style={{ color: '#ef4444', fontSize: '1.2rem' }}>未測定</span>
-                  ) : analyticsData.currentLevel > MAX_WORD_LEVEL ? (
-                    <span style={{ color: '#ef4444', fontSize: '1.2rem' }}>データエラー</span>
-                  ) : (
-                    getLevel(analyticsData.currentLevel)?.label || `レベル${analyticsData.currentLevel}`
-                  )}
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-header">
                   <span className="stat-label">テスト回数</span>
                   <div className="stat-icon test-icon">TEST</div>
                 </div>
                 <div className="stat-value">{analyticsData.totalTests}</div>
                 <div className="stat-unit">回</div>
               </div>
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">レベル上昇</span>
-                  <div className="stat-icon growth-icon">↑</div>
+              {firstRankId && latestRankId && (
+                <div className="stat-card">
+                  <div className="stat-header">
+                    <span className="stat-label">はじめから今まで</span>
+                    <div className="stat-icon growth-icon">↑</div>
+                  </div>
+                  <div className="stat-value">
+                    {firstRankId === latestRankId
+                      ? latestRankId
+                      : `${firstRankId} → ${latestRankId}`}
+                  </div>
                 </div>
-                <div className="stat-value">
-                  {analyticsData.improvementRate > 0 && '+'}{analyticsData.improvementRate}
-                  {analyticsData.improvementRate !== 0 && (
-                    <span className="level-change-detail">
-                      ({analyticsData.improvementRate > 0 ? '上昇' : '下降'})
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-header">
-                  <span className="stat-label">平均回答時間</span>
-                  <div className="stat-icon time-icon">SEC</div>
-                </div>
-                <div className="stat-value">{Math.round(analyticsData.averageResponseTime / 1000)}</div>
-                <div className="stat-unit">秒</div>
-              </div>
+              )}
             </div>
           </div>
 
+          {/* 定着の内訳。復習単語の「次にいつ出すか」から、あとどれくらいかを見せる。
+              1語ごとの記録は前から持っていたのに、どこにも出していなかった。 */}
+          {retention && retention.total > 0 && (
+            <div className="analytics-section">
+              <div className="section-header">
+                <h3>定着の内訳</h3>
+                <div className="section-divider"></div>
+              </div>
+              <p className="section-description">
+                次に出るまでの間隔が長い語ほど、身についています。
+              </p>
+              <RetentionBar breakdown={retention} />
+            </div>
+          )}
+
           {/* 推移。accuracyTrend / levelProgression は前から計算していたのに
               どこにも出していなかった。数字だけの画面になっていた原因。 */}
-          {(accuracyPoints.length > 1 || levelPoints.length > 1) && (
+          {(accuracyPoints.length > 1 || rankPoints.length > 1) && (
             <div className="analytics-section">
               <div className="section-header">
                 <h3>これまでの推移</h3>
@@ -238,69 +245,21 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
                     <TrendChart points={accuracyPoints} label="正答率" unit="%" min={0} max={100} />
                   </div>
                 )}
-                {levelPoints.length > 1 && (
+                {rankPoints.length > 1 && (
                   <div className="trend-card">
                     <div className="trend-card__head">
-                      <span className="trend-card__label">レベル</span>
-                      <span className="trend-card__now">{levelPoints[levelPoints.length - 1].value}</span>
+                      <span className="trend-card__label">ランク</span>
+                      <span className="trend-card__now">{latestRankId}</span>
                     </div>
-                    <TrendChart points={levelPoints} label="レベル" min={0} max={MAX_WORD_LEVEL} />
+                    <TrendChart
+                      points={rankPoints}
+                      label="ランク"
+                      min={0}
+                      max={RANK_IDS.length - 1}
+                      formatValue={rankIdAt}
+                    />
                   </div>
                 )}
-              </div>
-            </div>
-          )}
-
-          {/* 苦手分野 */}
-          {analyticsData.weakAreas && analyticsData.weakAreas.length > 0 && (
-            <div className="analytics-section">
-              <div className="section-header">
-                <h3>苦手分野</h3>
-                <div className="section-divider"></div>
-              </div>
-              <div className="weak-areas-list">
-                {analyticsData.weakAreas.map((area, index) => {
-                  // レベルの呼び名は src/config/levels.json を正本にする。
-                  // 以前は 1〜10 の独自対応表を持っていて、実データに存在しない
-                  // 英検1級まで並んでいた。
-                  const eikenLevel = eikenLabel(area.level);
-                  
-                  return (
-                    <div key={index} className="weak-area-item clickable" onClick={() => {
-                      logger.debug('苦手分野クリック:', { level: area.level, eikenLevel });
-                      
-                      // レベルに応じて適切な教材を選択
-                      let targetTextbookId = '';
-                      if (area.level <= 3) {
-                        targetTextbookId = 'osaka-koukou-nyuushi'; // 中学レベル
-                      } else if (area.level <= 7) {
-                        targetTextbookId = 'highschool-english'; // 高校レベル
-                      } else {
-                        targetTextbookId = 'osaka-koukou-nyuushi'; // その他
-                      }
-                      
-                      // 自由学習タブに切り替えて教材を選択
-                      onNavigateTab('free-study');
-                      onSelectTextbook(targetTextbookId);
-                      
-                      // 少し遅延してからレベル学習を開始
-                      setTimeout(() => {
-                        onStartLearning('level', area.level);
-                      }, 100);
-                    }}>
-                      <div className="weak-area-header">
-                        <span className="area-level">
-                          自由学習メニューの{eikenLevel}から始めましょう
-                        </span>
-                        <div className="accuracy-badge">{Math.round(area.accuracy)}%</div>
-                      </div>
-                      <div className="area-details">
-                        <span className="area-questions">{area.totalQuestions}問実施済み</span>
-                        <span className="click-hint">クリックして学習開始</span>
-                      </div>
-                    </div>
-                  );
-                })}
               </div>
             </div>
           )}
@@ -387,13 +346,9 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
               <div className="prediction-card">
                 <div className="prediction-summary">
                   <div className="prediction-item">
-                    <div className="prediction-label">1週間後の予測レベル</div>
+                    <div className="prediction-label">1週間後の予測ランク</div>
                     <div className="prediction-value">
-                      {predictions.nextWeekLevel > 7 ? (
-                        <span style={{ color: '#ef4444' }}>データエラー</span>
-                      ) : (
-                        getLevel(predictions.nextWeekLevel)?.label || `レベル${predictions.nextWeekLevel}`
-                      )}
+                      {rankForScore(scoreFromLegacyLevel(clampLevel(predictions.nextWeekLevel)))?.id || '—'}
                     </div>
                   </div>
                   <div className="prediction-item">

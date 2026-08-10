@@ -331,11 +331,27 @@ const highschoolLevelDescriptions = {
 };
 
 
+/**
+ * 高校英語で、A/B/C の区分が付いていない語のグループか。
+ *
+ * マスターには subLevel を持たない語が各レベルに残っている
+ * （5:186語 / 6:126語 / 7:166語）。これらは「7」のように
+ * 数字だけのキーでまとまる。
+ */
+const isUnlabeledSubLevel = (subLevel) => /^\d+$/.test(String(subLevel));
+
 // 高校英語のサブレベル説明を生成する関数
 const getHighschoolSubLevelDescription = (subLevel) => {
   const level = parseInt(subLevel.substring(0, 1));
   const subLevelLetter = subLevel.substring(1);
-  
+
+  // 区分なしの語。以前は subLevelNames[''] を引いて
+  // 「英検準1級undefined」と表示されていた。
+  if (isUnlabeledSubLevel(subLevel)) {
+    const bandNames = { 5: '英検準2級', 6: '英検2級', 7: '英検準1級' };
+    return `${bandNames[level] || '高校英語'}その他`;
+  }
+
   if (level === 5) {
     // レベル5: 英検準2級レベル
     const subLevelNames = { A: '基礎', B: '標準', C: '応用' };
@@ -1113,8 +1129,12 @@ export default function StudentDashboard() {
           
           // 親レベル範囲内から、指定されたlevelまたはsublevelの単語をフィルタ
           if (filterType === 'sublevel' && selectedTextbookId === 'highschool-english') {
-            // 高校英語のサブレベルの場合（5A, 5B, 5Cなど）
-            filtered = parentLevelWords.filter(word => word.subLevel === value);
+            // 高校英語のサブレベルの場合（5A, 5B, 5Cなど）。
+            // 「7」のような数字だけのキーは A/B/C が付いていない語のまとまりで、
+            // subLevel === '7' では1語も当たらず「単語が見つかりません」になっていた。
+            filtered = isUnlabeledSubLevel(value)
+              ? parentLevelWords.filter(word => !word.subLevel)
+              : parentLevelWords.filter(word => word.subLevel === value);
             logger.debug(`🎓 高校英語サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
             sessionLabel = `サブレベル${value}`;
           } else {
@@ -1592,14 +1612,16 @@ export default function StudentDashboard() {
                 </p>
               )}
                <div className="task-cards-container">
-                  {isDailyTaskCompleted ? (
+                  {/* 今日のぶんが終わっていても、前倒しできる語が無ければ
+                      「おかわり 0」を出さない。押しても
+                      「追加の単語はありません」と言うだけの札になっていた。 */}
+                  {isDailyTaskCompleted && dailyPlan.extraNewWords.length > 0 ? (
                     <div className="task-card okawari-card" onClick={startExtraNewWords}>
                       <FaMagic className="task-icon okawari-icon" />
                       <div className="task-info">
                         <p>おかわり</p>
                         <span>{dailyPlan.extraNewWords.length}</span>
                       </div>
-                      <div className="okawari-label">スケジュール巻いてます！</div>
                     </div>
                   ) : (
                     <div className="task-card" onClick={startDailyNewWords}>
@@ -2104,6 +2126,10 @@ export default function StudentDashboard() {
                       const bLevel = parseInt(b.substring(0, 1));
                       if (aLevel !== bLevel) {
                         return aLevel - bLevel;
+                      }
+                      // 区分なし（「その他」）は A・B・C のあとに置く
+                      if (isUnlabeledSubLevel(a) !== isUnlabeledSubLevel(b)) {
+                        return isUnlabeledSubLevel(a) ? 1 : -1;
                       }
                       return a.localeCompare(b); // A, B, Cの順
                     } else {

@@ -320,18 +320,6 @@ body {
   color: #ffffff;
 }
 
-.okawari-label {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(15, 23, 42, 0.18);
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
 .task-icon {
   font-size: 1.8rem;
   margin-bottom: 0.25rem;
@@ -2378,9 +2366,9 @@ select:focus-visible,
   gap: var(--space-12);
   min-height: 60px;
   padding: var(--space-8) var(--space-16);
-  /* ロゴPNGの背景と同じ色にする。白地にすると、ロゴの周りだけ
-     淡い黄緑の四角が乗って継ぎ接ぎに見える（計画書4.5）。 */
-  background-color: var(--color-canvas-lime);
+  /* 学習画面のヘッダーと同じ白に揃える。ロゴPNGの地色も
+     白へ焼き直してある（v3）ので、ロゴの周りに四角は出ない。 */
+  background-color: var(--color-surface);
   border-bottom: var(--border-subtle);
 }
 
@@ -2975,4 +2963,14 @@ select:focus-visible,
   font-weight: 700;
   color: var(--color-ink-olive);
   font-variant-numeric: tabular-nums;
+}
+
+/* 和→英のとき、カードのおもてに出るのは日本語の意味。
+   英単語向けの clamp(13cqi) のままだと長い意味がカードから
+   はみ出すので、字を小さめに取り直して和文書体にする。 */
+#card-front-text.card-front-text--ja {
+  font-size: clamp(0.8rem, 7cqi, 1.5rem);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 600;
+  line-height: 1.35;
 }
