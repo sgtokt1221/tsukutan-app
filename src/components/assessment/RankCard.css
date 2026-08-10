@@ -574,3 +574,8 @@
   color: var(--color-olive-muted);
   white-space: nowrap;
 }
+
+/* ホームは3枚のカードを1画面に収める。ランクカードの余白を詰める。 */
+.rank-card--compact {
+  gap: var(--space-8);
+}
