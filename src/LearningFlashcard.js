@@ -5,7 +5,7 @@ import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop } from 'react-icons/fa';
+import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
@@ -473,7 +473,7 @@ export default function LearningFlashcard({
         
         // 単語帳モードでの視覚的フィードバック。
         // 上スワイプ（復習完了）は復習単語のときだけ使える。
-        const feedback = swipeFeedbackFor(limitedDeltaX, limitedDeltaY);
+        const feedback = swipeFeedbackFor(limitedDeltaX, limitedDeltaY, false);
         
         paintSwipeFeedback(activeCard, feedback);
       }
@@ -540,23 +540,18 @@ export default function LearningFlashcard({
       if (activeCard) {
         const swipedIndex = Number(activeCard.dataset.cardIndex);
 
-        if (isSwipe && Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -threshold) {
-          // 上スワイプ（卒業）。この語だけ一覧から取り除く。
-          activeCard.style.transform = 'translate(0px, -300px)';
-          activeCard.style.opacity = '0';
-          setTimeout(() => graduateWordAt(swipedIndex), 300);
-        } else {
-          // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
-          // 見返せない。結果はカードの色で示す。
-          if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
-            judgeWordAt(swipedIndex, deltaX > 0 ? 'good' : 'again');
-          }
-          activeCard.style.transform = 'translate(0px, 0px)';
-          clearSwipeFeedback(activeCard);
+        // 縦は画面のスクロールに使う。上スワイプ（卒業）はカードの
+        // ボタンに移した。一覧をたぐる指の動きと取り合いになるため。
+        // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
+        // 見返せない。結果はカードの色で示す。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(swipedIndex, deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, graduateWordAt, handleGraduateCurrent]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleGraduateCurrent]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -594,8 +589,12 @@ export default function LearningFlashcard({
 
   const handleTouchStart = useCallback((e) => {
     swipeHandledRef.current = false;
-    e.preventDefault();
-    e.stopPropagation();
+    // 単語帳では既定の動作を止めない。preventDefault すると
+    // 「答えを見る」のタップが click まで届かず、縦スクロールも殺される。
+    if (viewMode !== 'wordbook') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     
     // マルチタッチの場合は無視
     if (e.touches.length > 1) {
@@ -603,10 +602,11 @@ export default function LearningFlashcard({
       return;
     }
     
-    // ダブルタップ検出（スマホ用）
+    // ダブルタップ検出（スマホ用）。カードをめくる操作なので
+    // フラッシュカードだけ。単語帳では1タップで答えを出したい。
     const currentTime = new Date().getTime();
     const tapLength = currentTime - lastTap;
-    if (tapLength < 500 && tapLength > 0) {
+    if (viewMode !== 'wordbook' && tapLength < 500 && tapLength > 0) {
       logger.debug('🔥 Double tap detected on mobile!');
       handleDoubleClick(e);
       setLastTap(0);
@@ -651,7 +651,7 @@ export default function LearningFlashcard({
     } else if (viewMode === 'wordbook') {
       // 単語帳モードでは上下の動きのみ許可（左右は固定）
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY));
+        paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, false));
       }
     }
   }, [isDragging, dragStart, viewMode, x, y]);
@@ -715,23 +715,18 @@ export default function LearningFlashcard({
       if (activeCard) {
         const swipedIndex = Number(activeCard.dataset.cardIndex);
 
-        if (isSwipe && Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -threshold) {
-          // 上スワイプ（卒業）。この語だけ一覧から取り除く。
-          activeCard.style.transform = 'translate(0px, -300px)';
-          activeCard.style.opacity = '0';
-          setTimeout(() => graduateWordAt(swipedIndex), 300);
-        } else {
-          // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
-          // 見返せない。結果はカードの色で示す。
-          if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
-            judgeWordAt(swipedIndex, deltaX > 0 ? 'good' : 'again');
-          }
-          activeCard.style.transform = 'translate(0px, 0px)';
-          clearSwipeFeedback(activeCard);
+        // 縦は画面のスクロールに使う。上スワイプ（卒業）はカードの
+        // ボタンに移した。一覧をたぐる指の動きと取り合いになるため。
+        // 採点してもカードは一覧に残す。消してしまうと、どこまでやったかを
+        // 見返せない。結果はカードの色で示す。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(swipedIndex, deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, graduateWordAt, handleGraduateCurrent]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleGraduateCurrent]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
@@ -841,12 +836,25 @@ export default function LearningFlashcard({
                 <div className="wordbook-card__grid">
                 {/* 左側：問題。英→和なら英単語、和→英なら意味 */}
                 <div className="wordbook-card__side wordbook-card__left">
-                  <BookmarkButton
-                    size="inline"
-                    active={isBookmarked(word)}
-                    onToggle={() => toggleBookmark(word)}
-                    label={word.word}
-                  />
+                  <div className="wordbook-card__tools">
+                    <BookmarkButton
+                      size="inline"
+                      active={isBookmarked(word)}
+                      onToggle={() => toggleBookmark(word)}
+                      label={word.word}
+                    />
+                    {/* 卒業。上スワイプだと一覧のスクロールと取り合いになるので
+                        ボタンにしている。 */}
+                    <button
+                      type="button"
+                      className="wordbook-graduate"
+                      onClick={(e) => { e.stopPropagation(); graduateWordAt(actualIndex); }}
+                      aria-label={`${word.word} はもう覚えた。復習から外す`}
+                      title="もう覚えた（復習から外す）"
+                    >
+                      <FaCheck aria-hidden="true" />
+                    </button>
+                  </div>
                   <button
                     type="button"
                     className={isJaToEn ? 'wordbook-word wordbook-word--ja' : 'wordbook-word'}
