@@ -19,6 +19,20 @@ const {
   buildImportPlan,
 } = require('./lib/studentImport');
 const { getCurrentMonthKey } = require('./lib/dateKeys');
+
+/**
+ * 使う Gemini。
+ *
+ * gemini-2.0-flash-001 は提供が終わっていて 404 を返す（2026-08-13 に確認）。
+ * ストーリー生成が黙って失敗していたのはこれが原因。モデル名を1か所にまとめ、
+ * 次に切り替わったときここだけ直せばよいようにする。
+ *
+ * 生きているかの確かめ方:
+ *   curl -s -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+ *     -H 'Content-Type: application/json' -d '{"contents":[{"role":"user","parts":[{"text":"ok"}]}]}' \
+ *     https://us-central1-aiplatform.googleapis.com/v1/projects/$GCLOUD_PROJECT/locations/us-central1/publishers/google/models/<model>:generateContent
+ */
+const GEMINI_MODEL = 'gemini-2.5-flash';
 const { transcribe, missingWords, MAX_AUDIO_BYTES } = require('./lib/transcription');
 const { judgeAnswer } = require('./lib/answerJudge');
 
@@ -516,7 +530,7 @@ Please adhere to the following rules:
 
   const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
   const generativeModel = vertexAi.getGenerativeModel({
-    model: 'gemini-2.0-flash-001',
+    model: GEMINI_MODEL,
     generationConfig: { responseMimeType: 'application/json' },
   });
 
@@ -731,7 +745,7 @@ const MODES = new Set(['scripted', 'unscripted']);
 const generateJson = async (prompt) => {
   const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
   const model = vertexAi.getGenerativeModel({
-    model: 'gemini-2.0-flash-001',
+    model: GEMINI_MODEL,
     generationConfig: { responseMimeType: 'application/json' },
   });
   const response = await model.generateContent(prompt);
