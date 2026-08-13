@@ -31,7 +31,9 @@ export const useLongPress = (onLongPress, { holdMs = HOLD_MS } = {}) => {
     firedRef.current = false;
     timerRef.current = setTimeout(() => {
       firedRef.current = true;
-      onLongPress();
+      // 押した場所を渡す。返事を画面の下に出すと、スクロール位置によっては
+      // 見えないまま消える。
+      onLongPress({ x: startRef.current?.x ?? 0, y: startRef.current?.y ?? 0 });
     }, holdMs);
   }, [onLongPress, holdMs]);
 
