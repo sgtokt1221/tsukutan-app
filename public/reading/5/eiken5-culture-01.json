@@ -1,0 +1,234 @@
+{
+  "id": "eiken5-culture-01",
+  "grade": "5",
+  "category": "culture",
+  "title": "The Summer Festival",
+  "titleJa": "夏祭り",
+  "sentences": [
+    {
+      "ja": "8月に、わたしの町で夏祭りがあります。",
+      "chunks": [
+        {
+          "en": "In August",
+          "ja": "8月に",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a summer festival",
+          "ja": "夏祭りが",
+          "role": "S"
+        },
+        {
+          "en": "in my town.",
+          "ja": "わたしの町で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "お祭りは学校の近くの公園で開かれます。",
+      "chunks": [
+        {
+          "en": "The festival",
+          "ja": "お祭りは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "開かれます",
+          "role": "V"
+        },
+        {
+          "en": "in the park near my school.",
+          "ja": "学校の近くの公園で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "夜、たくさんの小さな店が道に並びます。",
+      "chunks": [
+        {
+          "en": "At night",
+          "ja": "夜",
+          "role": "M"
+        },
+        {
+          "en": "many small shops",
+          "ja": "たくさんの小さな店が",
+          "role": "S"
+        },
+        {
+          "en": "stand",
+          "ja": "並びます",
+          "role": "V"
+        },
+        {
+          "en": "on the street.",
+          "ja": "道に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは友だちとそこへ行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "go",
+          "ja": "行きます",
+          "role": "V"
+        },
+        {
+          "en": "there",
+          "ja": "そこへ",
+          "role": "M"
+        },
+        {
+          "en": "with my friends.",
+          "ja": "友だちと",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは食べ物を買って、いっしょに食べます。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "buy",
+          "ja": "買います",
+          "role": "V"
+        },
+        {
+          "en": "food",
+          "ja": "食べ物を",
+          "role": "O"
+        },
+        {
+          "en": "and eat it together.",
+          "ja": "そしていっしょに食べます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの好きな食べ物は魚です。",
+      "chunks": [
+        {
+          "en": "My favorite food",
+          "ja": "わたしの好きな食べ物は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "fish.",
+          "ja": "魚",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "公園では、みんなが歌います。",
+      "chunks": [
+        {
+          "en": "In the park",
+          "ja": "公園では",
+          "role": "M"
+        },
+        {
+          "en": "everyone",
+          "ja": "みんなが",
+          "role": "S"
+        },
+        {
+          "en": "sings.",
+          "ja": "歌います",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "お年寄りも若い人も、いっしょに歌います。",
+      "chunks": [
+        {
+          "en": "Old and young",
+          "ja": "お年寄りも若い人も",
+          "role": "S"
+        },
+        {
+          "en": "sing",
+          "ja": "歌います",
+          "role": "V"
+        },
+        {
+          "en": "together.",
+          "ja": "いっしょに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "8時に、みんなで大きな音を聞きます。",
+      "chunks": [
+        {
+          "en": "At eight",
+          "ja": "8時に",
+          "role": "M"
+        },
+        {
+          "en": "we all",
+          "ja": "みんなで",
+          "role": "S"
+        },
+        {
+          "en": "hear",
+          "ja": "聞きます",
+          "role": "V"
+        },
+        {
+          "en": "a big sound.",
+          "ja": "大きな音を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "夏でいちばん好きな日です。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "my favorite day in summer.",
+          "ja": "夏でいちばん好きな日",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

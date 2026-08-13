@@ -1,0 +1,414 @@
+{
+  "id": "eikenp2-work-01",
+  "grade": "pre2",
+  "category": "work",
+  "title": "The Job That Did Not Exist",
+  "titleJa": "なかった仕事",
+  "sentences": [
+    {
+      "ja": "20年前には存在しなかった職業が、今では数多くあります。",
+      "chunks": [
+        {
+          "en": "There are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "many jobs today that did not exist twenty years ago.",
+          "ja": "20年前には存在しなかった職業が今では数多く",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "動画を作る人、データを整理する人などです。",
+      "chunks": [
+        {
+          "en": "People who make videos and people who put data in order",
+          "ja": "動画を作る人、データを整理する人などが",
+          "role": "S"
+        },
+        {
+          "en": "are examples.",
+          "ja": "その例です",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "同じように、今ある仕事の一部は20年後に消えているでしょう。",
+      "chunks": [
+        {
+          "en": "In the same way,",
+          "ja": "同じように",
+          "role": "M"
+        },
+        {
+          "en": "some of the jobs we have now",
+          "ja": "今ある仕事の一部は",
+          "role": "S"
+        },
+        {
+          "en": "will have disappeared",
+          "ja": "消えているでしょう",
+          "role": "V"
+        },
+        {
+          "en": "in twenty years.",
+          "ja": "20年後には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この事実は、進路を選ぶ生徒にとって難しい問題です。",
+      "chunks": [
+        {
+          "en": "This fact",
+          "ja": "この事実は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a difficult problem for students who are choosing their way.",
+          "ja": "進路を選ぶ生徒にとって難しい問題",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "消える仕事を選ばないようにと言うのは簡単です。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is easy",
+          "ja": "簡単です",
+          "role": "V"
+        },
+        {
+          "en": "to say that you should not choose a job that will disappear.",
+          "ja": "消える仕事を選ばないようにと言うのは",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、どれが消えるかを正しく当てた人はほとんどいません。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "almost no one",
+          "ja": "ほとんどだれも",
+          "role": "S"
+        },
+        {
+          "en": "has correctly guessed",
+          "ja": "正しく当てていません",
+          "role": "V"
+        },
+        {
+          "en": "which ones will disappear.",
+          "ja": "どれが消えるかを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "1980年代、多くの人が銀行の仕事は安全だと考えていました。",
+      "chunks": [
+        {
+          "en": "In the 1980s,",
+          "ja": "1980年代",
+          "role": "M"
+        },
+        {
+          "en": "many people",
+          "ja": "多くの人が",
+          "role": "S"
+        },
+        {
+          "en": "thought",
+          "ja": "考えていました",
+          "role": "V"
+        },
+        {
+          "en": "that bank work was safe.",
+          "ja": "銀行の仕事は安全だと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "同じころ、写真の会社は決してなくならないと言われていました。",
+      "chunks": [
+        {
+          "en": "At the same time,",
+          "ja": "同じころ",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was said",
+          "ja": "言われていました",
+          "role": "V"
+        },
+        {
+          "en": "that photograph companies would never disappear.",
+          "ja": "写真の会社は決してなくならないと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "では、何を基準に選べばよいのでしょうか。",
+      "chunks": [
+        {
+          "en": "Then",
+          "ja": "では",
+          "role": "M"
+        },
+        {
+          "en": "what",
+          "ja": "何を",
+          "role": "O"
+        },
+        {
+          "en": "should we use",
+          "ja": "選べばよいのでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "as a standard?",
+          "ja": "基準に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "一つの考え方は、仕事の名前ではなく中身を見ることです。",
+      "chunks": [
+        {
+          "en": "One way of thinking",
+          "ja": "一つの考え方は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to look at the content of the work, not at its name.",
+          "ja": "仕事の名前ではなく中身を見ること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "たとえば「人の話を聞いて、必要なことを見つける」という中身です。",
+      "chunks": [
+        {
+          "en": "For example,",
+          "ja": "たとえば",
+          "role": "M"
+        },
+        {
+          "en": "the content",
+          "ja": "中身は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "\"listening to people and finding what is needed.\"",
+          "ja": "「人の話を聞いて必要なことを見つける」という中身",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この中身は、医療にも、店にも、教育にも入っています。",
+      "chunks": [
+        {
+          "en": "This content",
+          "ja": "この中身は",
+          "role": "S"
+        },
+        {
+          "en": "is included",
+          "ja": "入っています",
+          "role": "V"
+        },
+        {
+          "en": "in medicine, in shops, and in education.",
+          "ja": "医療にも、店にも、教育にも",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "名前が変わっても、その力は移すことができます。",
+      "chunks": [
+        {
+          "en": "Even if the name changes,",
+          "ja": "名前が変わっても",
+          "role": "M"
+        },
+        {
+          "en": "that ability",
+          "ja": "その力は",
+          "role": "S"
+        },
+        {
+          "en": "can be moved.",
+          "ja": "移すことができます",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "もう一つ大切なのは、学び直せる場所があるかどうかです。",
+      "chunks": [
+        {
+          "en": "Another important thing",
+          "ja": "もう一つ大切なことは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "whether there is a place to learn again.",
+          "ja": "学び直せる場所があるかどうか",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "北欧のいくつかの国では、大人が無料で学校に戻れます。",
+      "chunks": [
+        {
+          "en": "In some countries in northern Europe,",
+          "ja": "北欧のいくつかの国では",
+          "role": "M"
+        },
+        {
+          "en": "adults",
+          "ja": "大人が",
+          "role": "S"
+        },
+        {
+          "en": "can return",
+          "ja": "戻れます",
+          "role": "V"
+        },
+        {
+          "en": "to school for free.",
+          "ja": "無料で学校に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "仕事が消えても、次へ移る時間が社会に用意されています。",
+      "chunks": [
+        {
+          "en": "Even if a job disappears,",
+          "ja": "仕事が消えても",
+          "role": "M"
+        },
+        {
+          "en": "time to move to the next one",
+          "ja": "次へ移る時間が",
+          "role": "S"
+        },
+        {
+          "en": "is prepared",
+          "ja": "用意されています",
+          "role": "V"
+        },
+        {
+          "en": "in the society.",
+          "ja": "社会に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "これは個人の努力の問題ではなく、仕組みの問題です。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a problem of individual effort but a problem of systems.",
+          "ja": "個人の努力の問題ではなく仕組みの問題",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "生徒に「よく考えて選べ」と言うだけでは足りません。",
+      "chunks": [
+        {
+          "en": "Only telling students to think well and choose",
+          "ja": "生徒に「よく考えて選べ」と言うだけでは",
+          "role": "S"
+        },
+        {
+          "en": "is not enough.",
+          "ja": "足りません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "選び直せる社会をつくることも、同じくらい必要なのです。",
+      "chunks": [
+        {
+          "en": "Making a society where we can choose again",
+          "ja": "選び直せる社会をつくることも",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "just as necessary.",
+          "ja": "同じくらい必要",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

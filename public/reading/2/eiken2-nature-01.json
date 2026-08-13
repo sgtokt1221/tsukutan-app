@@ -1,0 +1,579 @@
+{
+  "id": "eiken2-nature-01",
+  "grade": "2",
+  "category": "nature",
+  "title": "The Forest That Grows in the Sea",
+  "titleJa": "海に育つ森",
+  "sentences": [
+    {
+      "ja": "海の底に森があると言われても、多くの人は想像しにくいでしょう。",
+      "chunks": [
+        {
+          "en": "Even if we are told that there is a forest at the bottom of the sea,",
+          "ja": "海の底に森があると言われても",
+          "role": "M"
+        },
+        {
+          "en": "many people",
+          "ja": "多くの人は",
+          "role": "S"
+        },
+        {
+          "en": "will find it hard",
+          "ja": "想像しにくいでしょう",
+          "role": "V"
+        },
+        {
+          "en": "to imagine.",
+          "ja": "想像することを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、海藻が広がる場所は、実際に森と呼ばれています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "places where seaweed spreads",
+          "ja": "海藻が広がる場所は",
+          "role": "S"
+        },
+        {
+          "en": "are actually called",
+          "ja": "実際に呼ばれています",
+          "role": "V"
+        },
+        {
+          "en": "forests.",
+          "ja": "森と",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それらは魚が卵を産む場所であり、小さな生き物の住まいでもあります。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "places where fish lay eggs, and also homes for small living things.",
+          "ja": "魚が卵を産む場所であり、小さな生き物の住まいでもある",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "さらに近年、別の働きが注目されるようになりました。",
+      "chunks": [
+        {
+          "en": "Moreover, in recent years,",
+          "ja": "さらに近年",
+          "role": "M"
+        },
+        {
+          "en": "another work of theirs",
+          "ja": "別の働きが",
+          "role": "S"
+        },
+        {
+          "en": "has received attention.",
+          "ja": "注目されるようになりました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "海藻は、成長する間に大量の二酸化炭素を取り込みます。",
+      "chunks": [
+        {
+          "en": "Seaweed",
+          "ja": "海藻は",
+          "role": "S"
+        },
+        {
+          "en": "takes in",
+          "ja": "取り込みます",
+          "role": "V"
+        },
+        {
+          "en": "a large amount of carbon dioxide",
+          "ja": "大量の二酸化炭素を",
+          "role": "O"
+        },
+        {
+          "en": "while it grows.",
+          "ja": "成長する間に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "陸の森と同じ働きを、海の中で行っているのです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is doing",
+          "ja": "行っているのです",
+          "role": "V"
+        },
+        {
+          "en": "the same work as forests on land",
+          "ja": "陸の森と同じ働きを",
+          "role": "O"
+        },
+        {
+          "en": "in the sea.",
+          "ja": "海の中で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ある研究では、同じ面積で陸の森より多く取り込むと報告されています。",
+      "chunks": [
+        {
+          "en": "One study",
+          "ja": "ある研究は",
+          "role": "S"
+        },
+        {
+          "en": "reports",
+          "ja": "報告しています",
+          "role": "V"
+        },
+        {
+          "en": "that it takes in more than a forest on land in the same area.",
+          "ja": "同じ面積で陸の森より多く取り込むと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、この海の森は世界各地で急速に減っています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "these sea forests",
+          "ja": "この海の森は",
+          "role": "S"
+        },
+        {
+          "en": "are decreasing",
+          "ja": "減っています",
+          "role": "V"
+        },
+        {
+          "en": "rapidly in many parts of the world.",
+          "ja": "世界各地で急速に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "原因の一つは、海水の温度が上がったことです。",
+      "chunks": [
+        {
+          "en": "One of the causes",
+          "ja": "原因の一つは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that the temperature of the sea water has risen.",
+          "ja": "海水の温度が上がったこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "もう一つは、海藻を食べる魚や貝が増えたことです。",
+      "chunks": [
+        {
+          "en": "Another",
+          "ja": "もう一つは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that the fish and shells that eat seaweed have increased.",
+          "ja": "海藻を食べる魚や貝が増えたこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "その魚を食べていた大型の魚が、漁で減ったためです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "the large fish that ate those fish",
+          "ja": "その魚を食べていた大型の魚が",
+          "role": "S"
+        },
+        {
+          "en": "decreased",
+          "ja": "減ったからです",
+          "role": "V"
+        },
+        {
+          "en": "through fishing.",
+          "ja": "漁で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまり、一つの変化が別の変化を呼んでいます。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "one change",
+          "ja": "一つの変化が",
+          "role": "S"
+        },
+        {
+          "en": "is calling",
+          "ja": "呼んでいます",
+          "role": "V"
+        },
+        {
+          "en": "another change.",
+          "ja": "別の変化を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "日本では、この現象を「磯焼け」と呼びます。",
+      "chunks": [
+        {
+          "en": "In Japan,",
+          "ja": "日本では",
+          "role": "M"
+        },
+        {
+          "en": "this",
+          "ja": "この現象を",
+          "role": "O"
+        },
+        {
+          "en": "is called",
+          "ja": "呼びます",
+          "role": "V"
+        },
+        {
+          "en": "iso-yake.",
+          "ja": "「磯焼け」と",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "かつて海藻が茂っていた岩場が、白い石だけの場所に変わります。",
+      "chunks": [
+        {
+          "en": "Rocky places where seaweed once grew thick",
+          "ja": "かつて海藻が茂っていた岩場が",
+          "role": "S"
+        },
+        {
+          "en": "change",
+          "ja": "変わります",
+          "role": "V"
+        },
+        {
+          "en": "into places of white stone only.",
+          "ja": "白い石だけの場所に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そこでは魚が育たず、漁の量も落ちます。",
+      "chunks": [
+        {
+          "en": "Fish",
+          "ja": "魚が",
+          "role": "S"
+        },
+        {
+          "en": "do not grow",
+          "ja": "育ちません",
+          "role": "V"
+        },
+        {
+          "en": "there,",
+          "ja": "そこでは",
+          "role": "M"
+        },
+        {
+          "en": "and the amount of the catch falls.",
+          "ja": "そして漁の量も落ちます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまりこれは、環境の問題であると同時に生活の問題です。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "this",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a problem of living as well as a problem of the environment.",
+          "ja": "環境の問題であると同時に生活の問題",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "いくつかの地域では、海藻を植え直す取り組みが始まっています。",
+      "chunks": [
+        {
+          "en": "In some areas,",
+          "ja": "いくつかの地域では",
+          "role": "M"
+        },
+        {
+          "en": "efforts to plant seaweed again",
+          "ja": "海藻を植え直す取り組みが",
+          "role": "S"
+        },
+        {
+          "en": "have begun.",
+          "ja": "始まっています",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "漁師と研究者が協力し、石を沈めて根がつく場所を作ります。",
+      "chunks": [
+        {
+          "en": "Fishers and researchers",
+          "ja": "漁師と研究者が",
+          "role": "S"
+        },
+        {
+          "en": "work together",
+          "ja": "協力します",
+          "role": "V"
+        },
+        {
+          "en": "and sink stones to make places where roots can hold.",
+          "ja": "そして石を沈めて根がつく場所を作ります",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ただし、これには長い時間と費用がかかります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "ただし",
+          "role": "M"
+        },
+        {
+          "en": "this",
+          "ja": "これには",
+          "role": "S"
+        },
+        {
+          "en": "takes",
+          "ja": "かかります",
+          "role": "V"
+        },
+        {
+          "en": "a long time and money.",
+          "ja": "長い時間と費用が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "そして、温度そのものが下がらなければ元には戻りません。",
+      "chunks": [
+        {
+          "en": "And",
+          "ja": "そして",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "will not return",
+          "ja": "元には戻りません",
+          "role": "V"
+        },
+        {
+          "en": "unless the temperature itself falls.",
+          "ja": "温度そのものが下がらなければ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この事実は、対策の順序について考えさせます。",
+      "chunks": [
+        {
+          "en": "This fact",
+          "ja": "この事実は",
+          "role": "S"
+        },
+        {
+          "en": "makes us think",
+          "ja": "考えさせます",
+          "role": "V"
+        },
+        {
+          "en": "about the order of our actions.",
+          "ja": "対策の順序について",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "目の前の場所を直すことは、確かに意味があります。",
+      "chunks": [
+        {
+          "en": "Repairing the place in front of us",
+          "ja": "目の前の場所を直すことは",
+          "role": "S"
+        },
+        {
+          "en": "certainly has",
+          "ja": "確かにあります",
+          "role": "V"
+        },
+        {
+          "en": "meaning.",
+          "ja": "意味が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、原因が別の場所にあるなら、それだけでは足りません。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "if the cause is in another place,",
+          "ja": "原因が別の場所にあるなら",
+          "role": "M"
+        },
+        {
+          "en": "that alone",
+          "ja": "それだけでは",
+          "role": "S"
+        },
+        {
+          "en": "is not enough.",
+          "ja": "足りません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "見える問題と、その後ろにある問題を、同時に見る必要があります。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "need to see",
+          "ja": "見る必要があります",
+          "role": "V"
+        },
+        {
+          "en": "the visible problem and the problem behind it",
+          "ja": "見える問題とその後ろにある問題を",
+          "role": "O"
+        },
+        {
+          "en": "at the same time.",
+          "ja": "同時に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "海の森は、そのことを静かに示しています。",
+      "chunks": [
+        {
+          "en": "The forest in the sea",
+          "ja": "海の森は",
+          "role": "S"
+        },
+        {
+          "en": "shows",
+          "ja": "示しています",
+          "role": "V"
+        },
+        {
+          "en": "that quietly.",
+          "ja": "そのことを静かに",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

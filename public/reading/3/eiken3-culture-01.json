@@ -1,0 +1,349 @@
+{
+  "id": "eiken3-culture-01",
+  "grade": "3",
+  "category": "culture",
+  "title": "The Letters My Grandfather Kept",
+  "titleJa": "祖父が取っておいた手紙",
+  "sentences": [
+    {
+      "ja": "去年の夏、わたしは祖父の家で古い箱を見つけました。",
+      "chunks": [
+        {
+          "en": "Last summer,",
+          "ja": "去年の夏",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "found",
+          "ja": "見つけました",
+          "role": "V"
+        },
+        {
+          "en": "an old box",
+          "ja": "古い箱を",
+          "role": "O"
+        },
+        {
+          "en": "at my grandfather's house.",
+          "ja": "祖父の家で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その中には、たくさんの手紙が入っていました。",
+      "chunks": [
+        {
+          "en": "There were",
+          "ja": "入っていました",
+          "role": "V"
+        },
+        {
+          "en": "many letters",
+          "ja": "たくさんの手紙が",
+          "role": "S"
+        },
+        {
+          "en": "in it.",
+          "ja": "その中には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "すべて祖母が祖父に書いたものでした。",
+      "chunks": [
+        {
+          "en": "All of them",
+          "ja": "すべては",
+          "role": "S"
+        },
+        {
+          "en": "were",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "letters my grandmother had written to him.",
+          "ja": "祖母が祖父に書いたもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "いちばん古いものは、1962年のものでした。",
+      "chunks": [
+        {
+          "en": "The oldest one",
+          "ja": "いちばん古いものは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "from 1962.",
+          "ja": "1962年のもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "そのころ、二人はちがう町に住んでいました。",
+      "chunks": [
+        {
+          "en": "At that time,",
+          "ja": "そのころ",
+          "role": "M"
+        },
+        {
+          "en": "the two of them",
+          "ja": "二人は",
+          "role": "S"
+        },
+        {
+          "en": "were living",
+          "ja": "住んでいました",
+          "role": "V"
+        },
+        {
+          "en": "in different towns.",
+          "ja": "ちがう町に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "電話は高かったので、あまり使えませんでした。",
+      "chunks": [
+        {
+          "en": "Telephones",
+          "ja": "電話は",
+          "role": "S"
+        },
+        {
+          "en": "were",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "expensive,",
+          "ja": "高い",
+          "role": "C"
+        },
+        {
+          "en": "so they could not use them much.",
+          "ja": "だからあまり使えませんでした",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "手紙が届くのに、3日かかったそうです。",
+      "chunks": [
+        {
+          "en": "My grandfather said",
+          "ja": "祖父は言いました",
+          "role": "V"
+        },
+        {
+          "en": "that a letter took three days to arrive.",
+          "ja": "手紙が届くのに3日かかったと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは、その3日をどう待ったのかと聞きました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "asked",
+          "ja": "聞きました",
+          "role": "V"
+        },
+        {
+          "en": "him",
+          "ja": "彼に",
+          "role": "O"
+        },
+        {
+          "en": "how he had waited those three days.",
+          "ja": "その3日をどう待ったのかと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "祖父は「待つ時間も手紙の一部だった」と答えました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "answered, \"The time of waiting was also a part of the letter.\"",
+          "ja": "「待つ時間も手紙の一部だった」と答えました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはその言葉の意味が、すぐには分かりませんでした。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "did not understand",
+          "ja": "分かりませんでした",
+          "role": "V"
+        },
+        {
+          "en": "the meaning of those words",
+          "ja": "その言葉の意味が",
+          "role": "O"
+        },
+        {
+          "en": "at once.",
+          "ja": "すぐには",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今、わたしは友だちに一日に何十回もメッセージを送ります。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "send",
+          "ja": "送ります",
+          "role": "V"
+        },
+        {
+          "en": "messages to my friends",
+          "ja": "友だちにメッセージを",
+          "role": "O"
+        },
+        {
+          "en": "many times a day.",
+          "ja": "一日に何十回も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "返事が5分来ないと、心配になることもあります。",
+      "chunks": [
+        {
+          "en": "If an answer does not come for five minutes,",
+          "ja": "返事が5分来ないと",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "sometimes become",
+          "ja": "なることもあります",
+          "role": "V"
+        },
+        {
+          "en": "worried.",
+          "ja": "心配に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "祖父の時代のほうが良かったとは思いません。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "do not think",
+          "ja": "思いません",
+          "role": "V"
+        },
+        {
+          "en": "that my grandfather's time was better.",
+          "ja": "祖父の時代のほうが良かったとは",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、あの箱の中の手紙は、今も読むことができます。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the letters in that box",
+          "ja": "あの箱の中の手紙は",
+          "role": "S"
+        },
+        {
+          "en": "can still be read",
+          "ja": "今も読むことができます",
+          "role": "V"
+        },
+        {
+          "en": "today.",
+          "ja": "今も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしのメッセージは、来年には残っていないでしょう。",
+      "chunks": [
+        {
+          "en": "My messages",
+          "ja": "わたしのメッセージは",
+          "role": "S"
+        },
+        {
+          "en": "will not be left",
+          "ja": "残っていないでしょう",
+          "role": "V"
+        },
+        {
+          "en": "next year.",
+          "ja": "来年には",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

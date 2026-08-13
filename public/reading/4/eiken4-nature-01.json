@@ -1,0 +1,289 @@
+{
+  "id": "eiken4-nature-01",
+  "grade": "4",
+  "category": "nature",
+  "title": "The Mountain in Winter",
+  "titleJa": "冬の山",
+  "sentences": [
+    {
+      "ja": "去年の冬、わたしは初めて山にのぼりました。",
+      "chunks": [
+        {
+          "en": "Last winter,",
+          "ja": "去年の冬",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "climbed",
+          "ja": "のぼりました",
+          "role": "V"
+        },
+        {
+          "en": "a mountain",
+          "ja": "山に",
+          "role": "O"
+        },
+        {
+          "en": "for the first time.",
+          "ja": "初めて",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "父がいっしょに行ってくれました。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "父が",
+          "role": "S"
+        },
+        {
+          "en": "went",
+          "ja": "行ってくれました",
+          "role": "V"
+        },
+        {
+          "en": "with me.",
+          "ja": "わたしといっしょに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは朝6時に家を出ました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "left",
+          "ja": "出ました",
+          "role": "V"
+        },
+        {
+          "en": "home",
+          "ja": "家を",
+          "role": "O"
+        },
+        {
+          "en": "at six in the morning.",
+          "ja": "朝6時に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "山の下は寒かったですが、雪はありませんでした。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "cold at the foot of the mountain,",
+          "ja": "山の下は寒い",
+          "role": "C"
+        },
+        {
+          "en": "but there was no snow.",
+          "ja": "しかし雪はありませんでした",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "2時間のぼると、木が小さくなりました。",
+      "chunks": [
+        {
+          "en": "After we climbed for two hours,",
+          "ja": "2時間のぼると",
+          "role": "M"
+        },
+        {
+          "en": "the trees",
+          "ja": "木が",
+          "role": "S"
+        },
+        {
+          "en": "became",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "smaller.",
+          "ja": "小さく",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "そのあたりから、道に雪がありました。",
+      "chunks": [
+        {
+          "en": "From around there,",
+          "ja": "そのあたりから",
+          "role": "M"
+        },
+        {
+          "en": "there was",
+          "ja": "ありました",
+          "role": "V"
+        },
+        {
+          "en": "snow on the way.",
+          "ja": "道に雪が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "父は、この山では冬に風が強くなると言いました。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "父は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that the wind becomes strong on this mountain in winter.",
+          "ja": "この山では冬に風が強くなると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの手はとても冷たくなりました。",
+      "chunks": [
+        {
+          "en": "My hands",
+          "ja": "わたしの手は",
+          "role": "S"
+        },
+        {
+          "en": "became",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "very cold.",
+          "ja": "とても冷たく",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、山の上から見た景色は忘れられません。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "cannot forget",
+          "ja": "忘れられません",
+          "role": "V"
+        },
+        {
+          "en": "the view from the top of the mountain.",
+          "ja": "山の上から見た景色を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "空は青く、下には町が小さく見えました。",
+      "chunks": [
+        {
+          "en": "The sky",
+          "ja": "空は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "blue,",
+          "ja": "青い",
+          "role": "C"
+        },
+        {
+          "en": "and the town looked small below.",
+          "ja": "そして下には町が小さく見えました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "父は、山は毎日ちがう顔をしていると言いました。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "父は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that a mountain shows a different face each day.",
+          "ja": "山は毎日ちがう顔をしていると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "今年の夏、わたしは同じ山にもう一度のぼりたいです。",
+      "chunks": [
+        {
+          "en": "This summer,",
+          "ja": "今年の夏",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "want to climb",
+          "ja": "のぼりたいです",
+          "role": "V"
+        },
+        {
+          "en": "the same mountain again.",
+          "ja": "同じ山にもう一度",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}
