@@ -190,3 +190,29 @@
   color: var(--color-olive-muted);
   cursor: progress;
 }
+
+/* 復習の間隔が伸びていく様子 */
+.onboarding__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-16);
+  padding: 0;
+  list-style: none;
+}
+
+.onboarding__chip {
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-lime-soft);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+/* 後ろほど間隔が長い、という感じを濃さで出す */
+.onboarding__chip:nth-child(2) { background-color: rgba(163, 230, 53, 0.24); }
+.onboarding__chip:nth-child(3) { background-color: rgba(163, 230, 53, 0.38); }
+.onboarding__chip:nth-child(4) { background-color: rgba(163, 230, 53, 0.52); }
+.onboarding__chip:last-child { background-color: transparent; color: var(--color-olive-muted); }
