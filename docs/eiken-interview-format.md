@@ -122,26 +122,47 @@
 }
 ```
 
-### 面接官の固定セリフ
+### 面接官の固定セリフ（入室〜退室）
 
-カードごとに書かなくてよい。級ごとに1回だけ決めて、全カードで使い回す。
-`content/eiken-interview/interviewer.json` に置く。
+**二次試験は入室から退室までが試験。** 問題カードのやりとりだけを練習しても
+本番にならないので、挨拶・名前の確認・カードの受け渡し・退室まで通しで持つ。
+
+カードごとに書かない。級ごとに1本、`content/eiken-interview/interviewer-{級}.json`
+に置いて全カードで使い回す。3級は `interviewer-3.json`（作成済み）。
+
+| # | 場面 | 面接委員 | 受験者 |
+|---|---|---|---|
+| ① | 入室 | Hello. / Good morning. | Hello. |
+| ① | | Can I have your card, please? | Here you are. |
+| ① | 着席 | Please sit down. | Thank you. |
+| ② | 名前 | May I have your name, please? | My name is 〜. |
+| ② | 級の確認 | Mr. / Ms. 〜, this is the third grade test, OK? | OK. |
+| ② | | How are you? | I'm fine, thank you. |
+| ③ | カード受取 | This is your card. | Thank you. |
+| ③ | 黙読20秒 | Please read the passage silently for 20 seconds. | （黙読） |
+| ④ | 音読 | Now, please read it aloud. | （音読） |
+| ⑤ | 質問 | Now, I'll ask you five questions. | |
+| ⑥ | カード返却 | May I have your card back, please? | Here you are. |
+| ⑥ | 退室 | You may go now. | Thank you very much. Goodbye. |
+
+級の確認は本番では名前が入る。名前は生徒ごとに違うので、音声は名前を
+省いた「This is the third grade test, OK?」で作り、画面には名前入りの
+全文を出す（`fullForm`）。
+
+聞き取れなかったときは **I beg your pardon?** で聞き返せる。ただし繰り返しは
+減点対象。この一言も練習に含める。
+
+#### 級ごとの追加セリフ
 
 ```jsonc
 {
-  "common": {
-    "greeting": "Hello. May I have your card, please?",
-    "askName": "My name is ... . May I have your name, please?",
-    "silentRead": "Now, let's begin the test. Please read the passage silently for twenty seconds.",
-    "readAloud": "Now, please read it aloud.",
-    "turnOver": "Now, Mr./Ms. ... , please turn over the card and put it down.",
-    "finish": "This is the end of the test. Could I have the card back, please?"
-  },
   "pre2": {
-    "describeA": "Now, please look at the picture and describe the situation. You have twenty seconds."
+    "describeA": "Now, please look at the picture and describe the situation. You have twenty seconds.",
+    "turnOver": "Now, Mr./Ms. ... , please turn over the card and put it down."
   },
   "2": {
-    "narration": "Now, please look at the three pictures. I'd like you to describe the situation. You have twenty seconds to prepare. Your story should begin with this sentence: ..."
+    "narration": "Now, please look at the three pictures. I'd like you to describe the situation. You have twenty seconds to prepare. Your story should begin with this sentence: ...",
+    "turnOver": "Now, Mr./Ms. ... , please turn over the card and put it down."
   },
   "pre1": {
     "smallTalk": "How did you get here today?",
@@ -232,8 +253,9 @@ make the environment better?" と聞き、答えは前半を By 〜ing にした
 | Yes | "Why?" / "Please tell me more." |
 | No | "Why not?" |
 
-**カードを裏返す合図**が途中に入る。「Now, Mr./Ms. —, please turn over the card
-and put it down.」以降の設問は、カードを見ずに答える。
+**カードを裏返す合図**は準2級以降。「Now, Mr./Ms. —, please turn over the card
+and put it down.」以降の設問は、カードを見ずに答える。**3級には無い**（最後まで
+カードを持ったまま答える）。
 
 ### 実例
 
@@ -412,16 +434,27 @@ Panel 4: <…>
 
 事前生成（`scripts/build-audio.js` と同じ仕組み）でまかなえる。
 
+`scripts/build-audio.js` が `content/eiken-interview/` を読んで作る。
+
+```bash
+node scripts/build-audio.js --source interview --dry-run   # 件数と費用
+node scripts/build-audio.js --source interview             # 作る
+```
+
 | 対象 | 声 |
 |---|---|
-| 面接官の固定セリフ | 英語 |
-| 各設問の prompt | 英語 |
+| 面接委員のセリフ（入室〜退室） | 英語 |
+| 受験者の応答例（Here you are. など） | 英語 |
+| 各設問の prompt / followUp の prompt | 英語 |
 | パッセージ（模範の音読） | 英語 |
 | modelAnswer | 英語 |
 | narration.openingSentence | 英語 |
 
-1カードあたり英語で10前後。100カード作っても1,000クリップ弱で、
-単語の29,220クリップに比べれば誤差の範囲。費用も数十円。
+面接は全編英語なので、日本語の音声は作らない（注釈は画面で読む）。
+`My name is ...` のような雛形は尻切れになるので音声化から除く。
+
+**3級の実測: 79クリップ / 3,980文字 / WaveNet で $0.06。** 100カードに
+増やしても数百円。単語の29,220クリップに比べれば誤差の範囲。
 
 生徒の発話は録音して聞き返せるようにする。採点まで踏み込むなら Azure の
 Pronunciation Assessment（音読と相性が良い）。

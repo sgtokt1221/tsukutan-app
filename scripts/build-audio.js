@@ -2,12 +2,14 @@
 /**
  * scripts/build-audio.js
  *
- * 単語・例文・意味の読み上げ音声を Google Cloud Text-to-Speech で作る。
+ * 単語・例文・意味と、英検二次試験の面接文の読み上げ音声を
+ * Google Cloud Text-to-Speech で作る。
  *
- *   node scripts/build-audio.js --dry-run          # 件数と概算費用だけ出す
- *   node scripts/build-audio.js --limit 20         # 20語ぶんだけ試す
- *   node scripts/build-audio.js                    # 全部作る
- *   node scripts/build-audio.js --voice standard   # 安い声で作る
+ *   node scripts/build-audio.js --dry-run              # 件数と概算費用だけ出す
+ *   node scripts/build-audio.js --limit 20             # 20語ぶんだけ試す
+ *   node scripts/build-audio.js                        # 全部作る
+ *   node scripts/build-audio.js --voice standard       # 安い声で作る
+ *   node scripts/build-audio.js --source interview     # 面接文だけ作る（数十円）
  *
  * **課金される。** 既定はドライランではないので、まず --dry-run で
  * 文字数と概算費用を見て、次に --limit で声を聞いてから全部にすること。
@@ -31,6 +33,7 @@ const { audioPathFor, normalizeText } = require('./lib/audioNaming');
 
 const ROOT = path.resolve(__dirname, '..');
 const MASTER_PATH = path.join(ROOT, 'public', 'data', 'words-master.json');
+const INTERVIEW_DIR = path.join(ROOT, 'content', 'eiken-interview');
 const OUT_DIR = path.join(ROOT, 'local', 'audio');
 const ENDPOINT = 'https://texttospeech.googleapis.com/v1/text:synthesize';
 
@@ -65,6 +68,7 @@ const DRY_RUN = hasFlag('--dry-run');
 const LIMIT = Number(valueOf('--limit', 0)) || 0;
 const VOICE_SET = VOICES[valueOf('--voice', 'wavenet')] || VOICES.wavenet;
 const CONCURRENCY = Number(valueOf('--concurrency', 6)) || 6;
+const SOURCE = valueOf('--source', 'all');
 
 /** 1語から作る読み上げの一覧。空の項目は作らない。 */
 const clipsForWord = (word) => [
@@ -72,7 +76,55 @@ const clipsForWord = (word) => [
   { text: word.example, lang: 'en' },
   { text: word.meaning, lang: 'ja' },
   { text: word.exampleJa, lang: 'ja' },
-].filter((clip) => normalizeText(clip.text).length > 0);
+];
+
+/**
+ * 英検二次試験の読み上げ対象を集める。
+ *
+ * 面接は入室から退室まで全部が試験。面接委員のセリフも、受験者が
+ * 言うべき応答も、本番と同じ音で聞けないと練習にならないので、
+ * どちらも作る。日本語の注釈は画面で読むものなので音は作らない。
+ */
+const collectInterviewClips = () => {
+  if (!fs.existsSync(INTERVIEW_DIR)) return [];
+
+  const clips = [];
+  const files = [];
+  for (const entry of fs.readdirSync(INTERVIEW_DIR, { withFileTypes: true })) {
+    const full = path.join(INTERVIEW_DIR, entry.name);
+    if (entry.isDirectory()) {
+      for (const name of fs.readdirSync(full)) {
+        if (name.endsWith('.json')) files.push(path.join(full, name));
+      }
+    } else if (entry.name.endsWith('.json')) {
+      files.push(full);
+    }
+  }
+
+  for (const file of files) {
+    const doc = JSON.parse(fs.readFileSync(file, 'utf8'));
+
+    // 面接の流れ（interviewer-N.json）
+    for (const step of doc.steps || []) {
+      clips.push(step.interviewer, step.alt, step.expected);
+    }
+
+    // 問題カード
+    clips.push(doc.passage?.text);
+    for (const question of doc.questions || []) {
+      clips.push(question.prompt, question.modelAnswer);
+      for (const branch of Object.values(question.followUp || {})) {
+        clips.push(branch.prompt, branch.modelAnswer);
+      }
+    }
+  }
+
+  // 面接はすべて英語。日本語を混ぜてはいけない試験なので lang は en 固定。
+  // 「My name is ...」のような雛形は、そのまま読ませると尻切れになるので作らない。
+  return clips
+    .filter((text) => typeof text === 'string' && !text.includes('...'))
+    .map((text) => ({ text, lang: 'en' }));
+};
 
 const synthesize = async (client, token, text, lang) => {
   const voice = VOICE_SET[lang];
@@ -115,22 +167,36 @@ const runPool = async (items, size, worker) => {
 };
 
 const main = async () => {
-  if (!fs.existsSync(MASTER_PATH)) {
-    console.error('public/data/words-master.json がありません。先に node scripts/build-word-master.js を実行してください。');
+  const wantWords = SOURCE === 'all' || SOURCE === 'words';
+  const wantInterview = SOURCE === 'all' || SOURCE === 'interview';
+  if (!wantWords && !wantInterview) {
+    console.error(`--source は words / interview / all のいずれかです（受け取った値: ${SOURCE}）`);
     process.exit(1);
   }
 
-  const master = JSON.parse(fs.readFileSync(MASTER_PATH, 'utf8'));
-  const words = LIMIT > 0 ? master.slice(0, LIMIT) : master;
+  let words = [];
+  if (wantWords) {
+    if (!fs.existsSync(MASTER_PATH)) {
+      console.error('public/data/words-master.json がありません。先に node scripts/build-word-master.js を実行してください。');
+      process.exit(1);
+    }
+    const master = JSON.parse(fs.readFileSync(MASTER_PATH, 'utf8'));
+    words = LIMIT > 0 ? master.slice(0, LIMIT) : master;
+  }
+
+  const source = [
+    ...words.flatMap(clipsForWord),
+    ...(wantInterview ? collectInterviewClips() : []),
+  ];
 
   // 同じ文は1つのファイルにまとめる（意味が同じ語などで効く）
   const wanted = new Map();
-  for (const word of words) {
-    for (const clip of clipsForWord(word)) {
-      const relative = audioPathFor(clip.text, clip.lang);
-      if (!wanted.has(relative)) {
-        wanted.set(relative, { ...clip, text: normalizeText(clip.text), relative });
-      }
+  for (const clip of source) {
+    const text = normalizeText(clip.text);
+    if (text.length === 0) continue;
+    const relative = audioPathFor(clip.text, clip.lang);
+    if (!wanted.has(relative)) {
+      wanted.set(relative, { ...clip, text, relative });
     }
   }
 
@@ -139,6 +205,7 @@ const main = async () => {
   const chars = missing.reduce((sum, clip) => sum + clip.text.length, 0);
   const cost = (chars / 1_000_000) * VOICE_SET.pricePerMillionChars;
 
+  console.log(`対象            : ${SOURCE}`);
   console.log(`対象の語          : ${words.length.toLocaleString()}${LIMIT ? `（--limit ${LIMIT}）` : ''}`);
   console.log(`作る音声（重複除く）: ${all.length.toLocaleString()}`);
   console.log(`未作成            : ${missing.length.toLocaleString()}`);
