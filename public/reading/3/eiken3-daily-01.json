@@ -1,0 +1,359 @@
+{
+  "id": "eiken3-daily-01",
+  "grade": "3",
+  "category": "daily",
+  "title": "The Notebook I Kept",
+  "titleJa": "続けたノート",
+  "sentences": [
+    {
+      "ja": "2年前、わたしは英語がとても苦手でした。",
+      "chunks": [
+        {
+          "en": "Two years ago,",
+          "ja": "2年前",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very bad at English.",
+          "ja": "英語がとても苦手",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "テストではいつも半分もとれませんでした。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "could never get",
+          "ja": "とれませんでした",
+          "role": "V"
+        },
+        {
+          "en": "even half of the points",
+          "ja": "半分の点も",
+          "role": "O"
+        },
+        {
+          "en": "on the tests.",
+          "ja": "テストでは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ある日、姉が小さなノートをくれました。",
+      "chunks": [
+        {
+          "en": "One day,",
+          "ja": "ある日",
+          "role": "M"
+        },
+        {
+          "en": "my sister",
+          "ja": "姉が",
+          "role": "S"
+        },
+        {
+          "en": "gave",
+          "ja": "くれました",
+          "role": "V"
+        },
+        {
+          "en": "me",
+          "ja": "わたしに",
+          "role": "O"
+        },
+        {
+          "en": "a small notebook.",
+          "ja": "小さなノートを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "彼女は、一日に三つだけ言葉を書きなさいと言いました。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "told",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "me",
+          "ja": "わたしに",
+          "role": "O"
+        },
+        {
+          "en": "to write only three words a day.",
+          "ja": "一日に三つだけ言葉を書きなさいと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "最初、それは少なすぎると思いました。",
+      "chunks": [
+        {
+          "en": "At first,",
+          "ja": "最初",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "thought",
+          "ja": "思いました",
+          "role": "V"
+        },
+        {
+          "en": "that it was too few.",
+          "ja": "それは少なすぎると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし姉は、続けられることのほうが大事だと言いました。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "she",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that continuing was more important.",
+          "ja": "続けられることのほうが大事だと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは毎晩、寝る前に三つの言葉を書きました。",
+      "chunks": [
+        {
+          "en": "Every night,",
+          "ja": "毎晩",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "wrote",
+          "ja": "書きました",
+          "role": "V"
+        },
+        {
+          "en": "three words",
+          "ja": "三つの言葉を",
+          "role": "O"
+        },
+        {
+          "en": "before I went to bed.",
+          "ja": "寝る前に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "書けない日もありましたが、次の日にまた始めました。",
+      "chunks": [
+        {
+          "en": "There were days when I could not write,",
+          "ja": "書けない日もありました",
+          "role": "M"
+        },
+        {
+          "en": "but",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "started",
+          "ja": "始めました",
+          "role": "V"
+        },
+        {
+          "en": "again the next day.",
+          "ja": "次の日にまた",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "一年後、ノートは1000語をこえていました。",
+      "chunks": [
+        {
+          "en": "After one year,",
+          "ja": "一年後",
+          "role": "M"
+        },
+        {
+          "en": "the notebook",
+          "ja": "ノートは",
+          "role": "S"
+        },
+        {
+          "en": "had more than one thousand words.",
+          "ja": "1000語をこえていました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "そのころには、英語の文章が前より読めるようになっていました。",
+      "chunks": [
+        {
+          "en": "By that time,",
+          "ja": "そのころには",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "had become able to read",
+          "ja": "読めるようになっていました",
+          "role": "V"
+        },
+        {
+          "en": "English writing",
+          "ja": "英語の文章を",
+          "role": "O"
+        },
+        {
+          "en": "better than before.",
+          "ja": "前より",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "いちばん変わったのは、点数ではありませんでした。",
+      "chunks": [
+        {
+          "en": "The thing that changed most",
+          "ja": "いちばん変わったものは",
+          "role": "S"
+        },
+        {
+          "en": "was not",
+          "ja": "ではありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "my score.",
+          "ja": "点数",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "知らない言葉に出会っても、こわくなくなったことです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "that I was not afraid when I met a word I did not know.",
+          "ja": "知らない言葉に出会ってもこわくなくなったこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "今もそのノートを使っています。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "am still using",
+          "ja": "今も使っています",
+          "role": "V"
+        },
+        {
+          "en": "that notebook.",
+          "ja": "そのノートを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "三つなら、だれでも今日から始められます。",
+      "chunks": [
+        {
+          "en": "If it is three words,",
+          "ja": "三つなら",
+          "role": "M"
+        },
+        {
+          "en": "anyone",
+          "ja": "だれでも",
+          "role": "S"
+        },
+        {
+          "en": "can start",
+          "ja": "始められます",
+          "role": "V"
+        },
+        {
+          "en": "today.",
+          "ja": "今日から",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

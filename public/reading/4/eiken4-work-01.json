@@ -1,0 +1,289 @@
+{
+  "id": "eiken4-work-01",
+  "grade": "4",
+  "category": "work",
+  "title": "My Mother's Work",
+  "titleJa": "母の仕事",
+  "sentences": [
+    {
+      "ja": "わたしの母は病院で働いています。",
+      "chunks": [
+        {
+          "en": "My mother",
+          "ja": "わたしの母は",
+          "role": "S"
+        },
+        {
+          "en": "works",
+          "ja": "働いています",
+          "role": "V"
+        },
+        {
+          "en": "at a hospital.",
+          "ja": "病院で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼女は看護師で、20年間その仕事をしています。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a nurse,",
+          "ja": "看護師",
+          "role": "C"
+        },
+        {
+          "en": "and she has done that work for twenty years.",
+          "ja": "そして20年間その仕事をしています",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "母は朝の7時に家を出ます。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "leaves",
+          "ja": "出ます",
+          "role": "V"
+        },
+        {
+          "en": "home",
+          "ja": "家を",
+          "role": "O"
+        },
+        {
+          "en": "at seven in the morning.",
+          "ja": "朝の7時に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "夜おそくに帰ってくる日もあります。",
+      "chunks": [
+        {
+          "en": "On some days",
+          "ja": "日によっては",
+          "role": "M"
+        },
+        {
+          "en": "she",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "comes",
+          "ja": "帰ってきます",
+          "role": "V"
+        },
+        {
+          "en": "home late at night.",
+          "ja": "夜おそくに家に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは前、なぜそんなに働くのかと聞きました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "once asked",
+          "ja": "前に聞きました",
+          "role": "V"
+        },
+        {
+          "en": "her",
+          "ja": "彼女に",
+          "role": "O"
+        },
+        {
+          "en": "why she worked so much.",
+          "ja": "なぜそんなに働くのかと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "母は「わたしを待っている人がいるから」と答えました。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "answered, \"Because there are people who are waiting for me.\"",
+          "ja": "「わたしを待っている人がいるから」と答えました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "去年の夏、わたしは母の病院を見に行きました。",
+      "chunks": [
+        {
+          "en": "Last summer,",
+          "ja": "去年の夏",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "went",
+          "ja": "行きました",
+          "role": "V"
+        },
+        {
+          "en": "to see her hospital.",
+          "ja": "母の病院を見に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "たくさんの人が母に話しかけていました。",
+      "chunks": [
+        {
+          "en": "Many people",
+          "ja": "たくさんの人が",
+          "role": "S"
+        },
+        {
+          "en": "were talking",
+          "ja": "話しかけていました",
+          "role": "V"
+        },
+        {
+          "en": "to her.",
+          "ja": "母に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そこにいる母は、家にいるときとは少しちがって見えました。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "looked",
+          "ja": "見えました",
+          "role": "V"
+        },
+        {
+          "en": "a little different there",
+          "ja": "そこでは少しちがって",
+          "role": "C"
+        },
+        {
+          "en": "from at home.",
+          "ja": "家にいるときとは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはそのとき、仕事とは何かを少し分かった気がしました。",
+      "chunks": [
+        {
+          "en": "At that time,",
+          "ja": "そのとき",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "felt",
+          "ja": "気がしました",
+          "role": "V"
+        },
+        {
+          "en": "that I understood a little about what work is.",
+          "ja": "仕事とは何かを少し分かったと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはまだ何になりたいか決めていません。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "have not decided",
+          "ja": "決めていません",
+          "role": "V"
+        },
+        {
+          "en": "what I want to be",
+          "ja": "何になりたいかを",
+          "role": "O"
+        },
+        {
+          "en": "yet.",
+          "ja": "まだ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "でも、だれかを待たせない人になりたいです。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "でも",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "want to be",
+          "ja": "なりたいです",
+          "role": "V"
+        },
+        {
+          "en": "a person who does not make anyone wait.",
+          "ja": "だれかを待たせない人に",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

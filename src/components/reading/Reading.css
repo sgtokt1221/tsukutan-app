@@ -167,33 +167,33 @@
 /* ---- スラッシュ読み ---- */
 
 .reading-slash {
-  margin: 0 4px;
+  /* 区切りの / は英語の行にそろえる。訳の行まで伸ばさない。 */
+  align-self: flex-start;
+  margin: 0 2px;
   color: var(--color-brand-lime);
   font-weight: 700;
 }
 
-.reading-chunk {
-  padding: 2px 2px;
-  border: none;
-  border-bottom: 1px dashed var(--color-olive-border);
-  background: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  cursor: pointer;
+/* まとまりごとに、英語の下へ訳を置く。目が上下に往復できる。 */
+.reading-sentence--slash {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-8) 2px;
 }
 
-.reading-chunk.is-open { border-bottom-color: var(--color-brand-lime); }
+.reading-chunk {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 0 2px;
+}
 
 .reading-chunk__ja {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 8px;
-  border-radius: var(--radius-pill);
-  background-color: var(--color-lime-soft);
-  color: var(--color-ink-olive);
-  font-size: var(--font-size-12);
+  font-size: 0.7em;
+  line-height: 1.5;
+  color: var(--color-olive-muted);
 }
 
 /* ---- SVOC ---- */
@@ -234,7 +234,13 @@
 .reading-svoc.is-c .reading-svoc__role { background-color: #d97706; }
 .reading-svoc.is-m .reading-svoc__role { background-color: rgba(54, 66, 30, 0.35); }
 
-.reading-svoc__en { font-size: var(--font-size-16); line-height: 1.5; }
+.reading-svoc__en { font-size: 1em; line-height: 1.5; }
+
+.reading-svoc__ja {
+  font-size: 0.7em;
+  line-height: 1.5;
+  color: var(--color-olive-muted);
+}
 
 /* ---- 音読 ---- */
 

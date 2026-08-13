@@ -1,0 +1,439 @@
+{
+  "id": "eikenp2-sports-01",
+  "grade": "pre2",
+  "category": "sports",
+  "title": "The Runner Who Stopped",
+  "titleJa": "止まった走者",
+  "sentences": [
+    {
+      "ja": "スポーツの試合では、勝つことが最も大切だと考えられがちです。",
+      "chunks": [
+        {
+          "en": "In sports games,",
+          "ja": "スポーツの試合では",
+          "role": "M"
+        },
+        {
+          "en": "winning",
+          "ja": "勝つことが",
+          "role": "S"
+        },
+        {
+          "en": "is often thought",
+          "ja": "考えられがちです",
+          "role": "V"
+        },
+        {
+          "en": "to be the most important thing.",
+          "ja": "最も大切だと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、人々の記憶に長く残るのは、勝った人だとはかぎりません。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the people who stay long in our memory",
+          "ja": "人々の記憶に長く残る人は",
+          "role": "S"
+        },
+        {
+          "en": "are not always",
+          "ja": "とはかぎりません",
+          "role": "V"
+        },
+        {
+          "en": "the winners.",
+          "ja": "勝った人",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ある高校の長距離走で、こんなことがありました。",
+      "chunks": [
+        {
+          "en": "This happened",
+          "ja": "こんなことがありました",
+          "role": "V"
+        },
+        {
+          "en": "in a long-distance race at a high school.",
+          "ja": "ある高校の長距離走で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "先頭を走っていた生徒が、残り200メートルで転びました。",
+      "chunks": [
+        {
+          "en": "A student who was running in front",
+          "ja": "先頭を走っていた生徒が",
+          "role": "S"
+        },
+        {
+          "en": "fell",
+          "ja": "転びました",
+          "role": "V"
+        },
+        {
+          "en": "with two hundred meters left.",
+          "ja": "残り200メートルで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼は立ち上がろうとしましたが、足が動きませんでした。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "tried to stand up,",
+          "ja": "立ち上がろうとしました",
+          "role": "V"
+        },
+        {
+          "en": "but his legs did not move.",
+          "ja": "しかし足が動きませんでした",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "二番目を走っていた生徒が、彼のところで止まりました。",
+      "chunks": [
+        {
+          "en": "The student who was running second",
+          "ja": "二番目を走っていた生徒が",
+          "role": "S"
+        },
+        {
+          "en": "stopped",
+          "ja": "止まりました",
+          "role": "V"
+        },
+        {
+          "en": "at the place where he was.",
+          "ja": "彼のいるところで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その生徒は彼を助け起こし、いっしょに歩き始めました。",
+      "chunks": [
+        {
+          "en": "That student",
+          "ja": "その生徒は",
+          "role": "S"
+        },
+        {
+          "en": "helped him up",
+          "ja": "彼を助け起こしました",
+          "role": "V"
+        },
+        {
+          "en": "and began to walk with him.",
+          "ja": "そしていっしょに歩き始めました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "二人は最後にゴールに入りました。",
+      "chunks": [
+        {
+          "en": "The two of them",
+          "ja": "二人は",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "入りました",
+          "role": "V"
+        },
+        {
+          "en": "to the goal last.",
+          "ja": "最後にゴールに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのとき、会場にいた全員が立って手をたたきました。",
+      "chunks": [
+        {
+          "en": "At that time,",
+          "ja": "そのとき",
+          "role": "M"
+        },
+        {
+          "en": "everyone in the place",
+          "ja": "会場にいた全員が",
+          "role": "S"
+        },
+        {
+          "en": "stood up and clapped.",
+          "ja": "立って手をたたきました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "この話を聞くと、多くの人は美しいと感じます。",
+      "chunks": [
+        {
+          "en": "When people hear this story,",
+          "ja": "この話を聞くと",
+          "role": "M"
+        },
+        {
+          "en": "many of them",
+          "ja": "多くの人は",
+          "role": "S"
+        },
+        {
+          "en": "feel",
+          "ja": "感じます",
+          "role": "V"
+        },
+        {
+          "en": "that it is beautiful.",
+          "ja": "美しいと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、止まった生徒は後でこう言いました。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the student who stopped",
+          "ja": "止まった生徒は",
+          "role": "S"
+        },
+        {
+          "en": "said this later.",
+          "ja": "後でこう言いました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "「わたしは特別なことをしたのではありません」",
+      "chunks": [
+        {
+          "en": "\"I",
+          "ja": "「わたしは",
+          "role": "S"
+        },
+        {
+          "en": "did not do",
+          "ja": "したのではありません",
+          "role": "V"
+        },
+        {
+          "en": "anything special.\"",
+          "ja": "特別なことを」",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "「目の前に困っている人がいたから止まっただけです」",
+      "chunks": [
+        {
+          "en": "\"I",
+          "ja": "「わたしは",
+          "role": "S"
+        },
+        {
+          "en": "just stopped",
+          "ja": "ただ止まっただけです",
+          "role": "V"
+        },
+        {
+          "en": "because there was a person in trouble in front of me.\"",
+          "ja": "目の前に困っている人がいたから」",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この言葉は、大切なことを教えてくれます。",
+      "chunks": [
+        {
+          "en": "These words",
+          "ja": "この言葉は",
+          "role": "S"
+        },
+        {
+          "en": "teach",
+          "ja": "教えてくれます",
+          "role": "V"
+        },
+        {
+          "en": "us",
+          "ja": "わたしたちに",
+          "role": "O"
+        },
+        {
+          "en": "an important thing.",
+          "ja": "大切なことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "良い行いは、多くの場合、考えた末に選ばれるものではありません。",
+      "chunks": [
+        {
+          "en": "A good act",
+          "ja": "良い行いは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "something chosen after long thinking",
+          "ja": "考えた末に選ばれるもの",
+          "role": "C"
+        },
+        {
+          "en": "in many cases.",
+          "ja": "多くの場合",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それは、その人がふだん考えていることが、体に出たものです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "what the person usually thinks, coming out in the body.",
+          "ja": "その人がふだん考えていることが体に出たもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "だから、日ごろ何を大切にしているかが問われるのです。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "what we value in daily life",
+          "ja": "日ごろ何を大切にしているかが",
+          "role": "S"
+        },
+        {
+          "en": "is asked.",
+          "ja": "問われるのです",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "勝つための練習と同じくらい、そのことも大切かもしれません。",
+      "chunks": [
+        {
+          "en": "That",
+          "ja": "そのことも",
+          "role": "S"
+        },
+        {
+          "en": "may be",
+          "ja": "かもしれません",
+          "role": "V"
+        },
+        {
+          "en": "as important as practice for winning.",
+          "ja": "勝つための練習と同じくらい大切",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "もちろん、勝つために全力を出すことは悪いことではありません。",
+      "chunks": [
+        {
+          "en": "Of course,",
+          "ja": "もちろん",
+          "role": "M"
+        },
+        {
+          "en": "doing your best to win",
+          "ja": "勝つために全力を出すことは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a bad thing.",
+          "ja": "悪いこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "その生徒も、次の年の大会では一位になりました。",
+      "chunks": [
+        {
+          "en": "That student",
+          "ja": "その生徒も",
+          "role": "S"
+        },
+        {
+          "en": "became",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "first",
+          "ja": "一位に",
+          "role": "C"
+        },
+        {
+          "en": "in the next year's meet.",
+          "ja": "次の年の大会では",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}
