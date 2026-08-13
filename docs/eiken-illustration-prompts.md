@@ -14,7 +14,29 @@
 （`so` / `in this way` / `for this reason`）に沿って書くこと。No.1 の答えは
 その直前の文から作る決まりになっている。
 
-保存先は `public/eiken/{カードID}-{イラストID}.png`。
+保存先は `public/eiken/{カードID}-{イラストID}.webp`。
+
+**生成物はそのまま置かない。** 生成直後は1枚2〜3MBある。スマホで配ると
+起動を詰めた意味が無くなるので、**幅1400pxのWebPに落としてから**置く
+（25枚で69MB → 4.3MB。コマの文字は判読できる）。原本は `local/eiken-original/`
+に退避しておく。
+
+```bash
+python3 - <<'EOS'
+from PIL import Image
+import os, glob
+os.makedirs('local/eiken-original', exist_ok=True)
+for f in glob.glob('public/eiken/*.png'):
+    name = os.path.basename(f)
+    im = Image.open(f).convert('RGB')
+    im.save(f'local/eiken-original/{name}')
+    w, h = im.size
+    if w > 1400:
+        im = im.resize((1400, round(h * 1400 / w)), Image.LANCZOS)
+    im.save(f.replace('.png', '.webp'), 'WEBP', quality=82, method=6)
+    os.remove(f)
+EOS
+```
 
 ---
 
