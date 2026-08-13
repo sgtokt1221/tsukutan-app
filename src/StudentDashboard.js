@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import './Analytics.css';
@@ -27,7 +27,12 @@ import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogi
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster, loadManifest } from './logic/wordMaster';
+import { INTERVIEW_GRADES } from './logic/interviewContent';
 import logger from './logic/logger';
+
+// 面接モードは画像と素材を伴うので、開いたときだけ読む。
+// 起動時の塊に入れると、使わない生徒の起動まで遅くなる。
+const EikenInterview = React.lazy(() => import('./components/eiken/EikenInterview'));
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
 /** 英検の級を、やさしい順に並べたもの。実データに1級の語は無い。 */
@@ -438,6 +443,8 @@ export default function StudentDashboard() {
   const [dashboardError, setDashboardError] = useState(null);
   const [viewMode, setViewMode] = useState('select');
   const [selectionMode, setSelectionMode] = useState('main');
+  // 面接モードを開いている級。null なら開いていない。
+  const [interviewGrade, setInterviewGrade] = useState(null);
   const [testResultLevel, setTestResultLevel] = useState(0);
   
   // デバッグログ: testResultLevelの値を監視
@@ -1720,6 +1727,15 @@ export default function StudentDashboard() {
 
   // タブ別コンテンツのレンダリング
   const renderTabContent = () => {
+    // 面接モードは1画面を占有する。学習カードと同じ扱い。
+    if (interviewGrade) {
+      return (
+        <Suspense fallback={<p className="interview-lead">読み込んでいます…</p>}>
+          <EikenInterview grade={interviewGrade} onExit={() => setInterviewGrade(null)} />
+        </Suspense>
+      );
+    }
+
     // フラッシュカードページの場合は、タブに関係なく適切なコンテンツを表示
     if (viewMode === 'learn' || viewMode === 'review' || viewMode === 'test' || viewMode === 'result') {
       return renderContent();
@@ -1838,6 +1854,25 @@ export default function StudentDashboard() {
                       </section>
                     );
                   })}
+
+                  {/* 二次試験（面接）。単語ではないので語数は出さない。 */}
+                  <section className="free-study-group">
+                    <h4 className="home-section-eyebrow">二次試験（面接）</h4>
+                    <p className="tile-caption">入室から退室までを通しで練習します。</p>
+                    <div className="list-group">
+                      {INTERVIEW_GRADES.map(({ id, label }) => (
+                        <button
+                          key={id}
+                          type="button"
+                          className="tile-button"
+                          onClick={() => setInterviewGrade(id)}
+                        >
+                          <span className="tile-button__label">{label}</span>
+                          <span className="tile-button__count">5問</span>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
                 </div>
               ) : (
                 <>
@@ -2415,8 +2450,8 @@ export default function StudentDashboard() {
       <main className="card-main">
         {renderTabContent()}
       </main>
-      {/* フラッシュカードページではタブバーを非表示 */}
-      {viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && <TabBar />}
+      {/* フラッシュカードページと面接モードではタブバーを非表示 */}
+      {!interviewGrade && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && <TabBar />}
     </div>
   );
 }

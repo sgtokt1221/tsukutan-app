@@ -33,7 +33,7 @@ const { audioPathFor, normalizeText } = require('./lib/audioNaming');
 
 const ROOT = path.resolve(__dirname, '..');
 const MASTER_PATH = path.join(ROOT, 'public', 'data', 'words-master.json');
-const INTERVIEW_DIR = path.join(ROOT, 'content', 'eiken-interview');
+const INTERVIEW_DIR = path.join(ROOT, 'public', 'eiken-interview');
 const OUT_DIR = path.join(ROOT, 'local', 'audio');
 const ENDPOINT = 'https://texttospeech.googleapis.com/v1/text:synthesize';
 

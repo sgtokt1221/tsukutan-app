@@ -1,0 +1,127 @@
+{
+  "grade": "pre1",
+  "note": "準1級の面接の流れ。音読が無く、冒頭に自由会話がある。ナレーションは準備1分・発話2分。",
+  "steps": [
+    {
+      "id": "greeting",
+      "phase": "enter",
+      "interviewer": "Hello.",
+      "alt": "Good morning.",
+      "expected": "Hello.",
+      "ja": "入室したらこちらから挨拶する。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "card-in",
+      "phase": "enter",
+      "interviewer": "Can I have your card, please?",
+      "expected": "Here you are.",
+      "ja": "面接カードを手渡す。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "sit",
+      "phase": "enter",
+      "interviewer": "Please sit down.",
+      "expected": "Thank you.",
+      "ja": "お礼を言って着席する。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "name",
+      "phase": "check",
+      "interviewer": "May I have your name, please?",
+      "expected": "My name is ...",
+      "ja": "My name is 〜. と答える。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "grade-check",
+      "phase": "check",
+      "interviewer": "This is the Grade Pre-1 test, OK?",
+      "fullForm": "Mr. / Ms. ~, this is the Grade Pre-1 test, OK?",
+      "expected": "OK.",
+      "ja": "本番では名前を添えて確認される。音声は名前の部分を省いたものを使う。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "how-are-you",
+      "phase": "check",
+      "interviewer": "How are you?",
+      "expected": "I'm fine, thank you.",
+      "ja": "落ち着いて応じる。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "small-talk",
+      "phase": "check",
+      "interviewer": "How did you get here today?",
+      "ja": "採点対象ではないが、ここで固まると後に響く。ひとこと足して返す。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "hand-card",
+      "phase": "read",
+      "interviewer": "This is your card.",
+      "expected": "Thank you.",
+      "ja": "問題カードを受け取る。パッセージは無く、4コマと書き出しの文だけ。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "narration-intro",
+      "phase": "read",
+      "interviewer": "You have one minute to prepare. Please begin with the sentence on the card.",
+      "ja": "準備1分。4コマの流れと、各コマの経過ラベルを確認する。",
+      "timerSeconds": 60,
+      "waitsForStudent": false
+    },
+    {
+      "id": "narration",
+      "phase": "read",
+      "interviewer": "Please begin your narration. You have two minutes.",
+      "ja": "2分間。1コマあたり30秒が目安。書き出しの文から始める。",
+      "timerSeconds": 120,
+      "recordsStudent": true,
+      "waitsForStudent": true
+    },
+    {
+      "id": "questions-intro",
+      "phase": "questions",
+      "interviewer": "Now, I'll ask you four questions.",
+      "ja": "ここから4問。No.1 は4コマ目の人物になったつもりで答える。",
+      "waitsForStudent": false
+    },
+    {
+      "id": "turn-over",
+      "phase": "questions",
+      "interviewer": "Please turn over the card and put it down.",
+      "fullForm": "Now, Mr. / Ms. ~, please turn over the card and put it down.",
+      "ja": "No.2 からはカードを見ずに答える。話題は社会や政策に広がる。",
+      "waitsForStudent": false,
+      "afterQuestion": 1
+    },
+    {
+      "id": "card-back",
+      "phase": "leave",
+      "interviewer": "May I have your card back, please?",
+      "expected": "Here you are.",
+      "ja": "問題カードを返す。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "goodbye",
+      "phase": "leave",
+      "interviewer": "You may go now.",
+      "expected": "Thank you very much. Goodbye.",
+      "ja": "お礼と別れの挨拶をして退室する。",
+      "waitsForStudent": true
+    }
+  ],
+  "tips": [
+    "質問が聞き取れなかったら、間をおかず I beg your pardon? と聞き返す。ただし何度も繰り返すと減点になる。",
+    "面接委員とのやりとりはすべて英語。日本語は使えない。",
+    "音読は無い。そのぶんナレーションの2分が本番。黙って考え込まないこと。",
+    "No.1 は「I'd be thinking that 〜」で始めると入りやすい。",
+    "Yes/No の追い質問は無い。聞かれたらその場で意見と理由を述べる。"
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "grade": "pre2",
+  "note": "準2級の面接の流れ。3級との違いは、イラストが2枚（A・B）で、No.4 の前にカードを裏返すこと。",
+  "steps": [
+    {
+      "id": "greeting",
+      "phase": "enter",
+      "interviewer": "Hello.",
+      "alt": "Good morning.",
+      "expected": "Hello.",
+      "ja": "入室したらこちらから挨拶する。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "card-in",
+      "phase": "enter",
+      "interviewer": "Can I have your card, please?",
+      "expected": "Here you are.",
+      "ja": "面接カードを手渡す。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "sit",
+      "phase": "enter",
+      "interviewer": "Please sit down.",
+      "expected": "Thank you.",
+      "ja": "お礼を言って着席する。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "name",
+      "phase": "check",
+      "interviewer": "May I have your name, please?",
+      "expected": "My name is ...",
+      "ja": "My name is 〜. と答える。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "grade-check",
+      "phase": "check",
+      "interviewer": "This is the Grade Pre-2 test, OK?",
+      "fullForm": "Mr. / Ms. ~, this is the Grade Pre-2 test, OK?",
+      "expected": "OK.",
+      "ja": "本番では名前を添えて確認される。音声は名前の部分を省いたものを使う。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "how-are-you",
+      "phase": "check",
+      "interviewer": "How are you?",
+      "expected": "I'm fine, thank you.",
+      "ja": "落ち着いて応じる。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "hand-card",
+      "phase": "read",
+      "interviewer": "This is your card.",
+      "expected": "Thank you.",
+      "ja": "問題カードを受け取る。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "silent-read",
+      "phase": "read",
+      "interviewer": "Please read the passage silently for 20 seconds.",
+      "ja": "20秒の黙読。50語程度あるので、意味のまとまりを先に押さえておく。",
+      "timerSeconds": 20,
+      "waitsForStudent": false
+    },
+    {
+      "id": "read-aloud",
+      "phase": "read",
+      "interviewer": "Now, please read it aloud.",
+      "ja": "意味のまとまりを意識して読む。",
+      "recordsStudent": true,
+      "waitsForStudent": true
+    },
+    {
+      "id": "questions-intro",
+      "phase": "questions",
+      "interviewer": "Now, I'll ask you five questions.",
+      "ja": "ここから5問。No.1〜No.3 はカードを見て答える。",
+      "waitsForStudent": false
+    },
+    {
+      "id": "turn-over",
+      "phase": "questions",
+      "interviewer": "Please turn over the card and put it down.",
+      "fullForm": "Now, Mr. / Ms. ~, please turn over the card and put it down.",
+      "ja": "No.4 からはカードを見ずに答える。ここから先は自分の言葉だけが頼りになる。",
+      "waitsForStudent": false,
+      "afterQuestion": 3
+    },
+    {
+      "id": "card-back",
+      "phase": "leave",
+      "interviewer": "May I have your card back, please?",
+      "expected": "Here you are.",
+      "ja": "問題カードを返す。",
+      "waitsForStudent": true
+    },
+    {
+      "id": "goodbye",
+      "phase": "leave",
+      "interviewer": "You may go now.",
+      "expected": "Thank you very much. Goodbye.",
+      "ja": "お礼と別れの挨拶をして退室する。",
+      "waitsForStudent": true
+    }
+  ],
+  "tips": [
+    "質問が聞き取れなかったら、間をおかず I beg your pardon? と聞き返す。ただし何度も繰り返すと減点になる。",
+    "面接委員とのやりとりはすべて英語。日本語は使えない。",
+    "No.2 は5人ぶん言えるだけ言う。1人ずつ「主語 + is 〜ing」で切って並べれば足りる。",
+    "No.3 は「したいのにできない」構図。できない理由まで言い切る。"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "eiken-p2-002",
+  "grade": "pre2",
+  "title": "School Festivals",
+  "passage": {
+    "text": "Many high schools in Japan hold a school festival every year. Students prepare for the festival after class for several weeks, and in this way, they learn how to work as a team. Some students say that these weeks become the best memory of their school life.",
+    "hintPhrase": "in this way",
+    "wordCount": 47
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p2-002-a.webp",
+      "caption": "文化祭の準備をする教室。5人が別々の動作（看板を塗る女子／椅子に乗って飾りを吊る男子／色紙を切る女子／椅子を運ぶ男子／机でポスターに書く女子）。"
+    },
+    {
+      "id": "b",
+      "file": "eiken-p2-002-b.webp",
+      "caption": "歩道で自転車の横に立つ制服の男子。前輪がパンクしている。吹き出しに学校へ向かって走る姿、赤い斜線。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do students learn how to work as a team?",
+      "modelAnswer": "By preparing for the school festival after class for several weeks.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the people in Picture A. They are doing different things. Tell me as much as you can about what they are doing.",
+      "modelAnswer": "A girl is painting a large sign. A boy is hanging paper decorations. A girl is cutting colored paper. A boy is carrying some chairs. A girl is writing on a poster.",
+      "answerSeconds": 45
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, look at the person in Picture B. Please describe the situation.",
+      "modelAnswer": "The boy can't ride his bicycle to school because the front tire is flat.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think students should decide what to do at their school festival by themselves?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Students work harder when the idea is their own. They also learn how to make decisions together."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "Teachers know what is safe and what is possible. Students may choose something too difficult."
+        }
+      }
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "cardVisible": false,
+      "prompt": "These days, many students ride bicycles to school. Do you often ride a bicycle?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I ride my bicycle to school every day. It takes about fifteen minutes."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "My school is close, so I walk. I also think the roads near my house are dangerous."
+        }
+      }
+    }
+  ]
+}

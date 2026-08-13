@@ -72,7 +72,7 @@
 
 ## 2. データの形
 
-`content/eiken-interview/{級}/{id}.json`。1ファイル＝1つの問題カード。
+`public/eiken-interview/{級}/{id}.json`。1ファイル＝1つの問題カード。
 
 ```jsonc
 {
@@ -127,8 +127,10 @@
 **二次試験は入室から退室までが試験。** 問題カードのやりとりだけを練習しても
 本番にならないので、挨拶・名前の確認・カードの受け渡し・退室まで通しで持つ。
 
-カードごとに書かない。級ごとに1本、`content/eiken-interview/interviewer-{級}.json`
-に置いて全カードで使い回す。3級は `interviewer-3.json`（作成済み）。
+カードごとに書かない。級ごとに1本、`public/eiken-interview/interviewer-{級}.json`
+に置いて全カードで使い回す。4級ぶん（`interviewer-3` / `-pre2` / `-2` / `-pre1`）作成済み。
+下の表は3級。他の級は級名が変わり、準2級以降は「カードを裏返す」が入り、
+準1級は音読が無く冒頭に自由会話が入る。
 
 | # | 場面 | 面接委員 | 受験者 |
 |---|---|---|---|
@@ -434,7 +436,7 @@ Panel 4: <…>
 
 事前生成（`scripts/build-audio.js` と同じ仕組み）でまかなえる。
 
-`scripts/build-audio.js` が `content/eiken-interview/` を読んで作る。
+`scripts/build-audio.js` が `public/eiken-interview/` を読んで作る。
 
 ```bash
 node scripts/build-audio.js --source interview --dry-run   # 件数と費用
@@ -453,8 +455,8 @@ node scripts/build-audio.js --source interview             # 作る
 面接は全編英語なので、日本語の音声は作らない（注釈は画面で読む）。
 `My name is ...` のような雛形は尻切れになるので音声化から除く。
 
-**3級の実測: 79クリップ / 3,980文字 / WaveNet で $0.06。** 100カードに
-増やしても数百円。単語の29,220クリップに比べれば誤差の範囲。
+**4級 × 5カードの実測: 212クリップ / 20,992文字 / WaveNet で $0.34。**
+単語の29,220クリップに比べれば誤差の範囲。
 
 生徒の発話は録音して聞き返せるようにする。採点まで踏み込むなら Azure の
 Pronunciation Assessment（音読と相性が良い）。
