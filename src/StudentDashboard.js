@@ -1622,7 +1622,7 @@ export default function StudentDashboard() {
               <div className="section-card word-data-error" role="alert">
                 <p>{wordDataError}</p>
                 <p className="field-error">
-                  単語力チェックと自由学習が使えません。今日の学習プランはそのまま進められます。
+                  単語力チェックと「えらぶ」が使えません。今日の学習プランはそのまま進められます。
                 </p>
                 <button
                   type="button"
@@ -1739,7 +1739,7 @@ export default function StudentDashboard() {
                   重なっていた。縦に積んで、先へ進んだあとは説明文を出さない。 */}
               {selectionMode === 'main' ? (
                 <div className="free-study-head">
-                  <h3 className="home-section-eyebrow">自由学習</h3>
+                  <h3 className="home-section-eyebrow">えらぶ</h3>
                   <p className="tile-caption">やりたいところを選んで、自分のペースで進められます。</p>
                 </div>
               ) : (
@@ -1753,7 +1753,7 @@ export default function StudentDashboard() {
                     <FaArrowLeft aria-hidden="true" />
                   </button>
                   <div>
-                    <p className="home-section-eyebrow">自由学習</p>
+                    <p className="home-section-eyebrow">えらぶ</p>
                     <p className="free-study-title">{freeStudyTitle}</p>
                   </div>
                 </div>
