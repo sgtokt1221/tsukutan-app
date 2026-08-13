@@ -87,6 +87,18 @@
           "title": "The Summer Festival",
           "titleJa": "夏祭り",
           "category": "culture"
+        },
+        {
+          "id": "eiken5-school-02",
+          "title": "The New Student",
+          "titleJa": "新しい生徒",
+          "category": "school"
+        },
+        {
+          "id": "eiken5-daily-03",
+          "title": "My Bike",
+          "titleJa": "わたしの自転車",
+          "category": "daily"
         }
       ]
     },
@@ -135,6 +147,18 @@
           "title": "The Last Runner",
           "titleJa": "最後の走者",
           "category": "sports"
+        },
+        {
+          "id": "eiken4-town-02",
+          "title": "The Bus Stop in the Rain",
+          "titleJa": "雨のバス停",
+          "category": "town"
+        },
+        {
+          "id": "eiken4-daily-01",
+          "title": "Cooking with My Father",
+          "titleJa": "父と料理する",
+          "category": "daily"
         }
       ]
     },
@@ -183,6 +207,18 @@
           "title": "The Man Who Fixes Shoes",
           "titleJa": "くつを直す人",
           "category": "work"
+        },
+        {
+          "id": "eiken3-society-01",
+          "title": "The House Next Door",
+          "titleJa": "となりの家",
+          "category": "society"
+        },
+        {
+          "id": "eiken3-sports-01",
+          "title": "The Team That Kept Losing",
+          "titleJa": "負け続けたチーム",
+          "category": "sports"
         }
       ]
     },
@@ -231,6 +267,18 @@
           "title": "The Job That Did Not Exist",
           "titleJa": "なかった仕事",
           "category": "work"
+        },
+        {
+          "id": "eikenp2-school-01",
+          "title": "Should Schools Have Uniforms?",
+          "titleJa": "制服は必要か",
+          "category": "school"
+        },
+        {
+          "id": "eikenp2-daily-01",
+          "title": "The Cost of Being Always Reachable",
+          "titleJa": "いつでもつながる代償",
+          "category": "daily"
         }
       ]
     },
@@ -273,6 +321,12 @@
           "title": "The Price of a Cheap Shirt",
           "titleJa": "安いシャツの値段",
           "category": "work"
+        },
+        {
+          "id": "eiken2-school-01",
+          "title": "Why Students Fall Asleep in Class",
+          "titleJa": "なぜ授業中に眠くなるのか",
+          "category": "school"
         }
       ]
     },
@@ -315,6 +369,18 @@
           "title": "The Return of the Wolf",
           "titleJa": "オオカミが戻るとき",
           "category": "nature"
+        },
+        {
+          "id": "eikenp1-school-01",
+          "title": "What a Grade Cannot Measure",
+          "titleJa": "成績が測れないもの",
+          "category": "school"
+        },
+        {
+          "id": "eikenp1-sports-01",
+          "title": "The Body as a Machine",
+          "titleJa": "機械としての体",
+          "category": "sports"
         }
       ]
     }

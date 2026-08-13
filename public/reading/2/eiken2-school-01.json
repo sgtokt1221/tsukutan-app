@@ -1,0 +1,579 @@
+{
+  "id": "eiken2-school-01",
+  "grade": "2",
+  "category": "school",
+  "title": "Why Students Fall Asleep in Class",
+  "titleJa": "なぜ授業中に眠くなるのか",
+  "sentences": [
+    {
+      "ja": "授業中に眠くなる生徒は、しばしば怠けていると見なされます。",
+      "chunks": [
+        {
+          "en": "Students who become sleepy in class",
+          "ja": "授業中に眠くなる生徒は",
+          "role": "S"
+        },
+        {
+          "en": "are often seen",
+          "ja": "しばしば見なされます",
+          "role": "V"
+        },
+        {
+          "en": "as lazy.",
+          "ja": "怠けていると",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし近年、この見方に疑問が投げかけられています。",
+      "chunks": [
+        {
+          "en": "However, in recent years,",
+          "ja": "しかし近年",
+          "role": "M"
+        },
+        {
+          "en": "questions",
+          "ja": "疑問が",
+          "role": "S"
+        },
+        {
+          "en": "have been raised",
+          "ja": "投げかけられています",
+          "role": "V"
+        },
+        {
+          "en": "about this view.",
+          "ja": "この見方に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "体内時計は、年齢によって大きく動くことが分かってきました。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "has become clear",
+          "ja": "分かってきました",
+          "role": "V"
+        },
+        {
+          "en": "that our body clock moves greatly with age.",
+          "ja": "体内時計は年齢によって大きく動くことが",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "子どものころは朝型ですが、10代に入ると後ろへずれます。",
+      "chunks": [
+        {
+          "en": "Children",
+          "ja": "子どもは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "morning types,",
+          "ja": "朝型",
+          "role": "C"
+        },
+        {
+          "en": "but the clock moves later when they enter their teens.",
+          "ja": "しかし10代に入ると後ろへずれます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "多くの10代にとって、自然な起床時刻は8時ごろになります。",
+      "chunks": [
+        {
+          "en": "For many teenagers,",
+          "ja": "多くの10代にとって",
+          "role": "M"
+        },
+        {
+          "en": "the natural time to wake up",
+          "ja": "自然な起床時刻は",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なります",
+          "role": "V"
+        },
+        {
+          "en": "around eight.",
+          "ja": "8時ごろに",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "これは意志の問題ではなく、体の仕組みの問題です。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a matter of will but a matter of how the body works.",
+          "ja": "意志の問題ではなく体の仕組みの問題",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ところが日本の高校の多くは、8時半までに始まります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "ところが",
+          "role": "M"
+        },
+        {
+          "en": "most high schools in Japan",
+          "ja": "日本の高校の多くは",
+          "role": "S"
+        },
+        {
+          "en": "start",
+          "ja": "始まります",
+          "role": "V"
+        },
+        {
+          "en": "by half past eight.",
+          "ja": "8時半までに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまり、生徒は体が眠っている時間に授業を受けています。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "students",
+          "ja": "生徒は",
+          "role": "S"
+        },
+        {
+          "en": "take classes",
+          "ja": "授業を受けています",
+          "role": "V"
+        },
+        {
+          "en": "at a time when their bodies are asleep.",
+          "ja": "体が眠っている時間に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "米国のいくつかの学区は、始業を1時間遅らせる実験を行いました。",
+      "chunks": [
+        {
+          "en": "Several school districts in the United States",
+          "ja": "米国のいくつかの学区は",
+          "role": "S"
+        },
+        {
+          "en": "carried out",
+          "ja": "行いました",
+          "role": "V"
+        },
+        {
+          "en": "an experiment to start one hour later.",
+          "ja": "始業を1時間遅らせる実験を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "結果として、成績が上がり、遅刻と欠席が減りました。",
+      "chunks": [
+        {
+          "en": "As a result,",
+          "ja": "結果として",
+          "role": "M"
+        },
+        {
+          "en": "grades",
+          "ja": "成績が",
+          "role": "S"
+        },
+        {
+          "en": "rose,",
+          "ja": "上がりました",
+          "role": "V"
+        },
+        {
+          "en": "and being late and absent decreased.",
+          "ja": "そして遅刻と欠席が減りました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "最も大きな変化は、交通事故の減少だったと報告されています。",
+      "chunks": [
+        {
+          "en": "The largest change",
+          "ja": "最も大きな変化は",
+          "role": "S"
+        },
+        {
+          "en": "is reported",
+          "ja": "報告されています",
+          "role": "V"
+        },
+        {
+          "en": "to be a fall in traffic accidents.",
+          "ja": "交通事故の減少だったと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "眠い状態で自転車や車を使うことが減ったためです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "using bicycles and cars while sleepy",
+          "ja": "眠い状態で自転車や車を使うことが",
+          "role": "S"
+        },
+        {
+          "en": "decreased.",
+          "ja": "減ったからです",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "日本でも、始業を遅らせた学校がいくつかあります。",
+      "chunks": [
+        {
+          "en": "In Japan too,",
+          "ja": "日本でも",
+          "role": "M"
+        },
+        {
+          "en": "there are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "some schools that have made their start later.",
+          "ja": "始業を遅らせた学校がいくつか",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "ある高校は、朝の授業をやめて夕方に移しました。",
+      "chunks": [
+        {
+          "en": "One high school",
+          "ja": "ある高校は",
+          "role": "S"
+        },
+        {
+          "en": "stopped",
+          "ja": "やめました",
+          "role": "V"
+        },
+        {
+          "en": "its morning class",
+          "ja": "朝の授業を",
+          "role": "O"
+        },
+        {
+          "en": "and moved it to the evening.",
+          "ja": "そして夕方に移しました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "生徒からは、集中できるようになったという声が多く出ました。",
+      "chunks": [
+        {
+          "en": "Many students",
+          "ja": "多くの生徒が",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that they could concentrate better.",
+          "ja": "集中できるようになったと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "一方で、部活動の時間が減ったという不満も出ました。",
+      "chunks": [
+        {
+          "en": "On the other hand,",
+          "ja": "一方で",
+          "role": "M"
+        },
+        {
+          "en": "there were",
+          "ja": "出ました",
+          "role": "V"
+        },
+        {
+          "en": "complaints that club time had decreased.",
+          "ja": "部活動の時間が減ったという不満も",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、この変更はなかなか広がりません。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "this change",
+          "ja": "この変更は",
+          "role": "S"
+        },
+        {
+          "en": "does not spread easily.",
+          "ja": "なかなか広がりません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "理由は、学校だけの問題ではないからです。",
+      "chunks": [
+        {
+          "en": "The reason",
+          "ja": "理由は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that it is not a problem of schools alone.",
+          "ja": "学校だけの問題ではないから",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "始業が遅れれば、部活動と下校の時刻も後ろへ動きます。",
+      "chunks": [
+        {
+          "en": "If the start moves later,",
+          "ja": "始業が遅れれば",
+          "role": "M"
+        },
+        {
+          "en": "club activities and the time of going home",
+          "ja": "部活動と下校の時刻も",
+          "role": "S"
+        },
+        {
+          "en": "also move",
+          "ja": "動きます",
+          "role": "V"
+        },
+        {
+          "en": "later.",
+          "ja": "後ろへ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "親の出勤時刻や、バスの運行とも合わなくなります。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "also stops matching",
+          "ja": "合わなくなります",
+          "role": "V"
+        },
+        {
+          "en": "parents' working hours and bus times.",
+          "ja": "親の出勤時刻やバスの運行とも",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "一つの時刻を動かすには、社会の側も動く必要があります。",
+      "chunks": [
+        {
+          "en": "To move one time,",
+          "ja": "一つの時刻を動かすには",
+          "role": "M"
+        },
+        {
+          "en": "the society around it",
+          "ja": "社会の側も",
+          "role": "S"
+        },
+        {
+          "en": "needs to move",
+          "ja": "動く必要があります",
+          "role": "V"
+        },
+        {
+          "en": "as well.",
+          "ja": "同様に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この例が示すのは、個人の努力の限界です。",
+      "chunks": [
+        {
+          "en": "What this example shows",
+          "ja": "この例が示すことは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the limit of individual effort.",
+          "ja": "個人の努力の限界",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "早く寝なさいと言うだけでは、体内時計は動きません。",
+      "chunks": [
+        {
+          "en": "Only telling students to sleep early",
+          "ja": "早く寝なさいと言うだけでは",
+          "role": "S"
+        },
+        {
+          "en": "does not move",
+          "ja": "動きません",
+          "role": "V"
+        },
+        {
+          "en": "the body clock.",
+          "ja": "体内時計を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "困っている人を責める前に、仕組みを見る必要があります。",
+      "chunks": [
+        {
+          "en": "Before blaming the people who are in trouble,",
+          "ja": "困っている人を責める前に",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "need to look",
+          "ja": "見る必要があります",
+          "role": "V"
+        },
+        {
+          "en": "at the system.",
+          "ja": "仕組みを",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この問題に唯一の正解はありません。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "no single right answer to this problem.",
+          "ja": "この問題に唯一の正解は",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、眠さを生徒の性格の話にしないことは重要です。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is important",
+          "ja": "重要です",
+          "role": "V"
+        },
+        {
+          "en": "not to treat sleepiness as a matter of a student's character.",
+          "ja": "眠さを生徒の性格の話にしないことは",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,349 @@
+{
+  "id": "eiken3-society-01",
+  "grade": "3",
+  "category": "society",
+  "title": "The House Next Door",
+  "titleJa": "となりの家",
+  "sentences": [
+    {
+      "ja": "わたしの家のとなりに、人の住んでいない家があります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a house with no people living in it",
+          "ja": "人の住んでいない家が",
+          "role": "S"
+        },
+        {
+          "en": "next to my house.",
+          "ja": "わたしの家のとなりに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "5年前まで、そこにはおじいさんが一人で住んでいました。",
+      "chunks": [
+        {
+          "en": "Until five years before,",
+          "ja": "5年前まで",
+          "role": "M"
+        },
+        {
+          "en": "an old man",
+          "ja": "おじいさんが",
+          "role": "S"
+        },
+        {
+          "en": "was living",
+          "ja": "住んでいました",
+          "role": "V"
+        },
+        {
+          "en": "there by himself.",
+          "ja": "そこに一人で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼が亡くなったあと、だれも来なくなりました。",
+      "chunks": [
+        {
+          "en": "After he died,",
+          "ja": "彼が亡くなったあと",
+          "role": "M"
+        },
+        {
+          "en": "no one",
+          "ja": "だれも",
+          "role": "S"
+        },
+        {
+          "en": "came.",
+          "ja": "来なくなりました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "庭の草は高くなり、窓は割れました。",
+      "chunks": [
+        {
+          "en": "The grass in the garden",
+          "ja": "庭の草は",
+          "role": "S"
+        },
+        {
+          "en": "grew tall,",
+          "ja": "高くなりました",
+          "role": "V"
+        },
+        {
+          "en": "and a window broke.",
+          "ja": "そして窓は割れました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの母は、その家を見るたびに悲しそうです。",
+      "chunks": [
+        {
+          "en": "My mother",
+          "ja": "わたしの母は",
+          "role": "S"
+        },
+        {
+          "en": "looks",
+          "ja": "見えます",
+          "role": "V"
+        },
+        {
+          "en": "sad",
+          "ja": "悲しそうに",
+          "role": "C"
+        },
+        {
+          "en": "every time she sees the house.",
+          "ja": "その家を見るたびに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この町には、そのような家が30けん以上あるそうです。",
+      "chunks": [
+        {
+          "en": "They say",
+          "ja": "そうです",
+          "role": "V"
+        },
+        {
+          "en": "that there are more than thirty such houses in this town.",
+          "ja": "この町にはそのような家が30けん以上あると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "日本全体では、800万けんをこえていると言われています。",
+      "chunks": [
+        {
+          "en": "In all of Japan,",
+          "ja": "日本全体では",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is said",
+          "ja": "言われています",
+          "role": "V"
+        },
+        {
+          "en": "to be more than eight million.",
+          "ja": "800万けんをこえていると",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "持ち主は遠くに住んでいて、直すお金がないことが多いのです。",
+      "chunks": [
+        {
+          "en": "The people who have the house",
+          "ja": "持ち主は",
+          "role": "S"
+        },
+        {
+          "en": "often live far away",
+          "ja": "遠くに住んでいます",
+          "role": "V"
+        },
+        {
+          "en": "and do not have money to repair it.",
+          "ja": "そして直すお金がないことが多いのです",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "こわすにも、大きなお金がかかります。",
+      "chunks": [
+        {
+          "en": "Breaking it down",
+          "ja": "こわすことにも",
+          "role": "S"
+        },
+        {
+          "en": "also takes",
+          "ja": "かかります",
+          "role": "V"
+        },
+        {
+          "en": "a lot of money.",
+          "ja": "大きなお金が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "だから、そのままにされてしまいます。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is left",
+          "ja": "されてしまいます",
+          "role": "V"
+        },
+        {
+          "en": "in that state.",
+          "ja": "そのままに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、こわれた家は近所にとって危ないものです。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "a broken house",
+          "ja": "こわれた家は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "dangerous for the neighbors.",
+          "ja": "近所にとって危ないもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "強い風の日には、屋根が飛ぶこともあります。",
+      "chunks": [
+        {
+          "en": "On days with strong wind,",
+          "ja": "強い風の日には",
+          "role": "M"
+        },
+        {
+          "en": "the roof",
+          "ja": "屋根が",
+          "role": "S"
+        },
+        {
+          "en": "sometimes flies away.",
+          "ja": "飛ぶこともあります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "いくつかの町では、その家を安く貸す方法を考えました。",
+      "chunks": [
+        {
+          "en": "Some towns",
+          "ja": "いくつかの町は",
+          "role": "S"
+        },
+        {
+          "en": "have thought of",
+          "ja": "考えました",
+          "role": "V"
+        },
+        {
+          "en": "a way to lend such houses cheaply.",
+          "ja": "その家を安く貸す方法を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "若い家族が入り、自分で直して住んでいます。",
+      "chunks": [
+        {
+          "en": "Young families",
+          "ja": "若い家族が",
+          "role": "S"
+        },
+        {
+          "en": "move in",
+          "ja": "入ります",
+          "role": "V"
+        },
+        {
+          "en": "and live there after fixing it themselves.",
+          "ja": "そして自分で直して住んでいます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "だれも住まない家は、ただの建物ではありません。",
+      "chunks": [
+        {
+          "en": "A house where nobody lives",
+          "ja": "だれも住まない家は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "just a building.",
+          "ja": "ただの建物",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それは、その町の未来を映しているのだと思います。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "think",
+          "ja": "思います",
+          "role": "V"
+        },
+        {
+          "en": "that it shows the future of the town.",
+          "ja": "それはその町の未来を映しているのだと",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

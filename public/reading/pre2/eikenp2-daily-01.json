@@ -1,0 +1,409 @@
+{
+  "id": "eikenp2-daily-01",
+  "grade": "pre2",
+  "category": "daily",
+  "title": "The Cost of Being Always Reachable",
+  "titleJa": "いつでもつながる代償",
+  "sentences": [
+    {
+      "ja": "スマートフォンを持つ人の多くは、一日に80回以上画面を見ています。",
+      "chunks": [
+        {
+          "en": "Most people who have a smartphone",
+          "ja": "スマートフォンを持つ人の多くは",
+          "role": "S"
+        },
+        {
+          "en": "look at",
+          "ja": "見ています",
+          "role": "V"
+        },
+        {
+          "en": "the screen",
+          "ja": "画面を",
+          "role": "O"
+        },
+        {
+          "en": "more than eighty times a day.",
+          "ja": "一日に80回以上",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この数字は、10年前の3倍以上だと言われています。",
+      "chunks": [
+        {
+          "en": "This number",
+          "ja": "この数字は",
+          "role": "S"
+        },
+        {
+          "en": "is said",
+          "ja": "言われています",
+          "role": "V"
+        },
+        {
+          "en": "to be more than three times that of ten years ago.",
+          "ja": "10年前の3倍以上だと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは、いつでも連絡が取れる状態になりました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "have become",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "able to be reached at any time.",
+          "ja": "いつでも連絡が取れる状態に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "これは多くの場面で便利です。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "useful in many situations.",
+          "ja": "多くの場面で便利",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "道に迷っても、友だちを待たせても、すぐに伝えられます。",
+      "chunks": [
+        {
+          "en": "Even if we lose our way or keep a friend waiting,",
+          "ja": "道に迷っても、友だちを待たせても",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "can tell them",
+          "ja": "伝えられます",
+          "role": "V"
+        },
+        {
+          "en": "at once.",
+          "ja": "すぐに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、この状態には見えにくい代償があります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "this state",
+          "ja": "この状態には",
+          "role": "S"
+        },
+        {
+          "en": "has",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a cost that is hard to see.",
+          "ja": "見えにくい代償が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "ある研究は、机の上に置いた電話が学習を妨げると示しました。",
+      "chunks": [
+        {
+          "en": "One study",
+          "ja": "ある研究は",
+          "role": "S"
+        },
+        {
+          "en": "showed",
+          "ja": "示しました",
+          "role": "V"
+        },
+        {
+          "en": "that a phone placed on a desk gets in the way of learning.",
+          "ja": "机の上に置いた電話が学習を妨げると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "使っていなくても、そこにあるだけで結果が下がったのです。",
+      "chunks": [
+        {
+          "en": "Even when it was not used,",
+          "ja": "使っていなくても",
+          "role": "M"
+        },
+        {
+          "en": "the results",
+          "ja": "結果が",
+          "role": "S"
+        },
+        {
+          "en": "fell",
+          "ja": "下がりました",
+          "role": "V"
+        },
+        {
+          "en": "just because it was there.",
+          "ja": "そこにあるだけで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "理由は、いつ鳴るか分からない状態が注意を分けるためです。",
+      "chunks": [
+        {
+          "en": "The reason",
+          "ja": "理由は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that not knowing when it will ring divides our attention.",
+          "ja": "いつ鳴るか分からない状態が注意を分けるため",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "同じことは、休むことにも起こります。",
+      "chunks": [
+        {
+          "en": "The same thing",
+          "ja": "同じことは",
+          "role": "S"
+        },
+        {
+          "en": "happens",
+          "ja": "起こります",
+          "role": "V"
+        },
+        {
+          "en": "to resting,",
+          "ja": "休むことにも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "仕事や勉強の連絡が夜に届くと、頭はそこから離れません。",
+      "chunks": [
+        {
+          "en": "If a message about work or study arrives at night,",
+          "ja": "仕事や勉強の連絡が夜に届くと",
+          "role": "M"
+        },
+        {
+          "en": "our head",
+          "ja": "頭は",
+          "role": "S"
+        },
+        {
+          "en": "does not leave it.",
+          "ja": "そこから離れません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "いくつかの国では、勤務時間外の連絡を断る権利が法律になりました。",
+      "chunks": [
+        {
+          "en": "In some countries,",
+          "ja": "いくつかの国では",
+          "role": "M"
+        },
+        {
+          "en": "the right to refuse messages outside working hours",
+          "ja": "勤務時間外の連絡を断る権利が",
+          "role": "S"
+        },
+        {
+          "en": "has become",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "law.",
+          "ja": "法律に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "これは、個人の意志だけでは守れないと考えられたからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was thought",
+          "ja": "考えられたからです",
+          "role": "V"
+        },
+        {
+          "en": "that individual will alone cannot protect it.",
+          "ja": "個人の意志だけでは守れないと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "実際、返事をしない自由は、立場の弱い人ほど使いにくいものです。",
+      "chunks": [
+        {
+          "en": "In fact,",
+          "ja": "実際",
+          "role": "M"
+        },
+        {
+          "en": "the freedom not to answer",
+          "ja": "返事をしない自由は",
+          "role": "S"
+        },
+        {
+          "en": "is harder to use",
+          "ja": "使いにくいものです",
+          "role": "V"
+        },
+        {
+          "en": "for people in weaker positions.",
+          "ja": "立場の弱い人ほど",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "生徒どうしの関係でも、同じことが起こります。",
+      "chunks": [
+        {
+          "en": "The same thing",
+          "ja": "同じことが",
+          "role": "S"
+        },
+        {
+          "en": "happens",
+          "ja": "起こります",
+          "role": "V"
+        },
+        {
+          "en": "between students,",
+          "ja": "生徒どうしの関係でも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "すぐ返さないと心配される、という空気が生まれます。",
+      "chunks": [
+        {
+          "en": "An air is created",
+          "ja": "空気が生まれます",
+          "role": "V"
+        },
+        {
+          "en": "in which people worry if you do not answer at once.",
+          "ja": "すぐ返さないと心配される、という",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "解決は、電話を捨てることではありません。",
+      "chunks": [
+        {
+          "en": "The answer",
+          "ja": "解決は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "to throw away our phones.",
+          "ja": "電話を捨てること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "返さない時間があってよい、と互いに決めておくことです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to decide together that there may be times when we do not answer.",
+          "ja": "返さない時間があってよいと互いに決めておくこと",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "id": "eiken5-school-02",
+  "grade": "5",
+  "category": "school",
+  "title": "The New Student",
+  "titleJa": "新しい生徒",
+  "sentences": [
+    {
+      "ja": "先週、新しい生徒が学校に来ました。",
+      "chunks": [
+        {
+          "en": "Last week",
+          "ja": "先週",
+          "role": "M"
+        },
+        {
+          "en": "a new student",
+          "ja": "新しい生徒が",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "来ました",
+          "role": "V"
+        },
+        {
+          "en": "to my school.",
+          "ja": "わたしの学校に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼の名前はタクヤです。",
+      "chunks": [
+        {
+          "en": "His name",
+          "ja": "彼の名前は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "Takuya.",
+          "ja": "タクヤ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "彼は大きな町から来ました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "来ました",
+          "role": "V"
+        },
+        {
+          "en": "from a big town.",
+          "ja": "大きな町から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "最初の日、彼は本を読んでいました。",
+      "chunks": [
+        {
+          "en": "On the first day",
+          "ja": "最初の日",
+          "role": "M"
+        },
+        {
+          "en": "he",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "was reading",
+          "ja": "読んでいました",
+          "role": "V"
+        },
+        {
+          "en": "a book.",
+          "ja": "本を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "その本はわたしの好きな本と同じでした。",
+      "chunks": [
+        {
+          "en": "The book",
+          "ja": "その本は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "the same as my favorite book.",
+          "ja": "わたしの好きな本と同じ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはその本について彼と話しました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "talked",
+          "ja": "話しました",
+          "role": "V"
+        },
+        {
+          "en": "with him",
+          "ja": "彼と",
+          "role": "M"
+        },
+        {
+          "en": "about the book.",
+          "ja": "その本について",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼はうれしそうで、たくさん話しました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "happy,",
+          "ja": "うれしそう",
+          "role": "C"
+        },
+        {
+          "en": "and he talked a lot.",
+          "ja": "そしてたくさん話しました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今、わたしたちは友だちです。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "friends.",
+          "ja": "友だち",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは学校で本について話します。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "talk",
+          "ja": "話します",
+          "role": "V"
+        },
+        {
+          "en": "about books",
+          "ja": "本について",
+          "role": "M"
+        },
+        {
+          "en": "at school.",
+          "ja": "学校で",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}
