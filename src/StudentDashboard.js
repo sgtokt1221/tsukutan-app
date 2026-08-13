@@ -640,28 +640,31 @@ export default function StudentDashboard() {
         });
         setTestResultLevel(levelToSet);
         
-        const plan = await generateDailyPlan(data, uid);
-        setDailyPlan(plan);
-
-        // Check for daily completion
+        // 今日の計画・完了フラグ・直近のログは互いに関係が無い。
+        // 順番に待つと往復のぶんだけ起動が遅くなるので、まとめて投げる。
         const todayStr = getTodayKey();
-        const dailyCompletionDocRef = doc(db, 'users', uid, 'dailyCompletion', todayStr);
-        const dailyCompletionDoc = await getDoc(dailyCompletionDocRef);
-        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
-
-        // Pace analysis from recent logs (過去5日)
         const lookbackDate = new Date();
         lookbackDate.setDate(lookbackDate.getDate() - 5);
 
+        const [plan, dailyCompletionDoc, logsResult] = await Promise.all([
+          generateDailyPlan(data, uid),
+          getDoc(doc(db, 'users', uid, 'dailyCompletion', todayStr)),
+          getDocs(query(
+            collection(db, 'users', uid, 'logs'),
+            where('timestamp', '>=', lookbackDate),
+            orderBy('timestamp', 'desc'),
+          )).catch((paceError) => {
+            console.error('Failed to load recent logs:', paceError);
+            return null;
+          }),
+        ]);
+
+        setDailyPlan(plan);
+        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
+
         try {
-          const logsRef = collection(db, 'users', uid, 'logs');
-          const logsSnapshot = await getDocs(
-            query(
-              logsRef,
-              where('timestamp', '>=', lookbackDate),
-              orderBy('timestamp', 'desc')
-            )
-          );
+          if (!logsResult) throw new Error('recent logs unavailable');
+          const logsSnapshot = logsResult;
 
           const dailyNewMap = new Map();
 
