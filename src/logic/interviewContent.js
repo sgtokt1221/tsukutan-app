@@ -120,7 +120,17 @@ export const cardViewFor = (beat) => {
 
   if (beat.kind === 'question') {
     if (beat.question.cardVisible === false) return 'none';
-    return beat.question.type === 'passage' ? 'passage' : 'illustration';
+    switch (beat.question.type) {
+      case 'passage':
+        return 'passage';
+      // 受験者自身のことを聞く設問。3級はカードを裏返さないので手元には
+      // あるが、絵を出すと「絵の説明」だと思わせてしまう。出さない。
+      case 'personal':
+      case 'opinion':
+        return 'none';
+      default:
+        return 'illustration';
+    }
   }
 
   switch (beat.stepId) {
@@ -133,6 +143,57 @@ export const cardViewFor = (beat) => {
     default:
       return 'none';
   }
+};
+
+/**
+ * その場面で生徒が声を出すか。出すなら、採点に渡す材料を返す。
+ *
+ * 音読は読む英文が決まっているので scripted。Azure に referenceText を渡すと
+ * どの語を読み違えたかまで返る。それ以外は何を言うか決まっていないので
+ * unscripted にして、中身は別に見る。
+ *
+ * Yes / No を選んだあとは、生徒が答えるのは追い質問のほう。質問文も模範解答も
+ * そちらに差し替える。元の質問のまま採点すると「Yes と言っただけ」になる。
+ *
+ * @param {object} beat buildBeats が返した1場面
+ * @param {object} card 問題カード
+ * @param {'yes'|'no'|null} branch 選んだ枝
+ */
+export const speakingFor = (beat, card, branch = null) => {
+  if (!beat) return null;
+
+  if (beat.stepId === 'read-aloud' && card?.passage?.text) {
+    return { mode: 'scripted', referenceText: card.passage.text };
+  }
+
+  if (beat.stepId === 'narration') {
+    const narration = card?.narration;
+    if (!narration) return null;
+    return {
+      mode: 'unscripted',
+      question: [narration.storyLine, narration.openingSentence]
+        .filter(Boolean)
+        .join(' Begin with: '),
+    };
+  }
+
+  if (beat.kind !== 'question') return null;
+
+  const question = beat.question;
+  const followUp = branch ? question.followUp?.[branch] : null;
+  if (followUp) {
+    return {
+      mode: 'unscripted',
+      question: `${question.prompt} (${branch === 'yes' ? 'Yes' : 'No'}) ${followUp.prompt}`,
+      modelAnswer: followUp.modelAnswer,
+    };
+  }
+
+  return {
+    mode: 'unscripted',
+    question: question.prompt,
+    modelAnswer: question.modelAnswer || undefined,
+  };
 };
 
 /** 事前生成の音声を温めるための読み上げ一覧。面接は全編英語。 */

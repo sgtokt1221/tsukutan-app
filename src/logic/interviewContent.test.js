@@ -1,4 +1,4 @@
-import { buildBeats, cardViewFor } from './interviewContent';
+import { buildBeats, cardViewFor, speakingFor } from './interviewContent';
 
 const flow = {
   steps: [
@@ -60,9 +60,77 @@ test('裏返したあとの設問ではカードを見せない', () => {
   expect(view('step-greeting')).toBe('none');
 });
 
+test('受験者自身のことを聞く設問では、裏返さない級でも絵を出さない', () => {
+  // 3級は最後までカードを持ったままだが、絵の説明をさせる設問ではない
+  const personal = { kind: 'question', question: { type: 'personal', prompt: 'Do you often listen to music?' } };
+  const opinion = { kind: 'question', question: { type: 'opinion', prompt: 'Do you think ...?' } };
+  const illustration = { kind: 'question', question: { type: 'illustration', prompt: 'How many cups ...?' } };
+  expect(cardViewFor(personal)).toBe('none');
+  expect(cardViewFor(opinion)).toBe('none');
+  expect(cardViewFor(illustration)).toBe('illustration');
+});
+
 test('timerSeconds のある場面は timer になる', () => {
   const beats = buildBeats(flow, card);
   const silentRead = beats.find((beat) => beat.stepId === 'silent-read');
   expect(silentRead.kind).toBe('timer');
   expect(silentRead.timerSeconds).toBe(20);
+});
+
+describe('speakingFor', () => {
+  const readAloud = buildBeats(flow, card).find((beat) => beat.stepId === 'read-aloud');
+  const q1 = buildBeats(flow, card).find((beat) => beat.key === 'q-1');
+  const withPassage = { passage: { text: 'Many people listen to the radio.' } };
+
+  test('音読は scripted。読むべき英文を渡す', () => {
+    expect(speakingFor(readAloud, withPassage)).toEqual({
+      mode: 'scripted',
+      referenceText: 'Many people listen to the radio.',
+    });
+  });
+
+  test('設問は unscripted。質問文と模範解答を渡す', () => {
+    const target = { ...q1, question: { ...q1.question, modelAnswer: 'Because ...' } };
+    expect(speakingFor(target, withPassage)).toEqual({
+      mode: 'unscripted',
+      question: 'Q1',
+      modelAnswer: 'Because ...',
+    });
+  });
+
+  test('Yes を選んだら、採点は追い質問のほうに切り替わる', () => {
+    const target = {
+      kind: 'question',
+      question: {
+        prompt: 'Do you like reading?',
+        followUp: {
+          yes: { prompt: 'Why?', modelAnswer: 'Because it is fun.' },
+          no: { prompt: 'Why not?', modelAnswer: 'I have no time.' },
+        },
+      },
+    };
+    expect(speakingFor(target, withPassage, 'yes')).toEqual({
+      mode: 'unscripted',
+      question: 'Do you like reading? (Yes) Why?',
+      modelAnswer: 'Because it is fun.',
+    });
+    expect(speakingFor(target, withPassage, 'no').modelAnswer).toBe('I have no time.');
+  });
+
+  test('挨拶など、声を出さない場面は null', () => {
+    const greeting = buildBeats(flow, card).find((beat) => beat.stepId === 'greeting');
+    expect(speakingFor(greeting, withPassage)).toBeNull();
+    expect(speakingFor(null, withPassage)).toBeNull();
+  });
+
+  test('準1級のナレーションは、あらすじと書き出しを質問として渡す', () => {
+    const beat = { stepId: 'narration', kind: 'line' };
+    const pre1Card = {
+      narration: { storyLine: 'This is a story about a woman.', openingSentence: 'One Sunday morning, ...' },
+    };
+    expect(speakingFor(beat, pre1Card)).toEqual({
+      mode: 'unscripted',
+      question: 'This is a story about a woman. Begin with: One Sunday morning, ...',
+    });
+  });
 });

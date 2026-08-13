@@ -1,5 +1,6 @@
 // Firebase SDK
 const { onRequest, HttpsError } = require("firebase-functions/v2/https");
+const { defineSecret } = require("firebase-functions/params");
 const { logger } = require("firebase-functions");
 const admin = require("firebase-admin");
 const crypto = require("node:crypto");
@@ -19,6 +20,20 @@ const {
   buildImportPlan,
 } = require('./lib/studentImport');
 const { getCurrentMonthKey } = require('./lib/dateKeys');
+const { assess, mergeScores, MAX_AUDIO_BYTES } = require('./lib/pronunciation');
+const { judgeAnswer } = require('./lib/answerJudge');
+
+/**
+ * Azure Speech の鍵と場所。
+ *
+ * クライアントには置けない。REACT_APP_* はバンドルに焼き込まれる公開値なので、
+ * ブラウザから直接 Azure を叩くと誰でも鍵を読める。ここを通す。
+ *
+ *   firebase functions:secrets:set AZURE_SPEECH_KEY
+ *   firebase functions:secrets:set AZURE_SPEECH_REGION
+ */
+const AZURE_SPEECH_KEY = defineSecret('AZURE_SPEECH_KEY');
+const AZURE_SPEECH_REGION = defineSecret('AZURE_SPEECH_REGION');
 
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
@@ -30,6 +45,12 @@ importUsersApp.use(express.json({ limit: '10mb' }));
 const manageStudentsApp = express();
 manageStudentsApp.use(cors({ origin: true }));
 manageStudentsApp.use(express.json({ limit: '1mb' }));
+
+// 録音は 16kHz 16bit モノラルで、3分だと約 3.8MB。base64 で約 5.1MB になる。
+// 既定の 100kb では入らないので、余裕を見て 12mb にする。
+const assessSpeakingApp = express();
+assessSpeakingApp.use(cors({ origin: true }));
+assessSpeakingApp.use(express.json({ limit: '12mb' }));
 
 /**
  * HttpsError のコードを HTTP のステータスへ写す。
@@ -711,4 +732,116 @@ exports.generateStoryFromWords = onRequest(
       }
     });
   }
+);
+//==============================================================================
+// 英検二次試験の発音・内容の採点
+//==============================================================================
+
+/** その回で見るもの。音読は読む英文が決まっているので突き合わせる。 */
+const MODES = new Set(['scripted', 'unscripted']);
+
+/** Vertex AI の Gemini を1回叩く。generateStory と同じ設定。 */
+const generateJson = async (prompt) => {
+  const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+  const model = vertexAi.getGenerativeModel({
+    model: 'gemini-2.0-flash-001',
+    generationConfig: { responseMimeType: 'application/json' },
+  });
+  const response = await model.generateContent(prompt);
+  return response.response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+};
+
+/**
+ * 録音した英語を採点する。
+ *
+ * 音読（scripted）は referenceText と突き合わせて、読み違えた語まで返す。
+ * 質問への答え（unscripted）は発音を見たうえで、認識した文字を Gemini に渡して
+ * 「質問に答えているか」も見る。
+ *
+ * Azure の鍵が未設定なら 503 を返す。画面はそれを受けて
+ * 「録音して聞き返すだけ」に落ちる（採点なしでも練習は続けられる）。
+ */
+assessSpeakingApp.post('/', async (req, res) => {
+  // 生徒本人であることだけ確かめる。uid はトークンから取り、本文の値は信じない。
+  const idToken = req.get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    return res.status(401).json({ error: 'ログインし直してください。' });
+  }
+  try {
+    await admin.auth().verifyIdToken(idToken);
+  } catch (error) {
+    logger.error('assessSpeaking: トークンを検証できませんでした', error);
+    return res.status(401).json({ error: 'ログインし直してください。' });
+  }
+
+  const key = AZURE_SPEECH_KEY.value();
+  const region = AZURE_SPEECH_REGION.value();
+  if (!key || !region) {
+    // 鍵を入れるまでは採点できない。画面が録音だけに落ちられるよう明示する。
+    return res.status(503).json({ error: '採点はまだ使えません。', reason: 'not-configured' });
+  }
+
+  const { audio, mode, referenceText, question, modelAnswer, grade } = req.body || {};
+  if (typeof audio !== 'string' || audio.length === 0) {
+    return res.status(400).json({ error: '音声が送られていません。' });
+  }
+  if (!MODES.has(mode)) {
+    return res.status(400).json({ error: 'mode が不正です。' });
+  }
+
+  const wav = Buffer.from(audio, 'base64');
+  if (wav.length === 0) {
+    return res.status(400).json({ error: '音声を読み取れませんでした。' });
+  }
+  if (wav.length > MAX_AUDIO_BYTES) {
+    return res.status(413).json({ error: '録音が長すぎます。3分以内にしてください。' });
+  }
+
+  try {
+    const result = await assess(wav, {
+      key,
+      region,
+      referenceText: mode === 'scripted' ? referenceText : undefined,
+    });
+
+    const scores = mergeScores(result.segments);
+    // 読み違えた語だけを返す。全語返すと画面が埋まるし、通信も無駄になる。
+    const mispronounced = result.words
+      .filter((word) => word.errorType && word.errorType !== 'None')
+      .slice(0, 20);
+
+    // 中身の判定は質問に答える回だけ。音読には要らない。
+    let content = null;
+    if (mode === 'unscripted' && question) {
+      content = await judgeAnswer(
+        { grade, question, modelAnswer, transcript: result.transcript },
+        generateJson
+      ).catch((judgeError) => {
+        // 発音の点は取れているので、ここで全部を落とさない。
+        logger.warn('assessSpeaking: 内容の判定に失敗しました', judgeError);
+        return null;
+      });
+    }
+
+    return res.status(200).json({
+      transcript: result.transcript,
+      scores,
+      mispronounced,
+      content,
+    });
+  } catch (error) {
+    logger.error('assessSpeaking: 採点に失敗しました', error);
+    return res.status(502).json({ error: '採点できませんでした。もう一度お試しください。' });
+  }
+});
+
+exports.assessSpeaking = onRequest(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 120,
+    memory: '512MiB',
+    secrets: [AZURE_SPEECH_KEY, AZURE_SPEECH_REGION],
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  assessSpeakingApp
 );
