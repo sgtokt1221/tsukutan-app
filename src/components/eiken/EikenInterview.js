@@ -9,10 +9,12 @@ import {
   loadInterviewCard,
   loadInterviewFlow,
   loadInterviewIndex,
+  speakingFor,
   speechTextsFor,
 } from '../../logic/interviewContent';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { prefetchClips } from '../../logic/audioLibrary';
+import SpeakingPanel from './SpeakingPanel';
 import logger from '../../logic/logger';
 import './EikenInterview.css';
 
@@ -230,6 +232,7 @@ export default function EikenInterview({ grade, onExit }) {
 
   const cardView = useMemo(() => cardViewFor(beat), [beat]);
   const card = session?.card;
+  const speaking = useMemo(() => speakingFor(beat, card, branch), [beat, card, branch]);
 
   const exitSession = () => {
     stopSpeaking();
@@ -303,6 +306,19 @@ export default function EikenInterview({ grade, onExit }) {
 
         {beat?.kind === 'timer' && (
           <BeatTimer seconds={beat.timerSeconds} beatKey={beat.key} />
+        )}
+
+        {speaking && (
+          <SpeakingPanel
+            mode={speaking.mode}
+            referenceText={speaking.referenceText}
+            question={speaking.question}
+            modelAnswer={speaking.modelAnswer}
+            grade={grade}
+            // Yes / No を選び直したら録音も採点もやり直す。
+            // 前の答えのまま残ると、違う質問の点を見てしまう。
+            resetKey={`${beat.key}-${branch || ''}`}
+          />
         )}
 
         {cardView === 'passage' && card?.passage && (
