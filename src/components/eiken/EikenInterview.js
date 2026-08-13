@@ -448,14 +448,6 @@ export default function EikenInterview({ grade, onExit }) {
           <BeatTimer seconds={beat.timerSeconds} beatKey={beat.key} />
         )}
 
-        {speaking && (
-          <SpeakingPanel
-            recorder={recorder}
-            answer={answer}
-            onEditTranscript={editTranscript}
-          />
-        )}
-
         {cardView === 'passage' && card?.passage && (
           <div className="interview-card-panel">
             <p className="interview-passage">{card.passage.text}</p>
@@ -503,6 +495,16 @@ export default function EikenInterview({ grade, onExit }) {
 
         {cardView === 'none' && beat?.phase === 'questions' && beat.kind === 'question' && (
           <p className="interview-note">カードは裏返してあります。見ずに答えます。</p>
+        )}
+
+        {/* 録音したものは本文の下に置く。読む英文や絵を押しのけると、
+            話している途中で本文を見失う。 */}
+        {speaking && (
+          <SpeakingPanel
+            recorder={recorder}
+            answer={answer}
+            onEditTranscript={editTranscript}
+          />
         )}
 
         {/* 心得は最初の場面に、たたんだ状態で置く。開かなければ邪魔にならない。 */}

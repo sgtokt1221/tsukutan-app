@@ -1,6 +1,13 @@
 /* 英検二次試験（面接）の練習画面。
    学習カードと同じくヘッダー固定・本文スクロール・下に操作。 */
 
+/* 面接は1画面を占有する。親（.card-main）の余白が残っていると、下の操作の
+   さらに下に地の色の帯が出て、そのぶん本文の見える範囲が狭くなる。 */
+.card-main:has(> .interview-screen) {
+  padding: 0;
+  gap: 0;
+}
+
 .interview-screen {
   display: flex;
   flex-direction: column;
@@ -10,6 +17,9 @@
 
 .interview-body {
   flex: 1;
+  /* flex の子は既定で中身より小さくならない。0 を入れないと本文が伸びきって
+     画面ごとスクロールし、下の操作が一緒に流れていく。 */
+  min-height: 0;
   overflow-y: auto;
   padding: 16px;
   display: flex;
