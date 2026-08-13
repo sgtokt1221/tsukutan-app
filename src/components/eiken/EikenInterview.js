@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { FaVolumeUp, FaPlay, FaRedo, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaVolumeUp, FaPlay, FaRedo, FaEye, FaCheck, FaTimes, FaMicrophone, FaStop } from 'react-icons/fa';
 import SessionHeader from '../learning/SessionHeader';
 import {
   INTERVIEW_GRADES,
@@ -15,6 +15,7 @@ import {
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { prefetchClips } from '../../logic/audioLibrary';
 import SpeakingPanel from './SpeakingPanel';
+import { canRecord, useRecorder } from '../../logic/useRecorder';
 import logger from '../../logic/logger';
 import './EikenInterview.css';
 
@@ -39,7 +40,6 @@ function Beat({ beat, revealed, onReveal, onSpeak, branch, onBranch }) {
 
   return (
     <div className="interview-beat">
-      <p className="interview-beat__role">面接委員</p>
       <p className="interview-beat__line">
         {beat.display}
         <button
@@ -56,7 +56,6 @@ function Beat({ beat, revealed, onReveal, onSpeak, branch, onBranch }) {
 
       {followUp && (
         <div className="interview-branch">
-          <p className="interview-beat__role">どちらで答える？</p>
           <div className="interview-branch__buttons">
             <button
               type="button"
@@ -92,7 +91,6 @@ function Beat({ beat, revealed, onReveal, onSpeak, branch, onBranch }) {
       {(beat.expected || question) && (
         revealed ? (
           <div className="interview-answer">
-            <p className="interview-beat__role">答え方の見本</p>
             <p className="interview-answer__text">
               {branchAnswer?.modelAnswer || question?.modelAnswer || beat.expected
                 || 'この場面は自分の言葉で答えます。'}
@@ -171,6 +169,8 @@ export default function EikenInterview({ grade, onExit }) {
   const [branch, setBranch] = useState(null);
   const [error, setError] = useState(null);
   const bodyRef = useRef(null);
+  // 録音は画面下のボタンが受け持つので、状態は親が持つ。
+  const recorder = useRecorder();
 
   useEffect(() => {
     let cancelled = false;
@@ -222,13 +222,16 @@ export default function EikenInterview({ grade, onExit }) {
   }, []);
 
   // 場面が変わったら面接委員のセリフを読み上げる。本番は耳から入る。
+  const { reset: resetRecorder, stop: stopRecorder } = recorder;
   useEffect(() => {
     if (!beat) return;
     setRevealed(false);
     setBranch(null);
+    // 前の場面の録音を持ち越さない。違う質問の答えを見てしまう。
+    resetRecorder();
     if (bodyRef.current) bodyRef.current.scrollTop = 0;
     speakSequence([{ text: beat.speech, lang: 'en-US' }]);
-  }, [beat, speak]);
+  }, [beat, speak, resetRecorder]);
 
   const cardView = useMemo(() => cardViewFor(beat), [beat]);
   const card = session?.card;
@@ -310,6 +313,7 @@ export default function EikenInterview({ grade, onExit }) {
 
         {speaking && (
           <SpeakingPanel
+            recorder={recorder}
             mode={speaking.mode}
             referenceText={speaking.referenceText}
             question={speaking.question}
@@ -323,7 +327,6 @@ export default function EikenInterview({ grade, onExit }) {
 
         {cardView === 'passage' && card?.passage && (
           <div className="interview-card-panel">
-            <p className="interview-card-panel__label">問題カード</p>
             <p className="interview-passage">{card.passage.text}</p>
             {beat?.recordsStudent && (
               <button type="button" className="ghost-button" onClick={() => speak(card.passage.text)}>
@@ -335,7 +338,6 @@ export default function EikenInterview({ grade, onExit }) {
 
         {cardView === 'illustration' && card?.illustrations?.length > 0 && (
           <div className="interview-card-panel">
-            <p className="interview-card-panel__label">問題カード</p>
             {card.narration?.storyLine && (
               <p className="interview-narration">{card.narration.storyLine}</p>
             )}
@@ -372,30 +374,60 @@ export default function EikenInterview({ grade, onExit }) {
           <p className="interview-note">カードは裏返してあります。見ずに答えます。</p>
         )}
 
+        {/* 心得は最初の場面に、たたんだ状態で置く。開かなければ邪魔にならない。 */}
         {session.flow.tips?.length > 0 && position === 0 && (
-          <ul className="interview-tips">
-            {session.flow.tips.map((tip) => <li key={tip}>{tip}</li>)}
-          </ul>
+          <details className="interview-tips">
+            <summary>気をつけること</summary>
+            <ul>
+              {session.flow.tips.map((tip) => <li key={tip}>{tip}</li>)}
+            </ul>
+          </details>
         )}
+
       </div>
 
+      {/* 操作は下にまとめる。話す場面では真ん中にマイクが出る。 */}
       <div className="interview-footer">
         <button
           type="button"
-          className="ghost-button"
+          className="ghost-button interview-footer__step"
           onClick={() => setPosition((value) => Math.max(0, value - 1))}
           disabled={position === 0}
         >
           前へ
         </button>
+
+        {speaking && canRecord() && (
+          recorder.state === 'recording' ? (
+            <button
+              type="button"
+              className="interview-mic is-recording"
+              onClick={stopRecorder}
+              aria-label="録音を止める"
+            >
+              <FaStop aria-hidden="true" />
+              <span className="interview-mic__time">{formatSeconds(recorder.seconds)}</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="interview-mic"
+              onClick={recorder.start}
+              aria-label={recorder.blob ? '録り直す' : '録音する'}
+            >
+              <FaMicrophone aria-hidden="true" />
+            </button>
+          )
+        )}
+
         {isLast ? (
-          <button type="button" className="primary-action" onClick={exitSession}>
+          <button type="button" className="primary-action interview-footer__step" onClick={exitSession}>
             終わる
           </button>
         ) : (
           <button
             type="button"
-            className="primary-action"
+            className="primary-action interview-footer__step"
             onClick={() => setPosition((value) => Math.min(beats.length - 1, value + 1))}
           >
             次へ
