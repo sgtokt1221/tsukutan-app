@@ -1,0 +1,399 @@
+{
+  "id": "eiken3-nature-01",
+  "grade": "3",
+  "category": "nature",
+  "title": "The River Behind Our School",
+  "titleJa": "学校のうしろの川",
+  "sentences": [
+    {
+      "ja": "わたしたちの学校のうしろに小さな川が流れています。",
+      "chunks": [
+        {
+          "en": "A small river",
+          "ja": "小さな川が",
+          "role": "S"
+        },
+        {
+          "en": "runs",
+          "ja": "流れています",
+          "role": "V"
+        },
+        {
+          "en": "behind our school.",
+          "ja": "わたしたちの学校のうしろに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしが1年生のとき、その川はきれいではありませんでした。",
+      "chunks": [
+        {
+          "en": "When I was a first-year student,",
+          "ja": "わたしが1年生のとき",
+          "role": "M"
+        },
+        {
+          "en": "the river",
+          "ja": "その川は",
+          "role": "S"
+        },
+        {
+          "en": "was not",
+          "ja": "ではありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "clean.",
+          "ja": "きれい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "水の中にたくさんのごみがありました。",
+      "chunks": [
+        {
+          "en": "There was",
+          "ja": "ありました",
+          "role": "V"
+        },
+        {
+          "en": "a lot of garbage",
+          "ja": "たくさんのごみが",
+          "role": "S"
+        },
+        {
+          "en": "in the water.",
+          "ja": "水の中に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "だれもそこで魚を見たことがありませんでした。",
+      "chunks": [
+        {
+          "en": "Nobody",
+          "ja": "だれも",
+          "role": "S"
+        },
+        {
+          "en": "had seen",
+          "ja": "見たことがありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "fish",
+          "ja": "魚を",
+          "role": "O"
+        },
+        {
+          "en": "there.",
+          "ja": "そこで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "2年前、わたしたちの理科の先生がある考えを持ちました。",
+      "chunks": [
+        {
+          "en": "Two years ago,",
+          "ja": "2年前",
+          "role": "M"
+        },
+        {
+          "en": "our science teacher",
+          "ja": "わたしたちの理科の先生が",
+          "role": "S"
+        },
+        {
+          "en": "had",
+          "ja": "持ちました",
+          "role": "V"
+        },
+        {
+          "en": "an idea.",
+          "ja": "ある考えを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "彼は生徒たちに、月に一度その川を掃除しようと言いました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "told",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "the students",
+          "ja": "生徒たちに",
+          "role": "O"
+        },
+        {
+          "en": "to clean the river once a month.",
+          "ja": "月に一度その川を掃除しようと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "はじめは、たった10人しか来ませんでした。",
+      "chunks": [
+        {
+          "en": "At first,",
+          "ja": "はじめは",
+          "role": "M"
+        },
+        {
+          "en": "only ten students",
+          "ja": "たった10人の生徒しか",
+          "role": "S"
+        },
+        {
+          "en": "came.",
+          "ja": "来ませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、次の年には50人以上が手伝いました。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "more than fifty students",
+          "ja": "50人以上の生徒が",
+          "role": "S"
+        },
+        {
+          "en": "helped",
+          "ja": "手伝いました",
+          "role": "V"
+        },
+        {
+          "en": "the next year.",
+          "ja": "次の年には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今では、水はずっときれいになりました。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今では",
+          "role": "M"
+        },
+        {
+          "en": "the water",
+          "ja": "水は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "much cleaner.",
+          "ja": "ずっときれいに",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この春、わたしたちはそこで小さな魚を見つけました。",
+      "chunks": [
+        {
+          "en": "This spring,",
+          "ja": "この春",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "found",
+          "ja": "見つけました",
+          "role": "V"
+        },
+        {
+          "en": "small fish",
+          "ja": "小さな魚を",
+          "role": "O"
+        },
+        {
+          "en": "in the river.",
+          "ja": "その川で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それを見たとき、わたしはとてもうれしかったです。",
+      "chunks": [
+        {
+          "en": "When I saw them,",
+          "ja": "それを見たとき",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very happy.",
+          "ja": "とてもうれしい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちの仕事は小さなものでしたが、川は変わりました。",
+      "chunks": [
+        {
+          "en": "Our work",
+          "ja": "わたしたちの仕事は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "small,",
+          "ja": "小さなもの",
+          "role": "C"
+        },
+        {
+          "en": "but",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the river",
+          "ja": "川は",
+          "role": "S"
+        },
+        {
+          "en": "has changed.",
+          "ja": "変わりました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "小さなことでも、続ければ何かを変えられると学びました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "learned",
+          "ja": "学びました",
+          "role": "V"
+        },
+        {
+          "en": "that small things can change something if we continue them.",
+          "ja": "小さなことでも続ければ何かを変えられると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "先月、近所の人たちも掃除に加わりました。",
+      "chunks": [
+        {
+          "en": "Last month,",
+          "ja": "先月",
+          "role": "M"
+        },
+        {
+          "en": "some people in our neighborhood",
+          "ja": "近所の人たちも",
+          "role": "S"
+        },
+        {
+          "en": "joined",
+          "ja": "加わりました",
+          "role": "V"
+        },
+        {
+          "en": "the cleaning,",
+          "ja": "掃除に",
+          "role": "O"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのうちの一人は、子どものころその川で泳いだと言いました。",
+      "chunks": [
+        {
+          "en": "One of them",
+          "ja": "そのうちの一人は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that he swam in the river when he was a child.",
+          "ja": "子どものころその川で泳いだと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはいつか、また泳げるようになってほしいと思っています。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "hope",
+          "ja": "思っています",
+          "role": "V"
+        },
+        {
+          "en": "that we can swim there again someday.",
+          "ja": "いつかまたそこで泳げるようになってほしいと",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

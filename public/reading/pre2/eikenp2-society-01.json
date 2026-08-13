@@ -1,0 +1,514 @@
+{
+  "id": "eikenp2-society-01",
+  "grade": "pre2",
+  "category": "society",
+  "title": "The Bus That Came Back",
+  "titleJa": "戻ってきたバス",
+  "sentences": [
+    {
+      "ja": "多くの小さな町で、バスの路線が次々と姿を消しています。",
+      "chunks": [
+        {
+          "en": "In many small towns,",
+          "ja": "多くの小さな町で",
+          "role": "M"
+        },
+        {
+          "en": "bus lines",
+          "ja": "バスの路線が",
+          "role": "S"
+        },
+        {
+          "en": "are disappearing",
+          "ja": "姿を消しています",
+          "role": "V"
+        },
+        {
+          "en": "one after another.",
+          "ja": "次々と",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "乗る人が減ると、バス会社はその路線を続けられなくなります。",
+      "chunks": [
+        {
+          "en": "When the number of passengers falls,",
+          "ja": "乗る人が減ると",
+          "role": "M"
+        },
+        {
+          "en": "bus companies",
+          "ja": "バス会社は",
+          "role": "S"
+        },
+        {
+          "en": "cannot keep",
+          "ja": "続けられなくなります",
+          "role": "V"
+        },
+        {
+          "en": "the lines.",
+          "ja": "その路線を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、バスが無くなって最も困るのは、車を運転できない人たちです。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the people who suffer most",
+          "ja": "最も困る人たちは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "those who cannot drive.",
+          "ja": "車を運転できない人たち",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ある町では、5年前に最後のバスが止まりました。",
+      "chunks": [
+        {
+          "en": "In one town,",
+          "ja": "ある町では",
+          "role": "M"
+        },
+        {
+          "en": "the last bus",
+          "ja": "最後のバスが",
+          "role": "S"
+        },
+        {
+          "en": "stopped",
+          "ja": "止まりました",
+          "role": "V"
+        },
+        {
+          "en": "five years ago.",
+          "ja": "5年前に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのあと、多くのお年寄りが病院へ行けなくなりました。",
+      "chunks": [
+        {
+          "en": "After that,",
+          "ja": "そのあと",
+          "role": "M"
+        },
+        {
+          "en": "many elderly people",
+          "ja": "多くのお年寄りが",
+          "role": "S"
+        },
+        {
+          "en": "could not go",
+          "ja": "行けなくなりました",
+          "role": "V"
+        },
+        {
+          "en": "to the hospital.",
+          "ja": "病院へ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "買い物のために家族に頼まなければならない人もいました。",
+      "chunks": [
+        {
+          "en": "Some of them",
+          "ja": "彼らのうちの何人かは",
+          "role": "S"
+        },
+        {
+          "en": "had to ask",
+          "ja": "頼まなければなりませんでした",
+          "role": "V"
+        },
+        {
+          "en": "their families",
+          "ja": "家族に",
+          "role": "O"
+        },
+        {
+          "en": "for help with shopping.",
+          "ja": "買い物の助けを",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この問題を解決するため、町の人々は自分たちで小さなバスを走らせることにしました。",
+      "chunks": [
+        {
+          "en": "To solve this problem,",
+          "ja": "この問題を解決するため",
+          "role": "M"
+        },
+        {
+          "en": "the people of the town",
+          "ja": "町の人々は",
+          "role": "S"
+        },
+        {
+          "en": "decided to run",
+          "ja": "走らせることにしました",
+          "role": "V"
+        },
+        {
+          "en": "a small bus",
+          "ja": "小さなバスを",
+          "role": "O"
+        },
+        {
+          "en": "by themselves.",
+          "ja": "自分たちで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "運転するのは、仕事を辞めた町の人たちです。",
+      "chunks": [
+        {
+          "en": "The drivers",
+          "ja": "運転する人は",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "people in the town who have left their jobs.",
+          "ja": "仕事を辞めた町の人たち",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "彼らはお金のためではなく、近所の人のために運転しています。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "drive",
+          "ja": "運転しています",
+          "role": "V"
+        },
+        {
+          "en": "not for money",
+          "ja": "お金のためではなく",
+          "role": "M"
+        },
+        {
+          "en": "but for their neighbors.",
+          "ja": "近所の人のために",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "バスは1日に4回、町の中を回ります。",
+      "chunks": [
+        {
+          "en": "The bus",
+          "ja": "バスは",
+          "role": "S"
+        },
+        {
+          "en": "goes around",
+          "ja": "回ります",
+          "role": "V"
+        },
+        {
+          "en": "the town",
+          "ja": "町の中を",
+          "role": "O"
+        },
+        {
+          "en": "four times a day.",
+          "ja": "1日に4回",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "料金は1回100円で、子どもは無料です。",
+      "chunks": [
+        {
+          "en": "The fare",
+          "ja": "料金は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "one hundred yen for one ride,",
+          "ja": "1回100円",
+          "role": "C"
+        },
+        {
+          "en": "and",
+          "ja": "そして",
+          "role": "M"
+        },
+        {
+          "en": "children",
+          "ja": "子どもは",
+          "role": "S"
+        },
+        {
+          "en": "ride",
+          "ja": "乗ります",
+          "role": "V"
+        },
+        {
+          "en": "for free.",
+          "ja": "無料で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "始まったとき、多くの人がうまくいかないだろうと考えていました。",
+      "chunks": [
+        {
+          "en": "When it started,",
+          "ja": "始まったとき",
+          "role": "M"
+        },
+        {
+          "en": "many people",
+          "ja": "多くの人が",
+          "role": "S"
+        },
+        {
+          "en": "thought",
+          "ja": "考えていました",
+          "role": "V"
+        },
+        {
+          "en": "that it would not work.",
+          "ja": "うまくいかないだろうと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし3年たった今も、そのバスはまだ走っています。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "three years later,",
+          "ja": "3年たった今も",
+          "role": "M"
+        },
+        {
+          "en": "the bus",
+          "ja": "そのバスは",
+          "role": "S"
+        },
+        {
+          "en": "is still running.",
+          "ja": "まだ走っています",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "今では、他の町からもその仕組みを見に人が来ます。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今では",
+          "role": "M"
+        },
+        {
+          "en": "people from other towns",
+          "ja": "他の町からも人が",
+          "role": "S"
+        },
+        {
+          "en": "come",
+          "ja": "来ます",
+          "role": "V"
+        },
+        {
+          "en": "to see the system.",
+          "ja": "その仕組みを見に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この例は、大切なことを教えてくれます。",
+      "chunks": [
+        {
+          "en": "This example",
+          "ja": "この例は",
+          "role": "S"
+        },
+        {
+          "en": "teaches",
+          "ja": "教えてくれます",
+          "role": "V"
+        },
+        {
+          "en": "us",
+          "ja": "わたしたちに",
+          "role": "O"
+        },
+        {
+          "en": "an important thing.",
+          "ja": "大切なことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "問題を解決するのは、いつも大きな会社や政府とはかぎりません。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is not always",
+          "ja": "とはかぎりません",
+          "role": "V"
+        },
+        {
+          "en": "big companies or the government that solve problems.",
+          "ja": "問題を解決するのは大きな会社や政府だ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ときには、そこに住んでいる人たちが最も良い答えを見つけます。",
+      "chunks": [
+        {
+          "en": "Sometimes",
+          "ja": "ときには",
+          "role": "M"
+        },
+        {
+          "en": "the people who live there",
+          "ja": "そこに住んでいる人たちが",
+          "role": "S"
+        },
+        {
+          "en": "find",
+          "ja": "見つけます",
+          "role": "V"
+        },
+        {
+          "en": "the best answer.",
+          "ja": "最も良い答えを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "もちろん、この方法がどこでもうまくいくわけではありません。",
+      "chunks": [
+        {
+          "en": "Of course,",
+          "ja": "もちろん",
+          "role": "M"
+        },
+        {
+          "en": "this way",
+          "ja": "この方法が",
+          "role": "S"
+        },
+        {
+          "en": "does not work",
+          "ja": "うまくいくわけではありません",
+          "role": "V"
+        },
+        {
+          "en": "everywhere.",
+          "ja": "どこでも",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "運転できる人がいなければ、バスは動きません。",
+      "chunks": [
+        {
+          "en": "If there are no people who can drive,",
+          "ja": "運転できる人がいなければ",
+          "role": "M"
+        },
+        {
+          "en": "the bus",
+          "ja": "バスは",
+          "role": "S"
+        },
+        {
+          "en": "does not move.",
+          "ja": "動きません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、この町の人たちは待つのをやめて、自分たちで動きました。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "the people in this town",
+          "ja": "この町の人たちは",
+          "role": "S"
+        },
+        {
+          "en": "stopped waiting",
+          "ja": "待つのをやめました",
+          "role": "V"
+        },
+        {
+          "en": "and acted by themselves.",
+          "ja": "そして自分たちで動きました",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "id": "eiken4-town-01",
+  "grade": "4",
+  "category": "town",
+  "title": "The Old Bookstore",
+  "titleJa": "古い本屋さん",
+  "sentences": [
+    {
+      "ja": "わたしの町には古い本屋さんがあります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "an old bookstore",
+          "ja": "古い本屋さんが",
+          "role": "S"
+        },
+        {
+          "en": "in my town.",
+          "ja": "わたしの町には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それは駅のとなりにあります。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "next to the station.",
+          "ja": "駅のとなりに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "店はとても小さくて、いつも静かです。",
+      "chunks": [
+        {
+          "en": "The shop",
+          "ja": "店は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "very small and always quiet.",
+          "ja": "とても小さくて、いつも静か",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは土曜日によくそこへ行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "often go",
+          "ja": "よく行きます",
+          "role": "V"
+        },
+        {
+          "en": "there",
+          "ja": "そこへ",
+          "role": "M"
+        },
+        {
+          "en": "on Saturday.",
+          "ja": "土曜日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "店の主人はやさしいおじいさんです。",
+      "chunks": [
+        {
+          "en": "The man in the shop",
+          "ja": "店の主人は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a kind old man.",
+          "ja": "やさしいおじいさん",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "彼はいつもわたしにいい本を見せてくれます。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "always shows",
+          "ja": "いつも見せてくれます",
+          "role": "V"
+        },
+        {
+          "en": "me",
+          "ja": "わたしに",
+          "role": "O"
+        },
+        {
+          "en": "good books.",
+          "ja": "いい本を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "先月、彼はわたしに動物についての本をくれました。",
+      "chunks": [
+        {
+          "en": "Last month,",
+          "ja": "先月",
+          "role": "M"
+        },
+        {
+          "en": "he",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "gave",
+          "ja": "くれました",
+          "role": "V"
+        },
+        {
+          "en": "me",
+          "ja": "わたしに",
+          "role": "O"
+        },
+        {
+          "en": "a book about animals.",
+          "ja": "動物についての本を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはその本を3日で読みました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "read",
+          "ja": "読みました",
+          "role": "V"
+        },
+        {
+          "en": "the book",
+          "ja": "その本を",
+          "role": "O"
+        },
+        {
+          "en": "in three days.",
+          "ja": "3日で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その中の写真はとてもおもしろかったです。",
+      "chunks": [
+        {
+          "en": "The pictures in it",
+          "ja": "その中の写真は",
+          "role": "S"
+        },
+        {
+          "en": "were",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very interesting.",
+          "ja": "とてもおもしろい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "今、わたしはもっと動物について知りたいです。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "want to know",
+          "ja": "知りたいです",
+          "role": "V"
+        },
+        {
+          "en": "more about animals.",
+          "ja": "もっと動物について",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはこの店が大好きです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "love",
+          "ja": "大好きです",
+          "role": "V"
+        },
+        {
+          "en": "this shop.",
+          "ja": "この店が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "その本屋さんは60年前からそこにあります。",
+      "chunks": [
+        {
+          "en": "The bookstore",
+          "ja": "その本屋さんは",
+          "role": "S"
+        },
+        {
+          "en": "has been",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "there",
+          "ja": "そこに",
+          "role": "M"
+        },
+        {
+          "en": "for sixty years.",
+          "ja": "60年前から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの父も子どものときそこで本を買いました。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "わたしの父も",
+          "role": "S"
+        },
+        {
+          "en": "bought",
+          "ja": "買いました",
+          "role": "V"
+        },
+        {
+          "en": "books",
+          "ja": "本を",
+          "role": "O"
+        },
+        {
+          "en": "there",
+          "ja": "そこで",
+          "role": "M"
+        },
+        {
+          "en": "when he was a child.",
+          "ja": "子どものときに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "小さな店ですが、たくさんの人がこの店を必要としています。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a small shop,",
+          "ja": "小さな店",
+          "role": "C"
+        },
+        {
+          "en": "but",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "many people",
+          "ja": "たくさんの人が",
+          "role": "S"
+        },
+        {
+          "en": "need",
+          "ja": "必要としています",
+          "role": "V"
+        },
+        {
+          "en": "it.",
+          "ja": "この店を",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

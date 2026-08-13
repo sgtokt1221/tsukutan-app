@@ -1,17 +1,135 @@
 {
   "categories": [
-    { "id": "daily", "label": "毎日のこと" },
-    { "id": "school", "label": "学校" },
-    { "id": "town", "label": "まちと行事" },
-    { "id": "nature", "label": "自然と環境" },
-    { "id": "society", "label": "社会のしくみ" }
+    {
+      "id": "daily",
+      "label": "毎日のこと"
+    },
+    {
+      "id": "school",
+      "label": "学校"
+    },
+    {
+      "id": "town",
+      "label": "まちと行事"
+    },
+    {
+      "id": "nature",
+      "label": "自然と環境"
+    },
+    {
+      "id": "society",
+      "label": "社会のしくみ"
+    },
+    {
+      "id": "science",
+      "label": "科学とからだ"
+    },
+    {
+      "id": "culture",
+      "label": "文化と歴史"
+    },
+    {
+      "id": "sports",
+      "label": "スポーツ"
+    },
+    {
+      "id": "work",
+      "label": "仕事とお金"
+    },
+    {
+      "id": "technology",
+      "label": "技術とインターネット"
+    }
   ],
   "grades": [
     {
       "id": "5",
       "label": "英検5級",
       "readings": [
-        { "id": "eiken5-daily-01", "title": "My Morning", "titleJa": "わたしの朝", "category": "daily" }
+        {
+          "id": "eiken5-daily-01",
+          "title": "My Morning",
+          "titleJa": "わたしの朝",
+          "category": "daily"
+        },
+        {
+          "id": "eiken5-school-01",
+          "title": "My Dog and I",
+          "titleJa": "わたしと犬",
+          "category": "school"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "label": "英検4級",
+      "readings": [
+        {
+          "id": "eiken4-school-01",
+          "title": "The School Festival",
+          "titleJa": "学校の文化祭",
+          "category": "school"
+        },
+        {
+          "id": "eiken4-town-01",
+          "title": "The Old Bookstore",
+          "titleJa": "古い本屋さん",
+          "category": "town"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "label": "英検3級",
+      "readings": [
+        {
+          "id": "eiken3-town-01",
+          "title": "The Morning Market",
+          "titleJa": "朝の市場",
+          "category": "town"
+        },
+        {
+          "id": "eiken3-nature-01",
+          "title": "The River Behind Our School",
+          "titleJa": "学校のうしろの川",
+          "category": "nature"
+        }
+      ]
+    },
+    {
+      "id": "pre2",
+      "label": "英検準2級",
+      "readings": [
+        {
+          "id": "eikenp2-society-01",
+          "title": "The Bus That Came Back",
+          "titleJa": "戻ってきたバス",
+          "category": "society"
+        },
+        {
+          "id": "eikenp2-science-01",
+          "title": "Why We Forget",
+          "titleJa": "なぜ忘れるのか",
+          "category": "science"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "label": "英検2級",
+      "readings": [
+        {
+          "id": "eiken2-technology-01",
+          "title": "The Language That Machines Learned",
+          "titleJa": "機械が覚えた言葉",
+          "category": "technology"
+        },
+        {
+          "id": "eiken2-culture-01",
+          "title": "The Bowl That Was Broken",
+          "titleJa": "割れた器",
+          "category": "culture"
+        }
       ]
     }
   ]

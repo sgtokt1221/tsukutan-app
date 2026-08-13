@@ -1,0 +1,434 @@
+{
+  "id": "eikenp2-science-01",
+  "grade": "pre2",
+  "category": "science",
+  "title": "Why We Forget",
+  "titleJa": "なぜ忘れるのか",
+  "sentences": [
+    {
+      "ja": "多くの生徒は、覚えたことをすぐ忘れてしまうと感じています。",
+      "chunks": [
+        {
+          "en": "Many students",
+          "ja": "多くの生徒は",
+          "role": "S"
+        },
+        {
+          "en": "feel",
+          "ja": "感じています",
+          "role": "V"
+        },
+        {
+          "en": "that they soon forget what they have learned.",
+          "ja": "覚えたことをすぐ忘れてしまうと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、忘れることは頭が悪いという意味ではありません。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "forgetting",
+          "ja": "忘れることは",
+          "role": "S"
+        },
+        {
+          "en": "does not mean",
+          "ja": "という意味ではありません",
+          "role": "V"
+        },
+        {
+          "en": "that you are not good at studying.",
+          "ja": "勉強が苦手だ",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それは、わたしたちの脳が正しく働いているしるしです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a sign that our brains are working in the right way.",
+          "ja": "わたしたちの脳が正しく働いているしるし",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "100年以上前、あるドイツの研究者がこのことを調べました。",
+      "chunks": [
+        {
+          "en": "More than one hundred years ago,",
+          "ja": "100年以上前",
+          "role": "M"
+        },
+        {
+          "en": "a German researcher",
+          "ja": "あるドイツの研究者が",
+          "role": "S"
+        },
+        {
+          "en": "studied",
+          "ja": "調べました",
+          "role": "V"
+        },
+        {
+          "en": "this.",
+          "ja": "このことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "彼は意味のない言葉を覚え、どれくらい忘れるかを記録しました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "learned",
+          "ja": "覚えました",
+          "role": "V"
+        },
+        {
+          "en": "words without meaning",
+          "ja": "意味のない言葉を",
+          "role": "O"
+        },
+        {
+          "en": "and recorded how much he forgot.",
+          "ja": "そしてどれくらい忘れるかを記録しました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その結果、忘れ方には決まった形があることが分かりました。",
+      "chunks": [
+        {
+          "en": "The results",
+          "ja": "その結果は",
+          "role": "S"
+        },
+        {
+          "en": "showed",
+          "ja": "示しました",
+          "role": "V"
+        },
+        {
+          "en": "that there is a fixed shape in the way we forget.",
+          "ja": "忘れ方には決まった形があることを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "覚えた直後の1時間で、半分近くが消えてしまいます。",
+      "chunks": [
+        {
+          "en": "In the first hour after learning,",
+          "ja": "覚えた直後の1時間で",
+          "role": "M"
+        },
+        {
+          "en": "almost half of it",
+          "ja": "その半分近くが",
+          "role": "S"
+        },
+        {
+          "en": "disappears.",
+          "ja": "消えてしまいます",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "しかし1日を過ぎると、忘れ方はゆっくりになります。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "after one day",
+          "ja": "1日を過ぎると",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "forget",
+          "ja": "忘れます",
+          "role": "V"
+        },
+        {
+          "en": "more slowly.",
+          "ja": "もっとゆっくり",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "大切なのは、忘れかけたときにもう一度見ることです。",
+      "chunks": [
+        {
+          "en": "The important thing",
+          "ja": "大切なことは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to look at it again when you are beginning to forget.",
+          "ja": "忘れかけたときにもう一度見ること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "同じ日に10回読むより、10日に分けて読むほうが強く残ります。",
+      "chunks": [
+        {
+          "en": "Reading it once a day for ten days",
+          "ja": "10日に分けて読むほうが",
+          "role": "S"
+        },
+        {
+          "en": "stays",
+          "ja": "残ります",
+          "role": "V"
+        },
+        {
+          "en": "stronger",
+          "ja": "より強く",
+          "role": "C"
+        },
+        {
+          "en": "than reading it ten times in one day.",
+          "ja": "同じ日に10回読むより",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "これは「間隔をあけて見直すこと」と呼ばれています。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is called",
+          "ja": "と呼ばれています",
+          "role": "V"
+        },
+        {
+          "en": "spaced practice.",
+          "ja": "「間隔をあけた練習」",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "多くの学習ソフトが、この考えを使って見直す日を決めています。",
+      "chunks": [
+        {
+          "en": "Many learning programs",
+          "ja": "多くの学習ソフトが",
+          "role": "S"
+        },
+        {
+          "en": "use",
+          "ja": "使っています",
+          "role": "V"
+        },
+        {
+          "en": "this idea",
+          "ja": "この考えを",
+          "role": "O"
+        },
+        {
+          "en": "to decide the day to look again.",
+          "ja": "見直す日を決めるために",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまり、忘れることは間違いではありません。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "forgetting",
+          "ja": "忘れることは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a mistake.",
+          "ja": "間違い",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それは、いつもう一度見ればよいかを教えてくれる合図なのです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a sign that tells us when to look again.",
+          "ja": "いつもう一度見ればよいかを教えてくれる合図",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この仕組みを知っていれば、勉強のしかたを変えることができます。",
+      "chunks": [
+        {
+          "en": "If you know this system,",
+          "ja": "この仕組みを知っていれば",
+          "role": "M"
+        },
+        {
+          "en": "you",
+          "ja": "あなたは",
+          "role": "S"
+        },
+        {
+          "en": "can change",
+          "ja": "変えることができます",
+          "role": "V"
+        },
+        {
+          "en": "the way you study.",
+          "ja": "勉強のしかたを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "覚えられないと悩む前に、いつ見直すかを考えてみてください。",
+      "chunks": [
+        {
+          "en": "Before you worry that you cannot remember,",
+          "ja": "覚えられないと悩む前に",
+          "role": "M"
+        },
+        {
+          "en": "please think about",
+          "ja": "考えてみてください",
+          "role": "V"
+        },
+        {
+          "en": "when you will look at it again.",
+          "ja": "いつ見直すかを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "ひとつ注意することがあります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "one thing to be careful about.",
+          "ja": "注意することがひとつ",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "見直すだけでは、覚えた気になってしまうことがあります。",
+      "chunks": [
+        {
+          "en": "If you only look at it again,",
+          "ja": "見直すだけでは",
+          "role": "M"
+        },
+        {
+          "en": "you",
+          "ja": "あなたは",
+          "role": "S"
+        },
+        {
+          "en": "may feel",
+          "ja": "感じてしまうことがあります",
+          "role": "V"
+        },
+        {
+          "en": "that you have learned it.",
+          "ja": "覚えたと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "本を閉じて、自分で思い出すほうがずっと強く残ります。",
+      "chunks": [
+        {
+          "en": "Closing the book and remembering it by yourself",
+          "ja": "本を閉じて自分で思い出すほうが",
+          "role": "S"
+        },
+        {
+          "en": "stays",
+          "ja": "残ります",
+          "role": "V"
+        },
+        {
+          "en": "much stronger.",
+          "ja": "ずっと強く",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

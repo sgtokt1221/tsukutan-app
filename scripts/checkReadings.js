@@ -81,9 +81,31 @@ const allowedWordsFor = (grade, master) => {
   return allowed;
 };
 
-/** 語尾を落として原形に寄せる。辞書は持たない。 */
+/**
+ * 不規則動詞。語尾の規則では原形に戻せない。
+ * 4級以上は過去形を使うので、ここが無いと「級の外」だらけになる。
+ */
+const IRREGULAR = {
+  had: 'have', made: 'make', sold: 'sell', came: 'come', went: 'go', gave: 'give',
+  sang: 'sing', sent: 'send', bought: 'buy', brought: 'bring', took: 'take',
+  saw: 'see', said: 'say', told: 'tell', found: 'find', got: 'get', put: 'put',
+  ran: 'run', ate: 'eat', drank: 'drink', wrote: 'write', read: 'read',
+  taught: 'teach', thought: 'think', knew: 'know', grew: 'grow', built: 'build',
+  began: 'begin', became: 'become', left: 'leave', felt: 'feel', kept: 'keep',
+  met: 'meet', paid: 'pay', heard: 'hear', held: 'hold', lost: 'lose',
+  spoke: 'speak', stood: 'stand', understood: 'understand', won: 'win',
+  wore: 'wear', chose: 'choose', fell: 'fell', flew: 'fly', spent: 'spend',
+  written: 'write', taken: 'take', given: 'give', seen: 'see', done: 'do',
+  gone: 'go', known: 'know', grown: 'grow', spoken: 'speak', eaten: 'eat',
+  forgot: 'forget', forgotten: 'forget', swam: 'swim', swum: 'swim',
+  slept: 'sleep', sat: 'sit', drove: 'drive', driven: 'drive', rose: 'rise',
+  children: 'child', people: 'person', men: 'man', women: 'woman', feet: 'foot',
+};
+
+/** 語尾を落として原形に寄せる。辞書は持たない（不規則だけ上の表で見る）。 */
 const forms = (token) => {
   const set = new Set([token]);
+  if (IRREGULAR[token]) set.add(IRREGULAR[token]);
   const rules = [
     [/ies$/, 'y'], [/ied$/, 'y'], [/ies$/, ''], [/es$/, ''], [/s$/, ''],
     [/ing$/, ''], [/ing$/, 'e'], [/ed$/, ''], [/ed$/, 'e'],
@@ -123,6 +145,17 @@ const main = () => {
       let counted = 0;
       let words = 0;
 
+      // 固有名詞を先に集める。文の途中で大文字始まりなら名前とみなす。
+      // 文頭にも出てくるので（Shiro likes balls.）、読みもの全体で拾っておく。
+      const properNouns = new Set();
+      for (const sentence of reading.sentences) {
+        const raw = sentenceText(sentence).split(/\s+/).filter(Boolean);
+        for (let position = 1; position < raw.length; position += 1) {
+          const original = raw[position].replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '');
+          if (/^[A-Z]/.test(original)) properNouns.add(original.toLowerCase());
+        }
+      }
+
       for (const sentence of reading.sentences) {
         if (!sentence.ja) notes.push('文の和訳が無い');
         for (const chunk of sentence.chunks) {
@@ -133,9 +166,16 @@ const main = () => {
         const text = sentenceText(sentence);
         if (/\s{2,}/.test(text)) notes.push(`つなぐと二重スペースになる: ${text}`);
 
-        for (const token of text.toLowerCase().split(/[^a-z']+/).filter(Boolean)) {
+        // 大文字で始まる語のうち、文頭でないものは固有名詞として数えない。
+        // 名前（Shiro / Yumi）を「級の外」と数えても直しようがない。
+        const raw = text.split(/\s+/).filter(Boolean);
+        for (let position = 0; position < raw.length; position += 1) {
+          const original = raw[position].replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '');
+          const token = original.toLowerCase();
+          if (!token) continue;
           words += 1;
           if (FREE_WORDS.has(token)) continue;
+          if (properNouns.has(token)) continue;
           counted += 1;
           const known = [...forms(token)].some((form) => allowed?.has(form));
           if (!known) outside.push(token);
