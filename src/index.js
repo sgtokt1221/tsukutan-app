@@ -5,6 +5,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { enableOfflineCache } from './logic/firestorePersistence';
 
+// 起動の内訳を測れるようにする。logger.debug と同じで本番では静かだが、
+// performance.getEntriesByType('mark') で後から見られる。
+performance.mark('boot');
+
 // Firestore の読み書きより先に呼ぶ。描画のあとだと手遅れになる。
 enableOfflineCache();
 

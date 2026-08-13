@@ -18,6 +18,7 @@ import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
 import Onboarding from './components/onboarding/Onboarding';
+import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
@@ -1410,10 +1411,17 @@ export default function StudentDashboard() {
   ) : null;
 
   if (loading) {
+    // 真っ白にスピナーだけだと壊れて見える。出来上がりと同じ形を先に描く。
     return (
       <>
         {onboardingOverlay}
-        <div className="loading-container"><div className="spinner"></div></div>
+        <div className="dashboard-container">
+          <StudentHeader userName={userData?.name} onLogout={handleLogout} />
+          <main className="card-main">
+            <DashboardSkeleton />
+          </main>
+          <StudentBottomNav activeTab="home" onChange={() => {}} />
+        </div>
       </>
     );
   }
