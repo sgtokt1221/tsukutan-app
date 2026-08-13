@@ -36,7 +36,7 @@ export const buildWordIndex = (master = []) => {
   const index = new Map();
   for (const word of master) {
     const key = normalizeToken(word?.word);
-    // 熟語（"a lot of"）は1語では引けないので入れない。
+    // 熟語（"a lot of"）は buildPhraseIndex のほうへ入れる。
     if (!key || key.includes(' ')) continue;
     // 同じ綴りが複数あればやさしいほうを採る。中高生に見せるのは基本の意味。
     const current = index.get(key);
@@ -58,4 +58,74 @@ export const findWord = (token, index) => {
     if (hit) return hit;
   }
   return null;
+};
+
+/**
+ * 熟語の索引。1語目 → その語から始まる熟語（語数の多い順）。
+ *
+ * "a lot of" の lot だけを登録しても意味が無い。本文の中で熟語になっている
+ * ところは、まとまりごと押させる。
+ */
+export const buildPhraseIndex = (master = []) => {
+  const index = new Map();
+  for (const word of master) {
+    const tokens = normalizeToken(String(word?.word).replace(/[～〜]/g, ' '))
+      .split(/\s+/)
+      .map(normalizeToken)
+      .filter(Boolean);
+    if (tokens.length < 2) continue;
+
+    const head = tokens[0];
+    if (!index.has(head)) index.set(head, []);
+    index.get(head).push({ tokens, word });
+  }
+  // 長いものから当てる。"look up" より "look up to" を優先する。
+  for (const list of index.values()) list.sort((a, b) => b.tokens.length - a.tokens.length);
+  return index;
+};
+
+/**
+ * 文を語に割り、熟語になっているところをひとまとまりにする。
+ *
+ * @param {string} text 文（または意味のまとまり）
+ * @param {Map} phraseIndex buildPhraseIndex の返り値
+ * @returns {Array} [{ text, phrase }] text は表示する見た目、phrase は当たった熟語
+ */
+export const splitIntoUnits = (text, phraseIndex) => {
+  // 空白も残して割る。表示のときに元の間隔へ戻せるようにする。
+  const pieces = String(text || '').split(/(\s+)/).filter((piece) => piece !== '');
+  const units = [];
+
+  for (let i = 0; i < pieces.length; i += 1) {
+    const piece = pieces[i];
+    if (/^\s+$/.test(piece)) { units.push({ text: piece, space: true }); continue; }
+
+    const candidates = phraseIndex?.get(normalizeToken(piece)) || [];
+    let matched = null;
+    for (const candidate of candidates) {
+      // 空白を飛ばしながら、熟語の語が順に並んでいるか見る
+      const consumed = [];
+      let cursor = i;
+      let ok = true;
+      for (const token of candidate.tokens) {
+        while (cursor < pieces.length && /^\s+$/.test(pieces[cursor])) { consumed.push(cursor); cursor += 1; }
+        if (cursor >= pieces.length || normalizeToken(pieces[cursor]) !== token) { ok = false; break; }
+        consumed.push(cursor);
+        cursor += 1;
+      }
+      if (ok) { matched = { candidate, last: consumed[consumed.length - 1] }; break; }
+    }
+
+    if (matched) {
+      units.push({
+        text: pieces.slice(i, matched.last + 1).join(''),
+        phrase: matched.candidate.word,
+      });
+      i = matched.last;
+    } else {
+      units.push({ text: piece });
+    }
+  }
+
+  return units;
 };

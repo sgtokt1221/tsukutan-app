@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaVolumeUp, FaStop } from 'react-icons/fa';
 import { speechPlanFor } from '../../logic/readingContent';
 import { useLongPress } from '../../logic/useLongPress';
+import { splitIntoUnits } from '../../logic/wordLookup';
 
 /**
  * 読みもの本文。同じ素材を4通りに見せる。
@@ -30,29 +31,38 @@ const ROLE_LABELS = { S: 'S', V: 'V', O: 'O', C: 'C', M: 'M' };
  * 短く押したときは何もしない。スラッシュ読みでは、親のまとまりを押すと
  * 訳が出る作りなので、そちらへ通す。
  */
-function Word({ text, marked, onHold }) {
-  const { handlers } = useLongPress(() => onHold(text));
-  return (
-    <span
-      className={marked ? 'reading-word is-marked' : 'reading-word'}
-      {...handlers}
-    >
-      {text}
-    </span>
-  );
+function Word({ text, phrase, marked, onHold }) {
+  const { handlers } = useLongPress((at) => onHold(text, { phrase, at }));
+  const className = [
+    'reading-word',
+    phrase ? 'is-phrase' : '',
+    marked ? 'is-marked' : '',
+  ].filter(Boolean).join(' ');
+  return <span className={className} {...handlers}>{text}</span>;
 }
 
-/** 語ごとに割って、間にスペースを戻す。 */
-function Words({ text, isMarked, onHold }) {
-  return text.split(/(\s+)/).map((piece, index) => (
-    /^\s+$/.test(piece) || piece === ''
-      ? <React.Fragment key={index}>{piece}</React.Fragment>
-      : <Word key={index} text={piece} marked={isMarked(piece)} onHold={onHold} />
+/**
+ * 語ごとに割る。熟語になっているところはまとまりのまま1つにする。
+ * "a lot of" の lot だけを登録しても意味が無い。
+ */
+function Words({ text, phrases, isMarked, onHold }) {
+  return splitIntoUnits(text, phrases).map((unit, index) => (
+    unit.space
+      ? <React.Fragment key={index}>{unit.text}</React.Fragment>
+      : (
+        <Word
+          key={index}
+          text={unit.text}
+          phrase={unit.phrase}
+          marked={isMarked(unit.text, unit.phrase)}
+          onHold={onHold}
+        />
+      )
   ));
 }
 
 /** スラッシュ読み。押したまとまりだけ訳を出す。 */
-function SlashSentence({ sentence, isMarked, onHold }) {
+function SlashSentence({ sentence, phrases, isMarked, onHold }) {
   const [opened, setOpened] = useState(null);
 
   return (
@@ -66,7 +76,7 @@ function SlashSentence({ sentence, isMarked, onHold }) {
             onClick={() => setOpened(opened === index ? null : index)}
           >
             <span className="reading-chunk__en">
-              <Words text={chunk.en} isMarked={isMarked} onHold={onHold} />
+              <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
             </span>
             {opened === index && <span className="reading-chunk__ja">{chunk.ja}</span>}
           </button>
@@ -77,14 +87,14 @@ function SlashSentence({ sentence, isMarked, onHold }) {
 }
 
 /** SVOC。まとまりの上に札を付ける。修飾語（M）は控えめに。 */
-function SvocSentence({ sentence, isMarked, onHold }) {
+function SvocSentence({ sentence, phrases, isMarked, onHold }) {
   return (
     <p className="reading-sentence reading-sentence--svoc">
       {sentence.chunks.map((chunk, index) => (
         <span key={index} className={`reading-svoc is-${chunk.role.toLowerCase()}`}>
           <span className="reading-svoc__role">{ROLE_LABELS[chunk.role]}</span>
           <span className="reading-svoc__en">
-            <Words text={chunk.en} isMarked={isMarked} onHold={onHold} />
+            <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
           </span>
         </span>
       ))}
@@ -92,7 +102,7 @@ function SvocSentence({ sentence, isMarked, onHold }) {
   );
 }
 
-export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onStop, isMarked, onHold }) {
+export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onStop, phrases, isMarked, onHold }) {
   return (
     <div className="reading-body">
       {reading.sentences.map((sentence, index) => {
@@ -109,14 +119,14 @@ export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onS
             </button>
 
             <div className="reading-line__text">
-              {mode === 'slash' && <SlashSentence sentence={sentence} isMarked={isMarked} onHold={onHold} />}
-              {mode === 'svoc' && <SvocSentence sentence={sentence} isMarked={isMarked} onHold={onHold} />}
+              {mode === 'slash' && <SlashSentence sentence={sentence} phrases={phrases} isMarked={isMarked} onHold={onHold} />}
+              {mode === 'svoc' && <SvocSentence sentence={sentence} phrases={phrases} isMarked={isMarked} onHold={onHold} />}
               {(mode === 'plain' || mode === 'ja') && (
                 <p className="reading-sentence">
                   {sentence.chunks.map((chunk, i) => (
                     <React.Fragment key={i}>
                       {i > 0 && ' '}
-                      <Words text={chunk.en} isMarked={isMarked} onHold={onHold} />
+                      <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
                     </React.Fragment>
                   ))}
                 </p>

@@ -45,3 +45,40 @@ test('原形の候補に元の語を必ず含める', () => {
   expect(formsOf('walk')).toContain('walk');
   expect(formsOf('walked')).toEqual(expect.arrayContaining(['walked', 'walk']));
 });
+
+describe('熟語はまとまりで押す', () => {
+  const { buildPhraseIndex, splitIntoUnits } = require('./wordLookup');
+  const PHRASES = buildPhraseIndex([
+    { id: 'p1', word: 'a lot of', meaning: 'たくさんの' },
+    { id: 'p2', word: 'look up', meaning: '見上げる' },
+    { id: 'p3', word: 'look up to', meaning: '尊敬する' },
+    { id: 'p4', word: 'get up', meaning: '起きる' },
+    { id: 'p5', word: 'take care of ～', meaning: '～の世話をする' },
+  ]);
+
+  const shape = (text) => splitIntoUnits(text, PHRASES)
+    .filter((unit) => !unit.space)
+    .map((unit) => (unit.phrase ? `[${unit.text}]` : unit.text));
+
+  test('熟語のところはひとまとまりになる', () => {
+    expect(shape('I get up at six.')).toEqual(['I', '[get up]', 'at', 'six.']);
+  });
+
+  test('長い熟語を先に当てる', () => {
+    // look up ではなく look up to
+    expect(shape('I look up to my father.')).toEqual(['I', '[look up to]', 'my', 'father.']);
+  });
+
+  test('～を含む熟語も本文の語に当たる', () => {
+    expect(shape('I take care of my dog.')).toEqual(['I', '[take care of]', 'my', 'dog.']);
+  });
+
+  test('熟語でないところはそのまま1語ずつ', () => {
+    expect(shape('I like the morning.')).toEqual(['I', 'like', 'the', 'morning.']);
+  });
+
+  test('空白は残す。つなぐと元の文に戻る', () => {
+    const text = 'I get up at six.';
+    expect(splitIntoUnits(text, PHRASES).map((u) => u.text).join('')).toBe(text);
+  });
+});

@@ -10,8 +10,9 @@ import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
 import { loadWordMaster } from '../../logic/wordMaster';
-import { buildWordIndex, findWord } from '../../logic/wordLookup';
+import { buildWordIndex, buildPhraseIndex, findWord } from '../../logic/wordLookup';
 import { useBookmarks } from '../../logic/useBookmarks';
+import { useReadingZoom, MIN_ZOOM, MAX_ZOOM } from '../../logic/useReadingZoom';
 import './Reading.css';
 
 /**
@@ -41,31 +42,44 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
   // 長押しで「毎日みる」に入れるための照合。本文の語は活用しているので、
   // 単語カードのデータと突き合わせてから登録する。
   const [wordIndex, setWordIndex] = useState(null);
+  const [phraseIndex, setPhraseIndex] = useState(null);
   const [picked, setPicked] = useState(null);
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks(userId);
 
   useEffect(() => {
     loadWordMaster()
-      .then((master) => setWordIndex(buildWordIndex(master)))
+      .then((master) => { setWordIndex(buildWordIndex(master)); setPhraseIndex(buildPhraseIndex(master)); })
       .catch((loadError) => logger.warn('単語カードを読めませんでした', loadError));
   }, []);
 
-  /** 本文の語を長押ししたとき。カードにある語だけ登録する。 */
-  const holdWord = useCallback((token) => {
-    const word = findWord(token, wordIndex);
+  /**
+   * 本文を長押ししたとき。熟語のまとまりならその熟語を、そうでなければ
+   * 語をカードから引いて登録する。引けなければ登録しない。
+   */
+  const holdWord = useCallback((token, { phrase, at } = {}) => {
+    const word = phrase || findWord(token, wordIndex);
     if (!word) {
-      setPicked({ token, missing: true });
+      setPicked({ token, at, missing: true });
       return;
     }
     toggleBookmark(word);
-    setPicked({ token, word, added: !isBookmarked(word) });
+    setPicked({ token, at, word, added: !isBookmarked(word) });
   }, [wordIndex, toggleBookmark, isBookmarked]);
 
   /** その語が登録済みか。本文の見た目に印を付ける。 */
-  const markedWord = useCallback((token) => {
-    const word = findWord(token, wordIndex);
+  const markedWord = useCallback((token, phrase) => {
+    const word = phrase || findWord(token, wordIndex);
     return Boolean(word) && isBookmarked(word);
   }, [wordIndex, isBookmarked]);
+
+  // ふきだしは少し置いて消す。押しっぱなしにすると本文が隠れる。
+  useEffect(() => {
+    if (!picked) return undefined;
+    const id = setTimeout(() => setPicked(null), 2200);
+    return () => clearTimeout(id);
+  }, [picked]);
+
+  const [zoom, setZoom] = useReadingZoom();
 
   useEffect(() => {
     loadReadingIndex()
@@ -237,61 +251,62 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
 
         {mode === 'slash' && <p className="reading-note">まとまりを押すと、そこの訳が出ます。</p>}
 
-        {readingAll ? (
-          <button type="button" className="ghost-button reading-readall is-stop" onClick={stopAll}>
-            <FaStop aria-hidden="true" /> 読み上げを止める
-          </button>
-        ) : (
-          <button type="button" className="ghost-button reading-readall" onClick={readAll}>
-            <FaPlay aria-hidden="true" /> 通して読み上げる{mode === 'ja' && '（英語→日本語）'}
-          </button>
-        )}
+        {/* 文字サイズ。長文は読むものなので、単語帳とは別に持つ。 */}
+        <label className="reading-zoom">
+          <span className="reading-zoom__mark" aria-hidden="true">A</span>
+          <input
+            type="range"
+            min={MIN_ZOOM}
+            max={MAX_ZOOM}
+            step="10"
+            value={zoom}
+            onChange={(event) => setZoom(Number(event.target.value))}
+            aria-label={`文字の大きさ ${zoom}%`}
+          />
+          <span className="reading-zoom__mark reading-zoom__mark--large" aria-hidden="true">A</span>
+        </label>
 
         <p className="reading-note">語を長押しすると「毎日みる」に入ります。</p>
 
+        <div className="reading-scale" style={{ '--reading-zoom': zoom / 100 }}>
         <ReadingView
           reading={reading}
           mode={mode}
           speakingIndex={speakingIndex}
           onSpeak={speak}
           onStop={stop}
+          phrases={phraseIndex}
           isMarked={markedWord}
           onHold={holdWord}
         />
 
-        {/* 長押しの結果。押した本人にだけ短く返す。 */}
-        {picked && (
-          <p className={picked.missing ? 'reading-picked is-missing' : 'reading-picked'} role="status">
+        </div>
+
+        {/* 長押しの結果。押した指のすぐ上に出す。画面の下に置くと、
+            スクロール位置によっては見えないまま消える。 */}
+        {picked?.at && (
+          <p
+            className={picked.missing ? 'reading-picked is-missing' : 'reading-picked'}
+            role="status"
+            style={{ left: picked.at.x, top: picked.at.y }}
+          >
             {picked.missing
-              ? `「${picked.token}」は単語カードにありません。`
+              ? `「${picked.token}」は単語カードにありません`
               : (
                 <>
                   <FaStar aria-hidden="true" />{' '}
-                  {picked.word.word}（{picked.word.meaning}）を
-                  {picked.added ? '毎日みるに入れました。' : '毎日みるから外しました。'}
+                  {picked.word.word}
+                  {picked.added ? ' を毎日みるに入れました' : ' を毎日みるから外しました'}
                 </>
               )}
           </p>
         )}
 
-        {/* 音読。面接の音読と同じ仕組みで、読み飛ばした語を見る。 */}
-        {canRecord() && (
+        {/* 音読の結果。操作そのものは下に浮かせたボタンへ移した。 */}
+        {(aloud || recorder.state === 'recording') && (
           <div className="reading-aloud">
             <p className="home-section-eyebrow">音読</p>
-            {recorder.state === 'recording' ? (
-              <button type="button" className="reading-aloud__mic is-recording" onClick={stopRecorder}>
-                <FaStop aria-hidden="true" /> 読み終わったら止める
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="reading-aloud__mic"
-                onClick={() => { stop(); setAloud(null); handledBlobRef.current = null; recorder.start(); }}
-              >
-                <FaMicrophone aria-hidden="true" /> {aloud ? 'もう一度読む' : '声に出して読む'}
-              </button>
-            )}
-
+            {recorder.state === 'recording' && <p className="reading-note">読み終わったら、下のボタンで止めてください。</p>}
             {aloud?.working && <p className="reading-note">聞き取っています…</p>}
             {aloud?.failure && <p className="message-box message-box-error">{aloud.failure}</p>}
             {readAloudScore !== null && (
@@ -303,6 +318,40 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
               </>
             )}
           </div>
+        )}
+      </div>
+
+      {/* 読み上げと音読は、本文のどこを読んでいても押せるように浮かせる。
+          本文の一番下に置くと、長い読みものでは毎回スクロールして戻ることになる。 */}
+      <div className="reading-dock">
+        <button
+          type="button"
+          className={readingAll ? 'reading-dock__button is-active' : 'reading-dock__button'}
+          onClick={readingAll ? stopAll : readAll}
+          aria-label={readingAll ? '読み上げを止める' : '読み上げる'}
+        >
+          {readingAll ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+          <span>読み上げ</span>
+        </button>
+
+        {canRecord() && (
+          <button
+            type="button"
+            className={recorder.state === 'recording'
+              ? 'reading-dock__button is-recording'
+              : 'reading-dock__button'}
+            onClick={() => {
+              if (recorder.state === 'recording') { stopRecorder(); return; }
+              stop();
+              setAloud(null);
+              handledBlobRef.current = null;
+              recorder.start();
+            }}
+            aria-label={recorder.state === 'recording' ? '音読を止める' : '音読する'}
+          >
+            {recorder.state === 'recording' ? <FaStop aria-hidden="true" /> : <FaMicrophone aria-hidden="true" />}
+            <span>音読</span>
+          </button>
         )}
       </div>
     </div>
