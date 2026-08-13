@@ -305,54 +305,13 @@
   color: #b91c1c;
 }
 
-/* 点の帯 */
-.speaking-score {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr 2.5rem;
-  align-items: center;
-  gap: 10px;
-}
-
-.speaking-score__label {
-  font-size: 0.82rem;
-  color: #475569;
-}
-
-.speaking-score__track {
-  height: 8px;
-  border-radius: 999px;
-  background: #e2e8f0;
-  overflow: hidden;
-}
-
-.speaking-score__fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-}
-
-.speaking-score__fill.is-good { background: #16a34a; }
-.speaking-score__fill.is-fair { background: #f59e0b; }
-.speaking-score__fill.is-poor { background: #dc2626; }
-
-.speaking-score__value {
-  font-size: 0.9rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.speaking-score__value.is-good { color: #16a34a; }
-.speaking-score__value.is-fair { color: #b45309; }
-.speaking-score__value.is-poor { color: #dc2626; }
-
 .speaking-result {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* 気をつける語 */
+/* 読み飛ばした語 */
 .speaking-words ul {
   margin: 6px 0 0;
   padding: 0;
@@ -363,23 +322,15 @@
 }
 
 .speaking-words li {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
 }
 
 .speaking-words__word {
   font-weight: 600;
-  color: #0f172a;
-}
-
-.speaking-words__note {
-  font-size: 0.75rem;
-  color: #b91c1c;
+  color: #78350f;
 }
 
 /* 答えの中身 */
@@ -418,16 +369,16 @@
   color: #0f172a;
 }
 
-.speaking-transcript {
-  font-size: 0.82rem;
-  color: #64748b;
+.speaking-transcript-main {
+  padding: 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
 }
 
-.speaking-transcript summary {
-  cursor: pointer;
-}
-
-.speaking-transcript p {
-  margin: 6px 0 0;
-  line-height: 1.7;
+.speaking-transcript-main__text {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.9;
+  color: #0f172a;
 }
