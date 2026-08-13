@@ -30,7 +30,9 @@ test('マスターを読み込める', async () => {
 test('同じファイルは1回しか取りに行かない', async () => {
   global.fetch.mockResolvedValue(jsonResponse([]));
   await Promise.all([loadWordMaster(), loadWordMaster(), loadWordMaster()]);
-  expect(global.fetch).toHaveBeenCalledTimes(1);
+  // manifest（鍵と大きさを見るため）と本体で2回。何度呼んでも増えない。
+  expect(global.fetch).toHaveBeenCalledTimes(2);
+  expect(global.fetch).toHaveBeenCalledWith('/data/words-master.json');
 });
 
 test('404はHTTPステータス付きで失敗する', async () => {
@@ -52,17 +54,19 @@ test('一度失敗したら、呼び出すたびに取りに行かない', async
   await expect(loadWordMaster()).rejects.toThrow();
   await expect(loadWordMaster()).rejects.toThrow();
   await expect(loadWordMaster()).rejects.toThrow();
-  expect(global.fetch).toHaveBeenCalledTimes(1);
+  // manifest と本体で2回。失敗を覚えるので、呼び出すたびには増えない。
+  expect(global.fetch).toHaveBeenCalledTimes(2);
 });
 
 test('force を付ければやり直せる', async () => {
+  // manifest → 本体 の順に取りに行く。1回目の本体を失敗させる。
   global.fetch
+    .mockResolvedValueOnce(jsonResponse({ files: {} }))
     .mockResolvedValueOnce({ ok: false, status: 500, headers: { get: () => null } })
-    .mockResolvedValueOnce(jsonResponse([{ id: 'w1' }]));
+    .mockResolvedValue(jsonResponse([{ id: 'w1' }]));
 
   await expect(loadWordMaster()).rejects.toThrow();
   await expect(loadWordMaster({ force: true })).resolves.toEqual([{ id: 'w1' }]);
-  expect(global.fetch).toHaveBeenCalledTimes(2);
 });
 
 test('教材ごとのファイルを引く', async () => {

@@ -9,6 +9,8 @@
  * セッション内は同じ Promise を使い回す。
  */
 
+import { loadCachedJson } from './wordDataCache';
+
 const BASE_PATH = '/data';
 
 // URL ごとに Promise を覚えておく。同時に何度呼ばれても取得は1回。
@@ -61,8 +63,56 @@ const fetchJson = (path, { force = false } = {}) => {
   return promise;
 };
 
-/** 全単語（6,736件）。force を付けると失敗の記録を捨ててもう一度取りに行く。 */
-export const loadWordMaster = (options) => fetchJson(`${BASE_PATH}/words-master.json`, options);
+/**
+ * 端末に保存して使う大きめのファイル。展開後2.1MBあり、毎回取ると
+ * スマホの回線では起動が目に見えて遅い。
+ */
+const CACHED_FILES = new Set([
+  'words-master.json',
+  'words-osaka.json',
+  'words-highschool.json',
+  'pronunciations.json',
+]);
+
+/**
+ * 端末の保存を通して読む。初回だけ取りに行き、次からは保存から返す。
+ * manifest の sha256 を鍵にするので、データを作り直せば自動で入れ替わる。
+ */
+const fetchCachedJson = (fileName, { force = false, onProgress } = {}) => {
+  const path = `${BASE_PATH}/${fileName}`;
+
+  if (force) {
+    cache.delete(path);
+    failures.delete(path);
+  }
+  if (failures.has(path)) return Promise.reject(failures.get(path));
+  if (cache.has(path)) return cache.get(path);
+
+  // manifest は小さいので普通に取る。取れなくても本体は読める。
+  const promise = fetchJson(`${BASE_PATH}/manifest.json`)
+    .catch(() => null)
+    .then((manifest) => {
+      const info = manifest?.files?.[fileName];
+      return loadCachedJson(path, {
+        signature: info?.sha256,
+        totalBytes: info?.bytes,
+        onProgress,
+        force,
+      });
+    })
+    .then(({ data }) => data)
+    .catch((error) => {
+      cache.delete(path);
+      failures.set(path, error);
+      throw error;
+    });
+
+  cache.set(path, promise);
+  return promise;
+};
+
+/** 全単語。force を付けると失敗の記録を捨ててもう一度取りに行く。 */
+export const loadWordMaster = (options) => fetchCachedJson('words-master.json', options);
 
 /** 版・件数・SHA-256 */
 export const loadManifest = (options) => fetchJson(`${BASE_PATH}/manifest.json`, options);
@@ -73,7 +123,7 @@ export const loadManifest = (options) => fetchJson(`${BASE_PATH}/manifest.json`,
  * 日次学習の単語は Firestore の textbooks から来るため pronunciation を
  * 持たない。復習単語も保存時点の写しなので同じ。表示するときにここで引く。
  */
-export const loadPronunciations = (options) => fetchJson(`${BASE_PATH}/pronunciations.json`, options);
+export const loadPronunciations = (options) => fetchCachedJson('pronunciations.json', options);
 
 const TEXTBOOK_FILES = {
   'osaka-koukou-nyuushi': 'words-osaka.json',
@@ -84,7 +134,9 @@ const TEXTBOOK_FILES = {
 export const loadTextbookWords = (textbookId, options) => {
   const file = TEXTBOOK_FILES[textbookId];
   if (!file) return Promise.resolve([]);
-  return fetchJson(`${BASE_PATH}/${file}`, options);
+  return CACHED_FILES.has(file)
+    ? fetchCachedJson(file, options)
+    : fetchJson(`${BASE_PATH}/${file}`, options);
 };
 
 export const KNOWN_TEXTBOOK_IDS = Object.keys(TEXTBOOK_FILES);
@@ -94,3 +146,5 @@ export const clearWordCache = () => {
   cache.clear();
   failures.clear();
 };
+
+export { clearWordDataCache } from './wordDataCache';
