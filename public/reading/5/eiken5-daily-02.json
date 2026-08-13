@@ -1,0 +1,209 @@
+{
+  "id": "eiken5-daily-02",
+  "grade": "5",
+  "category": "daily",
+  "title": "My Room",
+  "titleJa": "わたしの部屋",
+  "sentences": [
+    {
+      "ja": "わたしの部屋は大きくありません。",
+      "chunks": [
+        {
+          "en": "My room",
+          "ja": "わたしの部屋は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "big.",
+          "ja": "大きく",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "窓のそばに机といすがあります。",
+      "chunks": [
+        {
+          "en": "There are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a desk and a chair",
+          "ja": "机といすが",
+          "role": "S"
+        },
+        {
+          "en": "by the window.",
+          "ja": "窓のそばに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはそこで毎日英語を勉強します。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "study",
+          "ja": "勉強します",
+          "role": "V"
+        },
+        {
+          "en": "English",
+          "ja": "英語を",
+          "role": "O"
+        },
+        {
+          "en": "there",
+          "ja": "そこで",
+          "role": "M"
+        },
+        {
+          "en": "on weekdays.",
+          "ja": "平日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "机の上には本がたくさんあります。",
+      "chunks": [
+        {
+          "en": "There are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "many books",
+          "ja": "本がたくさん",
+          "role": "S"
+        },
+        {
+          "en": "on the desk.",
+          "ja": "机の上には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "かべには家族の写真があります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a picture of my family",
+          "ja": "家族の写真が",
+          "role": "S"
+        },
+        {
+          "en": "on the wall.",
+          "ja": "かべには",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ベッドの下に古い箱があります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "an old box",
+          "ja": "古い箱が",
+          "role": "S"
+        },
+        {
+          "en": "under the bed.",
+          "ja": "ベッドの下に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その中にはわたしの好きな本が入っています。",
+      "chunks": [
+        {
+          "en": "My favorite books",
+          "ja": "わたしの好きな本が",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "入っています",
+          "role": "V"
+        },
+        {
+          "en": "in it.",
+          "ja": "その中には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "夜、わたしは部屋で音楽を聞きます。",
+      "chunks": [
+        {
+          "en": "At night",
+          "ja": "夜",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "listen",
+          "ja": "聞きます",
+          "role": "V"
+        },
+        {
+          "en": "to music",
+          "ja": "音楽を",
+          "role": "M"
+        },
+        {
+          "en": "in my room.",
+          "ja": "部屋で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはこの小さな部屋が好きです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "like",
+          "ja": "好きです",
+          "role": "V"
+        },
+        {
+          "en": "this small room.",
+          "ja": "この小さな部屋が",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

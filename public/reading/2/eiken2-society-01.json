@@ -1,0 +1,559 @@
+{
+  "id": "eiken2-society-01",
+  "grade": "2",
+  "category": "society",
+  "title": "Who Decides the Price?",
+  "titleJa": "値段を決めるのはだれか",
+  "sentences": [
+    {
+      "ja": "店に並ぶ品物には、必ず値段がついています。",
+      "chunks": [
+        {
+          "en": "Every product in a shop",
+          "ja": "店に並ぶ品物には",
+          "role": "S"
+        },
+        {
+          "en": "has",
+          "ja": "ついています",
+          "role": "V"
+        },
+        {
+          "en": "a price.",
+          "ja": "値段が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "その数字がどう決まるのかを、考えたことがあるでしょうか。",
+      "chunks": [
+        {
+          "en": "Have you ever thought",
+          "ja": "考えたことがあるでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "about how that number is decided?",
+          "ja": "その数字がどう決まるのかを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "多くの人は、作るのにかかった費用で決まると考えます。",
+      "chunks": [
+        {
+          "en": "Many people",
+          "ja": "多くの人は",
+          "role": "S"
+        },
+        {
+          "en": "think",
+          "ja": "考えます",
+          "role": "V"
+        },
+        {
+          "en": "that it is decided by the cost of making it.",
+          "ja": "作るのにかかった費用で決まると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "材料と手間の合計に、いくらかを足したものが値段だという考えです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the idea that the price is the total of materials and work, plus something.",
+          "ja": "材料と手間の合計にいくらかを足したものが値段だという考え",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この考え方は分かりやすく、長い間信じられてきました。",
+      "chunks": [
+        {
+          "en": "This way of thinking",
+          "ja": "この考え方は",
+          "role": "S"
+        },
+        {
+          "en": "is easy to understand",
+          "ja": "分かりやすい",
+          "role": "V"
+        },
+        {
+          "en": "and has been believed for a long time.",
+          "ja": "そして長い間信じられてきました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、それだけでは説明できないことが多くあります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "there are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "many things that cannot be explained by that alone.",
+          "ja": "それだけでは説明できないことが多く",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "同じ材料で作られた水が、場所によって値段が変わります。",
+      "chunks": [
+        {
+          "en": "Water made from the same material",
+          "ja": "同じ材料で作られた水が",
+          "role": "S"
+        },
+        {
+          "en": "changes",
+          "ja": "変わります",
+          "role": "V"
+        },
+        {
+          "en": "its price",
+          "ja": "その値段を",
+          "role": "O"
+        },
+        {
+          "en": "by place.",
+          "ja": "場所によって",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "スーパーで100円の水が、山の上では300円になります。",
+      "chunks": [
+        {
+          "en": "Water that is one hundred yen at a supermarket",
+          "ja": "スーパーで100円の水が",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なります",
+          "role": "V"
+        },
+        {
+          "en": "three hundred yen on a mountain.",
+          "ja": "山の上では300円に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "運ぶ費用がかかるからだ、と説明されるかもしれません。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "may be explained",
+          "ja": "説明されるかもしれません",
+          "role": "V"
+        },
+        {
+          "en": "that the cost of carrying it is high.",
+          "ja": "運ぶ費用がかかるからだと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし本当の理由は、山の上には他に売っている店がないことです。",
+      "chunks": [
+        {
+          "en": "But the real reason",
+          "ja": "しかし本当の理由は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that there is no other shop selling it on the mountain.",
+          "ja": "山の上には他に売っている店がないこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "つまり値段は、作る側だけでは決まりません。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "the price",
+          "ja": "値段は",
+          "role": "S"
+        },
+        {
+          "en": "is not decided",
+          "ja": "決まりません",
+          "role": "V"
+        },
+        {
+          "en": "by the side that makes it alone.",
+          "ja": "作る側だけでは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "買う人がいくらまでなら出すかが、同じくらい関わっています。",
+      "chunks": [
+        {
+          "en": "How much the buyer will pay",
+          "ja": "買う人がいくらまでなら出すかが",
+          "role": "S"
+        },
+        {
+          "en": "is related",
+          "ja": "関わっています",
+          "role": "V"
+        },
+        {
+          "en": "just as much.",
+          "ja": "同じくらい",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "経済学では、これを需要と供給の関係と呼びます。",
+      "chunks": [
+        {
+          "en": "In economics,",
+          "ja": "経済学では",
+          "role": "M"
+        },
+        {
+          "en": "this",
+          "ja": "これを",
+          "role": "O"
+        },
+        {
+          "en": "is called",
+          "ja": "呼びます",
+          "role": "V"
+        },
+        {
+          "en": "the relation of demand and supply.",
+          "ja": "需要と供給の関係と",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "欲しい人が多く、品物が少なければ、値段は上がります。",
+      "chunks": [
+        {
+          "en": "If there are many people who want it and few products,",
+          "ja": "欲しい人が多く品物が少なければ",
+          "role": "M"
+        },
+        {
+          "en": "the price",
+          "ja": "値段は",
+          "role": "S"
+        },
+        {
+          "en": "goes up.",
+          "ja": "上がります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "この仕組みは、多くの場合うまく働きます。",
+      "chunks": [
+        {
+          "en": "This system",
+          "ja": "この仕組みは",
+          "role": "S"
+        },
+        {
+          "en": "works well",
+          "ja": "うまく働きます",
+          "role": "V"
+        },
+        {
+          "en": "in many cases.",
+          "ja": "多くの場合",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "値段が上がれば、作る人が増え、やがて値段は下がります。",
+      "chunks": [
+        {
+          "en": "If the price goes up,",
+          "ja": "値段が上がれば",
+          "role": "M"
+        },
+        {
+          "en": "the number of makers",
+          "ja": "作る人の数が",
+          "role": "S"
+        },
+        {
+          "en": "increases,",
+          "ja": "増えます",
+          "role": "V"
+        },
+        {
+          "en": "and the price falls later.",
+          "ja": "そしてやがて値段は下がります",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、この仕組みが困った結果を生むこともあります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "this system",
+          "ja": "この仕組みは",
+          "role": "S"
+        },
+        {
+          "en": "sometimes produces",
+          "ja": "生むこともあります",
+          "role": "V"
+        },
+        {
+          "en": "a difficult result.",
+          "ja": "困った結果を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "災害のあと、水や食べ物の値段が急に上がることがあります。",
+      "chunks": [
+        {
+          "en": "After a disaster,",
+          "ja": "災害のあと",
+          "role": "M"
+        },
+        {
+          "en": "the prices of water and food",
+          "ja": "水や食べ物の値段が",
+          "role": "S"
+        },
+        {
+          "en": "sometimes rise",
+          "ja": "急に上がることがあります",
+          "role": "V"
+        },
+        {
+          "en": "suddenly.",
+          "ja": "急に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それは仕組みとしては正しくても、多くの人には正しく感じられません。",
+      "chunks": [
+        {
+          "en": "Even if it is right as a system,",
+          "ja": "それは仕組みとしては正しくても",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "does not feel",
+          "ja": "感じられません",
+          "role": "V"
+        },
+        {
+          "en": "right to many people.",
+          "ja": "多くの人には正しく",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "だから多くの国が、そのようなときに値上げを止める決まりを持っています。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "many countries",
+          "ja": "多くの国が",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "持っています",
+          "role": "V"
+        },
+        {
+          "en": "rules that stop such price rises at such times.",
+          "ja": "そのようなときに値上げを止める決まりを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "値段は数字ですが、その後ろには人の考えがあります。",
+      "chunks": [
+        {
+          "en": "A price",
+          "ja": "値段は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a number,",
+          "ja": "数字",
+          "role": "C"
+        },
+        {
+          "en": "but there are people's ideas behind it.",
+          "ja": "しかしその後ろには人の考えがあります",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "何にいくら払うかを選ぶことは、どんな社会を望むかを選ぶことでもあります。",
+      "chunks": [
+        {
+          "en": "Choosing what to pay and how much",
+          "ja": "何にいくら払うかを選ぶことは",
+          "role": "S"
+        },
+        {
+          "en": "is also choosing",
+          "ja": "選ぶことでもあります",
+          "role": "V"
+        },
+        {
+          "en": "what kind of society we want.",
+          "ja": "どんな社会を望むかを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは毎日、何かを買うたびに小さな選択をしています。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "make",
+          "ja": "しています",
+          "role": "V"
+        },
+        {
+          "en": "a small choice",
+          "ja": "小さな選択を",
+          "role": "O"
+        },
+        {
+          "en": "every time we buy something.",
+          "ja": "何かを買うたびに毎日",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "安いものを選べば、その作り方が続きます。",
+      "chunks": [
+        {
+          "en": "If we choose the cheap one,",
+          "ja": "安いものを選べば",
+          "role": "M"
+        },
+        {
+          "en": "the way it is made",
+          "ja": "その作り方が",
+          "role": "S"
+        },
+        {
+          "en": "continues.",
+          "ja": "続きます",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "その値段が、どこかでだれかの賃金になっているからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "that price",
+          "ja": "その値段が",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なっているからです",
+          "role": "V"
+        },
+        {
+          "en": "someone's wage somewhere.",
+          "ja": "どこかでだれかの賃金に",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

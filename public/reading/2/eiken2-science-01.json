@@ -1,0 +1,584 @@
+{
+  "id": "eiken2-science-01",
+  "grade": "2",
+  "category": "science",
+  "title": "What Sleep Does at Night",
+  "titleJa": "夜、眠りがしていること",
+  "sentences": [
+    {
+      "ja": "眠っている間、体は休んでいると長い間考えられてきました。",
+      "chunks": [
+        {
+          "en": "For a long time,",
+          "ja": "長い間",
+          "role": "M"
+        },
+        {
+          "en": "it was thought",
+          "ja": "考えられてきました",
+          "role": "V"
+        },
+        {
+          "en": "that the body was resting while we slept.",
+          "ja": "眠っている間、体は休んでいると",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし近年の研究は、脳が眠っている間もよく働いていることを示しています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "recent studies",
+          "ja": "近年の研究は",
+          "role": "S"
+        },
+        {
+          "en": "show",
+          "ja": "示しています",
+          "role": "V"
+        },
+        {
+          "en": "that the brain works hard while we sleep.",
+          "ja": "脳が眠っている間もよく働いていることを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "特に、その日に覚えたことを整理する働きが注目されています。",
+      "chunks": [
+        {
+          "en": "The work of putting in order what we learned that day",
+          "ja": "その日に覚えたことを整理する働きが",
+          "role": "S"
+        },
+        {
+          "en": "has received",
+          "ja": "受けています",
+          "role": "V"
+        },
+        {
+          "en": "special attention.",
+          "ja": "特に注目を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちが日中に経験することの量は、非常に多いものです。",
+      "chunks": [
+        {
+          "en": "The amount of what we experience during the day",
+          "ja": "日中に経験することの量は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "very large.",
+          "ja": "非常に多いもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "そのすべてを残していたら、脳はすぐにいっぱいになるでしょう。",
+      "chunks": [
+        {
+          "en": "If it kept all of that,",
+          "ja": "そのすべてを残していたら",
+          "role": "M"
+        },
+        {
+          "en": "the brain",
+          "ja": "脳は",
+          "role": "S"
+        },
+        {
+          "en": "would soon become",
+          "ja": "すぐになるでしょう",
+          "role": "V"
+        },
+        {
+          "en": "full.",
+          "ja": "いっぱいに",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "だから脳は、残すものと消すものを選ばなければなりません。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "the brain",
+          "ja": "脳は",
+          "role": "S"
+        },
+        {
+          "en": "must choose",
+          "ja": "選ばなければなりません",
+          "role": "V"
+        },
+        {
+          "en": "what to keep and what to erase.",
+          "ja": "残すものと消すものを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "その選び方に、眠りが深く関わっています。",
+      "chunks": [
+        {
+          "en": "Sleep",
+          "ja": "眠りが",
+          "role": "S"
+        },
+        {
+          "en": "is deeply related",
+          "ja": "深く関わっています",
+          "role": "V"
+        },
+        {
+          "en": "to that choice.",
+          "ja": "その選び方に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ある研究で、二つの集団に同じ言葉を覚えてもらいました。",
+      "chunks": [
+        {
+          "en": "In one study,",
+          "ja": "ある研究で",
+          "role": "M"
+        },
+        {
+          "en": "two groups",
+          "ja": "二つの集団に",
+          "role": "S"
+        },
+        {
+          "en": "were asked to learn",
+          "ja": "覚えてもらいました",
+          "role": "V"
+        },
+        {
+          "en": "the same words.",
+          "ja": "同じ言葉を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "一方は覚えたあとに眠り、もう一方は起きたまま過ごしました。",
+      "chunks": [
+        {
+          "en": "One group",
+          "ja": "一方は",
+          "role": "S"
+        },
+        {
+          "en": "slept",
+          "ja": "眠りました",
+          "role": "V"
+        },
+        {
+          "en": "after learning,",
+          "ja": "覚えたあとに",
+          "role": "M"
+        },
+        {
+          "en": "and the other stayed awake.",
+          "ja": "そしてもう一方は起きたまま過ごしました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "同じ時間がたったあと、眠った集団のほうがよく覚えていました。",
+      "chunks": [
+        {
+          "en": "After the same amount of time,",
+          "ja": "同じ時間がたったあと",
+          "role": "M"
+        },
+        {
+          "en": "the group that had slept",
+          "ja": "眠った集団のほうが",
+          "role": "S"
+        },
+        {
+          "en": "remembered",
+          "ja": "覚えていました",
+          "role": "V"
+        },
+        {
+          "en": "better.",
+          "ja": "よく",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "興味深いのは、すべての記憶が同じように残るわけではないことです。",
+      "chunks": [
+        {
+          "en": "What is interesting",
+          "ja": "興味深いことは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that not all memories stay in the same way.",
+          "ja": "すべての記憶が同じように残るわけではないこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "感情が動いた出来事のほうが、強く残ることが分かっています。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is known",
+          "ja": "分かっています",
+          "role": "V"
+        },
+        {
+          "en": "that events that moved our feelings stay more strongly.",
+          "ja": "感情が動いた出来事のほうが強く残ることが",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "これは、生きるために必要だった仕組みだと考えられています。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is thought",
+          "ja": "考えられています",
+          "role": "V"
+        },
+        {
+          "en": "to be a system that was necessary for living.",
+          "ja": "生きるために必要だった仕組みだと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "危険な場所を忘れてしまえば、次にまた同じ目にあうからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "if we forgot a dangerous place,",
+          "ja": "危険な場所を忘れてしまえば",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "would meet",
+          "ja": "あうからです",
+          "role": "V"
+        },
+        {
+          "en": "the same thing again.",
+          "ja": "次にまた同じ目に",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "この事実は、勉強のしかたにも関係します。",
+      "chunks": [
+        {
+          "en": "This fact",
+          "ja": "この事実は",
+          "role": "S"
+        },
+        {
+          "en": "is related",
+          "ja": "関係します",
+          "role": "V"
+        },
+        {
+          "en": "to the way we study,",
+          "ja": "勉強のしかたにも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "試験の前夜に眠らずに覚えるやり方は、あまり良くありません。",
+      "chunks": [
+        {
+          "en": "The way of learning without sleeping on the night before a test",
+          "ja": "試験の前夜に眠らずに覚えるやり方は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "very good.",
+          "ja": "あまり良く",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "覚えた材料はあっても、それを整理する時間がないからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "although we have the material we learned,",
+          "ja": "覚えた材料はあっても",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "ないからです",
+          "role": "V"
+        },
+        {
+          "en": "no time to put it in order.",
+          "ja": "それを整理する時間が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "同じ2時間なら、夜1時間と朝1時間に分けるほうが良いでしょう。",
+      "chunks": [
+        {
+          "en": "If it is the same two hours,",
+          "ja": "同じ2時間なら",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "would be better",
+          "ja": "良いでしょう",
+          "role": "V"
+        },
+        {
+          "en": "to divide it into one hour at night and one hour in the morning.",
+          "ja": "夜1時間と朝1時間に分けるほうが",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "その間に眠りが、静かに仕事をしてくれます。",
+      "chunks": [
+        {
+          "en": "Between them,",
+          "ja": "その間に",
+          "role": "M"
+        },
+        {
+          "en": "sleep",
+          "ja": "眠りが",
+          "role": "S"
+        },
+        {
+          "en": "does",
+          "ja": "してくれます",
+          "role": "V"
+        },
+        {
+          "en": "its work quietly.",
+          "ja": "静かに仕事を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "つまり、眠ることは勉強を止めることではありません。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "sleeping",
+          "ja": "眠ることは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "stopping our study.",
+          "ja": "勉強を止めること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それは、勉強の最後の段階なのです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the last part of studying.",
+          "ja": "勉強の最後の段階",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "もちろん、眠ればすべて覚えられるという意味ではありません。",
+      "chunks": [
+        {
+          "en": "Of course,",
+          "ja": "もちろん",
+          "role": "M"
+        },
+        {
+          "en": "this",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "does not mean",
+          "ja": "という意味ではありません",
+          "role": "V"
+        },
+        {
+          "en": "that we can learn everything if we sleep.",
+          "ja": "眠ればすべて覚えられる",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "眠りが整理できるのは、その日に入れた材料だけです。",
+      "chunks": [
+        {
+          "en": "What sleep can put in order",
+          "ja": "眠りが整理できるものは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "only the material we put in that day.",
+          "ja": "その日に入れた材料だけ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "何も入れていなければ、整理するものもありません。",
+      "chunks": [
+        {
+          "en": "If we have put in nothing,",
+          "ja": "何も入れていなければ",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "nothing to put in order.",
+          "ja": "整理するものも",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "だから、起きている時間の使い方は、やはり大切なのです。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "the way we use the hours we are awake",
+          "ja": "起きている時間の使い方は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "important after all.",
+          "ja": "やはり大切",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}
