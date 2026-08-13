@@ -75,6 +75,18 @@
           "title": "The Cat and the Tree",
           "titleJa": "ネコと木",
           "category": "nature"
+        },
+        {
+          "id": "eiken5-town-01",
+          "title": "The Shop by the Station",
+          "titleJa": "駅のそばの店",
+          "category": "town"
+        },
+        {
+          "id": "eiken5-culture-01",
+          "title": "The Summer Festival",
+          "titleJa": "夏祭り",
+          "category": "culture"
         }
       ]
     },
@@ -111,6 +123,18 @@
           "title": "My First Phone",
           "titleJa": "はじめての電話",
           "category": "technology"
+        },
+        {
+          "id": "eiken4-nature-01",
+          "title": "The Mountain in Winter",
+          "titleJa": "冬の山",
+          "category": "nature"
+        },
+        {
+          "id": "eiken4-sports-01",
+          "title": "The Last Runner",
+          "titleJa": "最後の走者",
+          "category": "sports"
         }
       ]
     },
@@ -147,6 +171,18 @@
           "title": "The Robot at the Supermarket",
           "titleJa": "スーパーのロボット",
           "category": "technology"
+        },
+        {
+          "id": "eiken3-culture-01",
+          "title": "The Letters My Grandfather Kept",
+          "titleJa": "祖父が取っておいた手紙",
+          "category": "culture"
+        },
+        {
+          "id": "eiken3-work-01",
+          "title": "The Man Who Fixes Shoes",
+          "titleJa": "くつを直す人",
+          "category": "work"
         }
       ]
     },
@@ -183,6 +219,18 @@
           "title": "The Streets Without Names",
           "titleJa": "名前のない道",
           "category": "culture"
+        },
+        {
+          "id": "eikenp2-technology-01",
+          "title": "The Map That Everyone Draws",
+          "titleJa": "みんなで描く地図",
+          "category": "technology"
+        },
+        {
+          "id": "eikenp2-work-01",
+          "title": "The Job That Did Not Exist",
+          "titleJa": "なかった仕事",
+          "category": "work"
         }
       ]
     },
@@ -213,6 +261,18 @@
           "title": "Who Decides the Price?",
           "titleJa": "値段を決めるのはだれか",
           "category": "society"
+        },
+        {
+          "id": "eiken2-nature-01",
+          "title": "The Forest That Grows in the Sea",
+          "titleJa": "海に育つ森",
+          "category": "nature"
+        },
+        {
+          "id": "eiken2-work-01",
+          "title": "The Price of a Cheap Shirt",
+          "titleJa": "安いシャツの値段",
+          "category": "work"
         }
       ]
     },
@@ -249,6 +309,12 @@
           "title": "Four Days a Week",
           "titleJa": "週に4日",
           "category": "work"
+        },
+        {
+          "id": "eikenp1-nature-01",
+          "title": "The Return of the Wolf",
+          "titleJa": "オオカミが戻るとき",
+          "category": "nature"
         }
       ]
     }

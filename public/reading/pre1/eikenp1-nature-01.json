@@ -1,0 +1,544 @@
+{
+  "id": "eikenp1-nature-01",
+  "grade": "pre1",
+  "category": "nature",
+  "title": "The Return of the Wolf",
+  "titleJa": "オオカミが戻るとき",
+  "sentences": [
+    {
+      "ja": "1995年、米国のある国立公園に14頭のオオカミが放されました。",
+      "chunks": [
+        {
+          "en": "In 1995,",
+          "ja": "1995年",
+          "role": "M"
+        },
+        {
+          "en": "fourteen wolves",
+          "ja": "14頭のオオカミが",
+          "role": "S"
+        },
+        {
+          "en": "were released",
+          "ja": "放されました",
+          "role": "V"
+        },
+        {
+          "en": "into a national park in the United States.",
+          "ja": "米国のある国立公園に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その地域からオオカミが姿を消して、およそ70年が経っていました。",
+      "chunks": [
+        {
+          "en": "About seventy years",
+          "ja": "およそ70年が",
+          "role": "S"
+        },
+        {
+          "en": "had passed",
+          "ja": "経っていました",
+          "role": "V"
+        },
+        {
+          "en": "since wolves had disappeared from that area.",
+          "ja": "その地域からオオカミが姿を消して",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "目的は、増えすぎたシカの数を抑えることでした。",
+      "chunks": [
+        {
+          "en": "The purpose",
+          "ja": "目的は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "to control the number of deer, which had increased too much.",
+          "ja": "増えすぎたシカの数を抑えること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "シカは若い木の芽を食べ尽くし、川岸の林が失われていました。",
+      "chunks": [
+        {
+          "en": "The deer",
+          "ja": "シカは",
+          "role": "S"
+        },
+        {
+          "en": "had eaten up",
+          "ja": "食べ尽くしました",
+          "role": "V"
+        },
+        {
+          "en": "the buds of young trees,",
+          "ja": "若い木の芽を",
+          "role": "O"
+        },
+        {
+          "en": "and the woods along the rivers had been lost.",
+          "ja": "そして川岸の林が失われていました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "オオカミが戻ると、シカの数は確かに減りました。",
+      "chunks": [
+        {
+          "en": "When the wolves returned,",
+          "ja": "オオカミが戻ると",
+          "role": "M"
+        },
+        {
+          "en": "the number of deer",
+          "ja": "シカの数は",
+          "role": "S"
+        },
+        {
+          "en": "certainly fell.",
+          "ja": "確かに減りました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、より大きな変化は数ではなく行動に現れました。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the larger change",
+          "ja": "より大きな変化は",
+          "role": "S"
+        },
+        {
+          "en": "appeared",
+          "ja": "現れました",
+          "role": "V"
+        },
+        {
+          "en": "in behavior, not in numbers.",
+          "ja": "数ではなく行動に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "シカは、逃げ場のない谷に長くとどまらなくなりました。",
+      "chunks": [
+        {
+          "en": "The deer",
+          "ja": "シカは",
+          "role": "S"
+        },
+        {
+          "en": "stopped staying",
+          "ja": "とどまらなくなりました",
+          "role": "V"
+        },
+        {
+          "en": "long in valleys where there was no way to escape.",
+          "ja": "逃げ場のない谷に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その結果、そこの木々が再び育ち始めました。",
+      "chunks": [
+        {
+          "en": "As a result,",
+          "ja": "その結果",
+          "role": "M"
+        },
+        {
+          "en": "the trees there",
+          "ja": "そこの木々が",
+          "role": "S"
+        },
+        {
+          "en": "began to grow",
+          "ja": "育ち始めました",
+          "role": "V"
+        },
+        {
+          "en": "again.",
+          "ja": "再び",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "木が育つと、鳥が戻り、ビーバーが戻りました。",
+      "chunks": [
+        {
+          "en": "When the trees grew,",
+          "ja": "木が育つと",
+          "role": "M"
+        },
+        {
+          "en": "birds",
+          "ja": "鳥が",
+          "role": "S"
+        },
+        {
+          "en": "returned,",
+          "ja": "戻りました",
+          "role": "V"
+        },
+        {
+          "en": "and beavers returned.",
+          "ja": "そしてビーバーが戻りました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ビーバーが作ったダムは、魚や虫の住む池を生みました。",
+      "chunks": [
+        {
+          "en": "The dams the beavers made",
+          "ja": "ビーバーが作ったダムは",
+          "role": "S"
+        },
+        {
+          "en": "produced",
+          "ja": "生みました",
+          "role": "V"
+        },
+        {
+          "en": "ponds where fish and insects live.",
+          "ja": "魚や虫の住む池を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "川岸に根が張ったことで、川の形さえ変わったと報告されています。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is reported",
+          "ja": "報告されています",
+          "role": "V"
+        },
+        {
+          "en": "that even the shape of the rivers changed because roots held the banks.",
+          "ja": "川岸に根が張ったことで川の形さえ変わったと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "この一連の変化は、しばしば劇的な物語として語られます。",
+      "chunks": [
+        {
+          "en": "This series of changes",
+          "ja": "この一連の変化は",
+          "role": "S"
+        },
+        {
+          "en": "is often told",
+          "ja": "しばしば語られます",
+          "role": "V"
+        },
+        {
+          "en": "as a dramatic story.",
+          "ja": "劇的な物語として",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "一頭の動物が景色を変えた、という形です。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "takes the form",
+          "ja": "形です",
+          "role": "V"
+        },
+        {
+          "en": "that one animal changed the landscape.",
+          "ja": "一頭の動物が景色を変えた、という",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、後の研究はこの説明に慎重な見方を示しています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "later studies",
+          "ja": "後の研究は",
+          "role": "S"
+        },
+        {
+          "en": "show",
+          "ja": "示しています",
+          "role": "V"
+        },
+        {
+          "en": "a careful view of this explanation.",
+          "ja": "この説明に慎重な見方を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "同じ時期に、干ばつや狩猟の規制など複数の要因が重なっていました。",
+      "chunks": [
+        {
+          "en": "In the same period,",
+          "ja": "同じ時期に",
+          "role": "M"
+        },
+        {
+          "en": "several factors, such as drought and hunting rules,",
+          "ja": "干ばつや狩猟の規制など複数の要因が",
+          "role": "S"
+        },
+        {
+          "en": "came together.",
+          "ja": "重なっていました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "オオカミの影響を切り分けて測ることは、実際には困難です。",
+      "chunks": [
+        {
+          "en": "Measuring the effect of the wolves separately",
+          "ja": "オオカミの影響を切り分けて測ることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "in fact difficult.",
+          "ja": "実際には困難",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、この事例が重要である理由は変わりません。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "the reason this case is important",
+          "ja": "この事例が重要である理由は",
+          "role": "S"
+        },
+        {
+          "en": "does not change.",
+          "ja": "変わりません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "生態系は、部品の集まりではなく関係の網だということです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that an ecosystem is a web of relations, not a collection of parts.",
+          "ja": "生態系は部品の集まりではなく関係の網だということ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "一つを取り除いたとき、失われるのはその一つだけではありません。",
+      "chunks": [
+        {
+          "en": "When one is removed,",
+          "ja": "一つを取り除いたとき",
+          "role": "M"
+        },
+        {
+          "en": "what is lost",
+          "ja": "失われるものは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "only that one.",
+          "ja": "その一つだけ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "同じことは、元に戻すときにも当てはまります。",
+      "chunks": [
+        {
+          "en": "The same thing",
+          "ja": "同じことは",
+          "role": "S"
+        },
+        {
+          "en": "applies",
+          "ja": "当てはまります",
+          "role": "V"
+        },
+        {
+          "en": "when we put something back,",
+          "ja": "元に戻すときにも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "戻せば元通りになるとはかぎらない、ということです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that returning something does not always bring back the original state.",
+          "ja": "戻せば元通りになるとはかぎらないということ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "70年の間に、その場所は別の均衡へ移っていたからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "during those seventy years,",
+          "ja": "70年の間に",
+          "role": "M"
+        },
+        {
+          "en": "that place",
+          "ja": "その場所は",
+          "role": "S"
+        },
+        {
+          "en": "had moved",
+          "ja": "移っていたからです",
+          "role": "V"
+        },
+        {
+          "en": "to a different balance.",
+          "ja": "別の均衡へ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "自然を守る議論は、この不可逆性を前提にする必要があります。",
+      "chunks": [
+        {
+          "en": "Discussions about protecting nature",
+          "ja": "自然を守る議論は",
+          "role": "S"
+        },
+        {
+          "en": "need to be based",
+          "ja": "前提にする必要があります",
+          "role": "V"
+        },
+        {
+          "en": "on this fact that things cannot be undone.",
+          "ja": "この不可逆性を",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "壊してから戻すより、壊さないほうが安いのは、そのためです。",
+      "chunks": [
+        {
+          "en": "That is why",
+          "ja": "そのため",
+          "role": "M"
+        },
+        {
+          "en": "not breaking something",
+          "ja": "壊さないほうが",
+          "role": "S"
+        },
+        {
+          "en": "is cheaper",
+          "ja": "安いのです",
+          "role": "V"
+        },
+        {
+          "en": "than breaking it and putting it back.",
+          "ja": "壊してから戻すより",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

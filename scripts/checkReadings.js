@@ -50,6 +50,12 @@ const FREE_WORDS = new Set([
   // ここで数えると級の違いが見えなくなる。
   'can', 'could', 'will', 'would', 'may', 'might', 'must', 'shall', 'should',
   'than', 'because', 'very', 'too', 'also', 'only', 'just', 'more', 'most',
+  // どの級の教科書にも出る基本語。このデータの級は当てにならない
+  // （minute が準1級、near が3級と付いている。eikenLevels を持つのは
+  // 7,949語のうち4,478語だけで、残りは level からの当て推量）。
+  // ここで数えると、書き手が直しようのない指摘が出続ける。
+  'near', 'often', 'around', 'behind', 'below', 'top', 'hour', 'minute',
+  'last', 'first', 'next', 'end', 'start', 'begin', 'again', 'always', 'never',
 ]);
 
 const easiestEikenLevel = (word) => {
@@ -66,6 +72,17 @@ const easiestEikenLevel = (word) => {
  * 外すと、書ける語がほとんど無くなってしまう。
  */
 const EIKEN_BY_LEVEL = { 1: 5, 2: 4, 3: 3, 4: 'pre2', 5: 2, 6: 2, 7: 'pre1' };
+
+/** マスターに載っている語すべて。級の判定とは別に、収録の有無を見る。 */
+const allWordsIn = (master) => {
+  const all = new Set();
+  for (const word of master) {
+    for (const token of String(word.word).toLowerCase().split(/[^a-z']+/)) {
+      if (token) all.add(token);
+    }
+  }
+  return all;
+};
 
 /** その級までに出てよい語（見出しを小文字で）。 */
 const allowedWordsFor = (grade, master) => {
@@ -98,7 +115,7 @@ const IRREGULAR = {
   began: 'begin', became: 'become', left: 'leave', felt: 'feel', kept: 'keep',
   met: 'meet', paid: 'pay', heard: 'hear', held: 'hold', lost: 'lose',
   spoke: 'speak', stood: 'stand', understood: 'understand', won: 'win',
-  wore: 'wear', chose: 'choose', fell: 'fell', flew: 'fly', spent: 'spend',
+  wore: 'wear', chose: 'choose', fell: 'fall', fallen: 'fall', flew: 'fly', spent: 'spend',
   written: 'write', taken: 'take', given: 'give', seen: 'see', done: 'do',
   gone: 'go', known: 'know', grown: 'grow', spoken: 'speak', eaten: 'eat',
   forgot: 'forget', forgotten: 'forget', swam: 'swim', swum: 'swim',
@@ -113,9 +130,9 @@ const forms = (token) => {
   // 所有格。grandmother's / person's はマスターに見出しが無い。
   if (token.endsWith("'s")) set.add(token.slice(0, -2));
   const rules = [
-    [/ies$/, 'y'], [/ied$/, 'y'], [/ies$/, ''], [/es$/, ''], [/s$/, ''],
+    [/ies$/, 'y'], [/ied$/, 'y'], [/ves$/, 'f'], [/ies$/, ''], [/es$/, ''], [/s$/, ''],
     [/ing$/, ''], [/ing$/, 'e'], [/ed$/, ''], [/ed$/, 'e'],
-    [/([^aeiou])\1(ing|ed)$/, '$1'], [/er$/, ''], [/est$/, ''], [/ly$/, ''],
+    [/([^aeiou])\1(ing|ed)$/, '$1'], [/er$/, ''], [/er$/, 'e'], [/est$/, ''], [/est$/, 'e'], [/ly$/, ''],
   ];
   for (const [pattern, replacement] of rules) {
     if (pattern.test(token)) set.add(token.replace(pattern, replacement));
@@ -129,6 +146,7 @@ const main = () => {
   const showWords = process.argv.includes('--words');
   const master = JSON.parse(fs.readFileSync(MASTER, 'utf8'));
   const index = JSON.parse(fs.readFileSync(INDEX, 'utf8'));
+  const known = allWordsIn(master);
 
   let problems = 0;
 
@@ -147,7 +165,12 @@ const main = () => {
 
       if (reading.grade !== grade.id) notes.push(`grade が index と違う（${reading.grade}）`);
 
+      // 「その級より上」と「そもそも単語リストに無い」は分ける。
+      // wolf / valley / beaver はマスターに1件も無い。難しいのではなく、
+      // 学習用の単語リストが動植物の名前まで持っていないだけ。これを
+      // 級の外と数えると、書き直しようのない指摘になる。
       const outside = [];
+      const unlisted = [];
       let counted = 0;
       let words = 0;
 
@@ -183,12 +206,16 @@ const main = () => {
           if (FREE_WORDS.has(token)) continue;
           if (properNouns.has(token)) continue;
           counted += 1;
-          const known = [...forms(token)].some((form) => allowed?.has(form));
-          if (!known) outside.push(token);
+          const forms_ = [...forms(token)];
+          if (forms_.some((form) => allowed?.has(form))) continue;
+          if (forms_.some((form) => known.has(form))) outside.push(token);
+          else unlisted.push(token);
         }
       }
 
-      const coverage = counted === 0 ? 1 : (counted - outside.length) / counted;
+      // 分母からは、リストに無い語を除く。判定できないものを不正解にしない。
+      const judged = counted - unlisted.length;
+      const coverage = judged <= 0 ? 1 : (judged - outside.length) / judged;
       const [min, max] = WORD_RANGE[grade.id] || [0, 9999];
       if (words < min || words > max) notes.push(`語数 ${words}（目安 ${min}〜${max}）`);
 
@@ -196,7 +223,8 @@ const main = () => {
       if (mark === '✗') problems += 1;
       console.log(`${mark} ${grade.id.padEnd(4)} ${listed.id.padEnd(22)} ${words}語  `
         + `級内 ${Math.round(coverage * 100)}%`
-        + (outside.length ? `  外: ${[...new Set(outside)].slice(0, 8).join(' ')}` : ''));
+        + (outside.length ? `  級より上: ${[...new Set(outside)].slice(0, 6).join(' ')}` : '')
+        + (unlisted.length ? `  未収録: ${[...new Set(unlisted)].slice(0, 6).join(' ')}` : ''));
       for (const note of notes) console.log(`     - ${note}`);
       if (showWords && outside.length) {
         console.log(`     級の外だった語: ${[...new Set(outside)].join(' ')}`);

@@ -1,0 +1,574 @@
+{
+  "id": "eiken2-work-01",
+  "grade": "2",
+  "category": "work",
+  "title": "The Price of a Cheap Shirt",
+  "titleJa": "安いシャツの値段",
+  "sentences": [
+    {
+      "ja": "店に並ぶシャツが1000円で買えるとき、その値段はどこから来ているのでしょうか。",
+      "chunks": [
+        {
+          "en": "When we can buy a shirt in a shop for a thousand yen,",
+          "ja": "店に並ぶシャツが1000円で買えるとき",
+          "role": "M"
+        },
+        {
+          "en": "where",
+          "ja": "どこから",
+          "role": "M"
+        },
+        {
+          "en": "does that price",
+          "ja": "その値段は",
+          "role": "S"
+        },
+        {
+          "en": "come from?",
+          "ja": "来ているのでしょうか",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "材料の綿を育て、糸にし、布にし、縫い、運ぶ人がいます。",
+      "chunks": [
+        {
+          "en": "There are",
+          "ja": "います",
+          "role": "V"
+        },
+        {
+          "en": "people who grow the cotton, make thread, make cloth, sew, and carry it.",
+          "ja": "材料の綿を育て、糸にし、布にし、縫い、運ぶ人が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "その全員に払ったうえで、なお1000円で売れるのはなぜでしょうか。",
+      "chunks": [
+        {
+          "en": "Why",
+          "ja": "なぜ",
+          "role": "M"
+        },
+        {
+          "en": "can it be sold",
+          "ja": "売れるのでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "for a thousand yen",
+          "ja": "1000円で",
+          "role": "M"
+        },
+        {
+          "en": "even after paying all of them?",
+          "ja": "その全員に払ったうえで、なお",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "答えの一つは、工程の多くが賃金の低い国で行われていることです。",
+      "chunks": [
+        {
+          "en": "One of the answers",
+          "ja": "答えの一つは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that much of the process is done in countries where wages are low.",
+          "ja": "工程の多くが賃金の低い国で行われていること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "これ自体は、必ずしも悪いことではありません。",
+      "chunks": [
+        {
+          "en": "This itself",
+          "ja": "これ自体は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "always a bad thing.",
+          "ja": "必ずしも悪いこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "仕事が生まれ、収入を得る人が増えた地域もあります。",
+      "chunks": [
+        {
+          "en": "There are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "areas where jobs were created and more people got income.",
+          "ja": "仕事が生まれ、収入を得る人が増えた地域も",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、価格を下げ続ける力が働くと、別のことが起こります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "when a force to keep lowering prices works,",
+          "ja": "価格を下げ続ける力が働くと",
+          "role": "M"
+        },
+        {
+          "en": "something else",
+          "ja": "別のことが",
+          "role": "S"
+        },
+        {
+          "en": "happens.",
+          "ja": "起こります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "2013年、ある国で衣料工場の建物が崩れました。",
+      "chunks": [
+        {
+          "en": "In 2013,",
+          "ja": "2013年",
+          "role": "M"
+        },
+        {
+          "en": "the building of a clothing factory",
+          "ja": "衣料工場の建物が",
+          "role": "S"
+        },
+        {
+          "en": "fell down",
+          "ja": "崩れました",
+          "role": "V"
+        },
+        {
+          "en": "in one country.",
+          "ja": "ある国で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "1100人以上が亡くなり、その多くが若い女性でした。",
+      "chunks": [
+        {
+          "en": "More than eleven hundred people",
+          "ja": "1100人以上が",
+          "role": "S"
+        },
+        {
+          "en": "died,",
+          "ja": "亡くなりました",
+          "role": "V"
+        },
+        {
+          "en": "and many of them were young women.",
+          "ja": "そしてその多くが若い女性でした",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "建物には前日からひびが見つかっていました。",
+      "chunks": [
+        {
+          "en": "Cracks in the building",
+          "ja": "建物のひびが",
+          "role": "S"
+        },
+        {
+          "en": "had been found",
+          "ja": "見つかっていました",
+          "role": "V"
+        },
+        {
+          "en": "from the day before.",
+          "ja": "前日から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それでも作業は止められませんでした。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "the work",
+          "ja": "作業は",
+          "role": "S"
+        },
+        {
+          "en": "was not stopped.",
+          "ja": "止められませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "納期に間に合わなければ、注文を失うからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "if they did not meet the date,",
+          "ja": "納期に間に合わなければ",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "would lose",
+          "ja": "失うからです",
+          "role": "V"
+        },
+        {
+          "en": "the order.",
+          "ja": "注文を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "この事故のあと、多くの会社が工場の状態を調べると約束しました。",
+      "chunks": [
+        {
+          "en": "After this accident,",
+          "ja": "この事故のあと",
+          "role": "M"
+        },
+        {
+          "en": "many companies",
+          "ja": "多くの会社が",
+          "role": "S"
+        },
+        {
+          "en": "promised",
+          "ja": "約束しました",
+          "role": "V"
+        },
+        {
+          "en": "to check the condition of their factories.",
+          "ja": "工場の状態を調べると",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "実際に改善は進み、以前よりは安全になりました。",
+      "chunks": [
+        {
+          "en": "Improvement",
+          "ja": "改善は",
+          "role": "S"
+        },
+        {
+          "en": "has actually gone forward,",
+          "ja": "実際に進みました",
+          "role": "V"
+        },
+        {
+          "en": "and it is safer than before.",
+          "ja": "そして以前よりは安全になりました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、根本にある仕組みは変わっていません。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the system at the base",
+          "ja": "根本にある仕組みは",
+          "role": "S"
+        },
+        {
+          "en": "has not changed.",
+          "ja": "変わっていません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちが安いものを選ぶかぎり、下げる力は残ります。",
+      "chunks": [
+        {
+          "en": "As long as we choose cheap things,",
+          "ja": "わたしたちが安いものを選ぶかぎり",
+          "role": "M"
+        },
+        {
+          "en": "the force to lower prices",
+          "ja": "下げる力は",
+          "role": "S"
+        },
+        {
+          "en": "remains.",
+          "ja": "残ります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "では、高いものを買えばよいのでしょうか。",
+      "chunks": [
+        {
+          "en": "Then",
+          "ja": "では",
+          "role": "M"
+        },
+        {
+          "en": "should we buy",
+          "ja": "買えばよいのでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "expensive things?",
+          "ja": "高いものを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "残念ながら、値段の高さは労働条件の良さを意味しません。",
+      "chunks": [
+        {
+          "en": "Unfortunately,",
+          "ja": "残念ながら",
+          "role": "M"
+        },
+        {
+          "en": "a high price",
+          "ja": "値段の高さは",
+          "role": "S"
+        },
+        {
+          "en": "does not mean",
+          "ja": "意味しません",
+          "role": "V"
+        },
+        {
+          "en": "good working conditions.",
+          "ja": "労働条件の良さを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "同じ工場で作られた服が、まったく違う値段で売られています。",
+      "chunks": [
+        {
+          "en": "Clothes made in the same factory",
+          "ja": "同じ工場で作られた服が",
+          "role": "S"
+        },
+        {
+          "en": "are sold",
+          "ja": "売られています",
+          "role": "V"
+        },
+        {
+          "en": "at completely different prices.",
+          "ja": "まったく違う値段で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "消費者の選択だけに責任を置くのは、公平ではありません。",
+      "chunks": [
+        {
+          "en": "Placing the responsibility only on the choice of buyers",
+          "ja": "消費者の選択だけに責任を置くことは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "fair.",
+          "ja": "公平",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "多くの人にとって、安さは選択ではなく必要だからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "for many people",
+          "ja": "多くの人にとって",
+          "role": "M"
+        },
+        {
+          "en": "low prices",
+          "ja": "安さは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a need, not a choice.",
+          "ja": "選択ではなく必要",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "だから、規則を作る側の役割が大きくなります。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "the role of those who make rules",
+          "ja": "規則を作る側の役割が",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なります",
+          "role": "V"
+        },
+        {
+          "en": "large.",
+          "ja": "大きく",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちにできるのは、まず知ることです。",
+      "chunks": [
+        {
+          "en": "What we can do",
+          "ja": "わたしたちにできることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "first to know.",
+          "ja": "まず知ること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "どこで、だれが作ったかを言える会社を選ぶことです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to choose companies that can say where and by whom it was made.",
+          "ja": "どこでだれが作ったかを言える会社を選ぶこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "言えないということ自体が、一つの答えになっています。",
+      "chunks": [
+        {
+          "en": "Not being able to say",
+          "ja": "言えないということ自体が",
+          "role": "S"
+        },
+        {
+          "en": "is itself",
+          "ja": "なっています",
+          "role": "V"
+        },
+        {
+          "en": "one answer.",
+          "ja": "一つの答えに",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "知ることは、行動の前に必ず来るものです。",
+      "chunks": [
+        {
+          "en": "Knowing",
+          "ja": "知ることは",
+          "role": "S"
+        },
+        {
+          "en": "always comes",
+          "ja": "必ず来るものです",
+          "role": "V"
+        },
+        {
+          "en": "before action.",
+          "ja": "行動の前に",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

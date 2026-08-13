@@ -1,0 +1,224 @@
+{
+  "id": "eiken5-town-01",
+  "grade": "5",
+  "category": "town",
+  "title": "The Shop by the Station",
+  "titleJa": "駅のそばの店",
+  "sentences": [
+    {
+      "ja": "駅のそばに小さなパン屋があります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a small bread shop",
+          "ja": "小さなパン屋が",
+          "role": "S"
+        },
+        {
+          "en": "by the station.",
+          "ja": "駅のそばに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは学校の帰りによくそこへ行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "often go",
+          "ja": "よく行きます",
+          "role": "V"
+        },
+        {
+          "en": "there",
+          "ja": "そこへ",
+          "role": "M"
+        },
+        {
+          "en": "on my way home from school.",
+          "ja": "学校の帰りに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "店の中はいつもいいにおいがします。",
+      "chunks": [
+        {
+          "en": "The shop",
+          "ja": "店の中は",
+          "role": "S"
+        },
+        {
+          "en": "always smells good.",
+          "ja": "いつもいいにおいがします",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "店の女の人はわたしの名前を知っています。",
+      "chunks": [
+        {
+          "en": "The woman in the shop",
+          "ja": "店の女の人は",
+          "role": "S"
+        },
+        {
+          "en": "knows",
+          "ja": "知っています",
+          "role": "V"
+        },
+        {
+          "en": "my name.",
+          "ja": "わたしの名前を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはいつも同じパンを買います。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "always buy",
+          "ja": "いつも買います",
+          "role": "V"
+        },
+        {
+          "en": "the same bread.",
+          "ja": "同じパンを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それは大きくて、あまり高くありません。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "big and not very expensive.",
+          "ja": "大きくてあまり高くない",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "土曜日には、新しいケーキがあります。",
+      "chunks": [
+        {
+          "en": "On Saturday",
+          "ja": "土曜日には",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a new cake.",
+          "ja": "新しいケーキが",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "先週、わたしは家族のためにそれを買いました。",
+      "chunks": [
+        {
+          "en": "Last week",
+          "ja": "先週",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "bought",
+          "ja": "買いました",
+          "role": "V"
+        },
+        {
+          "en": "it",
+          "ja": "それを",
+          "role": "O"
+        },
+        {
+          "en": "for my family.",
+          "ja": "家族のために",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "父も母もそれが好きでした。",
+      "chunks": [
+        {
+          "en": "My father and my mother",
+          "ja": "父も母も",
+          "role": "S"
+        },
+        {
+          "en": "liked",
+          "ja": "好きでした",
+          "role": "V"
+        },
+        {
+          "en": "it.",
+          "ja": "それが",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはこの店が町でいちばん好きです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "like",
+          "ja": "好きです",
+          "role": "V"
+        },
+        {
+          "en": "this shop",
+          "ja": "この店が",
+          "role": "O"
+        },
+        {
+          "en": "the best in my town.",
+          "ja": "町でいちばん",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}
