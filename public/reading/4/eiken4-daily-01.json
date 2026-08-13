@@ -1,0 +1,259 @@
+{
+  "id": "eiken4-daily-01",
+  "grade": "4",
+  "category": "daily",
+  "title": "Cooking with My Father",
+  "titleJa": "父と料理する",
+  "sentences": [
+    {
+      "ja": "わたしの父は、日曜日にいつも料理を作ります。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "わたしの父は",
+          "role": "S"
+        },
+        {
+          "en": "always cooks",
+          "ja": "いつも料理を作ります",
+          "role": "V"
+        },
+        {
+          "en": "on Sunday.",
+          "ja": "日曜日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "平日は仕事がおそいので、料理をする時間がありません。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "does not have",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "time to cook",
+          "ja": "料理をする時間が",
+          "role": "O"
+        },
+        {
+          "en": "on other days because his work is long.",
+          "ja": "ほかの日は仕事が長いので",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "先月、父はわたしに手伝ってほしいと言いました。",
+      "chunks": [
+        {
+          "en": "Last month,",
+          "ja": "先月",
+          "role": "M"
+        },
+        {
+          "en": "he",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "asked",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "me",
+          "ja": "わたしに",
+          "role": "O"
+        },
+        {
+          "en": "to help him.",
+          "ja": "手伝ってほしいと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは料理をしたことがありませんでした。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "had never cooked.",
+          "ja": "料理をしたことがありませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "最初の日、わたしは野菜を洗いました。",
+      "chunks": [
+        {
+          "en": "On the first day,",
+          "ja": "最初の日",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "washed",
+          "ja": "洗いました",
+          "role": "V"
+        },
+        {
+          "en": "vegetables.",
+          "ja": "野菜を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "父は、急がなくていいと言いました。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "父は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that I did not have to hurry.",
+          "ja": "急がなくていいと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、わたしは水をたくさんこぼしてしまいました。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "spilled",
+          "ja": "こぼしてしまいました",
+          "role": "V"
+        },
+        {
+          "en": "a lot of water.",
+          "ja": "水をたくさん",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "父は笑って、自分も昔は同じだったと言いました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "smiled",
+          "ja": "笑いました",
+          "role": "V"
+        },
+        {
+          "en": "and said that he had been the same before.",
+          "ja": "そして自分も昔は同じだったと言いました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今では、わたしは卵の料理を一人で作れます。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今では",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "can make",
+          "ja": "作れます",
+          "role": "V"
+        },
+        {
+          "en": "egg dishes",
+          "ja": "卵の料理を",
+          "role": "O"
+        },
+        {
+          "en": "without help.",
+          "ja": "助けなしで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "母が仕事から帰るのがおそいとき、わたしが作ります。",
+      "chunks": [
+        {
+          "en": "When my mother comes home from work at eight,",
+          "ja": "母が8時に仕事から帰るとき",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしが",
+          "role": "S"
+        },
+        {
+          "en": "cook.",
+          "ja": "作ります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "料理は、思っていたよりずっとおもしろいです。",
+      "chunks": [
+        {
+          "en": "Cooking",
+          "ja": "料理は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "much more interesting than I thought.",
+          "ja": "思っていたよりずっとおもしろい",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

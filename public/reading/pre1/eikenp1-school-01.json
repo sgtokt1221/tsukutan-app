@@ -1,0 +1,569 @@
+{
+  "id": "eikenp1-school-01",
+  "grade": "pre1",
+  "category": "school",
+  "title": "What a Grade Cannot Measure",
+  "titleJa": "成績が測れないもの",
+  "sentences": [
+    {
+      "ja": "学校での評価は、長い間、点数によって行われてきました。",
+      "chunks": [
+        {
+          "en": "Evaluation at school",
+          "ja": "学校での評価は",
+          "role": "S"
+        },
+        {
+          "en": "has long been carried out",
+          "ja": "長い間行われてきました",
+          "role": "V"
+        },
+        {
+          "en": "by scores.",
+          "ja": "点数によって",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "点数には、明らかな利点があります。",
+      "chunks": [
+        {
+          "en": "Scores",
+          "ja": "点数には",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "clear advantages.",
+          "ja": "明らかな利点が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "だれが見ても同じであり、比べることができます。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the same to anyone who looks at them, and they can be compared.",
+          "ja": "だれが見ても同じであり、比べることができるもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この性質があるからこそ、入試のような場面で使えます。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is because of this quality",
+          "ja": "この性質があるからこそ",
+          "role": "M"
+        },
+        {
+          "en": "that they can be used in situations like entrance examinations.",
+          "ja": "入試のような場面で使えるのです",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、測れるものだけが重要になるという問題があります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a problem that only what can be measured becomes important.",
+          "ja": "測れるものだけが重要になるという問題が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "測れないものは、次第に語られなくなっていきます。",
+      "chunks": [
+        {
+          "en": "What cannot be measured",
+          "ja": "測れないものは",
+          "role": "S"
+        },
+        {
+          "en": "gradually stops being talked about.",
+          "ja": "次第に語られなくなっていきます",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "たとえば、分からないと言える力は点数になりません。",
+      "chunks": [
+        {
+          "en": "For example,",
+          "ja": "たとえば",
+          "role": "M"
+        },
+        {
+          "en": "the ability to say that you do not understand",
+          "ja": "分からないと言える力は",
+          "role": "S"
+        },
+        {
+          "en": "does not become",
+          "ja": "なりません",
+          "role": "V"
+        },
+        {
+          "en": "a score.",
+          "ja": "点数に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかしこの力は、学びが続くかどうかを決めます。",
+      "chunks": [
+        {
+          "en": "But this ability",
+          "ja": "しかしこの力は",
+          "role": "S"
+        },
+        {
+          "en": "decides",
+          "ja": "決めます",
+          "role": "V"
+        },
+        {
+          "en": "whether learning continues.",
+          "ja": "学びが続くかどうかを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "分からないことを隠す生徒は、その場では成績を保てます。",
+      "chunks": [
+        {
+          "en": "Students who hide what they do not understand",
+          "ja": "分からないことを隠す生徒は",
+          "role": "S"
+        },
+        {
+          "en": "can keep",
+          "ja": "保てます",
+          "role": "V"
+        },
+        {
+          "en": "their grades for the time being.",
+          "ja": "その場では成績を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、土台の欠けたまま先へ進むことになります。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "go forward",
+          "ja": "進むことになります",
+          "role": "V"
+        },
+        {
+          "en": "with a missing base.",
+          "ja": "土台の欠けたまま",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "いくつかの学校は、この点を評価に含める試みを始めました。",
+      "chunks": [
+        {
+          "en": "Some schools",
+          "ja": "いくつかの学校は",
+          "role": "S"
+        },
+        {
+          "en": "have begun",
+          "ja": "始めました",
+          "role": "V"
+        },
+        {
+          "en": "attempts to include this point in evaluation.",
+          "ja": "この点を評価に含める試みを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "授業中に出した質問の数を記録する、といった方法です。",
+      "chunks": [
+        {
+          "en": "One method",
+          "ja": "一つの方法は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to record the number of questions asked in class.",
+          "ja": "授業中に出した質問の数を記録すること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、ここで新しい問題が生じます。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "a new problem",
+          "ja": "新しい問題が",
+          "role": "S"
+        },
+        {
+          "en": "appears",
+          "ja": "生じます",
+          "role": "V"
+        },
+        {
+          "en": "here.",
+          "ja": "ここで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "数えられるようにした瞬間、それは点数と同じ性質を持ちます。",
+      "chunks": [
+        {
+          "en": "The moment we make it countable,",
+          "ja": "数えられるようにした瞬間",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "takes on",
+          "ja": "持ちます",
+          "role": "V"
+        },
+        {
+          "en": "the same quality as a score.",
+          "ja": "点数と同じ性質を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "質問の中身ではなく、回数を増やす生徒が現れます。",
+      "chunks": [
+        {
+          "en": "Students",
+          "ja": "生徒が",
+          "role": "S"
+        },
+        {
+          "en": "appear",
+          "ja": "現れます",
+          "role": "V"
+        },
+        {
+          "en": "who increase the number rather than the content.",
+          "ja": "中身ではなく回数を増やす",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "これは評価一般に当てはまる、よく知られた現象です。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a well-known phenomenon that applies to evaluation in general.",
+          "ja": "評価一般に当てはまるよく知られた現象",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ある指標が目標になると、その指標は指標として働かなくなります。",
+      "chunks": [
+        {
+          "en": "When a measure becomes a target,",
+          "ja": "ある指標が目標になると",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "stops working",
+          "ja": "働かなくなります",
+          "role": "V"
+        },
+        {
+          "en": "as a measure.",
+          "ja": "指標として",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "では、評価をやめればよいのでしょうか。",
+      "chunks": [
+        {
+          "en": "Then",
+          "ja": "では",
+          "role": "M"
+        },
+        {
+          "en": "should we stop",
+          "ja": "やめればよいのでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "evaluating?",
+          "ja": "評価を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それも現実的ではありません。",
+      "chunks": [
+        {
+          "en": "That",
+          "ja": "それも",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "realistic either.",
+          "ja": "現実的",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "限られた席をだれかに割り当てる必要は、依然として残ります。",
+      "chunks": [
+        {
+          "en": "The need to give limited seats to someone",
+          "ja": "限られた席をだれかに割り当てる必要は",
+          "role": "S"
+        },
+        {
+          "en": "still remains.",
+          "ja": "依然として残ります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "現実的な答えは、評価の限界を明示することかもしれません。",
+      "chunks": [
+        {
+          "en": "A realistic answer",
+          "ja": "現実的な答えは",
+          "role": "S"
+        },
+        {
+          "en": "may be",
+          "ja": "かもしれません",
+          "role": "V"
+        },
+        {
+          "en": "to state the limits of evaluation clearly.",
+          "ja": "評価の限界を明示すること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この点数はこの範囲しか測っていない、と示すことです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is to show",
+          "ja": "示すことです",
+          "role": "V"
+        },
+        {
+          "en": "that this score measures only this range.",
+          "ja": "この点数はこの範囲しか測っていないと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "測れないものがあると認めることは、弱さではありません。",
+      "chunks": [
+        {
+          "en": "Admitting that there are things we cannot measure",
+          "ja": "測れないものがあると認めることは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a weakness.",
+          "ja": "弱さ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それは、測るという行為を正しく使うための条件です。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a condition for using measurement correctly.",
+          "ja": "測るという行為を正しく使うための条件",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "教師が「この試験で見ているのはここだけだ」と言うだけでも違います。",
+      "chunks": [
+        {
+          "en": "Even a teacher saying that this test looks only at this part",
+          "ja": "教師が「この試験で見ているのはここだけだ」と言うだけでも",
+          "role": "S"
+        },
+        {
+          "en": "makes",
+          "ja": "違います",
+          "role": "V"
+        },
+        {
+          "en": "a difference.",
+          "ja": "違いを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "生徒は、自分の全体が測られたのではないと知ることができます。",
+      "chunks": [
+        {
+          "en": "Students",
+          "ja": "生徒は",
+          "role": "S"
+        },
+        {
+          "en": "can know",
+          "ja": "知ることができます",
+          "role": "V"
+        },
+        {
+          "en": "that their whole self has not been measured.",
+          "ja": "自分の全体が測られたのではないと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "この一言が無いために、点数を自分の価値と結びつける生徒がいます。",
+      "chunks": [
+        {
+          "en": "Because these words are missing,",
+          "ja": "この一言が無いために",
+          "role": "M"
+        },
+        {
+          "en": "some students",
+          "ja": "生徒がいます",
+          "role": "S"
+        },
+        {
+          "en": "connect",
+          "ja": "結びつける",
+          "role": "V"
+        },
+        {
+          "en": "their scores with their own worth.",
+          "ja": "点数を自分の価値と",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

@@ -119,6 +119,13 @@ const IRREGULAR = {
   written: 'write', taken: 'take', given: 'give', seen: 'see', done: 'do',
   gone: 'go', known: 'know', grown: 'grow', spoken: 'speak', eaten: 'eat',
   forgot: 'forget', forgotten: 'forget', swam: 'swim', swum: 'swim',
+  broke: 'break', broken: 'break', threw: 'throw', thrown: 'throw',
+  drew: 'draw', drawn: 'draw', blew: 'blow', blown: 'blow',
+  rode: 'ride', ridden: 'ride', woke: 'wake', woken: 'wake',
+  hid: 'hide', hidden: 'hide', shook: 'shake', shaken: 'shake',
+  caught: 'catch', fought: 'fight', meant: 'mean', lent: 'lend',
+  rang: 'ring', rung: 'ring', sung: 'sing', drunk: 'drink', begun: 'begin',
+  risen: 'rise', withdrawn: 'withdraw', cut: 'cut', hurt: 'hurt',
   slept: 'sleep', sat: 'sit', drove: 'drive', driven: 'drive', rose: 'rise',
   children: 'child', people: 'person', men: 'man', women: 'woman', feet: 'foot',
 };

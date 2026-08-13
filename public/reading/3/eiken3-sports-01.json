@@ -1,0 +1,309 @@
+{
+  "id": "eiken3-sports-01",
+  "grade": "3",
+  "category": "sports",
+  "title": "The Team That Kept Losing",
+  "titleJa": "負け続けたチーム",
+  "sentences": [
+    {
+      "ja": "わたしの兄は、高校で野球部に入っていました。",
+      "chunks": [
+        {
+          "en": "My brother",
+          "ja": "わたしの兄は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "入っていました",
+          "role": "V"
+        },
+        {
+          "en": "in the baseball club at his high school.",
+          "ja": "高校で野球部に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのチームは3年間、一度も勝ちませんでした。",
+      "chunks": [
+        {
+          "en": "The team",
+          "ja": "そのチームは",
+          "role": "S"
+        },
+        {
+          "en": "did not win",
+          "ja": "勝ちませんでした",
+          "role": "V"
+        },
+        {
+          "en": "even once",
+          "ja": "一度も",
+          "role": "M"
+        },
+        {
+          "en": "for three years.",
+          "ja": "3年間",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "生徒の数が少なく、9人しかいませんでした。",
+      "chunks": [
+        {
+          "en": "There were",
+          "ja": "いました",
+          "role": "V"
+        },
+        {
+          "en": "only nine students,",
+          "ja": "9人しか",
+          "role": "S"
+        },
+        {
+          "en": "because the school was small.",
+          "ja": "学校が小さかったので",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "だれか一人が休むと、試合ができませんでした。",
+      "chunks": [
+        {
+          "en": "If one of them was absent,",
+          "ja": "だれか一人が休むと",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "could not have",
+          "ja": "できませんでした",
+          "role": "V"
+        },
+        {
+          "en": "a game.",
+          "ja": "試合が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "兄は、それでも毎日練習に行きました。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "my brother",
+          "ja": "兄は",
+          "role": "S"
+        },
+        {
+          "en": "went",
+          "ja": "行きました",
+          "role": "V"
+        },
+        {
+          "en": "to practice every day.",
+          "ja": "毎日練習に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは一度、なぜ続けるのかと聞きました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "once asked",
+          "ja": "一度聞きました",
+          "role": "V"
+        },
+        {
+          "en": "him",
+          "ja": "彼に",
+          "role": "O"
+        },
+        {
+          "en": "why he continued.",
+          "ja": "なぜ続けるのかと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "兄は、勝つために野球をしているのではないと答えました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "answered",
+          "ja": "答えました",
+          "role": "V"
+        },
+        {
+          "en": "that he was not playing baseball to win.",
+          "ja": "勝つために野球をしているのではないと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "最後の試合の日、わたしは見に行きました。",
+      "chunks": [
+        {
+          "en": "On the day of the last game,",
+          "ja": "最後の試合の日",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "went",
+          "ja": "行きました",
+          "role": "V"
+        },
+        {
+          "en": "to watch.",
+          "ja": "見に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その日も、チームは大きな差で負けました。",
+      "chunks": [
+        {
+          "en": "That day too,",
+          "ja": "その日も",
+          "role": "M"
+        },
+        {
+          "en": "the team",
+          "ja": "チームは",
+          "role": "S"
+        },
+        {
+          "en": "lost",
+          "ja": "負けました",
+          "role": "V"
+        },
+        {
+          "en": "by a large difference.",
+          "ja": "大きな差で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし試合のあと、だれも泣いていませんでした。",
+      "chunks": [
+        {
+          "en": "But after the game,",
+          "ja": "しかし試合のあと",
+          "role": "M"
+        },
+        {
+          "en": "nobody",
+          "ja": "だれも",
+          "role": "S"
+        },
+        {
+          "en": "was crying.",
+          "ja": "泣いていませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "9人は笑いながら、写真を撮っていました。",
+      "chunks": [
+        {
+          "en": "The nine of them",
+          "ja": "9人は",
+          "role": "S"
+        },
+        {
+          "en": "were taking",
+          "ja": "撮っていました",
+          "role": "V"
+        },
+        {
+          "en": "photographs",
+          "ja": "写真を",
+          "role": "O"
+        },
+        {
+          "en": "while laughing.",
+          "ja": "笑いながら",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今、兄は大学でも野球を続けています。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今",
+          "role": "M"
+        },
+        {
+          "en": "my brother",
+          "ja": "兄は",
+          "role": "S"
+        },
+        {
+          "en": "still plays",
+          "ja": "続けています",
+          "role": "V"
+        },
+        {
+          "en": "baseball at university.",
+          "ja": "大学でも野球を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "勝つことだけが続ける理由ではないと、わたしは学びました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "learned",
+          "ja": "学びました",
+          "role": "V"
+        },
+        {
+          "en": "that winning is not the only reason to continue.",
+          "ja": "勝つことだけが続ける理由ではないと",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

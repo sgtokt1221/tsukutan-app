@@ -1,0 +1,599 @@
+{
+  "id": "eikenp1-sports-01",
+  "grade": "pre1",
+  "category": "sports",
+  "title": "The Body as a Machine",
+  "titleJa": "機械としての体",
+  "sentences": [
+    {
+      "ja": "競技スポーツの世界では、記録が年々更新され続けています。",
+      "chunks": [
+        {
+          "en": "In the world of competitive sports,",
+          "ja": "競技スポーツの世界では",
+          "role": "M"
+        },
+        {
+          "en": "records",
+          "ja": "記録が",
+          "role": "S"
+        },
+        {
+          "en": "keep being broken",
+          "ja": "更新され続けています",
+          "role": "V"
+        },
+        {
+          "en": "year after year.",
+          "ja": "年々",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その背景には、科学的な訓練の進歩があります。",
+      "chunks": [
+        {
+          "en": "Behind this",
+          "ja": "その背景には",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "progress in scientific training.",
+          "ja": "科学的な訓練の進歩が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "心拍、睡眠、食事のすべてが数値として記録されます。",
+      "chunks": [
+        {
+          "en": "Heartbeat, sleep, and meals",
+          "ja": "心拍、睡眠、食事の",
+          "role": "S"
+        },
+        {
+          "en": "are all recorded",
+          "ja": "すべてが記録されます",
+          "role": "V"
+        },
+        {
+          "en": "as numbers.",
+          "ja": "数値として",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "選手の体は、管理される対象になりました。",
+      "chunks": [
+        {
+          "en": "The bodies of athletes",
+          "ja": "選手の体は",
+          "role": "S"
+        },
+        {
+          "en": "have become",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "objects to be managed.",
+          "ja": "管理される対象に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この変化は、明らかな成果を生みました。",
+      "chunks": [
+        {
+          "en": "This change",
+          "ja": "この変化は",
+          "role": "S"
+        },
+        {
+          "en": "has produced",
+          "ja": "生みました",
+          "role": "V"
+        },
+        {
+          "en": "clear results.",
+          "ja": "明らかな成果を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "けがの数は減り、選手が競技を続けられる年数は伸びました。",
+      "chunks": [
+        {
+          "en": "The number of injuries",
+          "ja": "けがの数は",
+          "role": "S"
+        },
+        {
+          "en": "has fallen,",
+          "ja": "減りました",
+          "role": "V"
+        },
+        {
+          "en": "and the years athletes can continue have grown longer.",
+          "ja": "そして選手が競技を続けられる年数は伸びました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし同時に、別の問題が現れています。",
+      "chunks": [
+        {
+          "en": "At the same time, however,",
+          "ja": "しかし同時に",
+          "role": "M"
+        },
+        {
+          "en": "another problem",
+          "ja": "別の問題が",
+          "role": "S"
+        },
+        {
+          "en": "has appeared.",
+          "ja": "現れています",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "数値で測れる範囲が広がるほど、測れない部分が軽く見られます。",
+      "chunks": [
+        {
+          "en": "The wider the range that can be measured by numbers,",
+          "ja": "数値で測れる範囲が広がるほど",
+          "role": "M"
+        },
+        {
+          "en": "the more lightly",
+          "ja": "より軽く",
+          "role": "M"
+        },
+        {
+          "en": "the parts that cannot be measured",
+          "ja": "測れない部分が",
+          "role": "S"
+        },
+        {
+          "en": "are seen.",
+          "ja": "見られます",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "なぜその競技を続けるのかという問いは、数値になりません。",
+      "chunks": [
+        {
+          "en": "The question of why one continues the sport",
+          "ja": "なぜその競技を続けるのかという問いは",
+          "role": "S"
+        },
+        {
+          "en": "does not become",
+          "ja": "なりません",
+          "role": "V"
+        },
+        {
+          "en": "a number.",
+          "ja": "数値に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "近年、若い選手の心の問題が公に語られるようになりました。",
+      "chunks": [
+        {
+          "en": "In recent years,",
+          "ja": "近年",
+          "role": "M"
+        },
+        {
+          "en": "the mental problems of young athletes",
+          "ja": "若い選手の心の問題が",
+          "role": "S"
+        },
+        {
+          "en": "have come to be talked about",
+          "ja": "語られるようになりました",
+          "role": "V"
+        },
+        {
+          "en": "in public.",
+          "ja": "公に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "大きな大会を前に、出場を取りやめる選手が現れました。",
+      "chunks": [
+        {
+          "en": "Before large events,",
+          "ja": "大きな大会を前に",
+          "role": "M"
+        },
+        {
+          "en": "some athletes",
+          "ja": "選手が現れました",
+          "role": "S"
+        },
+        {
+          "en": "have withdrawn.",
+          "ja": "出場を取りやめました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "その判断は、当初は弱さとして批判されました。",
+      "chunks": [
+        {
+          "en": "Those decisions",
+          "ja": "その判断は",
+          "role": "S"
+        },
+        {
+          "en": "were criticized",
+          "ja": "批判されました",
+          "role": "V"
+        },
+        {
+          "en": "as weakness at first.",
+          "ja": "当初は弱さとして",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし今では、勇気ある行動として受け取られています。",
+      "chunks": [
+        {
+          "en": "But now",
+          "ja": "しかし今では",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "are received",
+          "ja": "受け取られています",
+          "role": "V"
+        },
+        {
+          "en": "as acts of courage.",
+          "ja": "勇気ある行動として",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この変化自体が、スポーツの見方の変化を示しています。",
+      "chunks": [
+        {
+          "en": "This change itself",
+          "ja": "この変化自体が",
+          "role": "S"
+        },
+        {
+          "en": "shows",
+          "ja": "示しています",
+          "role": "V"
+        },
+        {
+          "en": "a change in how we see sports.",
+          "ja": "スポーツの見方の変化を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "指導者の役割も、この20年で大きく変わりました。",
+      "chunks": [
+        {
+          "en": "The role of coaches",
+          "ja": "指導者の役割も",
+          "role": "S"
+        },
+        {
+          "en": "has also changed greatly",
+          "ja": "大きく変わりました",
+          "role": "V"
+        },
+        {
+          "en": "in these twenty years.",
+          "ja": "この20年で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "かつては、厳しく叱ることが指導だと考えられていました。",
+      "chunks": [
+        {
+          "en": "In the past,",
+          "ja": "かつては",
+          "role": "M"
+        },
+        {
+          "en": "scolding severely",
+          "ja": "厳しく叱ることが",
+          "role": "S"
+        },
+        {
+          "en": "was thought",
+          "ja": "考えられていました",
+          "role": "V"
+        },
+        {
+          "en": "to be coaching.",
+          "ja": "指導だと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "今は、選手が自分で決められるように支えることが求められます。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今は",
+          "role": "M"
+        },
+        {
+          "en": "coaches",
+          "ja": "指導者は",
+          "role": "S"
+        },
+        {
+          "en": "are asked to support",
+          "ja": "支えることが求められます",
+          "role": "V"
+        },
+        {
+          "en": "athletes so that they can decide by themselves.",
+          "ja": "選手が自分で決められるように",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "これは技術ではなく、関係の質の問題です。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a matter of technique but of the quality of the relationship.",
+          "ja": "技術ではなく関係の質の問題",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "体を機械として扱う考え方には、限界があります。",
+      "chunks": [
+        {
+          "en": "The way of thinking that treats the body as a machine",
+          "ja": "体を機械として扱う考え方には",
+          "role": "S"
+        },
+        {
+          "en": "has",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "limits.",
+          "ja": "限界が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "機械は、意味を必要としません。",
+      "chunks": [
+        {
+          "en": "A machine",
+          "ja": "機械は",
+          "role": "S"
+        },
+        {
+          "en": "does not need",
+          "ja": "必要としません",
+          "role": "V"
+        },
+        {
+          "en": "meaning.",
+          "ja": "意味を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし人は、意味を失うと動けなくなります。",
+      "chunks": [
+        {
+          "en": "But people",
+          "ja": "しかし人は",
+          "role": "S"
+        },
+        {
+          "en": "cannot move",
+          "ja": "動けなくなります",
+          "role": "V"
+        },
+        {
+          "en": "when they lose meaning.",
+          "ja": "意味を失うと",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "最高の訓練計画も、続ける理由の代わりにはなりません。",
+      "chunks": [
+        {
+          "en": "Even the best training plan",
+          "ja": "最高の訓練計画も",
+          "role": "S"
+        },
+        {
+          "en": "cannot take the place",
+          "ja": "代わりにはなりません",
+          "role": "V"
+        },
+        {
+          "en": "of a reason to continue.",
+          "ja": "続ける理由の",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "測ることと、意味を与えることは、別の仕事です。",
+      "chunks": [
+        {
+          "en": "Measuring and giving meaning",
+          "ja": "測ることと意味を与えることは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "different tasks.",
+          "ja": "別の仕事",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "スポーツが問われているのは、後者をだれが担うのかという点です。",
+      "chunks": [
+        {
+          "en": "What sports are being asked",
+          "ja": "スポーツが問われていることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "who takes on the second one.",
+          "ja": "後者をだれが担うのかという点",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この問題は、競技の外にも同じ形で存在します。",
+      "chunks": [
+        {
+          "en": "This problem",
+          "ja": "この問題は",
+          "role": "S"
+        },
+        {
+          "en": "exists",
+          "ja": "存在します",
+          "role": "V"
+        },
+        {
+          "en": "in the same form outside sports,",
+          "ja": "競技の外にも同じ形で",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "学校でも職場でも、数値で管理される場面は増えています。",
+      "chunks": [
+        {
+          "en": "At school and at work,",
+          "ja": "学校でも職場でも",
+          "role": "M"
+        },
+        {
+          "en": "situations managed by numbers",
+          "ja": "数値で管理される場面は",
+          "role": "S"
+        },
+        {
+          "en": "are increasing.",
+          "ja": "増えています",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "測ること自体を止める必要はありません。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "no need to stop measuring itself.",
+          "ja": "測ること自体を止める必要は",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "測った数値が人の全部だと考えないことが、必要なのです。",
+      "chunks": [
+        {
+          "en": "What is necessary",
+          "ja": "必要なことは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "not to think that the numbers we measured are the whole person.",
+          "ja": "測った数値が人の全部だと考えないこと",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}
