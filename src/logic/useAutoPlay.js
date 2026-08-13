@@ -35,6 +35,12 @@ export const useAutoPlay = ({
   const handlersRef = useRef({ onRevealMeaning, onAdvance });
   handlersRef.current = { onRevealMeaning, onAdvance };
 
+  // 間隔も ref で見る。start() のクロージャに閉じ込めると、再生中に
+  // 速さを変えても次の単語からしか効かず、実際には「変えても変わらない」
+  // ように見える（止めて再生し直すまで古い値のまま）。
+  const gapRef = useRef(gapMs);
+  gapRef.current = gapMs;
+
   const stop = useCallback(() => {
     activeRef.current = false;
     setAutoPlay(false);
@@ -86,14 +92,14 @@ export const useAutoPlay = ({
                 activeRef.current = false;
                 setAutoPlay(false);
               }
-            }, gapMs);
+            }, gapRef.current);
           },
         }
       );
     };
 
     playAt(currentIndex);
-  }, [enabled, words, currentIndex, direction, gapMs]);
+  }, [enabled, words, currentIndex, direction]);
 
   // 画面を離れるときは必ず止める
   useEffect(() => stop, [stop]);
