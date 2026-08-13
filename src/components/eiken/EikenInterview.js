@@ -11,6 +11,7 @@ import {
   loadInterviewIndex,
   speakingFor,
   speechTextsFor,
+  tipsFor,
 } from '../../logic/interviewContent';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { prefetchClips } from '../../logic/audioLibrary';
@@ -268,6 +269,7 @@ export default function EikenInterview({ grade, onExit }) {
 
   const cardView = useMemo(() => cardViewFor(beat), [beat]);
   const card = session?.card;
+  const tips = useMemo(() => tipsFor(session?.flow, beat), [session, beat]);
   const speaking = useMemo(() => speakingFor(beat, card, branch), [beat, card, branch]);
   // Yes / No を選び直したら別の答えとして扱う。前の枝の答えと混ぜない。
   const speakingKey = beat ? `${beat.key}-${branch || ''}` : null;
@@ -497,6 +499,13 @@ export default function EikenInterview({ grade, onExit }) {
           <p className="interview-note">カードは裏返してあります。見ずに答えます。</p>
         )}
 
+        {/* 心得はそれが要る場面に出す。話す前に目に入る位置（録音の上）に置く。 */}
+        {tips.length > 0 && (
+          <ul className="interview-tips">
+            {tips.map((tip) => <li key={tip}>{tip}</li>)}
+          </ul>
+        )}
+
         {/* 録音したものは本文の下に置く。読む英文や絵を押しのけると、
             話している途中で本文を見失う。 */}
         {speaking && (
@@ -505,16 +514,6 @@ export default function EikenInterview({ grade, onExit }) {
             answer={answer}
             onEditTranscript={editTranscript}
           />
-        )}
-
-        {/* 心得は最初の場面に、たたんだ状態で置く。開かなければ邪魔にならない。 */}
-        {session.flow.tips?.length > 0 && position === 0 && (
-          <details className="interview-tips">
-            <summary>気をつけること</summary>
-            <ul>
-              {session.flow.tips.map((tip) => <li key={tip}>{tip}</li>)}
-            </ul>
-          </details>
         )}
 
       </div>

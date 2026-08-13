@@ -112,6 +112,23 @@ export const buildBeats = (flow, card) => {
 };
 
 /**
+ * その場面で出す心得（interviewer-{級}.json の tips）。
+ *
+ * tips[].at は buildBeats が付ける beat.key（`step-{ステップid}` / `q-{設問番号}`）。
+ * まとめて最初に並べても、その心得が要る場面に着いた頃には読み返さない。
+ * 綴りを間違えた at は画面に一度も出ないまま気づけないので、実在する場面を
+ * 指しているかは単体テストで見ている。
+ *
+ * @param {object} flow interviewer-{級}.json
+ * @param {object} beat buildBeats が返した1場面
+ * @returns {string[]} その場面に出す文言
+ */
+export const tipsFor = (flow, beat) => {
+  if (!beat) return [];
+  return (flow?.tips || []).filter((tip) => tip.at === beat.key).map((tip) => tip.text);
+};
+
+/**
  * その場面で問題カードの何を見せるか。
  * 裏返したあと（cardVisible: false）は何も見せない。本番と同じにする。
  */

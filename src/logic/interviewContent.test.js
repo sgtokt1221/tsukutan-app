@@ -1,4 +1,4 @@
-import { buildBeats, cardViewFor, speakingFor } from './interviewContent';
+import { buildBeats, cardViewFor, speakingFor, tipsFor } from './interviewContent';
 
 const flow = {
   steps: [
@@ -132,5 +132,43 @@ describe('speakingFor', () => {
       mode: 'unscripted',
       question: 'This is a story about a woman. Begin with: One Sunday morning, ...',
     });
+  });
+});
+
+describe('心得（tips）', () => {
+  const withTips = {
+    ...flow,
+    tips: [
+      { at: 'step-greeting', text: '全部英語。' },
+      { at: 'q-2', text: '書き出しの文から始める。' },
+      { at: 'q-2', text: 'ラベルはそのまま使ってよい。' },
+    ],
+  };
+
+  test('その場面のぶんだけを、書いた順に返す', () => {
+    const beats = buildBeats(withTips, card);
+    const at = (key) => tipsFor(withTips, beats.find((beat) => beat.key === key));
+
+    expect(at('step-greeting')).toEqual(['全部英語。']);
+    expect(at('q-2')).toEqual(['書き出しの文から始める。', 'ラベルはそのまま使ってよい。']);
+    expect(at('q-1')).toEqual([]);
+    expect(tipsFor(withTips, null)).toEqual([]);
+    expect(tipsFor({ steps: [] }, buildBeats(flow, card)[0])).toEqual([]);
+  });
+
+  // at が実在しない場面を指すと、その心得は画面に一度も出ない。動くので気づけない。
+  test('素材の tips は全部、実在する場面を指している', () => {
+    const cases = [
+      ['3', require('../../public/eiken-interview/interviewer-3.json'), require('../../public/eiken-interview/3/eiken3-001.json')],
+      ['pre2', require('../../public/eiken-interview/interviewer-pre2.json'), require('../../public/eiken-interview/pre2/eiken-p2-001.json')],
+      ['2', require('../../public/eiken-interview/interviewer-2.json'), require('../../public/eiken-interview/2/eiken2-001.json')],
+      ['pre1', require('../../public/eiken-interview/interviewer-pre1.json'), require('../../public/eiken-interview/pre1/eiken-p1-001.json')],
+    ];
+
+    for (const [grade, realFlow, realCard] of cases) {
+      const keys = new Set(buildBeats(realFlow, realCard).map((beat) => beat.key));
+      const missing = realFlow.tips.filter((tip) => !keys.has(tip.at)).map((tip) => tip.at);
+      expect({ grade, missing, count: realFlow.tips.length > 0 }).toEqual({ grade, missing: [], count: true });
+    }
   });
 });
