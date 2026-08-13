@@ -22,7 +22,18 @@ const FILES = {
   '/eiken-interview/3/eiken3-001.json': require('../../../public/eiken-interview/3/eiken3-001.json'),
 };
 
+// jsdom にはマイクが無い。録音できる端末として振る舞わせる。
+// （無い端末ではマイクを出さない、というのも下のテストで見る）
+const giveMicrophone = () => {
+  window.MediaRecorder = function MediaRecorderStub() {};
+  Object.defineProperty(navigator, 'mediaDevices', {
+    value: { getUserMedia: jest.fn() },
+    configurable: true,
+  });
+};
+
 beforeEach(() => {
+  giveMicrophone();
   mockSpeakSequence.mockClear();
   global.fetch = jest.fn((path) => Promise.resolve({
     ok: Boolean(FILES[path]),
@@ -50,9 +61,9 @@ test('答え方は押すまで出ない', async () => {
   fireEvent.click(screen.getByText('Clean-up Events'));
   await screen.findByText('Hello.');
 
-  expect(screen.queryByText('答え方の見本')).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /見本を聞く/ })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: /答え方を見る/ }));
-  expect(screen.getByText('答え方の見本')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /見本を聞く/ })).toBeInTheDocument();
 });
 
 test('黙読の場面でパッセージとタイマーが出る', async () => {
@@ -127,4 +138,31 @@ test('場面が変わるたびに面接委員のセリフを読み上げる', as
   expect(mockSpeakSequence).toHaveBeenCalledWith([
     { text: 'Can I have your card, please?', lang: 'en-US' },
   ]);
+});
+
+test('話す場面では画面下にマイクが出る。挨拶の場面には出ない', async () => {
+  render(<EikenInterview grade="pre2" onExit={() => {}} />);
+  await screen.findByText('Clean-up Events');
+  fireEvent.click(screen.getByText('Clean-up Events'));
+  await screen.findByText('Hello.');
+
+  // 入室の挨拶は面接委員が話す番。マイクは出さない
+  expect(screen.queryByRole('button', { name: '録音する' })).not.toBeInTheDocument();
+
+  // 音読は生徒が話す番（入室6 + カード受け取り + 黙読 = 8回進める）
+  for (let i = 0; i < 8; i += 1) next();
+  expect(screen.getByText('Now, please read it aloud.')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: '録音する' })).toBeInTheDocument();
+});
+
+test('録音できない端末ではマイクを出さない', async () => {
+  delete window.MediaRecorder;
+  render(<EikenInterview grade="pre2" onExit={() => {}} />);
+  await screen.findByText('Clean-up Events');
+  fireEvent.click(screen.getByText('Clean-up Events'));
+  await screen.findByText('Hello.');
+
+  for (let i = 0; i < 8; i += 1) next();
+  expect(screen.getByText('Now, please read it aloud.')).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: '録音する' })).not.toBeInTheDocument();
 });

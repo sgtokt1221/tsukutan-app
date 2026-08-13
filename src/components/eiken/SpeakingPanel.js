@@ -1,36 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FaMicrophone, FaStop, FaRedo, FaPlay, FaFileAlt } from 'react-icons/fa';
-import { canRecord, useRecorder } from '../../logic/useRecorder';
+import { FaFileAlt } from 'react-icons/fa';
 import { VERDICT_LABELS, transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
 
 /**
- * 生徒が声を出す場面の、録音と文字起こし。
+ * 録音したあとに出るもの。聞き返しと、文字起こしの結果。
  *
- * 自分が実際に何と言ったかが文字で見えると、言えたつもりだった箇所が
- * 分かる。音読では読むべき英文と突き合わせて、読み飛ばした語を出す。
- * 質問への答えは、質問に答えられているかを見る。
- *
- * 発音の点は出さない。文字起こしが取れなくても録音と聞き返しはできる。
+ * 録音そのものは画面下のマイクボタン（EikenInterview）が受け持つ。
+ * 話している最中に本文が動くと落ち着かないので、ここは録り終えてから出す。
  */
-
-export default function SpeakingPanel({ mode, referenceText, question, modelAnswer, grade, resetKey }) {
-  const recorder = useRecorder();
+export default function SpeakingPanel({ recorder, mode, referenceText, question, modelAnswer, grade, resetKey }) {
   const [result, setResult] = useState(null);
   const [working, setWorking] = useState(false);
   const [failure, setFailure] = useState(null);
 
-  const { reset } = recorder;
-  // 場面が変わったら前の録音と点を捨てる。前の答えが残っていると読み違える。
+  // 場面が変わったら前の結果を捨てる。前の答えが残っていると読み違える。
   useEffect(() => {
-    reset();
     setResult(null);
     setFailure(null);
-  }, [resetKey, reset]);
+  }, [resetKey]);
 
   const blob = recorder.blob;
 
-  const runTranscription = useCallback(async () => {
+  const run = useCallback(async () => {
     if (!blob) return;
     setWorking(true);
     setFailure(null);
@@ -44,60 +36,27 @@ export default function SpeakingPanel({ mode, referenceText, question, modelAnsw
     }
   }, [blob, mode, referenceText, question, modelAnswer, grade]);
 
-  if (!canRecord()) {
-    return (
-      <p className="interview-note">
-        この端末では録音できません。声に出して練習し、「答え方を見る」で見本と比べてください。
-      </p>
-    );
-  }
+  if (recorder.error) return <p className="speaking-error">{recorder.error}</p>;
+  if (!blob || recorder.state === 'recording') return null;
 
   return (
     <div className="speaking-panel">
       <div className="speaking-controls">
-        {recorder.state === 'recording' ? (
-          <button type="button" className="speaking-button is-recording" onClick={recorder.stop}>
-            <FaStop aria-hidden="true" /> 止める
-            <span className="speaking-elapsed">
-              {Math.floor(recorder.seconds / 60)}:{String(recorder.seconds % 60).padStart(2, '0')}
-            </span>
-          </button>
-        ) : (
-          <button type="button" className="speaking-button" onClick={recorder.start}>
-            <FaMicrophone aria-hidden="true" /> {blob ? '録り直す' : '録音する'}
-          </button>
-        )}
-
-        {blob && recorder.state !== 'recording' && (
-          <>
-            {/* 自分の声を聞くのが一番効く。採点より先に置く。 */}
-            <audio className="speaking-audio" src={recorder.url} controls preload="metadata">
-              <track kind="captions" />
-            </audio>
-            <button
-              type="button"
-              className="ghost-button"
-              onClick={runTranscription}
-              disabled={working}
-            >
-              {working ? <>文字にしています…</> : <><FaFileAlt aria-hidden="true" /> 文字にする</>}
-            </button>
-          </>
-        )}
+        <audio className="speaking-audio" src={recorder.url} controls preload="metadata">
+          <track kind="captions" />
+        </audio>
+        <button type="button" className="ghost-button" onClick={run} disabled={working}>
+          {working ? '文字にしています…' : <><FaFileAlt aria-hidden="true" /> 文字にする</>}
+        </button>
       </div>
 
-      {recorder.error && <p className="speaking-error">{recorder.error}</p>}
       {failure && <p className="speaking-error">{failure}</p>}
 
       {result && (
         <div className="speaking-result">
-          {/* まず自分が何と言ったか。ここが本題。 */}
-          <div className="speaking-transcript-main">
-            <p className="interview-beat__role">言えていた内容</p>
-            <p className="speaking-transcript-main__text">
-              {result.transcript || '聞き取れませんでした。マイクに近づいて、もう一度話してみてください。'}
-            </p>
-          </div>
+          <p className="speaking-transcript-main__text">
+            {result.transcript || '聞き取れませんでした。マイクに近づいて、もう一度話してみてください。'}
+          </p>
 
           {result.missing?.length > 0 && (
             <div className="speaking-words">
@@ -107,9 +66,6 @@ export default function SpeakingPanel({ mode, referenceText, question, modelAnsw
                   <li key={word}><span className="speaking-words__word">{word}</span></li>
                 ))}
               </ul>
-              <p className="speaking-hint">
-                聞き取りの誤りで出ることもあります。録音を聞き返して確かめてください。
-              </p>
             </div>
           )}
 
@@ -125,19 +81,7 @@ export default function SpeakingPanel({ mode, referenceText, question, modelAnsw
               )}
             </div>
           )}
-
         </div>
-      )}
-
-      {recorder.state === 'idle' && !blob && (
-        <p className="speaking-hint">
-          <FaPlay aria-hidden="true" /> 録音してから「文字にする」を押すと、言えていた内容が出ます。
-        </p>
-      )}
-      {blob && !result && recorder.state !== 'recording' && !working && (
-        <p className="speaking-hint">
-          <FaRedo aria-hidden="true" /> 納得いくまで録り直せます。
-        </p>
       )}
     </div>
   );

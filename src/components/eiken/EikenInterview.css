@@ -158,13 +158,6 @@
   border-radius: 14px;
 }
 
-.interview-card-panel__label {
-  margin: 0 0 10px;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: #64748b;
-}
-
 .interview-passage {
   margin: 0;
   font-size: 1.05rem;
@@ -213,13 +206,22 @@
 }
 
 .interview-tips {
-  margin: 0;
-  padding: 16px 16px 16px 32px;
+  padding: 12px 16px;
   border-radius: 12px;
   background: #fffbeb;
   color: #78350f;
   font-size: 0.85rem;
   line-height: 1.8;
+}
+
+.interview-tips summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.interview-tips ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
 }
 
 /* ---- 下の操作 ---- */
@@ -228,18 +230,57 @@
   position: sticky;
   bottom: 0;
   display: flex;
+  align-items: center;
   gap: 12px;
   padding: 12px 16px;
   border-top: 1px solid #e2e8f0;
   background: #ffffff;
 }
 
-.interview-footer .ghost-button {
-  flex: 0 0 auto;
+.interview-footer__step {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
-.interview-footer .primary-action {
-  flex: 1;
+/* 話す場面のマイク。押す場所を迷わせないよう、下の真ん中に大きく置く。 */
+.interview-mic {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+}
+
+.interview-mic.is-recording {
+  width: auto;
+  padding: 0 20px;
+  background: #dc2626;
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.35);
+  animation: interview-mic-pulse 1.4s ease-in-out infinite;
+}
+
+.interview-mic__time {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes interview-mic-pulse {
+  0%, 100% { box-shadow: 0 2px 10px rgba(220, 38, 38, 0.35); }
+  50%      { box-shadow: 0 2px 18px rgba(220, 38, 38, 0.65); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interview-mic.is-recording { animation: none; }
 }
 
 /* ---- 録音と採点 ---- */
@@ -261,47 +302,16 @@
   gap: 12px;
 }
 
-.speaking-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 999px;
-  background: #2563eb;
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.speaking-button.is-recording {
-  background: #dc2626;
-}
-
-.speaking-elapsed {
-  font-variant-numeric: tabular-nums;
-  opacity: 0.85;
-}
-
 .speaking-audio {
   flex: 1 1 200px;
   min-width: 0;
   height: 36px;
 }
 
-.speaking-hint,
 .speaking-error {
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.7;
-}
-
-.speaking-hint {
-  color: #64748b;
-}
-
-.speaking-error {
   color: #b91c1c;
 }
 
@@ -367,13 +377,6 @@
   border-top: 1px dashed #cbd5e1;
   font-weight: 600;
   color: #0f172a;
-}
-
-.speaking-transcript-main {
-  padding: 12px;
-  border-radius: 10px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
 }
 
 .speaking-transcript-main__text {
