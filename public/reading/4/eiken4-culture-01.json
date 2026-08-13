@@ -1,0 +1,279 @@
+{
+  "id": "eiken4-culture-01",
+  "grade": "4",
+  "category": "culture",
+  "title": "New Year at My Grandmother's House",
+  "titleJa": "おばあちゃんの家のお正月",
+  "sentences": [
+    {
+      "ja": "毎年、わたしは正月を祖母の家で過ごします。",
+      "chunks": [
+        {
+          "en": "Every year,",
+          "ja": "毎年",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "spend",
+          "ja": "過ごします",
+          "role": "V"
+        },
+        {
+          "en": "New Year's Day",
+          "ja": "正月を",
+          "role": "O"
+        },
+        {
+          "en": "at my grandmother's house.",
+          "ja": "祖母の家で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼女の家は山の中の小さな町にあります。",
+      "chunks": [
+        {
+          "en": "Her house",
+          "ja": "彼女の家は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "in a small town in the mountains.",
+          "ja": "山の中の小さな町に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そこへ行くには電車で3時間かかります。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "takes",
+          "ja": "かかります",
+          "role": "V"
+        },
+        {
+          "en": "three hours by train",
+          "ja": "電車で3時間",
+          "role": "O"
+        },
+        {
+          "en": "to go there.",
+          "ja": "そこへ行くには",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "大みそかの夜、家族みんなで特別な食べ物を食べます。",
+      "chunks": [
+        {
+          "en": "On the last night of the year,",
+          "ja": "大みそかの夜",
+          "role": "M"
+        },
+        {
+          "en": "all my family",
+          "ja": "家族みんなで",
+          "role": "S"
+        },
+        {
+          "en": "eat",
+          "ja": "食べます",
+          "role": "V"
+        },
+        {
+          "en": "special food.",
+          "ja": "特別な食べ物を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "祖母は朝から昼までずっと料理を作っています。",
+      "chunks": [
+        {
+          "en": "My grandmother",
+          "ja": "祖母は",
+          "role": "S"
+        },
+        {
+          "en": "cooks",
+          "ja": "作っています",
+          "role": "V"
+        },
+        {
+          "en": "from morning to noon.",
+          "ja": "朝から昼までずっと",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "元日の朝、わたしたちは古いお寺へ行きます。",
+      "chunks": [
+        {
+          "en": "On the first morning of the year,",
+          "ja": "元日の朝",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "go",
+          "ja": "行きます",
+          "role": "V"
+        },
+        {
+          "en": "to an old temple.",
+          "ja": "古いお寺へ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そこで、わたしはいつも同じことをお願いします。",
+      "chunks": [
+        {
+          "en": "There",
+          "ja": "そこで",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "always ask for",
+          "ja": "いつもお願いします",
+          "role": "V"
+        },
+        {
+          "en": "the same thing.",
+          "ja": "同じことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "家族がみんな元気でいられますように、ということです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that all my family can stay well.",
+          "ja": "家族がみんな元気でいられますようにということ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "去年、祖母は少し具合が悪くなりました。",
+      "chunks": [
+        {
+          "en": "Last year,",
+          "ja": "去年",
+          "role": "M"
+        },
+        {
+          "en": "my grandmother",
+          "ja": "祖母は",
+          "role": "S"
+        },
+        {
+          "en": "became",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "a little ill.",
+          "ja": "少し具合が悪く",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "だから今年、彼女に会えたことがうれしかったです。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "happy",
+          "ja": "うれしい",
+          "role": "C"
+        },
+        {
+          "en": "that I could see her this year.",
+          "ja": "今年彼女に会えたことが",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "来年もまた、あの家へ行きたいです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "want to go",
+          "ja": "行きたいです",
+          "role": "V"
+        },
+        {
+          "en": "to that house",
+          "ja": "あの家へ",
+          "role": "M"
+        },
+        {
+          "en": "again next year.",
+          "ja": "来年もまた",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

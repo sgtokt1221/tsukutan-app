@@ -1,0 +1,484 @@
+{
+  "id": "eikenp2-nature-01",
+  "grade": "pre2",
+  "category": "nature",
+  "title": "The Bees Came Back",
+  "titleJa": "ミツバチが戻ってきた",
+  "sentences": [
+    {
+      "ja": "10年前、ある農家がおかしなことに気づきました。",
+      "chunks": [
+        {
+          "en": "Ten years ago,",
+          "ja": "10年前",
+          "role": "M"
+        },
+        {
+          "en": "a farmer",
+          "ja": "ある農家が",
+          "role": "S"
+        },
+        {
+          "en": "noticed",
+          "ja": "気づきました",
+          "role": "V"
+        },
+        {
+          "en": "something strange.",
+          "ja": "おかしなことに",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "畑の花にミツバチがほとんど来なくなっていたのです。",
+      "chunks": [
+        {
+          "en": "Almost no bees",
+          "ja": "ミツバチがほとんど",
+          "role": "S"
+        },
+        {
+          "en": "were coming",
+          "ja": "来なくなっていました",
+          "role": "V"
+        },
+        {
+          "en": "to the flowers in his field.",
+          "ja": "畑の花に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ミツバチが来なければ、果物は実りません。",
+      "chunks": [
+        {
+          "en": "If bees do not come,",
+          "ja": "ミツバチが来なければ",
+          "role": "M"
+        },
+        {
+          "en": "fruit",
+          "ja": "果物は",
+          "role": "S"
+        },
+        {
+          "en": "does not grow.",
+          "ja": "実りません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "その年、彼の畑のりんごは前の年の半分でした。",
+      "chunks": [
+        {
+          "en": "That year,",
+          "ja": "その年",
+          "role": "M"
+        },
+        {
+          "en": "the apples in his field",
+          "ja": "彼の畑のりんごは",
+          "role": "S"
+        },
+        {
+          "en": "were",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "half of the year before.",
+          "ja": "前の年の半分",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "彼は近くの大学の研究者に相談しました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "talked",
+          "ja": "相談しました",
+          "role": "V"
+        },
+        {
+          "en": "with a researcher at a university near his town.",
+          "ja": "近くの大学の研究者に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "研究者は、畑の周りに何もないことを指摘しました。",
+      "chunks": [
+        {
+          "en": "The researcher",
+          "ja": "研究者は",
+          "role": "S"
+        },
+        {
+          "en": "pointed out",
+          "ja": "指摘しました",
+          "role": "V"
+        },
+        {
+          "en": "that there was nothing around the field.",
+          "ja": "畑の周りに何もないことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "ミツバチは、りんごの花が咲く2週間しか食べ物を得られません。",
+      "chunks": [
+        {
+          "en": "Bees",
+          "ja": "ミツバチは",
+          "role": "S"
+        },
+        {
+          "en": "can get",
+          "ja": "得られます",
+          "role": "V"
+        },
+        {
+          "en": "food",
+          "ja": "食べ物を",
+          "role": "O"
+        },
+        {
+          "en": "only in the two weeks when apple flowers open.",
+          "ja": "りんごの花が咲く2週間しか",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "残りの季節、彼らは行くところがなかったのです。",
+      "chunks": [
+        {
+          "en": "In the rest of the seasons,",
+          "ja": "残りの季節",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "had",
+          "ja": "ありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "no place to go.",
+          "ja": "行くところが",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "そこで農家は、畑のはしに別の花を植えました。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "そこで",
+          "role": "M"
+        },
+        {
+          "en": "the farmer",
+          "ja": "農家は",
+          "role": "S"
+        },
+        {
+          "en": "planted",
+          "ja": "植えました",
+          "role": "V"
+        },
+        {
+          "en": "other flowers",
+          "ja": "別の花を",
+          "role": "O"
+        },
+        {
+          "en": "at the edge of his field.",
+          "ja": "畑のはしに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それらは春から秋まで、順番に咲く花でした。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "were",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "flowers that open one after another from spring to autumn.",
+          "ja": "春から秋まで順番に咲く花",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "その土地では作物は作れないので、収入は少し減りました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "could not grow",
+          "ja": "作れませんでした",
+          "role": "V"
+        },
+        {
+          "en": "crops",
+          "ja": "作物を",
+          "role": "O"
+        },
+        {
+          "en": "on that land,",
+          "ja": "その土地では",
+          "role": "M"
+        },
+        {
+          "en": "so his income fell a little.",
+          "ja": "だから収入は少し減りました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし3年後、ミツバチの数は元に戻りました。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "three years later,",
+          "ja": "3年後",
+          "role": "M"
+        },
+        {
+          "en": "the number of bees",
+          "ja": "ミツバチの数は",
+          "role": "S"
+        },
+        {
+          "en": "returned",
+          "ja": "戻りました",
+          "role": "V"
+        },
+        {
+          "en": "to what it had been.",
+          "ja": "元の数に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そして、りんごの収穫は以前より多くなりました。",
+      "chunks": [
+        {
+          "en": "And",
+          "ja": "そして",
+          "role": "M"
+        },
+        {
+          "en": "the apple harvest",
+          "ja": "りんごの収穫は",
+          "role": "S"
+        },
+        {
+          "en": "became",
+          "ja": "なりました",
+          "role": "V"
+        },
+        {
+          "en": "larger than before.",
+          "ja": "以前より多く",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "減らした土地の分より、増えた実の分のほうが大きかったのです。",
+      "chunks": [
+        {
+          "en": "The fruit that increased",
+          "ja": "増えた実は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "larger than the land he had given up.",
+          "ja": "減らした土地より大きいもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この話は、農業以外にも当てはまるかもしれません。",
+      "chunks": [
+        {
+          "en": "This story",
+          "ja": "この話は",
+          "role": "S"
+        },
+        {
+          "en": "may be true",
+          "ja": "当てはまるかもしれません",
+          "role": "V"
+        },
+        {
+          "en": "outside farming,",
+          "ja": "農業以外にも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "すべてを目的のために使うと、かえって少なくなることがあります。",
+      "chunks": [
+        {
+          "en": "If we use everything for one purpose,",
+          "ja": "すべてを目的のために使うと",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "sometimes get",
+          "ja": "得ることがあります",
+          "role": "V"
+        },
+        {
+          "en": "less.",
+          "ja": "かえって少なく",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "何も生まないように見える場所が、実は全体を支えていることがあるのです。",
+      "chunks": [
+        {
+          "en": "A place that seems to produce nothing",
+          "ja": "何も生まないように見える場所が",
+          "role": "S"
+        },
+        {
+          "en": "is sometimes supporting",
+          "ja": "支えていることがあるのです",
+          "role": "V"
+        },
+        {
+          "en": "the whole.",
+          "ja": "全体を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "もちろん、どの畑でも同じ結果になるとはかぎりません。",
+      "chunks": [
+        {
+          "en": "Of course,",
+          "ja": "もちろん",
+          "role": "M"
+        },
+        {
+          "en": "the same result",
+          "ja": "同じ結果が",
+          "role": "S"
+        },
+        {
+          "en": "does not always come",
+          "ja": "なるとはかぎりません",
+          "role": "V"
+        },
+        {
+          "en": "in every field.",
+          "ja": "どの畑でも",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "土地の広さも、育てている作物も、場所によって違います。",
+      "chunks": [
+        {
+          "en": "The size of the land and the crops they grow",
+          "ja": "土地の広さも育てている作物も",
+          "role": "S"
+        },
+        {
+          "en": "are different",
+          "ja": "違います",
+          "role": "V"
+        },
+        {
+          "en": "in each place.",
+          "ja": "場所によって",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、この農家の考え方は多くの人に伝わりました。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "this farmer's way of thinking",
+          "ja": "この農家の考え方は",
+          "role": "S"
+        },
+        {
+          "en": "reached",
+          "ja": "伝わりました",
+          "role": "V"
+        },
+        {
+          "en": "many people.",
+          "ja": "多くの人に",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

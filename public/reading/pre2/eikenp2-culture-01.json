@@ -1,0 +1,424 @@
+{
+  "id": "eikenp2-culture-01",
+  "grade": "pre2",
+  "category": "culture",
+  "title": "The Streets Without Names",
+  "titleJa": "名前のない道",
+  "sentences": [
+    {
+      "ja": "日本の住所は、外国から来た人をよく困らせます。",
+      "chunks": [
+        {
+          "en": "Japanese addresses",
+          "ja": "日本の住所は",
+          "role": "S"
+        },
+        {
+          "en": "often trouble",
+          "ja": "よく困らせます",
+          "role": "V"
+        },
+        {
+          "en": "people who come from other countries.",
+          "ja": "外国から来た人を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "多くの国では、道に名前があり、家には番号があります。",
+      "chunks": [
+        {
+          "en": "In many countries,",
+          "ja": "多くの国では",
+          "role": "M"
+        },
+        {
+          "en": "streets",
+          "ja": "道に",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "names,",
+          "ja": "名前が",
+          "role": "O"
+        },
+        {
+          "en": "and houses have numbers.",
+          "ja": "そして家には番号があります",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "道の名前と番号が分かれば、その家にたどりつけます。",
+      "chunks": [
+        {
+          "en": "If you know the name of the street and the number,",
+          "ja": "道の名前と番号が分かれば",
+          "role": "M"
+        },
+        {
+          "en": "you",
+          "ja": "あなたは",
+          "role": "S"
+        },
+        {
+          "en": "can reach",
+          "ja": "たどりつけます",
+          "role": "V"
+        },
+        {
+          "en": "the house.",
+          "ja": "その家に",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし日本では、名前を持つのは道ではなく区画です。",
+      "chunks": [
+        {
+          "en": "But in Japan,",
+          "ja": "しかし日本では",
+          "role": "M"
+        },
+        {
+          "en": "it is not streets but blocks",
+          "ja": "道ではなく区画が",
+          "role": "S"
+        },
+        {
+          "en": "that have names.",
+          "ja": "名前を持つのです",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "番号は、その区画の中で建てられた順に付けられました。",
+      "chunks": [
+        {
+          "en": "The numbers",
+          "ja": "番号は",
+          "role": "S"
+        },
+        {
+          "en": "were given",
+          "ja": "付けられました",
+          "role": "V"
+        },
+        {
+          "en": "in the order the houses were built in the block.",
+          "ja": "その区画の中で建てられた順に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまり、1番の家のとなりが8番ということもあります。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "the house next to number one",
+          "ja": "1番の家のとなりが",
+          "role": "S"
+        },
+        {
+          "en": "can be",
+          "ja": "ということもあります",
+          "role": "V"
+        },
+        {
+          "en": "number eight.",
+          "ja": "8番",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "これは外から見ると、規則がないように見えます。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "looks",
+          "ja": "見えます",
+          "role": "V"
+        },
+        {
+          "en": "as if there were no rule",
+          "ja": "規則がないように",
+          "role": "C"
+        },
+        {
+          "en": "from the outside.",
+          "ja": "外から見ると",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、そこには別の考え方があります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "another way of thinking there.",
+          "ja": "そこには別の考え方が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "道に名前をつける考え方では、人は線の上を進みます。",
+      "chunks": [
+        {
+          "en": "In the way of naming streets,",
+          "ja": "道に名前をつける考え方では",
+          "role": "M"
+        },
+        {
+          "en": "people",
+          "ja": "人は",
+          "role": "S"
+        },
+        {
+          "en": "move",
+          "ja": "進みます",
+          "role": "V"
+        },
+        {
+          "en": "along a line.",
+          "ja": "線の上を",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "区画に名前をつける考え方では、人は面の中にいます。",
+      "chunks": [
+        {
+          "en": "In the way of naming blocks,",
+          "ja": "区画に名前をつける考え方では",
+          "role": "M"
+        },
+        {
+          "en": "people",
+          "ja": "人は",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "います",
+          "role": "V"
+        },
+        {
+          "en": "inside an area.",
+          "ja": "面の中に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "前者は通り過ぎるための地図で、後者は住むための地図です。",
+      "chunks": [
+        {
+          "en": "The first",
+          "ja": "前者は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a map for passing through,",
+          "ja": "通り過ぎるための地図",
+          "role": "C"
+        },
+        {
+          "en": "and the second is a map for living.",
+          "ja": "そして後者は住むための地図です",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "江戸の時代、人々は住所ではなく目印で道を教えました。",
+      "chunks": [
+        {
+          "en": "In the Edo period,",
+          "ja": "江戸の時代",
+          "role": "M"
+        },
+        {
+          "en": "people",
+          "ja": "人々は",
+          "role": "S"
+        },
+        {
+          "en": "showed",
+          "ja": "教えました",
+          "role": "V"
+        },
+        {
+          "en": "the way",
+          "ja": "道を",
+          "role": "O"
+        },
+        {
+          "en": "with marks, not with addresses.",
+          "ja": "住所ではなく目印で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "「大きな松の木の先、豆腐屋の角を左」というように。",
+      "chunks": [
+        {
+          "en": "They said things like",
+          "ja": "こう言いました",
+          "role": "V"
+        },
+        {
+          "en": "\"past the big pine tree, left at the corner of the tofu shop.\"",
+          "ja": "「大きな松の木の先、豆腐屋の角を左」というように",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "これは、その町を知っている人どうしの言葉です。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "language between people who know the town.",
+          "ja": "その町を知っている人どうしの言葉",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "今は地図の道具があり、だれでも家を見つけられます。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今は",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "map tools,",
+          "ja": "地図の道具が",
+          "role": "O"
+        },
+        {
+          "en": "and anyone can find a house.",
+          "ja": "そしてだれでも家を見つけられます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "便利になった一方で、失われたものもあります。",
+      "chunks": [
+        {
+          "en": "While it has become useful,",
+          "ja": "便利になった一方で",
+          "role": "M"
+        },
+        {
+          "en": "something",
+          "ja": "何かが",
+          "role": "S"
+        },
+        {
+          "en": "has been lost,",
+          "ja": "失われました",
+          "role": "V"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "道を人に聞く必要が、もうなくなったのです。",
+      "chunks": [
+        {
+          "en": "The need to ask someone the way",
+          "ja": "道を人に聞く必要が",
+          "role": "S"
+        },
+        {
+          "en": "has gone.",
+          "ja": "もうなくなったのです",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "住所の形は、その土地の人の関わり方を映しています。",
+      "chunks": [
+        {
+          "en": "The shape of addresses",
+          "ja": "住所の形は",
+          "role": "S"
+        },
+        {
+          "en": "shows",
+          "ja": "映しています",
+          "role": "V"
+        },
+        {
+          "en": "how the people of that land are connected.",
+          "ja": "その土地の人の関わり方を",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

@@ -46,6 +46,10 @@ const FREE_WORDS = new Set([
   'to', 'of', 'in', 'on', 'at', 'for', 'with', 'from', 'by', 'as', 'about',
   'there', 'here', 'when', 'where', 'what', 'who', 'how', 'why', 'which',
   'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+  // 助動詞と比較の than は文法であって語彙ではない。どの級にも出るので、
+  // ここで数えると級の違いが見えなくなる。
+  'can', 'could', 'will', 'would', 'may', 'might', 'must', 'shall', 'should',
+  'than', 'because', 'very', 'too', 'also', 'only', 'just', 'more', 'most',
 ]);
 
 const easiestEikenLevel = (word) => {
@@ -106,6 +110,8 @@ const IRREGULAR = {
 const forms = (token) => {
   const set = new Set([token]);
   if (IRREGULAR[token]) set.add(IRREGULAR[token]);
+  // 所有格。grandmother's / person's はマスターに見出しが無い。
+  if (token.endsWith("'s")) set.add(token.slice(0, -2));
   const rules = [
     [/ies$/, 'y'], [/ied$/, 'y'], [/ies$/, ''], [/es$/, ''], [/s$/, ''],
     [/ing$/, ''], [/ing$/, 'e'], [/ed$/, ''], [/ed$/, 'e'],

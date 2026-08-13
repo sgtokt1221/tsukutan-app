@@ -1,0 +1,304 @@
+{
+  "id": "eiken4-technology-01",
+  "grade": "4",
+  "category": "technology",
+  "title": "My First Phone",
+  "titleJa": "はじめての電話",
+  "sentences": [
+    {
+      "ja": "13歳のとき、わたしは初めて自分の電話をもらいました。",
+      "chunks": [
+        {
+          "en": "When I was thirteen,",
+          "ja": "13歳のとき",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "got",
+          "ja": "もらいました",
+          "role": "V"
+        },
+        {
+          "en": "my first phone.",
+          "ja": "初めて自分の電話を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはとてもうれしくて、一日中それを見ていました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very happy",
+          "ja": "とてもうれしい",
+          "role": "C"
+        },
+        {
+          "en": "and looked at it all day.",
+          "ja": "そして一日中それを見ていました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "友だちと話すのは楽しかったです。",
+      "chunks": [
+        {
+          "en": "Talking with my friends",
+          "ja": "友だちと話すことは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "fun.",
+          "ja": "楽しい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし1か月後、母が心配な顔をしました。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "one month after that,",
+          "ja": "1か月後",
+          "role": "M"
+        },
+        {
+          "en": "my mother",
+          "ja": "母が",
+          "role": "S"
+        },
+        {
+          "en": "looked",
+          "ja": "しました",
+          "role": "V"
+        },
+        {
+          "en": "worried.",
+          "ja": "心配な顔を",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは前より本を読まなくなっていました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "was reading",
+          "ja": "読んでいました",
+          "role": "V"
+        },
+        {
+          "en": "fewer books",
+          "ja": "より少ない本を",
+          "role": "O"
+        },
+        {
+          "en": "than before.",
+          "ja": "前より",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "夜おそくまで電話を見ていて、朝は起きられませんでした。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "looked at",
+          "ja": "見ていました",
+          "role": "V"
+        },
+        {
+          "en": "my phone",
+          "ja": "電話を",
+          "role": "O"
+        },
+        {
+          "en": "at night",
+          "ja": "夜に",
+          "role": "M"
+        },
+        {
+          "en": "and could not get up in the morning.",
+          "ja": "そして朝は起きられませんでした",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "母とわたしは、いくつかの約束をしました。",
+      "chunks": [
+        {
+          "en": "My mother and I",
+          "ja": "母とわたしは",
+          "role": "S"
+        },
+        {
+          "en": "made",
+          "ja": "しました",
+          "role": "V"
+        },
+        {
+          "en": "some promises.",
+          "ja": "いくつかの約束を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "夜9時のあとは、電話を居間に置くことにしました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "decided to put",
+          "ja": "置くことにしました",
+          "role": "V"
+        },
+        {
+          "en": "the phone in the living room",
+          "ja": "電話を居間に",
+          "role": "O"
+        },
+        {
+          "en": "after nine at night.",
+          "ja": "夜9時のあとは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "最初の1週間は、とてもむずかしかったです。",
+      "chunks": [
+        {
+          "en": "The first week",
+          "ja": "最初の1週間は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very difficult.",
+          "ja": "とてもむずかしい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし今は、その時間に本を読んでいます。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "now",
+          "ja": "今は",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "read",
+          "ja": "読んでいます",
+          "role": "V"
+        },
+        {
+          "en": "books",
+          "ja": "本を",
+          "role": "O"
+        },
+        {
+          "en": "at that time.",
+          "ja": "その時間に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "電話は悪いものではありません。",
+      "chunks": [
+        {
+          "en": "The phone",
+          "ja": "電話は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a bad thing.",
+          "ja": "悪いもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "使う時間を自分で決めることが大切だと思います。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "think",
+          "ja": "思います",
+          "role": "V"
+        },
+        {
+          "en": "that it is important to decide the time to use it.",
+          "ja": "使う時間を決めることが大切だと",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

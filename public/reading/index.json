@@ -63,6 +63,18 @@
           "title": "I Play Soccer",
           "titleJa": "サッカーをする",
           "category": "sports"
+        },
+        {
+          "id": "eiken5-daily-02",
+          "title": "My Room",
+          "titleJa": "わたしの部屋",
+          "category": "daily"
+        },
+        {
+          "id": "eiken5-nature-01",
+          "title": "The Cat and the Tree",
+          "titleJa": "ネコと木",
+          "category": "nature"
         }
       ]
     },
@@ -87,6 +99,18 @@
           "title": "My Mother's Work",
           "titleJa": "母の仕事",
           "category": "work"
+        },
+        {
+          "id": "eiken4-culture-01",
+          "title": "New Year at My Grandmother's House",
+          "titleJa": "おばあちゃんの家のお正月",
+          "category": "culture"
+        },
+        {
+          "id": "eiken4-technology-01",
+          "title": "My First Phone",
+          "titleJa": "はじめての電話",
+          "category": "technology"
         }
       ]
     },
@@ -111,6 +135,18 @@
           "title": "The Notebook I Kept",
           "titleJa": "続けたノート",
           "category": "daily"
+        },
+        {
+          "id": "eiken3-school-01",
+          "title": "The Speech I Did Not Want to Give",
+          "titleJa": "したくなかったスピーチ",
+          "category": "school"
+        },
+        {
+          "id": "eiken3-technology-01",
+          "title": "The Robot at the Supermarket",
+          "titleJa": "スーパーのロボット",
+          "category": "technology"
         }
       ]
     },
@@ -135,6 +171,18 @@
           "title": "The Runner Who Stopped",
           "titleJa": "止まった走者",
           "category": "sports"
+        },
+        {
+          "id": "eikenp2-nature-01",
+          "title": "The Bees Came Back",
+          "titleJa": "ミツバチが戻ってきた",
+          "category": "nature"
+        },
+        {
+          "id": "eikenp2-culture-01",
+          "title": "The Streets Without Names",
+          "titleJa": "名前のない道",
+          "category": "culture"
         }
       ]
     },
@@ -153,6 +201,18 @@
           "title": "The Bowl That Was Broken",
           "titleJa": "割れた器",
           "category": "culture"
+        },
+        {
+          "id": "eiken2-science-01",
+          "title": "What Sleep Does at Night",
+          "titleJa": "夜、眠りがしていること",
+          "category": "science"
+        },
+        {
+          "id": "eiken2-society-01",
+          "title": "Who Decides the Price?",
+          "titleJa": "値段を決めるのはだれか",
+          "category": "society"
         }
       ]
     }
