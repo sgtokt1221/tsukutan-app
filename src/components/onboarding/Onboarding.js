@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FaArrowLeft, FaArrowRight, FaBook, FaCheck, FaLayerGroup, FaPlay, FaRedo, FaStar,
+  FaArrowLeft, FaArrowRight, FaBook, FaBullseye, FaCheck, FaLayerGroup,
+  FaPlay, FaRedo, FaStar, FaSyncAlt,
 } from 'react-icons/fa';
 import './Onboarding.css';
 
@@ -22,6 +23,51 @@ const STEPS = [
     title: 'つくたんへようこそ',
     body: '目標から逆算して、今日やるぶんだけ出します。まずは操作を30秒だけ。',
     points: [],
+  },
+  {
+    id: 'new-words',
+    title: '今日のぶんは自動で決まる',
+    body: '目標と達成日から逆算します。自分で計画を立てなくて大丈夫。',
+    points: [
+      {
+        icon: <FaBullseye />,
+        label: '残りの語数 ÷ 残りの日数',
+        text: '間に合わせるために1日何語必要かを毎日計算し直す',
+      },
+      {
+        icon: <FaBook />,
+        label: 'やる気レベル',
+        text: 'そこそこ15語 / 普通20語 / やる気満々30語が希望のペース',
+      },
+      {
+        icon: <FaCheck />,
+        label: '多い方を出す',
+        text: '期限に必要な数と希望のペースを比べ、多い方。1日60語が上限',
+      },
+    ],
+  },
+  {
+    id: 'review',
+    title: '忘れる前に、もう一度出る',
+    body: '一度やった語は、覚え具合に合わせて間隔を空けて戻ってきます。',
+    points: [
+      {
+        icon: <FaCheck />,
+        label: 'わかった',
+        text: '次に出るまでの間隔が伸びる。覚えるほど出番が減る（最長1年）',
+      },
+      {
+        icon: <FaSyncAlt />,
+        label: '迷った',
+        text: '伸ばし方を半分に抑える。あやふやな語は早めに戻す',
+      },
+      {
+        icon: <FaRedo />,
+        label: 'もう一度',
+        text: '間隔をリセット。今日のうちにもう一度出る',
+      },
+    ],
+    chips: ['1日後', '3日後', '8日後', '20日後', '…'],
   },
   {
     id: 'flashcard',
@@ -100,6 +146,14 @@ export default function Onboarding({ progress = 0, ready = false, onFinish }) {
             >
               <h2 className="onboarding__title">{step.title}</h2>
               <p className="onboarding__body">{step.body}</p>
+
+              {step.chips && (
+                <ol className="onboarding__chips" aria-label="間隔の伸び方の例">
+                  {step.chips.map((chip) => (
+                    <li key={chip} className="onboarding__chip">{chip}</li>
+                  ))}
+                </ol>
+              )}
 
               {step.points.length > 0 && (
                 <ul className="onboarding__points">
