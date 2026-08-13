@@ -535,3 +535,67 @@
 .interview-result__foot .primary-action {
   flex: 1;
 }
+
+/* ---- 採点が揃うまで ----
+   結果を先に出すと、空の絵を眺めて待つことになる。揃うまではこちらを見せ、
+   その間に級ごとの心得を1つずつ出す。 */
+
+.interview-waiting {
+  width: min(420px, calc(100vw - 32px));
+  padding: 28px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+  text-align: center;
+}
+
+.interview-waiting__label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.interview-waiting__bar {
+  margin: 16px 0 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.interview-waiting__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #16a34a;
+  transition: width 400ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.interview-waiting__count {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 心得。差し替わるたびに下から浮かせる（key を変えて走らせている）。 */
+.interview-waiting__tip {
+  margin: 20px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: #334155;
+  text-align: left;
+  animation: interview-tip-in 520ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes interview-tip-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interview-waiting__tip { animation: none; }
+}

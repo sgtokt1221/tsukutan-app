@@ -62,3 +62,56 @@ test('点を3段階の色分けに寄せる', () => {
   expect(toneOf(50)).toBe('partial');
   expect(toneOf(49)).toBe('off-target');
 });
+
+describe('答えなかった場面', () => {
+  // 声を出す場面の一覧。beat.key で渡る。
+  const PLACES = [
+    { key: 'step-read-aloud', label: '音読', mode: 'scripted' },
+    { key: 'q-1', label: 'No.1', mode: 'unscripted' },
+    { key: 'q-2', label: 'No.2', mode: 'unscripted' },
+    { key: 'q-3', label: 'No.3', mode: 'unscripted' },
+  ];
+  const answered = (beatKey, verdict) => ({
+    key: `${beatKey}-`,
+    beatKey,
+    label: beatKey,
+    mode: 'unscripted',
+    review: { missing: [], total: 0, content: { verdict } },
+  });
+
+  test('答えなかった場面は0点として分母に入る', () => {
+    // 2問だけ答えて、あとは飛ばした
+    const summary = summarize([answered('q-1', 'good'), answered('q-2', 'good')], PLACES);
+
+    // 飛ばした場面を外すと100点になってしまう。(100+100+0+0)/4
+    expect(summary.overall).toBe(50);
+    expect(summary.unanswered).toBe(2);
+    expect(summary.items).toHaveLength(4);
+  });
+
+  test('全部答えていれば一覧と同じ数だけ並ぶ', () => {
+    const summary = summarize(
+      ['step-read-aloud', 'q-1', 'q-2', 'q-3'].map((key) => answered(key, 'good')),
+      PLACES
+    );
+
+    expect(summary.overall).toBe(100);
+    expect(summary.unanswered).toBe(0);
+  });
+
+  test('答えたのに採点が返らなかった場面は、今までどおり平均から外す', () => {
+    // 黙ったのは0点、通信が失敗しただけの場面は分母から外す
+    const failed = { key: 'q-2-', beatKey: 'q-2', label: 'No.2', mode: 'unscripted', review: null };
+    const summary = summarize([answered('q-1', 'good'), failed], PLACES);
+
+    // 100（q-1）と 0・0（未回答の音読とq-3）。q-2 は数えない
+    expect(summary.overall).toBe(33);
+    expect(summary.unanswered).toBe(2);
+  });
+
+  test('一覧を渡さなければ今までどおり、録音した場面だけで平均する', () => {
+    const summary = summarize([answered('q-1', 'good'), answered('q-2', 'good')]);
+    expect(summary.overall).toBe(100);
+    expect(summary.unanswered).toBe(0);
+  });
+});

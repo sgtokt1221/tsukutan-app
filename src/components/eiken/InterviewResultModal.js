@@ -32,8 +32,8 @@ const EMPTY = '#e2e8f0';
  * 判定はまだ返っていないことがある（結果を開いた時点で投げている）。
  * 待っている場面はその旨を出し、揃ったところから絵が埋まる。
  */
-export default function InterviewResultModal({ title, answers, onSpeak, onClose, onRestart, onExit }) {
-  const summary = useMemo(() => summarize(answers), [answers]);
+export default function InterviewResultModal({ title, answers, places, onSpeak, onEditTranscript, onClose, onRestart, onExit }) {
+  const summary = useMemo(() => summarize(answers, places), [answers, places]);
   const waiting = answers.filter((entry) => entry.status === 'working' || entry.reviewing).length;
 
   const overall = summary.overall;
@@ -134,10 +134,26 @@ export default function InterviewResultModal({ title, answers, onSpeak, onClose,
             </div>
           )}
 
+          {summary.unanswered > 0 && (
+            <p className="speaking-note">
+              答えていない場面が{summary.unanswered}件あります。0点として数えています。
+            </p>
+          )}
+
           <div className="interview-result__list">
-            {answers.map((entry) => (
-              <ResultItem key={entry.key} entry={entry} onSpeak={onSpeak} />
-            ))}
+            {summary.items.map((item) => {
+              const entry = answers.find((answer) => answer.key === item.key);
+              return entry
+                ? <ResultItem key={item.key} entry={entry} onSpeak={onSpeak} onEditTranscript={onEditTranscript} />
+                : (
+                  <div className="interview-result-item" key={item.key}>
+                    <p className="interview-result-item__head">
+                      <span className="interview-result-item__label">{item.label}</span>
+                      <span className="interview-badge is-off-target">答えていません</span>
+                    </p>
+                  </div>
+                );
+            })}
           </div>
         </div>
 
@@ -158,7 +174,7 @@ export default function InterviewResultModal({ title, answers, onSpeak, onClose,
 }
 
 /** 1場面ぶんの講評。質問・自分の答え・直しどころ・聞き返しをこの順で。 */
-function ResultItem({ entry, onSpeak }) {
+function ResultItem({ entry, onSpeak, onEditTranscript }) {
   const score = scoreOf(entry);
   const content = entry.review?.content;
   const missing = entry.review?.missing || [];
@@ -181,9 +197,26 @@ function ResultItem({ entry, onSpeak }) {
         <p className="interview-result-item__question">{entry.question}</p>
       )}
 
-      <p className="interview-result-item__said">
-        {entry.transcript || '聞き取れませんでした。'}
-      </p>
+      {/* 日本語なまりの英語は取り違えられる。直すと採点がかかり直す。
+          録音を止めたらすぐ次の場面へ進む作りなので、直す場はここしかない。 */}
+      {entry.status === 'working' ? (
+        <p className="speaking-note">聞き取っています…</p>
+      ) : (
+        <label className="speaking-transcript">
+          <span className="speaking-transcript__label">
+            言えていた内容
+            {entry.edited && <span className="speaking-transcript__edited">直しました</span>}
+          </span>
+          <textarea
+            className="speaking-transcript__input"
+            value={entry.transcript}
+            rows={2}
+            onChange={(event) => onEditTranscript(entry.key, event.target.value)}
+            placeholder="聞き取れませんでした。言ったとおりに書き直せます。"
+          />
+          <span className="speaking-note">聞き間違いがあれば直してください。直した文で採点し直します。</span>
+        </label>
+      )}
 
       {entry.reviewFailed && (
         <p className="speaking-error">

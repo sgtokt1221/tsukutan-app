@@ -42,21 +42,45 @@ export const scoreOf = (entry) => {
 };
 
 /**
- * 全体をまとめる。点が付かなかった場面は平均から外す（0点として
- * 引っぱると、通信が失敗しただけで下手に見える）。
+ * 全体をまとめる。
+ *
+ * 声を出す場面の一覧（places）を渡すと、答えなかった場面も 0点として
+ * 分母に入れる。渡さないと録音した場面だけで平均するので、飛ばすほど
+ * 点が高く出る。
+ *
+ * 「答えていない」と「採点が失敗した」は分ける。前者は本人が黙ったのだから
+ * 0点。後者は通信の問題なので平均から外す（0点として引っぱると、電波が
+ * 悪かっただけで下手に見える）。
+ *
+ * @param {Array} entries 録音した場面（EikenInterview の answers）
+ * @param {Array} [places] 声を出す場面すべて [{ key, label, mode }]。
+ *                         key は beat.key（枝は含まない）
  */
-export const summarize = (entries = []) => {
-  const items = entries.map((entry) => {
-    const score = scoreOf(entry);
+export const summarize = (entries = [], places = null) => {
+  const answered = new Map();
+  for (const entry of entries) {
+    // 枝（Yes / No）を選び直しても場面はひとつ。最後の録音を採る。
+    answered.set(entry.beatKey || entry.key, entry);
+  }
+
+  const rows = places && places.length > 0
+    ? places.map((place) => ({ place, entry: answered.get(place.key) || null }))
+    : entries.map((entry) => ({ place: null, entry }));
+
+  const items = rows.map(({ place, entry }) => {
+    const score = entry ? scoreOf(entry) : 0;
     return {
-      key: entry.key,
-      label: entry.label,
-      mode: entry.mode,
+      key: entry?.key || place.key,
+      label: entry?.label || place.label,
+      mode: entry?.mode || place?.mode || null,
       score,
       tone: score === null ? null : toneOf(score),
+      answered: Boolean(entry),
     };
   });
 
+  // 答えなかった場面（score 0）は平均に入れる。採点が返らなかった場面
+  // （score null）だけを外す。
   const scored = items.filter((item) => item.score !== null);
   const counts = { good: 0, partial: 0, 'off-target': 0 };
   for (const entry of entries) {
@@ -67,6 +91,7 @@ export const summarize = (entries = []) => {
   return {
     items,
     counts,
+    unanswered: items.filter((item) => !item.answered).length,
     overall: scored.length === 0
       ? null
       : Math.round(scored.reduce((sum, item) => sum + item.score, 0) / scored.length),
