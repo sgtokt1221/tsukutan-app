@@ -304,3 +304,25 @@ test('録音できない端末ではマイクを出さない', async () => {
   expect(screen.getByText('Now, please read it aloud.')).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: '録音する' })).not.toBeInTheDocument();
 });
+
+test('心得はまとめて出さず、それが要る場面に出る', async () => {
+  render(<EikenInterview grade="pre2" onExit={() => {}} />);
+  await screen.findByText('Clean-up Events');
+  fireEvent.click(screen.getByText('Clean-up Events'));
+  await screen.findByText('Hello.');
+
+  // 入室の場面。ここに出るのは面接全体の話だけ
+  expect(screen.getByText(/面接委員とのやりとりはすべて英語/)).toBeInTheDocument();
+  expect(screen.queryByText(/I beg your pardon/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/言えるだけ言う/)).not.toBeInTheDocument();
+
+  // 質問に入るところ。聞き返し方はここ
+  for (let i = 0; i < 9; i += 1) next();
+  expect(screen.getByText(/I beg your pardon/)).toBeInTheDocument();
+  expect(screen.queryByText(/面接委員とのやりとりはすべて英語/)).not.toBeInTheDocument();
+
+  // No.2。5人を言う設問の心得はここまで出さない
+  for (let i = 0; i < 2; i += 1) next();
+  expect(screen.getByText(/言えるだけ言う/)).toBeInTheDocument();
+  expect(screen.queryByText(/I beg your pardon/)).not.toBeInTheDocument();
+});

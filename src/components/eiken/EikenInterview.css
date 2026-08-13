@@ -209,22 +209,17 @@
 }
 
 .interview-tips {
-  padding: 12px 16px;
+  margin: 0;
+  padding: 12px 16px 12px 32px;
   border-radius: 12px;
   background: #fffbeb;
   color: #78350f;
   font-size: 0.85rem;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
-.interview-tips summary {
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.interview-tips ul {
-  margin: 8px 0 0;
-  padding-left: 18px;
+.interview-tips li + li {
+  margin-top: 6px;
 }
 
 /* ---- 下の操作 ---- */
