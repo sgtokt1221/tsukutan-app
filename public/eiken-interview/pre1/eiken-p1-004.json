@@ -1,0 +1,53 @@
+{
+  "id": "eiken-p1-004",
+  "grade": "pre1",
+  "title": "School Lunch Waste",
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p1-004-a.webp",
+      "caption": "4コマ。①教室で給食の残飯バケツを覗き込む教師（One day in April）②厨房で調理員とクリップボードのグラフを見ながら相談。「Reduce Food Waste」のポスター（The next week）③生徒は少なめの量を食べ、バケツはほぼ空。教師は満足げ（Two months later）④運動部の生徒2人が空のトレーを持って空腹そう。壁に「No Second Helpings」。教師は心配そう（In July）。",
+      "panels": 4
+    }
+  ],
+  "narration": {
+    "storyLine": "This is a story about a teacher who tried to reduce the food left over at school lunch.",
+    "openingSentence": "One day in April, a teacher was looking into a large bucket of leftover school lunch.",
+    "prepareSeconds": 60,
+    "speakSeconds": 120
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "roleplay",
+      "cardVisible": true,
+      "prompt": "Please look at the fourth picture. If you were the person in the picture, what would you be thinking?",
+      "modelAnswer": "I'd be thinking that cutting the portions solved one problem and created another. Students who play sports need far more food than the others, so one rule for everyone was too simple. I should ask the cook to prepare different sizes rather than reduce the amount for the whole class.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 2,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think schools should teach children more about food?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that food waste is one of the most serious problems facing the world today. Do you agree?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think Japan should produce more of its own food?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "grades": [
+    {
+      "id": "3",
+      "label": "3級",
+      "cards": [
+        {
+          "id": "eiken3-001",
+          "title": "Morning Radio"
+        },
+        {
+          "id": "eiken3-002",
+          "title": "Cleaning at School"
+        },
+        {
+          "id": "eiken3-003",
+          "title": "Parks in the City"
+        },
+        {
+          "id": "eiken3-004",
+          "title": "Using the Library"
+        },
+        {
+          "id": "eiken3-005",
+          "title": "Food from Near the Town"
+        }
+      ]
+    },
+    {
+      "id": "pre2",
+      "label": "準2級",
+      "cards": [
+        {
+          "id": "eiken-p2-001",
+          "title": "Clean-up Events"
+        },
+        {
+          "id": "eiken-p2-002",
+          "title": "School Festivals"
+        },
+        {
+          "id": "eiken-p2-003",
+          "title": "Camping with Families"
+        },
+        {
+          "id": "eiken-p2-004",
+          "title": "Small Shopping Streets"
+        },
+        {
+          "id": "eiken-p2-005",
+          "title": "Zoos Today"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "label": "2級",
+      "cards": [
+        {
+          "id": "eiken2-001",
+          "title": "Book Delivery Services"
+        },
+        {
+          "id": "eiken2-002",
+          "title": "Online Medical Care"
+        },
+        {
+          "id": "eiken2-003",
+          "title": "Bicycle Sharing"
+        },
+        {
+          "id": "eiken2-004",
+          "title": "Self-Checkout Machines"
+        },
+        {
+          "id": "eiken2-005",
+          "title": "Apps against Food Waste"
+        }
+      ]
+    },
+    {
+      "id": "pre1",
+      "label": "準1級",
+      "cards": [
+        {
+          "id": "eiken-p1-001",
+          "title": "Rubbish in the Park"
+        },
+        {
+          "id": "eiken-p1-002",
+          "title": "Crowded Trains"
+        },
+        {
+          "id": "eiken-p1-003",
+          "title": "A Night Market"
+        },
+        {
+          "id": "eiken-p1-004",
+          "title": "School Lunch Waste"
+        },
+        {
+          "id": "eiken-p1-005",
+          "title": "Bicycles at the Station"
+        }
+      ]
+    }
+  ]
+}
