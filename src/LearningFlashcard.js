@@ -7,6 +7,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
 import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
+import { prefetchClips } from './logic/audioLibrary';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
 import { updateUserWordProgress } from './logic/reviewLogic';
@@ -80,6 +81,18 @@ export default function LearningFlashcard({
   useEffect(() => {
     initialize().catch(error => console.error("Speech initialization failed:", error));
   }, []);
+
+  // このセッションで使う音声を先に取っておく。1語目から待たずに鳴らすため。
+  // 用意が無い語は取れないだけで、鳴らすときに端末の読み上げへ戻る。
+  useEffect(() => {
+    const words = shuffledWords.slice(0, 40);
+    if (words.length === 0) return;
+
+    prefetchClips(words.flatMap((word) => [
+      { text: word.word, lang: 'en-US' },
+      { text: word.meaning || word.japanese || word.translation, lang: 'ja-JP' },
+    ]));
+  }, [shuffledWords]);
 
 
   // 単語帳モードの進捗を保存・復元

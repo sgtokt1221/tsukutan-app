@@ -18,6 +18,7 @@ import { useCardDirection } from './logic/useCardDirection';
 import { useAutoPlaySpeed } from './logic/useAutoPlaySpeed';
 import { useAutoPlay } from './logic/useAutoPlay';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
+import { prefetchClips } from './logic/audioLibrary';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
@@ -92,6 +93,18 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   useEffect(() => {
     initialize().catch(error => console.error("Speech initialization failed:", error));
   }, []);
+
+  // このセッションで使う音声を先に取っておく。1語目から待たずに鳴らすため。
+  // 用意が無い語は取れないだけで、鳴らすときに端末の読み上げへ戻る。
+  useEffect(() => {
+    const words = sessionWords.slice(0, 40);
+    if (words.length === 0) return;
+
+    prefetchClips(words.flatMap((word) => [
+      { text: word.word, lang: 'en-US' },
+      { text: word.meaning || word.japanese || word.translation, lang: 'ja-JP' },
+    ]));
+  }, [sessionWords]);
 
 
   // 単語帳モードの進捗を保存・復元

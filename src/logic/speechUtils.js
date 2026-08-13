@@ -1,4 +1,5 @@
 import logger from './logger';
+import { fetchClip } from './audioLibrary';
 const synthesis = window.speechSynthesis;
 let voices = [];
 let initializationPromise = null;
@@ -209,6 +210,40 @@ const speak = (text, lang = 'en-US') => {
  * @param {Array<{text: string, lang?: string, onStart?: Function}>} items 読み上げる順に並べる
  * @param {{onDone?: Function}} [options] 全部読み終えたときに呼ぶ
  */
+// 再生中の音声ファイル。止めるときに使う。
+let activeAudio = null;
+
+const stopClip = () => {
+  if (!activeAudio) return;
+  try {
+    activeAudio.pause();
+    if (activeAudio.src.startsWith('blob:')) URL.revokeObjectURL(activeAudio.src);
+  } catch (error) {
+    // 止められなくても続行する
+  }
+  activeAudio = null;
+};
+
+/**
+ * 作っておいた音声ファイルを鳴らす。
+ * 用意が無ければ false を返し、呼び出し側が端末の読み上げに戻す。
+ */
+const playClip = (blob) => new Promise((resolve) => {
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  activeAudio = audio;
+
+  const done = () => {
+    if (activeAudio === audio) activeAudio = null;
+    URL.revokeObjectURL(url);
+    resolve();
+  };
+
+  audio.onended = done;
+  audio.onerror = done;
+  audio.play().catch(done);
+});
+
 const speakSequence = (items, options = {}) => {
   const queue = (items || []).filter((item) => item && item.text);
   if (queue.length === 0) {
@@ -216,11 +251,48 @@ const speakSequence = (items, options = {}) => {
     return;
   }
 
+  /**
+   * 音声ファイルで順に鳴らす。1つでも用意が無ければ false を返し、
+   * 端末の読み上げに任せる（声が混ざるより揃っている方がよい）。
+   */
+  const playAllClips = async (token) => {
+    const blobs = [];
+    for (const item of queue) {
+      // eslint-disable-next-line no-await-in-loop
+      const blob = await fetchClip(item.text, item.lang || 'en-US');
+      if (!blob) return false;
+      blobs.push(blob);
+    }
+
+    for (let index = 0; index < queue.length; index += 1) {
+      if (activeSequence !== token) return true;
+      const item = queue[index];
+      if (typeof item.onStart === 'function') item.onStart();
+      // eslint-disable-next-line no-await-in-loop
+      await playClip(blobs[index]);
+    }
+
+    if (activeSequence === token) {
+      activeSequence = null;
+      if (typeof options.onDone === 'function') options.onDone();
+    }
+    return true;
+  };
+
   const enqueueAll = () => {
     // 打ち切られたあとに古いキューのイベントで先へ進まないよう、
     // この呼び出しぶんだけを見分ける印を持たせる。
     const token = {};
     activeSequence = token;
+
+    // まず作っておいた音声を試す。無ければ端末の読み上げへ。
+    playAllClips(token).then((played) => {
+      if (played || activeSequence !== token) return;
+      enqueueUtterances(token);
+    });
+  };
+
+  const enqueueUtterances = (token) => {
     const pending = [];
 
     const finish = () => {
@@ -280,6 +352,7 @@ const speakWordThenMeaning = (word, meaning, direction = 'en-ja') => {
 const stopSpeaking = () => {
   activeUtterance = null;
   activeSequence = null;
+  stopClip();
   synthesis.cancel();
 };
 
