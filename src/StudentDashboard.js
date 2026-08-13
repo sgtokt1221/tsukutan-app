@@ -17,6 +17,8 @@ import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
+import Onboarding from './components/onboarding/Onboarding';
+import { useOnboarding } from './logic/useOnboarding';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
@@ -482,6 +484,9 @@ export default function StudentDashboard() {
   const [freeStudyProgress, setFreeStudyProgress] = useState({});
   const [storyError, setStoryError] = useState(null);
   const [masterWords, setMasterWords] = useState([]);
+  // 単語データの保存の進み具合（0〜1）。初回の案内画面で出す。
+  const [wordDataProgress, setWordDataProgress] = useState(0);
+  const [showOnboarding, finishOnboarding] = useOnboarding();
   const [wordDataError, setWordDataError] = useState(null);
   const [textbookCounts, setTextbookCounts] = useState({});
   
@@ -497,9 +502,11 @@ export default function StudentDashboard() {
   // ここで画面全体を止めると、単語データだけの問題で今日の学習まで開けなくなる。
   const loadMasterWords = useCallback(({ force = false } = {}) => {
     setWordDataError(null);
-    return loadWordMaster({ force })
+    // 初回だけ端末に保存する。その進み具合を案内画面に出す。
+    return loadWordMaster({ force, onProgress: setWordDataProgress })
       .then((words) => {
         setMasterWords(words);
+        setWordDataProgress(1);
         return words;
       })
       .catch((error) => {
@@ -2321,6 +2328,15 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard-container">
+      {/* 初回だけ。単語データの保存を待つ間に、操作を一度だけ見せる。 */}
+      {showOnboarding && (
+        <Onboarding
+          progress={wordDataProgress}
+          ready={masterWords.length > 0 || Boolean(wordDataError)}
+          onFinish={finishOnboarding}
+        />
+      )}
+
       <StudentHeader userName={userData?.name} onLogout={handleLogout} />
       
       {/* 初回テストと学習計画最適化のボタン */}
