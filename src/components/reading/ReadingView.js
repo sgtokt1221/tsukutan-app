@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaVolumeUp, FaStop } from 'react-icons/fa';
 import { speechPlanFor } from '../../logic/readingContent';
 import { useLongPress } from '../../logic/useLongPress';
@@ -61,25 +61,24 @@ function Words({ text, phrases, isMarked, onHold }) {
   ));
 }
 
-/** スラッシュ読み。押したまとまりだけ訳を出す。 */
+/**
+ * スラッシュ読み。まとまりごとに訳を下へ添える。
+ *
+ * 押して初めて訳が出る作りだと、どこが分からなかったのかを自分で決めてから
+ * でないと読めない。最初から並べておけば、目が英語と日本語を往復できる。
+ */
 function SlashSentence({ sentence, phrases, isMarked, onHold }) {
-  const [opened, setOpened] = useState(null);
-
   return (
     <p className="reading-sentence reading-sentence--slash">
       {sentence.chunks.map((chunk, index) => (
         <React.Fragment key={index}>
           {index > 0 && <span className="reading-slash" aria-hidden="true">/</span>}
-          <button
-            type="button"
-            className={opened === index ? 'reading-chunk is-open' : 'reading-chunk'}
-            onClick={() => setOpened(opened === index ? null : index)}
-          >
+          <span className="reading-chunk">
             <span className="reading-chunk__en">
               <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
             </span>
-            {opened === index && <span className="reading-chunk__ja">{chunk.ja}</span>}
-          </button>
+            <span className="reading-chunk__ja">{chunk.ja}</span>
+          </span>
         </React.Fragment>
       ))}
     </p>
@@ -96,6 +95,7 @@ function SvocSentence({ sentence, phrases, isMarked, onHold }) {
           <span className="reading-svoc__en">
             <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
           </span>
+          <span className="reading-svoc__ja">{chunk.ja}</span>
         </span>
       ))}
     </p>

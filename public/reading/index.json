@@ -57,6 +57,12 @@
           "title": "My Dog and I",
           "titleJa": "わたしと犬",
           "category": "school"
+        },
+        {
+          "id": "eiken5-sports-01",
+          "title": "I Play Soccer",
+          "titleJa": "サッカーをする",
+          "category": "sports"
         }
       ]
     },
@@ -75,6 +81,12 @@
           "title": "The Old Bookstore",
           "titleJa": "古い本屋さん",
           "category": "town"
+        },
+        {
+          "id": "eiken4-work-01",
+          "title": "My Mother's Work",
+          "titleJa": "母の仕事",
+          "category": "work"
         }
       ]
     },
@@ -93,6 +105,12 @@
           "title": "The River Behind Our School",
           "titleJa": "学校のうしろの川",
           "category": "nature"
+        },
+        {
+          "id": "eiken3-daily-01",
+          "title": "The Notebook I Kept",
+          "titleJa": "続けたノート",
+          "category": "daily"
         }
       ]
     },
@@ -111,6 +129,12 @@
           "title": "Why We Forget",
           "titleJa": "なぜ忘れるのか",
           "category": "science"
+        },
+        {
+          "id": "eikenp2-sports-01",
+          "title": "The Runner Who Stopped",
+          "titleJa": "止まった走者",
+          "category": "sports"
         }
       ]
     },

@@ -249,8 +249,6 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           ))}
         </div>
 
-        {mode === 'slash' && <p className="reading-note">まとまりを押すと、そこの訳が出ます。</p>}
-
         {/* 文字サイズ。長文は読むものなので、単語帳とは別に持つ。 */}
         <label className="reading-zoom">
           <span className="reading-zoom__mark" aria-hidden="true">A</span>
