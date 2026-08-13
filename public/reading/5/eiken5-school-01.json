@@ -1,0 +1,219 @@
+{
+  "id": "eiken5-school-01",
+  "grade": "5",
+  "category": "school",
+  "title": "My Dog and I",
+  "titleJa": "わたしと犬",
+  "sentences": [
+    {
+      "ja": "わたしは犬を1ぴき飼っています。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "飼っています",
+          "role": "V"
+        },
+        {
+          "en": "a dog.",
+          "ja": "犬を1ぴき",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "名前はシロです。",
+      "chunks": [
+        {
+          "en": "His name",
+          "ja": "名前は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "Shiro.",
+          "ja": "シロ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "シロは白くてとても小さいです。",
+      "chunks": [
+        {
+          "en": "Shiro",
+          "ja": "シロは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "white and very small.",
+          "ja": "白くてとても小さい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは日曜日にシロと公園へ行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "go",
+          "ja": "行きます",
+          "role": "V"
+        },
+        {
+          "en": "to the park",
+          "ja": "公園へ",
+          "role": "M"
+        },
+        {
+          "en": "with Shiro",
+          "ja": "シロと",
+          "role": "M"
+        },
+        {
+          "en": "on Sunday.",
+          "ja": "日曜日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "シロは公園でボールが好きです。",
+      "chunks": [
+        {
+          "en": "Shiro",
+          "ja": "シロは",
+          "role": "S"
+        },
+        {
+          "en": "likes",
+          "ja": "好きです",
+          "role": "V"
+        },
+        {
+          "en": "balls",
+          "ja": "ボールが",
+          "role": "O"
+        },
+        {
+          "en": "in the park.",
+          "ja": "公園で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは公園でボールで遊びます。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "play",
+          "ja": "遊びます",
+          "role": "V"
+        },
+        {
+          "en": "with the ball",
+          "ja": "ボールで",
+          "role": "M"
+        },
+        {
+          "en": "in the park.",
+          "ja": "公園で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちはいっしょに走ります。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "run",
+          "ja": "走ります",
+          "role": "V"
+        },
+        {
+          "en": "together.",
+          "ja": "いっしょに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "シロは家で水をたくさん飲みます。",
+      "chunks": [
+        {
+          "en": "Shiro",
+          "ja": "シロは",
+          "role": "S"
+        },
+        {
+          "en": "drinks",
+          "ja": "飲みます",
+          "role": "V"
+        },
+        {
+          "en": "a lot of water",
+          "ja": "水をたくさん",
+          "role": "O"
+        },
+        {
+          "en": "at home.",
+          "ja": "家で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはシロがとても好きです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "like",
+          "ja": "好きです",
+          "role": "V"
+        },
+        {
+          "en": "Shiro",
+          "ja": "シロが",
+          "role": "O"
+        },
+        {
+          "en": "very much.",
+          "ja": "とても",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

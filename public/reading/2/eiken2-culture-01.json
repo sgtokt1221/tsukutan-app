@@ -1,0 +1,704 @@
+{
+  "id": "eiken2-culture-01",
+  "grade": "2",
+  "category": "culture",
+  "title": "The Bowl That Was Broken",
+  "titleJa": "割れた器",
+  "sentences": [
+    {
+      "ja": "日本には、割れた器を金で直す技術があります。",
+      "chunks": [
+        {
+          "en": "In Japan,",
+          "ja": "日本には",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a skill of repairing broken bowls with gold.",
+          "ja": "割れた器を金で直す技術が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "それは金継ぎと呼ばれ、500年以上の歴史があります。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is called",
+          "ja": "と呼ばれています",
+          "role": "V"
+        },
+        {
+          "en": "kintsugi,",
+          "ja": "金継ぎ",
+          "role": "C"
+        },
+        {
+          "en": "and it has a history of more than five hundred years.",
+          "ja": "そして500年以上の歴史があります",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ふつう、物が壊れたとき、わたしたちは直した跡を隠そうとします。",
+      "chunks": [
+        {
+          "en": "Usually,",
+          "ja": "ふつう",
+          "role": "M"
+        },
+        {
+          "en": "when something is broken,",
+          "ja": "物が壊れたとき",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "try to hide",
+          "ja": "隠そうとします",
+          "role": "V"
+        },
+        {
+          "en": "the marks of the repair.",
+          "ja": "直した跡を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、この技術はその反対のことをします。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "this skill",
+          "ja": "この技術は",
+          "role": "S"
+        },
+        {
+          "en": "does",
+          "ja": "します",
+          "role": "V"
+        },
+        {
+          "en": "the opposite.",
+          "ja": "その反対のことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "割れた線に金を置き、はっきりと見えるようにするのです。",
+      "chunks": [
+        {
+          "en": "Gold",
+          "ja": "金を",
+          "role": "O"
+        },
+        {
+          "en": "is put",
+          "ja": "置きます",
+          "role": "V"
+        },
+        {
+          "en": "on the broken lines",
+          "ja": "割れた線に",
+          "role": "M"
+        },
+        {
+          "en": "so that they can be seen clearly.",
+          "ja": "はっきりと見えるように",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "直された器は、割れる前とは違うものになります。",
+      "chunks": [
+        {
+          "en": "The repaired bowl",
+          "ja": "直された器は",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なります",
+          "role": "V"
+        },
+        {
+          "en": "something different from what it was before it broke.",
+          "ja": "割れる前とは違うものに",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "金の線は、その器がたどってきた時間を示しています。",
+      "chunks": [
+        {
+          "en": "The gold lines",
+          "ja": "金の線は",
+          "role": "S"
+        },
+        {
+          "en": "show",
+          "ja": "示しています",
+          "role": "V"
+        },
+        {
+          "en": "the time that the bowl has passed through.",
+          "ja": "その器がたどってきた時間を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "この考え方は、日本の古い美意識と結びついています。",
+      "chunks": [
+        {
+          "en": "This way of thinking",
+          "ja": "この考え方は",
+          "role": "S"
+        },
+        {
+          "en": "is connected",
+          "ja": "結びついています",
+          "role": "V"
+        },
+        {
+          "en": "with an old Japanese sense of beauty.",
+          "ja": "日本の古い美意識と",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "完全で新しいものだけが美しいのではない、という考えです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the idea that only perfect and new things are not beautiful.",
+          "ja": "完全で新しいものだけが美しいのではない、という考え",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "時間が残した傷にも価値がある、と考えるのです。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "think",
+          "ja": "考えます",
+          "role": "V"
+        },
+        {
+          "en": "that the marks left by time also have value.",
+          "ja": "時間が残した傷にも価値がある、と",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "近年、この技術は海外でも知られるようになりました。",
+      "chunks": [
+        {
+          "en": "In recent years,",
+          "ja": "近年",
+          "role": "M"
+        },
+        {
+          "en": "this skill",
+          "ja": "この技術は",
+          "role": "S"
+        },
+        {
+          "en": "has become known",
+          "ja": "知られるようになりました",
+          "role": "V"
+        },
+        {
+          "en": "in other countries,",
+          "ja": "海外でも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "外国の美術館がそれを紹介し、多くの人が教室に通っています。",
+      "chunks": [
+        {
+          "en": "Museums in other countries",
+          "ja": "外国の美術館が",
+          "role": "S"
+        },
+        {
+          "en": "have introduced",
+          "ja": "紹介しました",
+          "role": "V"
+        },
+        {
+          "en": "it,",
+          "ja": "それを",
+          "role": "O"
+        },
+        {
+          "en": "and many people go to classes.",
+          "ja": "そして多くの人が教室に通っています",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "なぜ、遠く離れた国の人々がこれほど関心を持つのでしょうか。",
+      "chunks": [
+        {
+          "en": "Why do",
+          "ja": "なぜ",
+          "role": "M"
+        },
+        {
+          "en": "people in far countries",
+          "ja": "遠く離れた国の人々が",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "持つのでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "so much interest?",
+          "ja": "これほど関心を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "一つの理由は、この技術が物だけの話ではないからです。",
+      "chunks": [
+        {
+          "en": "One reason",
+          "ja": "一つの理由は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that this skill is not only about things.",
+          "ja": "この技術が物だけの話ではないから",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "失敗や病気を経験した人が、そこに自分の姿を見るのです。",
+      "chunks": [
+        {
+          "en": "People who have experienced failure or illness",
+          "ja": "失敗や病気を経験した人が",
+          "role": "S"
+        },
+        {
+          "en": "see",
+          "ja": "見るのです",
+          "role": "V"
+        },
+        {
+          "en": "themselves",
+          "ja": "自分の姿を",
+          "role": "O"
+        },
+        {
+          "en": "in it.",
+          "ja": "そこに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "壊れたことは、終わりを意味しないと教えてくれます。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "teaches",
+          "ja": "教えてくれます",
+          "role": "V"
+        },
+        {
+          "en": "us",
+          "ja": "わたしたちに",
+          "role": "O"
+        },
+        {
+          "en": "that being broken does not mean the end.",
+          "ja": "壊れたことは終わりを意味しないと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "もちろん、これを美しい話にしすぎるのは危険です。",
+      "chunks": [
+        {
+          "en": "Of course,",
+          "ja": "もちろん",
+          "role": "M"
+        },
+        {
+          "en": "making this too beautiful a story",
+          "ja": "これを美しい話にしすぎることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "dangerous.",
+          "ja": "危険",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "実際の金継ぎには、数か月の時間と高い技術が必要です。",
+      "chunks": [
+        {
+          "en": "Real kintsugi",
+          "ja": "実際の金継ぎには",
+          "role": "S"
+        },
+        {
+          "en": "needs",
+          "ja": "必要です",
+          "role": "V"
+        },
+        {
+          "en": "several months and a high level of skill.",
+          "ja": "数か月の時間と高い技術が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それは、簡単に手に入る慰めではありません。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "comfort that is easily gained.",
+          "ja": "簡単に手に入る慰め",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "直すという行いには、待つ力が求められます。",
+      "chunks": [
+        {
+          "en": "The act of repairing",
+          "ja": "直すという行いには",
+          "role": "S"
+        },
+        {
+          "en": "requires",
+          "ja": "求められます",
+          "role": "V"
+        },
+        {
+          "en": "the power to wait.",
+          "ja": "待つ力が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "そして、待つことができる人だけが、その線の意味を知ります。",
+      "chunks": [
+        {
+          "en": "And",
+          "ja": "そして",
+          "role": "M"
+        },
+        {
+          "en": "only those who can wait",
+          "ja": "待つことができる人だけが",
+          "role": "S"
+        },
+        {
+          "en": "know",
+          "ja": "知ります",
+          "role": "V"
+        },
+        {
+          "en": "the meaning of those lines.",
+          "ja": "その線の意味を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちの身の回りにも、直せるものがあるかもしれません。",
+      "chunks": [
+        {
+          "en": "There may be",
+          "ja": "あるかもしれません",
+          "role": "V"
+        },
+        {
+          "en": "things that can be repaired",
+          "ja": "直せるものが",
+          "role": "S"
+        },
+        {
+          "en": "around us,",
+          "ja": "わたしたちの身の回りにも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "捨てる前に、一度考えてみる価値はあります。",
+      "chunks": [
+        {
+          "en": "Before we throw them away,",
+          "ja": "捨てる前に",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is worth",
+          "ja": "価値はあります",
+          "role": "V"
+        },
+        {
+          "en": "thinking once.",
+          "ja": "一度考えてみる",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "この技術が生まれた背景には、茶の湯の文化があります。",
+      "chunks": [
+        {
+          "en": "Behind the birth of this skill",
+          "ja": "この技術が生まれた背景には",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "the culture of the tea ceremony.",
+          "ja": "茶の湯の文化が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "茶の湯では、道具の一つ一つに長い時間をかけて向き合います。",
+      "chunks": [
+        {
+          "en": "In the tea ceremony,",
+          "ja": "茶の湯では",
+          "role": "M"
+        },
+        {
+          "en": "people",
+          "ja": "人々は",
+          "role": "S"
+        },
+        {
+          "en": "face",
+          "ja": "向き合います",
+          "role": "V"
+        },
+        {
+          "en": "each tool",
+          "ja": "道具の一つ一つに",
+          "role": "O"
+        },
+        {
+          "en": "for a long time.",
+          "ja": "長い時間をかけて",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ある器が何百年も使われ続けることも珍しくありません。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is not rare",
+          "ja": "珍しくありません",
+          "role": "V"
+        },
+        {
+          "en": "that one bowl is used for hundreds of years.",
+          "ja": "ある器が何百年も使われ続けることは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのように使われた器は、いつか必ず割れます。",
+      "chunks": [
+        {
+          "en": "A bowl that is used in that way",
+          "ja": "そのように使われた器は",
+          "role": "S"
+        },
+        {
+          "en": "will surely break",
+          "ja": "必ず割れます",
+          "role": "V"
+        },
+        {
+          "en": "someday.",
+          "ja": "いつか",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "割れるたびに捨てていては、何も残りません。",
+      "chunks": [
+        {
+          "en": "If we throw it away each time it breaks,",
+          "ja": "割れるたびに捨てていては",
+          "role": "M"
+        },
+        {
+          "en": "nothing",
+          "ja": "何も",
+          "role": "S"
+        },
+        {
+          "en": "will be left.",
+          "ja": "残りません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "だから人々は、直して使い続ける方法を考えたのです。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "people",
+          "ja": "人々は",
+          "role": "S"
+        },
+        {
+          "en": "thought of",
+          "ja": "考えたのです",
+          "role": "V"
+        },
+        {
+          "en": "a way to repair it and keep using it.",
+          "ja": "直して使い続ける方法を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "その必要から生まれたものが、後に美しさとして見られるようになりました。",
+      "chunks": [
+        {
+          "en": "What was born from that need",
+          "ja": "その必要から生まれたものが",
+          "role": "S"
+        },
+        {
+          "en": "came to be seen",
+          "ja": "見られるようになりました",
+          "role": "V"
+        },
+        {
+          "en": "as beauty",
+          "ja": "美しさとして",
+          "role": "M"
+        },
+        {
+          "en": "later.",
+          "ja": "後に",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}
