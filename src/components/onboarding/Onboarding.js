@@ -96,7 +96,7 @@ const STEPS = [
     points: [
       { icon: <FaRedo />, label: '英→和 / 和→英', text: '意味から英語を答える向きにもできる' },
       { icon: <FaStar />, label: '毎日みる', text: '気になる語に印を付けると、毎日出せる' },
-      { icon: <FaBook />, label: '自由学習', text: '学年や英検の級から、自分のペースで進める' },
+      { icon: <FaBook />, label: 'えらぶ', text: '学年や英検の級から、自分のペースで進める' },
     ],
   },
 ];
