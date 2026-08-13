@@ -17,6 +17,8 @@ import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
+import LevelNudge from './components/assessment/LevelNudge';
+import { isAheadOfAssessment } from './logic/estimatedLevel';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
@@ -400,6 +402,9 @@ export default function StudentDashboard() {
 
   // 能力スコアとランク。現行の level からの暫定換算（計画書12 フェーズ1）。
   const abilityScore = scoreFromLegacyLevel(testResultLevel);
+  // 復習の卒業ぐあいから見たレベル（progressLogic が書く）。表示だけに使う。
+  const estimatedLevel = userData?.progress?.estimatedLevel || null;
+  const levelAhead = isAheadOfAssessment(estimatedLevel, testResultLevel);
   const currentRankId = rankForScore(abilityScore)?.id ?? null;
   // 自己ベストは下がっても消さない。保存済みが無ければ現在値を使う。
   const bestRankId = bestRankOf(userData?.assessment?.bestRank ?? null, currentRankId);
@@ -1475,8 +1480,21 @@ export default function StudentDashboard() {
                 compact
               />
 
-              {/* 学習計画最適化ボタン */}
-              {showRetestPrompt && (
+              {/* 覚えたぶんがテストの値を追い越したら、そう伝える。
+                  レベルはテストでしか動かないので、黙っていると進んだ実感が
+                  出ない。出題の範囲は測った値のままにしてある。 */}
+              {levelAhead && (
+                <LevelNudge
+                  assessedLevel={testResultLevel}
+                  estimatedLevel={estimatedLevel}
+                  nextRatio={userData?.progress?.estimatedNextRatio || 0}
+                  onRetest={startCheckTest}
+                />
+              )}
+
+              {/* 学習計画最適化ボタン。見積もりの知らせを出しているときは、
+                  同じ「テストを受けて」を二重に出さない。 */}
+              {!levelAhead && showRetestPrompt && (
                 <div style={{ 
                   marginTop: '12px', 
                   padding: '8px 12px', 
