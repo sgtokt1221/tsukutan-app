@@ -6,23 +6,28 @@
       "cards": [
         {
           "id": "eiken3-001",
-          "title": "Morning Radio"
+          "title": "Morning Radio",
+          "thumbnail": "thumbs/eiken3-001-a.webp"
         },
         {
           "id": "eiken3-002",
-          "title": "Cleaning at School"
+          "title": "Cleaning at School",
+          "thumbnail": "thumbs/eiken3-002-a.webp"
         },
         {
           "id": "eiken3-003",
-          "title": "Parks in the City"
+          "title": "Parks in the City",
+          "thumbnail": "thumbs/eiken3-003-a.webp"
         },
         {
           "id": "eiken3-004",
-          "title": "Using the Library"
+          "title": "Using the Library",
+          "thumbnail": "thumbs/eiken3-004-a.webp"
         },
         {
           "id": "eiken3-005",
-          "title": "Food from Near the Town"
+          "title": "Food from Near the Town",
+          "thumbnail": "thumbs/eiken3-005-a.webp"
         }
       ]
     },
@@ -32,23 +37,28 @@
       "cards": [
         {
           "id": "eiken-p2-001",
-          "title": "Clean-up Events"
+          "title": "Clean-up Events",
+          "thumbnail": "thumbs/eiken-p2-001-a.webp"
         },
         {
           "id": "eiken-p2-002",
-          "title": "School Festivals"
+          "title": "School Festivals",
+          "thumbnail": "thumbs/eiken-p2-002-a.webp"
         },
         {
           "id": "eiken-p2-003",
-          "title": "Camping with Families"
+          "title": "Camping with Families",
+          "thumbnail": "thumbs/eiken-p2-003-a.webp"
         },
         {
           "id": "eiken-p2-004",
-          "title": "Small Shopping Streets"
+          "title": "Small Shopping Streets",
+          "thumbnail": "thumbs/eiken-p2-004-a.webp"
         },
         {
           "id": "eiken-p2-005",
-          "title": "Zoos Today"
+          "title": "Zoos Today",
+          "thumbnail": "thumbs/eiken-p2-005-a.webp"
         }
       ]
     },
@@ -58,23 +68,28 @@
       "cards": [
         {
           "id": "eiken2-001",
-          "title": "Book Delivery Services"
+          "title": "Book Delivery Services",
+          "thumbnail": "thumbs/eiken2-001-a.webp"
         },
         {
           "id": "eiken2-002",
-          "title": "Online Medical Care"
+          "title": "Online Medical Care",
+          "thumbnail": "thumbs/eiken2-002-a.webp"
         },
         {
           "id": "eiken2-003",
-          "title": "Bicycle Sharing"
+          "title": "Bicycle Sharing",
+          "thumbnail": "thumbs/eiken2-003-a.webp"
         },
         {
           "id": "eiken2-004",
-          "title": "Self-Checkout Machines"
+          "title": "Self-Checkout Machines",
+          "thumbnail": "thumbs/eiken2-004-a.webp"
         },
         {
           "id": "eiken2-005",
-          "title": "Apps against Food Waste"
+          "title": "Apps against Food Waste",
+          "thumbnail": "thumbs/eiken2-005-a.webp"
         }
       ]
     },
@@ -84,23 +99,28 @@
       "cards": [
         {
           "id": "eiken-p1-001",
-          "title": "Rubbish in the Park"
+          "title": "Rubbish in the Park",
+          "thumbnail": "thumbs/eiken-p1-001-a.webp"
         },
         {
           "id": "eiken-p1-002",
-          "title": "Crowded Trains"
+          "title": "Crowded Trains",
+          "thumbnail": "thumbs/eiken-p1-002-a.webp"
         },
         {
           "id": "eiken-p1-003",
-          "title": "A Night Market"
+          "title": "A Night Market",
+          "thumbnail": "thumbs/eiken-p1-003-a.webp"
         },
         {
           "id": "eiken-p1-004",
-          "title": "School Lunch Waste"
+          "title": "School Lunch Waste",
+          "thumbnail": "thumbs/eiken-p1-004-a.webp"
         },
         {
           "id": "eiken-p1-005",
-          "title": "Bicycles at the Station"
+          "title": "Bicycles at the Station",
+          "thumbnail": "thumbs/eiken-p1-005-a.webp"
         }
       ]
     }
