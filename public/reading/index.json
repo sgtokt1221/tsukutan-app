@@ -1,0 +1,18 @@
+{
+  "categories": [
+    { "id": "daily", "label": "毎日のこと" },
+    { "id": "school", "label": "学校" },
+    { "id": "town", "label": "まちと行事" },
+    { "id": "nature", "label": "自然と環境" },
+    { "id": "society", "label": "社会のしくみ" }
+  ],
+  "grades": [
+    {
+      "id": "5",
+      "label": "英検5級",
+      "readings": [
+        { "id": "eiken5-daily-01", "title": "My Morning", "titleJa": "わたしの朝", "category": "daily" }
+      ]
+    }
+  ]
+}

@@ -18,6 +18,7 @@ import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
 import LevelNudge from './components/assessment/LevelNudge';
+import ReadingPanel from './components/reading/ReadingPanel';
 import { isAheadOfAssessment } from './logic/estimatedLevel';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
@@ -1697,14 +1698,22 @@ export default function StudentDashboard() {
         return renderContent();
       case 'story':
         return (
-          <StoryPanel
+          <>
+            {/* 級ごと・カテゴリごとの読みもの。月1本のAIストーリーはその下に残す。 */}
+            <ReadingPanel
+              schoolGrade={userData?.grade}
+              abilityLevel={testResultLevel}
+              goalTargets={userData?.goal?.targets || []}
+            />
+            <StoryPanel
             monthlyStory={monthlyStory}
             pastStories={pastStories}
             storiesLoading={storiesLoading}
             isGeneratingStory={isGeneratingStory}
             storyError={storyError}
             onGenerate={handleGenerateStory}
-          />
+            />
+          </>
         );
       case 'free-study':
         return renderFreeStudyContent();
