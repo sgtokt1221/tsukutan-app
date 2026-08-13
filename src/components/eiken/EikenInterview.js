@@ -440,16 +440,28 @@ export default function EikenInterview({ grade, onExit }) {
           {cards === null ? (
             <p className="interview-lead">読み込んでいます…</p>
           ) : (
-            <div className="list-group">
+            <div className="interview-cards">
               {cards.map((entry, index) => (
                 <button
                   key={entry.id}
                   type="button"
-                  className="tile-button"
+                  className="interview-card-pick"
                   onClick={() => setCardId(entry.id)}
                 >
-                  <span className="tile-button__label">カード {index + 1}</span>
-                  <span className="tile-button__count">{entry.title}</span>
+                  <span className="interview-card-pick__art">
+                    {entry.thumbnail ? (
+                      <img
+                        src={illustrationUrl(entry.thumbnail)}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <span className="interview-card-pick__noart" aria-hidden="true" />
+                    )}
+                    <span className="interview-card-pick__no">{index + 1}</span>
+                  </span>
+                  <span className="interview-card-pick__title">{entry.title}</span>
                 </button>
               ))}
             </div>
