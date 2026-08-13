@@ -1,5 +1,5 @@
 import { db } from '../firebaseConfig';
-import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { logStudyEvent } from './studyLogger';
 import { MOTIVATION_LEVELS } from '../config';
 import { getTodayKey } from './dateKeys';
@@ -113,6 +113,18 @@ export const updateUserWordProgress = async (
       lastAnswerRevealed: revealed,
     }, { merge: true });
 
+    // 取り消せるように、書き換える前の状態を持ち帰る。
+    // 間隔と繰り返し回数を戻さないと、押し間違いがそのまま
+    // 「次にいつ出すか」に残ってしまう。
+    const previous = isFirstTime ? { firstTime: true } : {
+      interval: docSnap.data().interval ?? 0,
+      repetitions: docSnap.data().repetitions ?? 0,
+      easeFactor: docSnap.data().easeFactor ?? 2.5,
+      nextReviewDate: docSnap.data().nextReviewDate ?? null,
+      lastReviewed: docSnap.data().lastReviewed ?? null,
+      lastAnswerRevealed: docSnap.data().lastAnswerRevealed ?? false,
+    };
+
     // 「もう一度」は今日のうちにもう一度出す
     if (shouldRepeatToday(quality)) {
       await addWordToDailyCache(userId, { ...wordData, id: word.id });
@@ -132,10 +144,39 @@ export const updateUserWordProgress = async (
     });
 
     // 初めて記録した単語かどうかを返す。呼び出し側が習得語数を数える。
-    return { created: isFirstTime, mastered: false };
+    // previous は取り消し用（undoWordProgress に渡す）。
+    return { created: isFirstTime, mastered: false, previous };
   } catch (error) {
     console.error('単語の進捗更新に失敗しました:', error);
     return { created: false, mastered: false, error };
+  }
+};
+
+/**
+ * 直前の採点を取り消して、書き換える前の状態に戻す。
+ *
+ * 単語帳で同じ向きにもう一度スワイプしたときに使う。間隔と繰り返し回数を
+ * 戻さないと、押し間違いがそのまま「次にいつ出すか」に残ってしまう。
+ *
+ * @param {string} userId
+ * @param {string} wordId
+ * @param {object} previous updateUserWordProgress が返した previous
+ */
+export const undoWordProgress = async (userId, wordId, previous) => {
+  if (!userId || !wordId || !previous) return;
+
+  const reviewWordRef = doc(db, 'users', userId, 'reviewWords', wordId);
+
+  try {
+    if (previous.firstTime) {
+      // 採点で初めて作られた文書。丸ごと消して、出会う前に戻す。
+      await deleteDoc(reviewWordRef);
+    } else {
+      await setDoc(reviewWordRef, previous, { merge: true });
+    }
+    logger.debug(`単語(ID: ${wordId})の採点を取り消しました。`);
+  } catch (error) {
+    console.error('採点の取り消しに失敗しました:', error);
   }
 };
 
