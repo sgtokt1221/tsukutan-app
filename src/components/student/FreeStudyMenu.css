@@ -1,0 +1,76 @@
+/* 自由学習の入口。中学英語 / 高校英語 / 英検 の3枚。
+   スマホ幅では横に3列並べると説明の一行が入らないので縦に積む。 */
+
+.free-study-cards {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.free-study-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  padding: var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--motion-standard) var(--ease-standard),
+              box-shadow var(--motion-standard) var(--ease-standard);
+}
+
+.free-study-card:hover {
+  background-color: var(--color-lime-soft);
+  box-shadow: var(--shadow-2);
+}
+
+.free-study-card__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-control);
+  background-color: var(--color-lime-soft);
+}
+
+.free-study-card__icon svg {
+  width: var(--icon-24);
+  height: var(--icon-24);
+}
+
+.free-study-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.free-study-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  line-height: var(--line-tight);
+}
+
+.free-study-card__sub {
+  display: block;
+  margin-top: var(--space-4);
+  font-size: var(--font-size-12);
+  font-weight: 400;
+  line-height: var(--line-normal);
+  color: var(--color-olive-muted);
+}
+
+.free-study-card__chevron {
+  flex-shrink: 0;
+  display: flex;
+  color: var(--color-olive-subtle);
+}

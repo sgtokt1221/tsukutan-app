@@ -21,6 +21,8 @@ import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
+import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStudyMenu';
+import RecommendationBadge from './components/student/RecommendationBadge';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
 import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
@@ -235,79 +237,7 @@ const isRecommendedLevel = (level, testLevel) => {
     return getRecommendedTextbooks(toGoalIds(userData.goal.targets)).includes('osaka-koukou-nyuushi');
   };
 
-// 推奨バッジコンポーネント（カード内部表示用）
-const RecommendationBadge = ({ type, priority = 'medium' }) => {
-  const getBadgeStyle = () => {
-    switch (priority) {
-      case 'high':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
-          color: 'white',
-          text: '推奨',
-          icon: null,
-          borderColor: '#dc2626'
-        };
-      case 'medium':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-          color: 'white',
-          text: 'おすすめ',
-          icon: null,
-          borderColor: '#d97706'
-        };
-      case 'low':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #10b981, #059669)',
-          color: 'white',
-          text: '復習',
-          icon: null,
-          borderColor: '#047857'
-        };
-      default:
-        return {
-          backgroundColor: 'linear-gradient(135deg, #6b7280, #4b5563)',
-          color: 'white',
-          text: '推奨',
-          icon: null,
-          borderColor: '#374151'
-        };
-    }
-  };
-
-  const badgeStyle = getBadgeStyle();
-
-  return (
-    <div
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        background: badgeStyle.backgroundColor,
-        color: badgeStyle.color,
-        fontSize: '11px',
-        fontWeight: '600',
-        padding: '4px 8px',
-        borderRadius: '12px',
-        border: `1px solid ${badgeStyle.borderColor}`,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        whiteSpace: 'nowrap',
-        textShadow: '0 1px 2px rgba(0,0,0,0.1)',
-        letterSpacing: '0.025em'
-      }}
-    >
-      {/* 記号を出さず、文言と枠の色だけで区別する（絵文字を使わない方針） */}
-      <span>{badgeStyle.text}</span>
-    </div>
-  );
-};
-
 // 既存の定数やヘルパー関数（すべて維持）
-/** 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
-export const FREE_STUDY_GROUPS = [
-  { id: 'school', label: '学年で選ぶ' },
-  { id: 'eiken', label: '英検で選ぶ' },
-];
-
 const freeStudyOptions = [
   { id: 'osaka-koukou-nyuushi', group: 'school', label: '中学英語（大阪府公立入試）', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
   { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
@@ -1040,7 +970,8 @@ export default function StudentDashboard() {
 
         if (filteredWords.length === 0) {
           alert('このメニューには該当する単語がまだ登録されていません。別のメニューを選んでください。');
-          setSelectionMode('main');
+          // 選ぶ前の一覧に置いたままにする。main へ戻すと、英検の級を選んだ人が
+          // 3カードまで放り出されて、隣の級を試すのに辿り直しになる。
           setSelectedTextbookId(null);
           setAllWords([]);
           return;
@@ -1054,8 +985,9 @@ export default function StudentDashboard() {
     }
   };
 
+  /** 自由学習で一段だけ戻る。行き先は freeStudyBackTarget が決める。 */
   const handleBackToMainMenu = () => {
-    setSelectionMode('main');
+    setSelectionMode(freeStudyBackTarget(selectionMode, selectedTextbookId));
     setSelectedTextbookId(null);
     setAllWords([]);
   };
@@ -1778,16 +1710,37 @@ export default function StudentDashboard() {
 
   // 長文タブのコンテンツ
 
+  /** 語数。単語データを読む前は数えられないので null。0語の級を隠す判定にも使う。 */
+  const wordCountOf = (textbookId) =>
+    masterWords.length === 0 ? null : getTextbookWordCount(textbookId, masterWords, textbookCounts);
+
+  /** 「おすすめ」バッジの強さ。今の力に合っていなければ null。 */
+  const recommendationOf = (textbookId) => {
+    if (!isRecommendedTextbook(textbookId, testResultLevel, userData)) return null;
+    const match = getRecommendedLevels(testResultLevel).recommended
+      .find((rec) => isRecommendedTextbook(textbookId, rec.level, userData));
+    return match ? match.priority : 'medium';
+  };
+
+  /** 戻るボタンの右に出す、今いる場所の名前。 */
+  const freeStudyTitle = {
+    eiken: '英検',
+    'eiken-words': '英検の単語',
+    'eiken-interview': '英検 二次試験（面接）',
+  }[selectionMode]
+    || freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label
+    || selectedTextbookId;
+
   // 自由学習タブのコンテンツ
   const renderFreeStudyContent = () => (
     <div className="free-study-tab-content">
             <div className="section-card">
               {/* 見出しと「選択中の教材」を横に並べると、狭い幅で本文に
-                  重なっていた。縦に積んで、教材を選んだあとは説明文を出さない。 */}
+                  重なっていた。縦に積んで、先へ進んだあとは説明文を出さない。 */}
               {selectionMode === 'main' ? (
                 <div className="free-study-head">
                   <h3 className="home-section-eyebrow">自由学習</h3>
-                  <p className="tile-caption">気になる教材を選んで、自分のペースで進められます。</p>
+                  <p className="tile-caption">やりたいところを選んで、自分のペースで進められます。</p>
                 </div>
               ) : (
                 <div className="free-study-head free-study-head--selected">
@@ -1795,85 +1748,28 @@ export default function StudentDashboard() {
                     type="button"
                     className="free-study-back"
                     onClick={handleBackToMainMenu}
-                    aria-label="教材選択に戻る"
+                    aria-label="ひとつ前に戻る"
                   >
                     <FaArrowLeft aria-hidden="true" />
                   </button>
                   <div>
                     <p className="home-section-eyebrow">自由学習</p>
-                    <p className="free-study-title">
-                      {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
-                    </p>
+                    <p className="free-study-title">{freeStudyTitle}</p>
                   </div>
                 </div>
               )}
 
-              {selectionMode === 'main' ? (
-                <div className="free-study-groups">
-                  {FREE_STUDY_GROUPS.map((group) => {
-                    const options = freeStudyOptions.filter((option) => {
-                      if (option.group !== group.id) return false;
-                      // 収録が0語の教材は出さない。選んでも何も学べない。
-                      // 単語データの読み込み前は判定できないので出したままにする。
-                      const count = getTextbookWordCount(option.id, masterWords, textbookCounts);
-                      return !(masterWords.length > 0 && count === 0);
-                    });
-                    if (options.length === 0) return null;
-
-                    return (
-                      <section key={group.id} className="free-study-group">
-                        <h4 className="home-section-eyebrow">{group.label}</h4>
-                        <div className="list-group">
-                          {options.map(({ id, label }) => {
-                            const isRecommended = isRecommendedTextbook(id, testResultLevel, userData);
-                            const recommendations = getRecommendedLevels(testResultLevel);
-                            const recommendationType = recommendations.recommended.find((rec) =>
-                              isRecommendedTextbook(id, rec.level, userData)
-                            );
-                            const priority = recommendationType ? recommendationType.priority : 'medium';
-                            const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
-
-                            return (
-                              <button
-                                key={id}
-                                type="button"
-                                className="tile-button"
-                                onClick={() => handleSelectTextbook(id)}
-                              >
-                                <span className="tile-button__label">
-                                  {label}
-                                  {isRecommended && (
-                                    <RecommendationBadge type="textbook" priority={priority} />
-                                  )}
-                                </span>
-                                <span className="tile-button__count">{wordCount.toLocaleString()}語</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </section>
-                    );
-                  })}
-
-                  {/* 二次試験（面接）。単語ではないので語数は出さない。 */}
-                  <section className="free-study-group">
-                    <h4 className="home-section-eyebrow">二次試験（面接）</h4>
-                    <p className="tile-caption">入室から退室までを通しで練習します。</p>
-                    <div className="list-group">
-                      {INTERVIEW_GRADES.map(({ id, label }) => (
-                        <button
-                          key={id}
-                          type="button"
-                          className="tile-button"
-                          onClick={() => setInterviewGrade(id)}
-                        >
-                          <span className="tile-button__label">{label}</span>
-                          <span className="tile-button__count">5問</span>
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-                </div>
+              {selectionMode !== 'filter' ? (
+                <FreeStudyMenu
+                  mode={selectionMode}
+                  onNavigate={setSelectionMode}
+                  eikenOptions={freeStudyOptions.filter((option) => option.group === 'eiken')}
+                  interviewGrades={INTERVIEW_GRADES}
+                  wordCountOf={wordCountOf}
+                  recommendationOf={recommendationOf}
+                  onSelectTextbook={handleSelectTextbook}
+                  onSelectInterview={setInterviewGrade}
+                />
               ) : (
                 <>
                   <div className="free-study-tabs" role="tablist" aria-label="絞り込み">
