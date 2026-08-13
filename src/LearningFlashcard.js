@@ -1112,8 +1112,18 @@ export default function LearningFlashcard({
         >
           <FaUndo aria-hidden="true" /> 前の単語
         </button>
-        {/* 「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
+        {/* 上スワイプと同じ処理。復習カードと同じものを置く。新規学習でも
+            上スワイプは「もう覚えた」として同じ扱いになっている。
+            「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
             同じ画面に戻る道が2つあると、どちらが本当か迷う。 */}
+        <button
+          type="button"
+          className="ghost-button"
+          onClick={handleGraduateCurrent}
+          title="上スワイプと同じ。もう出題されなくなります"
+        >
+          <FaArrowUp aria-hidden="true" /> リストから削除
+        </button>
       </div>
     </div>
   );
