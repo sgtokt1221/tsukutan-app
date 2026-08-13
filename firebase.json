@@ -39,6 +39,29 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+    "headers": [
+      {
+        "//": "index.html は毎回取りに行かせる。Firebase の既定は max-age=3600 で、デプロイしても最大1時間は古い index.html が使われ、そこに書かれた古いバンドルを読み続ける。直したはずの不具合が消えない、という形で表に出る。",
+        "source": "/index.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        ]
+      },
+      {
+        "//": "拡張子の無いパス（/student-dashboard など）も index.html が返るので同じ扱いにする。",
+        "source": "**/!(*.*)",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        ]
+      },
+      {
+        "//": "JS/CSS はファイル名にハッシュが入る。中身が変わればURLが変わるので、長く持たせてよい。",
+        "source": "/static/**",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      }
     ]
   },
   "firestore": {
