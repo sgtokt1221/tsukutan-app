@@ -729,6 +729,17 @@ body {
   overflow-x: hidden;
   overflow-wrap: anywhere;
   text-align: center;
+  /* 上スワイプ（もう覚えた）でページまで動かない。overflow を持つ要素は
+     touch-action のさかのぼりをここで止めるので、#flashcard の none が
+     指まで届かない。触れる面のこちらで止める。 */
+  touch-action: none;
+}
+
+/* 中身がはみ出している面だけ、指でたぐれるようにする（CardFace が付ける）。
+   contain が無いと、面の端まで来たところでページへスクロールが渡る。 */
+.card-face.is-scrollable {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 /* 中央寄せのまま縦に溢れると、上端が切れて読めなくなる（flexbox の既知の挙動）。

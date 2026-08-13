@@ -14,6 +14,7 @@ import { updateUserWordProgress, undoWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
+import CardFace from './components/learning/CardFace';
 import { scrollWordbookToTop } from './logic/scrollHelpers';
 import { useWordbookZoom } from './logic/useWordbookZoom';
 import { useCardDirection } from './logic/useCardDirection';
@@ -1068,7 +1069,7 @@ export default function LearningFlashcard({
           onTouchEnd={handleTouchEnd}
           onDoubleClick={handleDoubleClick}
         >
-          <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
+          <CardFace className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
             <p id="card-front-text" className={isJaToEn ? 'card-front-text--ja' : undefined}>
               {isJaToEn
@@ -1078,8 +1079,8 @@ export default function LearningFlashcard({
             {!isJaToEn && (currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
               <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
             )}
-          </div>
-          <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
+          </CardFace>
+          <CardFace className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
             <h3 id="card-back-word">{currentWord?.word || 'Loading...'}</h3>
             {(currentWord?.pronunciation || getPronunciation(currentWord?.word)) && (
               <p className="card-pronunciation">[{currentWord.pronunciation || getPronunciation(currentWord.word)}]</p>
@@ -1088,7 +1089,7 @@ export default function LearningFlashcard({
             {(currentWord?.example || currentWord?.exampleJa) && <hr />}
             <p className="example-text">{currentWord?.example || ''}</p>
             <p className="example-text-ja">{currentWord?.exampleJa || ''}</p>
-          </div>
+          </CardFace>
         </motion.div>
       </div>
 
