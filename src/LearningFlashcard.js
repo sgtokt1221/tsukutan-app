@@ -1101,75 +1101,19 @@ export default function LearningFlashcard({
         onHard={handleHard}
       />
 
-      {/* ナビゲーションボタン */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        padding: '0 20px',
-        marginTop: '20px',
-        gap: '15px'
-      }}>
-        <button 
-          onClick={handlePrev} 
+      {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く。
+          復習カードと同じ .session-footer に揃える（下端の余白と安全領域を持つ）。 */}
+      <div className="session-footer">
+        <button
+          type="button"
+          className="ghost-button"
+          onClick={handlePrev}
           disabled={currentIndex === 0}
-          style={{
-            flex: 1,
-            padding: '12px 16px',
-            backgroundColor: currentIndex === 0 ? '#f3f4f6' : '#6b7280',
-            color: currentIndex === 0 ? '#9ca3af' : 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            cursor: currentIndex === 0 ? 'not-allowed' : 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px'
-          }}
-          onMouseOver={(e) => {
-            if (currentIndex > 0) {
-              e.target.style.backgroundColor = '#4b5563';
-            }
-          }}
-          onMouseOut={(e) => {
-            if (currentIndex > 0) {
-              e.target.style.backgroundColor = '#6b7280';
-            }
-          }}
         >
-          <FaUndo /> 前の単語
+          <FaUndo aria-hidden="true" /> 前の単語
         </button>
-        
-        <button 
-          onClick={handleBackButtonClick}
-          style={{
-            flex: 1,
-            padding: '12px 16px',
-            backgroundColor: '#dc2626',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#b91c1c';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = '#dc2626';
-          }}
-        >
-          <FaArrowLeft /> 前の画面に戻る
-        </button>
+        {/* 「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
+            同じ画面に戻る道が2つあると、どちらが本当か迷う。 */}
       </div>
     </div>
   );

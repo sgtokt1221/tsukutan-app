@@ -3,7 +3,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { updateUserWordProgress, undoWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
-import { FaUndo, FaArrowLeft, FaArrowUp, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
+import { FaUndo, FaArrowUp, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
 import PeekNudge from './components/learning/PeekNudge';
 import SessionHeader from './components/learning/SessionHeader';
@@ -1026,9 +1026,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         >
           <FaUndo aria-hidden="true" /> 前の単語
         </button>
-        <button type="button" className="secondary-action" onClick={handleBackButtonClick}>
-          <FaArrowLeft aria-hidden="true" /> 前の画面に戻る
-        </button>
+        {/* 「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
+            同じ画面に戻る道が2つあると、どちらが本当か迷う。 */}
       </div>
     </div>
   );
