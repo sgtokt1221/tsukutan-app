@@ -33,7 +33,7 @@ const { getCurrentMonthKey } = require('./lib/dateKeys');
  *     https://us-central1-aiplatform.googleapis.com/v1/projects/$GCLOUD_PROJECT/locations/us-central1/publishers/google/models/<model>:generateContent
  */
 const GEMINI_MODEL = 'gemini-2.5-flash';
-const { transcribe, missingWords, MAX_AUDIO_BYTES } = require('./lib/transcription');
+const { transcribe, missingWords, uniqueWordCount, MAX_AUDIO_BYTES } = require('./lib/transcription');
 const { judgeAnswer } = require('./lib/answerJudge');
 
 //==============================================================================
@@ -772,18 +772,28 @@ const recognize = (request) => {
  *
  * 発音の点は出さない。それには別サービスが要り、いまは対象外。
  */
-transcribeSpeakingApp.post('/', async (req, res) => {
-  // 生徒本人であることだけ確かめる。uid はトークンから取り、本文の値は信じない。
+/**
+ * 生徒本人であることだけ確かめる。uid はトークンから取り、本文の値は信じない。
+ * 通っていなければ 401 を返して false。呼び出し側はそこで抜ける。
+ */
+const verifyStudent = async (req, res) => {
   const idToken = req.get('Authorization')?.split('Bearer ')[1];
   if (!idToken) {
-    return res.status(401).json({ error: 'ログインし直してください。' });
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return false;
   }
   try {
     await admin.auth().verifyIdToken(idToken);
+    return true;
   } catch (error) {
     logger.error('transcribeSpeaking: トークンを検証できませんでした', error);
-    return res.status(401).json({ error: 'ログインし直してください。' });
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return false;
   }
+};
+
+transcribeSpeakingApp.post('/', async (req, res) => {
+  if (!(await verifyStudent(req, res))) return undefined;
 
   const { audio, mode, referenceText, question, modelAnswer, grade } = req.body || {};
   if (typeof audio !== 'string' || audio.length === 0) {
@@ -832,6 +842,46 @@ transcribeSpeakingApp.post('/', async (req, res) => {
       : '文字起こしできませんでした。もう一度お試しください。';
     return res.status(502).json({ error: message });
   }
+});
+
+/**
+ * 文字にしたあとの答えを見る。
+ *
+ * 音声認識は日本語なまりの英語をよく取り違える。生徒が画面で直せるように
+ * したので、判定は「直したあとの文」に対してかけないと意味がない。だから
+ * 音声を受けずにテキストだけで判定する口を分けてある。
+ *
+ * 読み飛ばした語もここで数え直す。分母（total）も返すのは、同じ正規化を
+ * クライアントに書き写すと、ずれたときに気づけないため。
+ */
+transcribeSpeakingApp.post('/review', async (req, res) => {
+  if (!(await verifyStudent(req, res))) return undefined;
+
+  const { mode, referenceText, question, modelAnswer, grade, transcript } = req.body || {};
+  if (!MODES.has(mode)) {
+    return res.status(400).json({ error: 'mode が不正です。' });
+  }
+  if (typeof transcript !== 'string') {
+    return res.status(400).json({ error: '文字起こしが送られていません。' });
+  }
+
+  const scripted = mode === 'scripted' && referenceText;
+  const missing = scripted ? missingWords(referenceText, transcript) : [];
+  const total = scripted ? uniqueWordCount(referenceText) : 0;
+
+  let content = null;
+  if (mode === 'unscripted' && question) {
+    content = await judgeAnswer(
+      { grade, question, modelAnswer, transcript },
+      generateJson
+    ).catch((judgeError) => {
+      // 1問の判定が取れなくても、他の問題の結果は見せたい。ここで落とさない。
+      logger.warn('transcribeSpeaking: 内容の判定に失敗しました', judgeError);
+      return null;
+    });
+  }
+
+  return res.status(200).json({ missing, total, content });
 });
 
 exports.transcribeSpeaking = onRequest(

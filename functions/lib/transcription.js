@@ -94,13 +94,16 @@ const transcribe = async (wav, { phrases } = {}, recognize) => {
  * 「読み飛ばしていないか」だけ。認識結果に出てこない語を並べる。
  * 認識の誤りも混ざるので、点ではなく参考として出す。
  */
-const missingWords = (referenceText, transcript) => {
-  const normalize = (text) => String(text || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s']/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
+const normalize = (text) => String(text || '')
+  .toLowerCase()
+  .replace(/[^a-z0-9\s']/g, ' ')
+  .split(/\s+/)
+  .filter(Boolean);
 
+/** 読むべき英文の異なり語数。読めた割合の分母になる。 */
+const uniqueWordCount = (referenceText) => new Set(normalize(referenceText)).size;
+
+const missingWords = (referenceText, transcript) => {
   const said = new Set(normalize(transcript));
   const seen = new Set();
   const missing = [];
@@ -118,6 +121,7 @@ module.exports = {
   splitPcm,
   toPcm,
   missingWords,
+  uniqueWordCount,
   MAX_AUDIO_BYTES,
   CHUNK_BYTES,
   SAMPLE_RATE,

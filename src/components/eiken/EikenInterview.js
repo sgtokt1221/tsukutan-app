@@ -15,11 +15,20 @@ import {
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { prefetchClips } from '../../logic/audioLibrary';
 import SpeakingPanel from './SpeakingPanel';
+import InterviewResultModal from './InterviewResultModal';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
+import { reviewAnswer, transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
 import './EikenInterview.css';
 
 const gradeLabel = (grade) => INTERVIEW_GRADES.find((entry) => entry.id === grade)?.label || grade;
+
+/** 結果の一覧に出す場面の名前。番号だけだと、あとで見て何の答えか分からない。 */
+const labelFor = (beat) => {
+  if (beat.stepId === 'read-aloud') return '音読';
+  if (beat.stepId === 'narration') return 'ナレーション';
+  return `No.${beat.question?.no ?? ''}`;
+};
 
 /** 秒を mm:ss に。黙読20秒・ナレーション2分まで扱えればよい。 */
 const formatSeconds = (seconds) => {
@@ -168,9 +177,28 @@ export default function EikenInterview({ grade, onExit }) {
   const [revealed, setRevealed] = useState(false);
   const [branch, setBranch] = useState(null);
   const [error, setError] = useState(null);
+  // 話した場面ぶんの記録。採点は最後にまとめて出すので、ここに貯めていく。
+  const [answers, setAnswers] = useState([]);
+  const [showResult, setShowResult] = useState(false);
   const bodyRef = useRef(null);
   // 録音は画面下のボタンが受け持つので、状態は親が持つ。
   const recorder = useRecorder();
+  // 録音を始めた時点の場面。文字起こしが返るころには次の場面へ進んでいることがある。
+  const recordingRef = useRef(null);
+  const handledBlobRef = useRef(null);
+  // 結果画面で聞き返すための URL。recorder のものは録り直しで消えるので別に持つ。
+  const clipUrlsRef = useRef([]);
+
+  const updateAnswer = useCallback((key, patch) => {
+    setAnswers((current) => current.map(
+      (entry) => (entry.key === key ? { ...entry, ...patch } : entry)
+    ));
+  }, []);
+
+  const dropClips = useCallback(() => {
+    clipUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    clipUrlsRef.current = [];
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -198,6 +226,8 @@ export default function EikenInterview({ grade, onExit }) {
         setPosition(0);
         setRevealed(false);
         setBranch(null);
+        setAnswers([]);
+        setShowResult(false);
         // セッションの頭でまとめて先読みする。無ければ端末の読み上げに戻るだけ。
         prefetchClips(speechTextsFor(flow, card).map((text) => ({ text, lang: 'en-US' })))
           .catch(() => {});
@@ -213,6 +243,9 @@ export default function EikenInterview({ grade, onExit }) {
 
   // 画面を離れるときに読み上げを止める。次の画面に声が残らないように。
   useEffect(() => stopSpeaking, []);
+
+  // 録音を掴んだままにしない。結果画面を閉じるまでは要るので、ここは離脱時だけ。
+  useEffect(() => dropClips, [dropClips]);
 
   const beats = session?.beats || [];
   const beat = beats[position] || null;
@@ -236,11 +269,115 @@ export default function EikenInterview({ grade, onExit }) {
   const cardView = useMemo(() => cardViewFor(beat), [beat]);
   const card = session?.card;
   const speaking = useMemo(() => speakingFor(beat, card, branch), [beat, card, branch]);
+  // Yes / No を選び直したら別の答えとして扱う。前の枝の答えと混ぜない。
+  const speakingKey = beat ? `${beat.key}-${branch || ''}` : null;
+  const answer = answers.find((entry) => entry.key === speakingKey) || null;
+
+  /** 録音を始める。いまどの場面かをここで写し取る。 */
+  const startRecording = () => {
+    recordingRef.current = {
+      key: speakingKey,
+      order: position,
+      label: labelFor(beat),
+      mode: speaking.mode,
+      referenceText: speaking.referenceText || null,
+      question: speaking.question || null,
+      modelAnswer: speaking.modelAnswer || null,
+    };
+    recorder.start();
+  };
+
+  // 録り終えたら、押させずに文字にする。返るまでに次の場面へ進んでも困らない
+  // よう、送る材料は録音を始めたときの写し（recordingRef）を使う。
+  const { blob: recordedBlob, seconds: recordedSeconds } = recorder;
+  useEffect(() => {
+    if (!recordedBlob || recordedBlob === handledBlobRef.current) return;
+    handledBlobRef.current = recordedBlob;
+
+    const context = recordingRef.current;
+    if (!context) return;
+
+    const url = URL.createObjectURL(recordedBlob);
+    clipUrlsRef.current.push(url);
+
+    setAnswers((current) => {
+      // 録り直したら前の録音は結果から外す（URL はセッションの終わりにまとめて捨てる）。
+      const entry = {
+        ...context,
+        url,
+        seconds: recordedSeconds,
+        status: 'working',
+        transcript: '',
+        edited: false,
+        review: null,
+      };
+      return [...current.filter((item) => item.key !== context.key), entry]
+        .sort((a, b) => a.order - b.order);
+    });
+
+    transcribeSpeaking(recordedBlob, { mode: context.mode, referenceText: context.referenceText })
+      .then(({ transcript }) => updateAnswer(context.key, { transcript, status: 'done' }))
+      .catch((transcribeError) => {
+        logger.warn('文字起こしできませんでした', transcribeError);
+        updateAnswer(context.key, { status: 'failed', failure: transcribeError.message });
+      });
+  }, [recordedBlob, recordedSeconds, updateAnswer]);
+
+  // 結果を開いたら、まだ見てもらっていない答えを判定にかける。
+  // 直したあとの文で判定するので、録音した時点ではなくここで呼ぶ。
+  useEffect(() => {
+    if (!showResult) return;
+    for (const entry of answers) {
+      // 失敗した答えをここで数え直すと、失敗するたびに投げ直して止まらなくなる。
+      // 直せば（editTranscript が印を消す）もう一度かかる。
+      if (entry.status !== 'done' || entry.review || entry.reviewing || entry.reviewFailed) continue;
+      updateAnswer(entry.key, { reviewing: true, failure: null });
+      reviewAnswer({
+        mode: entry.mode,
+        transcript: entry.transcript,
+        referenceText: entry.referenceText,
+        question: entry.question,
+        modelAnswer: entry.modelAnswer,
+        grade,
+      })
+        .then((review) => updateAnswer(entry.key, { review: review || {}, reviewing: false }))
+        .catch((reviewError) => {
+          logger.warn('答えを見てもらえませんでした', reviewError);
+          updateAnswer(entry.key, {
+            reviewing: false,
+            reviewFailed: true,
+            failure: reviewError.message,
+          });
+        });
+    }
+  }, [showResult, answers, grade, updateAnswer]);
+
+  /** 文字起こしを直す。判定はやり直しになるので捨てる。 */
+  const editTranscript = (key, transcript) => {
+    updateAnswer(key, {
+      transcript, edited: true, review: null, reviewFailed: false,
+    });
+  };
 
   const exitSession = () => {
     stopSpeaking();
+    dropClips();
+    setAnswers([]);
+    setShowResult(false);
     setSession(null);
     setCardId(null);
+  };
+
+  /** 同じカードを頭から。前の録音と判定は残さない。 */
+  const restartSession = () => {
+    stopSpeaking();
+    dropClips();
+    setAnswers([]);
+    setShowResult(false);
+    setPosition(0);
+    setRevealed(false);
+    setBranch(null);
+    resetRecorder();
   };
 
   if (error) {
@@ -314,14 +451,8 @@ export default function EikenInterview({ grade, onExit }) {
         {speaking && (
           <SpeakingPanel
             recorder={recorder}
-            mode={speaking.mode}
-            referenceText={speaking.referenceText}
-            question={speaking.question}
-            modelAnswer={speaking.modelAnswer}
-            grade={grade}
-            // Yes / No を選び直したら録音も採点もやり直す。
-            // 前の答えのまま残ると、違う質問の点を見てしまう。
-            resetKey={`${beat.key}-${branch || ''}`}
+            answer={answer}
+            onEditTranscript={editTranscript}
           />
         )}
 
@@ -412,7 +543,7 @@ export default function EikenInterview({ grade, onExit }) {
             <button
               type="button"
               className="interview-mic"
-              onClick={recorder.start}
+              onClick={startRecording}
               aria-label={recorder.blob ? '録り直す' : '録音する'}
             >
               <FaMicrophone aria-hidden="true" />
@@ -421,8 +552,12 @@ export default function EikenInterview({ grade, onExit }) {
         )}
 
         {isLast ? (
-          <button type="button" className="primary-action interview-footer__step" onClick={exitSession}>
-            終わる
+          <button
+            type="button"
+            className="primary-action interview-footer__step"
+            onClick={answers.length > 0 ? () => { stopSpeaking(); setShowResult(true); } : exitSession}
+          >
+            {answers.length > 0 ? '結果を見る' : '終わる'}
           </button>
         ) : (
           <button
@@ -434,6 +569,17 @@ export default function EikenInterview({ grade, onExit }) {
           </button>
         )}
       </div>
+
+      {showResult && (
+        <InterviewResultModal
+          title={`${gradeLabel(grade)} ${card?.title || ''}`}
+          answers={answers}
+          onSpeak={speak}
+          onClose={() => setShowResult(false)}
+          onRestart={restartSession}
+          onExit={exitSession}
+        />
+      )}
     </div>
   );
 }
