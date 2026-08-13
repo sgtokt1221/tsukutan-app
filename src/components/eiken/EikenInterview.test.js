@@ -210,11 +210,21 @@ test('録音を止めると、押さなくても文字起こしが出る', async
 
   // 「文字にする」を押させない。止めた時点で走る
   expect(screen.queryByRole('button', { name: /文字にする/ })).not.toBeInTheDocument();
+  expect(screen.getByText('Now, please read it aloud.')).toBeInTheDocument();
+
   await record();
 
-  expect(await screen.findByDisplayValue(/These days many towns hold clean up events/)).toBeInTheDocument();
+  // 言い終えたら待たせずに次の場面へ。文字起こしは裏で走る。
+  expect(screen.queryByText('Now, please read it aloud.')).not.toBeInTheDocument();
   expect(mockTranscribe).toHaveBeenCalledTimes(1);
   expect(mockTranscribe.mock.calls[0][1]).toMatchObject({ mode: 'scripted' });
+
+  // 裏で走った結果は、最後の結果画面で読める
+  while (screen.queryByRole('button', { name: '次へ' })) {
+    fireEvent.click(screen.getByRole('button', { name: '次へ' }));
+  }
+  await openResult();
+  expect(await screen.findByDisplayValue(/These days many towns hold clean up events/)).toBeInTheDocument();
 });
 
 test('採点は途中では出さず、最後の結果画面でまとめて出る', async () => {
@@ -230,7 +240,7 @@ test('採点は途中では出さず、最後の結果画面でまとめて出�
   await screen.findByText('Hello.');
   for (let i = 0; i < 8; i += 1) next();
   await record();
-  await screen.findByDisplayValue(/These days/);
+  await waitFor(() => expect(mockTranscribe).toHaveBeenCalled());
 
   // 面接の途中では判定を出さない
   expect(screen.queryByText(/質問にきちんと答えられています/)).not.toBeInTheDocument();
@@ -246,8 +256,11 @@ test('採点は途中では出さず、最後の結果画面でまとめて出�
 
   expect(await screen.findByText('面接の結果')).toBeInTheDocument();
   expect(await screen.findByText(/質問にきちんと答えられています/)).toBeInTheDocument();
-  // 読み飛ばしゼロ → 100点
-  expect(screen.getByTestId('doughnut')).toHaveTextContent('[100,0]');
+  // 音読だけ答えて No.1〜No.5 は飛ばしている。読み飛ばしゼロの音読は100点だが、
+  // 答えなかった5場面は0点として分母に入るので 100/6 = 17。
+  // ここを答えた場面だけで割ると、飛ばすほど点が高く出てしまう。
+  expect(screen.getByText(/答えていない場面が5件/)).toBeInTheDocument();
+  expect(screen.getByTestId('doughnut')).toHaveTextContent('[17,83]');
 });
 
 test('文字起こしを直すと、直した文で採点に送られる', async () => {
@@ -258,16 +271,20 @@ test('文字起こしを直すと、直した文で採点に送られる', async
   for (let i = 0; i < 8; i += 1) next();
   await record();
 
-  const box = await screen.findByDisplayValue(/These days/);
-  fireEvent.change(box, { target: { value: 'These days many towns hold clean-up events.' } });
-
+  // 直すのは結果画面。録音を止めた時点で次の場面へ進んでいる。
   while (screen.queryByRole('button', { name: '次へ' })) {
     fireEvent.click(screen.getByRole('button', { name: '次へ' }));
   }
   await openResult();
 
-  await waitFor(() => expect(mockReview).toHaveBeenCalled());
-  expect(mockReview.mock.calls[0][0]).toMatchObject({
+  const box = await screen.findByDisplayValue(/These days/);
+  await act(async () => {
+    fireEvent.change(box, { target: { value: 'These days many towns hold clean-up events.' } });
+  });
+
+  // 結果を開いた時点で一度採点しているので、直したあとの投げ直しを見る
+  await waitFor(() => expect(mockReview.mock.calls.length).toBeGreaterThan(1));
+  expect(mockReview.mock.calls.at(-1)[0]).toMatchObject({
     transcript: 'These days many towns hold clean-up events.',
   });
 });
@@ -281,7 +298,7 @@ test('採点に失敗しても投げ直し続けない', async () => {
   await screen.findByText('Hello.');
   for (let i = 0; i < 8; i += 1) next();
   await record();
-  await screen.findByDisplayValue(/These days/);
+  await waitFor(() => expect(mockTranscribe).toHaveBeenCalled());
 
   while (screen.queryByRole('button', { name: '次へ' })) {
     fireEvent.click(screen.getByRole('button', { name: '次へ' }));
@@ -325,4 +342,35 @@ test('心得はまとめて出さず、それが要る場面に出る', async ()
   for (let i = 0; i < 2; i += 1) next();
   expect(screen.getByText(/言えるだけ言う/)).toBeInTheDocument();
   expect(screen.queryByText(/I beg your pardon/)).not.toBeInTheDocument();
+});
+
+test('採点が揃うまで結果を出さず、待つ間は心得を見せる', async () => {
+  // 採点が返る時を握って、待っている最中の画面を見る
+  let finishReview;
+  mockReview.mockImplementation(() => new Promise((resolve) => { finishReview = resolve; }));
+
+  render(<EikenInterview grade="pre2" onExit={() => {}} />);
+  await screen.findByText('Clean-up Events');
+  fireEvent.click(screen.getByText('Clean-up Events'));
+  await screen.findByText('Hello.');
+  for (let i = 0; i < 8; i += 1) next();
+  await record();
+  await waitFor(() => expect(mockTranscribe).toHaveBeenCalled());
+
+  while (screen.queryByRole('button', { name: '次へ' })) {
+    fireEvent.click(screen.getByRole('button', { name: '次へ' }));
+  }
+  await openResult();
+
+  // まだ採点中。結果の絵は出さず、級ごとの心得を出す。
+  expect(screen.getByText('採点しています')).toBeInTheDocument();
+  expect(screen.queryByTestId('doughnut')).not.toBeInTheDocument();
+  expect(screen.getByText(/面接委員とのやりとりはすべて英語/)).toBeInTheDocument();
+
+  // 揃ったら結果に入れ替わる
+  await act(async () => {
+    finishReview({ missing: [], total: 20, content: { verdict: 'good' } });
+  });
+  expect(await screen.findByTestId('doughnut')).toBeInTheDocument();
+  expect(screen.queryByText('採点しています')).not.toBeInTheDocument();
 });

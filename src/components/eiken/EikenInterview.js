@@ -17,6 +17,7 @@ import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { prefetchClips } from '../../logic/audioLibrary';
 import SpeakingPanel from './SpeakingPanel';
 import InterviewResultModal from './InterviewResultModal';
+import InterviewWaiting from './InterviewWaiting';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { reviewAnswer, transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
@@ -181,6 +182,9 @@ export default function EikenInterview({ grade, onExit }) {
   // 話した場面ぶんの記録。採点は最後にまとめて出すので、ここに貯めていく。
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  // 採点が一度そろったか。そろったあとは、文字起こしを直して採点し直しても
+  // 待ち画面へ戻さない（入力中に画面が入れ替わる）。
+  const [resultReady, setResultReady] = useState(false);
   const bodyRef = useRef(null);
   // 録音は画面下のボタンが受け持つので、状態は親が持つ。
   const recorder = useRecorder();
@@ -228,6 +232,7 @@ export default function EikenInterview({ grade, onExit }) {
         setRevealed(false);
         setBranch(null);
         setAnswers([]);
+    setResultReady(false);
         setShowResult(false);
         // セッションの頭でまとめて先読みする。無ければ端末の読み上げに戻るだけ。
         prefetchClips(speechTextsFor(flow, card).map((text) => ({ text, lang: 'en-US' })))
@@ -248,7 +253,8 @@ export default function EikenInterview({ grade, onExit }) {
   // 録音を掴んだままにしない。結果画面を閉じるまでは要るので、ここは離脱時だけ。
   useEffect(() => dropClips, [dropClips]);
 
-  const beats = session?.beats || [];
+  // 毎回新しい配列を作ると、これを見ている useMemo が毎描画で走り直す。
+  const beats = useMemo(() => session?.beats || [], [session]);
   const beat = beats[position] || null;
 
   const speak = useCallback((text) => {
@@ -270,6 +276,20 @@ export default function EikenInterview({ grade, onExit }) {
   const cardView = useMemo(() => cardViewFor(beat), [beat]);
   const card = session?.card;
   const tips = useMemo(() => tipsFor(session?.flow, beat), [session, beat]);
+  // まだ文字起こし中／採点待ちの件数。0 になるまで結果を出さない。
+  const pending = answers.filter((entry) => entry.status === 'working'
+    || entry.reviewing
+    || (entry.status === 'done' && !entry.review && !entry.reviewFailed)).length;
+
+  // 声を出す場面すべて。答えなかった場面も結果の分母に入れるために渡す。
+  const speakingPlaces = useMemo(() => beats
+    .map((entry) => ({ entry, speaking: speakingFor(entry, card) }))
+    .filter(({ speaking: place }) => place)
+    .map(({ entry, speaking: place }) => ({
+      key: entry.key,
+      label: labelFor(entry),
+      mode: place.mode,
+    })), [beats, card]);
   const speaking = useMemo(() => speakingFor(beat, card, branch), [beat, card, branch]);
   // Yes / No を選び直したら別の答えとして扱う。前の枝の答えと混ぜない。
   const speakingKey = beat ? `${beat.key}-${branch || ''}` : null;
@@ -279,6 +299,9 @@ export default function EikenInterview({ grade, onExit }) {
   const startRecording = () => {
     recordingRef.current = {
       key: speakingKey,
+      // 枝（Yes / No）を含まない場面のキー。結果で「答えていない場面」と
+      // 突き合わせるのに使う。
+      beatKey: beat.key,
       order: position,
       label: labelFor(beat),
       mode: speaking.mode,
@@ -323,7 +346,17 @@ export default function EikenInterview({ grade, onExit }) {
         logger.warn('文字起こしできませんでした', transcribeError);
         updateAnswer(context.key, { status: 'failed', failure: transcribeError.message });
       });
-  }, [recordedBlob, recordedSeconds, updateAnswer]);
+
+    // 言い終えたら次の場面へ。本番の面接は待ってくれないし、文字起こしを
+    // 眺めて待つ時間が練習の邪魔になる。文字起こしは裏で進み、直すのは
+    // 結果画面でできる（送る材料は上の写しなので、進んでも取り違えない）。
+    setPosition((value) => Math.min(beats.length - 1, value + 1));
+  }, [recordedBlob, recordedSeconds, updateAnswer, beats.length]);
+
+  // 一度そろったら、以後は待ち画面へ戻さない。
+  useEffect(() => {
+    if (showResult && pending === 0) setResultReady(true);
+  }, [showResult, pending]);
 
   // 結果を開いたら、まだ見てもらっていない答えを判定にかける。
   // 直したあとの文で判定するので、録音した時点ではなくここで呼ぶ。
@@ -365,6 +398,7 @@ export default function EikenInterview({ grade, onExit }) {
     stopSpeaking();
     dropClips();
     setAnswers([]);
+    setResultReady(false);
     setShowResult(false);
     setSession(null);
     setCardId(null);
@@ -375,6 +409,7 @@ export default function EikenInterview({ grade, onExit }) {
     stopSpeaking();
     dropClips();
     setAnswers([]);
+    setResultReady(false);
     setShowResult(false);
     setPosition(0);
     setRevealed(false);
@@ -571,11 +606,21 @@ export default function EikenInterview({ grade, onExit }) {
         )}
       </div>
 
-      {showResult && (
+      {showResult && !resultReady && (
+        <InterviewWaiting
+          tips={(session.flow.tips || []).map((tip) => tip.text)}
+          done={answers.length - pending}
+          total={answers.length}
+        />
+      )}
+
+      {showResult && resultReady && (
         <InterviewResultModal
           title={`${gradeLabel(grade)} ${card?.title || ''}`}
           answers={answers}
+          places={speakingPlaces}
           onSpeak={speak}
+          onEditTranscript={editTranscript}
           onClose={() => setShowResult(false)}
           onRestart={restartSession}
           onExit={exitSession}
