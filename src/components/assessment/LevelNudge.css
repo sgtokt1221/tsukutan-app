@@ -1,0 +1,130 @@
+/* 「テストのときより力が付いています」の知らせ。
+   ランクカードの下に置く。祝いの色（ライム）で、押しつけがましくない大きさに。 */
+
+.level-nudge {
+  margin-top: var(--space-12);
+  padding: var(--space-16);
+  border: 1px solid var(--color-lime-border);
+  border-radius: var(--radius-card);
+  /* 上だけほんのり光らせる。ベタ塗りだと注意書きの箱に見える。 */
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(163, 230, 53, 0.22), transparent 70%),
+    var(--color-canvas-lime);
+}
+
+.level-nudge__eyebrow {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-olive-muted);
+}
+
+/* Lv.3 中学卒業 → Lv.4 高校基礎 */
+.level-nudge__jump {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  margin: var(--space-12) 0;
+}
+
+.level-nudge__from,
+.level-nudge__to {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.level-nudge__no {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-olive-subtle);
+}
+
+.level-nudge__name {
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  white-space: nowrap;
+}
+
+/* 行き先だけ色を持たせる。色は levels.json のレベル色。 */
+.level-nudge__to .level-nudge__no {
+  font-size: var(--font-size-28);
+  color: var(--level-color, var(--color-ink-olive));
+}
+
+.level-nudge__to .level-nudge__name {
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.level-nudge__arrow {
+  flex-shrink: 0;
+  color: var(--color-olive-subtle);
+}
+
+.level-nudge__lead {
+  margin: 0;
+  font-size: var(--font-size-14);
+  line-height: var(--line-normal);
+  color: var(--color-ink-olive);
+  text-align: center;
+}
+
+/* 次のレベルまでの道のり。8割で満杯。 */
+.level-nudge__meter {
+  margin: var(--space-12) 0 0;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: rgba(54, 66, 30, 0.10);
+  overflow: hidden;
+}
+
+.level-nudge__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-lime);
+  transition: width var(--motion-card) var(--ease-standard);
+}
+
+.level-nudge__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  width: 100%;
+  min-height: var(--tap-target);
+  margin-top: var(--space-12);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.level-nudge__action:hover {
+  opacity: 0.9;
+}
+
+.level-nudge__note {
+  margin: var(--space-8) 0 0;
+  font-size: var(--font-size-12);
+  line-height: var(--line-normal);
+  color: var(--color-olive-subtle);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .level-nudge__fill { transition: none; }
+}

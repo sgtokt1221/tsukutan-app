@@ -2,6 +2,7 @@ import { db } from '../firebaseConfig';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { loadWordMaster } from './wordMaster';
 import { achievementPercentage, reachedWordCount } from './vocabularyCount';
+import { estimateLevel } from './estimatedLevel';
 import logger from './logger';
 
 /**
@@ -64,7 +65,13 @@ export const updateProgressPercentage = async (userId) => {
     const percentage = achievementPercentage(reached.total, targetVocabulary);
 
     // 4. Firestoreを更新
+    // 復習の卒業ぐあいから見たレベル。測った値（level）は動かさない。
+    // ここは master と reviewWords を既に読んでいるので、ついでに出す。
+    const { estimated, nextRatio } = estimateLevel({ master, reviewWords });
+
     await updateDoc(userDocRef, {
+      'progress.estimatedLevel': estimated,
+      'progress.estimatedNextRatio': nextRatio,
       'progress.percentage': percentage,
       'progress.targetVocabulary': targetVocabulary, // 目標語彙数も保存しておく
       'progress.currentVocabulary': reached.total,
