@@ -10,7 +10,7 @@ import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import { prefetchClips } from './logic/audioLibrary';
 
 // 忘却曲線に基づき、単語の習熟度を更新するロジック
-import { updateUserWordProgress } from './logic/reviewLogic';
+import { updateUserWordProgress, undoWordProgress } from './logic/reviewLogic';
 import logger from './logic/logger';
 import { usePronunciation, inlinePronunciation } from './logic/usePronunciation';
 import { SWIPE_FEEDBACK, swipeFeedbackFor, paintSwipeFeedback, clearSwipeFeedback } from './logic/swipeFeedback';
@@ -59,6 +59,8 @@ export default function LearningFlashcard({
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
   // 単語帳モードで左右スワイプした結果。どこまで進んだかを色で残す。
   const [wordbookJudgements, setWordbookJudgements] = useState({});
+  // 採点する前の状態。同じ向きにもう一度振ったときに戻す先。
+  const undoStateRef = useRef({});
   // 文字サイズは復習カードと共有する
   const [wordbookZoom, setWordbookZoom] = useWordbookZoom();
   // 出題の向き（英→和 / 和→英）も復習カードと共有する
@@ -274,22 +276,40 @@ export default function LearningFlashcard({
     const user = auth.currentUser;
     if (!word) return;
 
+    const mark = quality === 'again' ? 'incorrect' : 'correct';
+
+    // 同じ向きにもう一度スワイプしたら取り消す。押し間違いを戻せるように、
+    // 色だけでなく間隔と繰り返し回数も書き換える前の状態へ返す。
+    if (wordbookJudgements[actualIndex] === mark) {
+      const previous = undoStateRef.current[word.id];
+      if (user && previous) trackWrite(undoWordProgress(user.uid, word.id, previous));
+      delete undoStateRef.current[word.id];
+      setWordbookJudgements(prev => {
+        const next = { ...prev };
+        delete next[actualIndex];
+        return next;
+      });
+      return;
+    }
+
     if (user) {
       trackWrite(
         updateUserWordProgress(
           user.uid, word, quality, false, undefined,
           { revealed: revealedCards.has(actualIndex) },
         ).then((result) => {
+          // 1回目の採点の前の状態だけ覚える。続けて別の向きに振っても、
+          // 戻る先は「触る前」であってほしい。
+          if (result?.previous && !undoStateRef.current[word.id]) {
+            undoStateRef.current[word.id] = result.previous;
+          }
           if (result?.created) newlyLearnedIdsRef.current.add(word.id);
           onWordAnsweredRef.current?.(word.id);
         })
       );
     }
-    setWordbookJudgements(prev => ({
-      ...prev,
-      [actualIndex]: quality === 'again' ? 'incorrect' : 'correct',
-    }));
-  }, [shuffledWords, auth, trackWrite, revealedCards]);
+    setWordbookJudgements(prev => ({ ...prev, [actualIndex]: mark }));
+  }, [shuffledWords, auth, trackWrite, revealedCards, wordbookJudgements]);
 
   /**
    * 上スワイプ。もう覚えた語として復習リストから卒業させる。
@@ -474,7 +494,7 @@ export default function LearningFlashcard({
         
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
           // 左右スワイプ（評価）の場合
-          limitedDeltaX = Math.max(-150, Math.min(150, deltaX));
+          limitedDeltaX = Math.max(-60, Math.min(60, deltaX));
           logger.debug('🔥 LearningFlashcard Allowing horizontal movement for evaluation:', limitedDeltaX);
         } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
           // 上下スワイプ（削除）の場合
@@ -640,15 +660,31 @@ export default function LearningFlashcard({
 
   const handleTouchMove = useCallback((e) => {
     if (!isDragging) return;
-    e.preventDefault();
-    e.stopPropagation();
     const touch = e.touches[0];
-    
+
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
-    
-    logger.debug('🔥 Touch move:', { deltaX, deltaY, viewMode });
-    
+
+    if (viewMode === 'wordbook') {
+      // 縦に振っているなら一覧のスクロール。ブラウザに任せる。
+      // ここで無条件に preventDefault していたので、カードの上では
+      // ページが動かなかった。
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      if (e.cancelable) e.preventDefault();
+
+      // 指に少しついてくる。押せている手応えが無いと、スワイプが
+      // 効いているのか分からない。横だけ、控えめに。
+      const followX = Math.max(-60, Math.min(60, deltaX));
+      if (e.currentTarget) {
+        e.currentTarget.style.transform = `translate(${followX}px, 0px)`;
+      }
+      paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, false));
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
     if (viewMode === 'flashcard') {
       logger.debug('🔥 LearningFlashcard Touch move in flashcard mode:', { deltaX, deltaY });
       // motion valueを更新
@@ -661,11 +697,6 @@ export default function LearningFlashcard({
         document.getElementById('flashcard'),
         swipeFeedbackFor(deltaX, deltaY),
       );
-    } else if (viewMode === 'wordbook') {
-      // 単語帳モードでは上下の動きのみ許可（左右は固定）
-      if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, false));
-      }
     }
   }, [isDragging, dragStart, viewMode, x, y]);
 
@@ -918,8 +949,11 @@ export default function LearningFlashcard({
                   )}
 
                   {/* 実際のコンテンツ */}
+                  {/* 赤シートの開閉は actualIndex で見る。index（切り出し後の
+                      並び）と混ぜていたので、前回の続きから開いたときだけ
+                      「答えを見る」を押しても中身が薄いままだった。 */}
                   <div style={{
-                    opacity: revealedCards.has(index) ? 1 : 0.3,
+                    opacity: revealedCards.has(actualIndex) ? 1 : 0.3,
                     transition: 'opacity 0.2s ease'
                   }}>
                     {isJaToEn ? (

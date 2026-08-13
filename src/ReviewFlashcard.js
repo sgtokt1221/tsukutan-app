@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-import { updateUserWordProgress } from './logic/reviewLogic';
+import { updateUserWordProgress, undoWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
 import { FaUndo, FaArrowLeft, FaArrowUp, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
@@ -43,6 +43,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [wordbookProgress, setWordbookProgress] = useState(0); // 単語帳モードの進捗
   // 単語帳モードで左右スワイプした結果。どこまで進んだかを色で残す。
   const [wordbookJudgements, setWordbookJudgements] = useState({});
+  // 採点する前の状態。同じ向きにもう一度振ったときに戻す先。
+  const undoStateRef = useRef({});
   // 答えを見たまま「わかった」を押した回数。吹き出しの発火に使う。
   const [peekCount, setPeekCount] = useState(0);
   // 出題の向き（英→和 / 和→英）は学習カードと共有する
@@ -317,17 +319,35 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     const word = sessionWords[actualIndex];
     if (!word) return;
 
+    const mark = quality === 'again' ? 'incorrect' : 'correct';
+
+    // 同じ向きにもう一度スワイプしたら取り消す。押し間違いを戻せるように、
+    // 色だけでなく間隔と繰り返し回数も書き換える前の状態へ返す。
+    if (wordbookJudgements[actualIndex] === mark) {
+      const previous = undoStateRef.current[word.id];
+      if (userId && previous) trackWrite(undoWordProgress(userId, word.id, previous));
+      delete undoStateRef.current[word.id];
+      setWordbookJudgements(prev => {
+        const next = { ...prev };
+        delete next[actualIndex];
+        return next;
+      });
+      return;
+    }
+
     if (userId) {
       trackWrite(updateUserWordProgress(
         userId, word, quality, false, undefined,
         { revealed: revealedCards.has(actualIndex) },
-      ));
+      ).then((result) => {
+        // 1回目の採点の前の状態だけ覚える。戻る先は「触る前」。
+        if (result?.previous && !undoStateRef.current[word.id]) {
+          undoStateRef.current[word.id] = result.previous;
+        }
+      }));
     }
-    setWordbookJudgements(prev => ({
-      ...prev,
-      [actualIndex]: quality === 'again' ? 'incorrect' : 'correct',
-    }));
-  }, [sessionWords, userId, trackWrite, revealedCards]);
+    setWordbookJudgements(prev => ({ ...prev, [actualIndex]: mark }));
+  }, [sessionWords, userId, trackWrite, revealedCards, wordbookJudgements]);
 
   /** 単語帳での上スワイプ。その単語を卒業させ、一覧から取り除く。 */
   const graduateWordAt = useCallback((actualIndex) => {
@@ -442,7 +462,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
           // 左右スワイプ（評価）の場合
-          limitedDeltaX = Math.max(-150, Math.min(150, deltaX));
+          limitedDeltaX = Math.max(-60, Math.min(60, deltaX));
           logger.debug('🔥 Allowing horizontal movement for evaluation:', limitedDeltaX);
         } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
           // 上下スワイプ（削除）の場合
@@ -580,13 +600,21 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   const handleTouchMove = useCallback((e) => {
     if (!isDragging) return;
-    e.preventDefault();
-    e.stopPropagation();
 
     // マルチタッチの場合は無視
     if (e.touches.length > 1) {
       return;
     }
+
+    // 縦に振っているなら一覧のスクロール。ブラウザに任せる。
+    // ここで無条件に preventDefault していたので、カードの上では
+    // ページが動かなかった。
+    if (viewMode === 'wordbook') {
+      const move = e.touches[0];
+      if (Math.abs(move.clientX - dragStart.x) <= Math.abs(move.clientY - dragStart.y)) return;
+    }
+    if (e.cancelable) e.preventDefault();
+    e.stopPropagation();
 
     const touch = e.touches[0];
     const deltaX = touch.clientX - dragStart.x;
@@ -815,31 +843,36 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                   </button>
                 </div>
 
-                {/* 右側：和訳・例文（復習モード長押し機能 + 赤シート機能） */}
-                <div className="wordbook-card__side wordbook-card__right">
+                {/* 右側：和訳・例文（赤シート）。
+                    開閉は actualIndex で見る。index（切り出し後の並び）だと、
+                    前回の続きから開いたときに別の語を読み上げてしまう。 */}
+                <div
+                  className="wordbook-card__side wordbook-card__right"
+                  onTouchStart={() => handleRevealStart(actualIndex)}
+                >
                   {/* 赤シート。長押しを必須にせず、押せば開くボタンにする。
                       キーボードでも開ける（計画書7.5）。 */}
-                  {!revealedCards.has(index) && (
+                  {!revealedCards.has(actualIndex) && (
                     <button
                       type="button"
                       className="wordbook-veil"
-                      onClick={(e) => { e.stopPropagation(); handleRevealStart(index); }}
+                      onClick={(e) => { e.stopPropagation(); handleRevealStart(actualIndex); }}
                       aria-label={`${word.word} の答えを見る`}
                     >
                       答えを見る
                     </button>
                   )}
-                  {revealedCards.has(index) && (
+                  {revealedCards.has(actualIndex) && (
                     <button
                       type="button"
                       className="wordbook-veil-hide"
-                      onClick={(e) => { e.stopPropagation(); handleRevealEnd(index); }}
+                      onClick={(e) => { e.stopPropagation(); handleRevealEnd(actualIndex); }}
                     >
                       隠す
                     </button>
                   )}
 
-                  <div className={revealedCards.has(index) ? 'wordbook-answer' : 'wordbook-answer wordbook-answer--hidden'}>
+                  <div className={revealedCards.has(actualIndex) ? 'wordbook-answer' : 'wordbook-answer wordbook-answer--hidden'}>
                     {isJaToEn ? (
                       <div className="wordbook-answer-word">
                         <span className="wordbook-meaning wordbook-meaning--en">{word.word}</span>

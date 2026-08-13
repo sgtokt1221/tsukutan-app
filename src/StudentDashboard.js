@@ -1395,13 +1395,30 @@ export default function StudentDashboard() {
   };
   
   // --- レンダリングロジック ---
+
+  // 初回の案内は、読み込みを待たずに出す。待っている間に読んでもらうのが
+  // 目的なので、Firestore を読み終えてから出したのでは意味がない。
+  const onboardingOverlay = showOnboarding ? (
+    <Onboarding
+      progress={wordDataProgress}
+      ready={(masterWords.length > 0 || Boolean(wordDataError)) && !loading}
+      onFinish={finishOnboarding}
+    />
+  ) : null;
+
   if (loading) {
-    return <div className="loading-container"><div className="spinner"></div></div>;
+    return (
+      <>
+        {onboardingOverlay}
+        <div className="loading-container"><div className="spinner"></div></div>
+      </>
+    );
   }
 
   if (dashboardError) {
     return (
       <div className="loading-container">
+        {onboardingOverlay}
         <div className="app-status-card">
           <h1 className="app-status-title">今日の学習を開けませんでした</h1>
           <p className="app-status-message">{dashboardError}</p>
@@ -2328,14 +2345,8 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* 初回だけ。単語データの保存を待つ間に、操作を一度だけ見せる。 */}
-      {showOnboarding && (
-        <Onboarding
-          progress={wordDataProgress}
-          ready={masterWords.length > 0 || Boolean(wordDataError)}
-          onFinish={finishOnboarding}
-        />
-      )}
+      {/* 初回だけ。読み込みを待つ間に、操作を一度だけ見せる。 */}
+      {onboardingOverlay}
 
       <StudentHeader userName={userData?.name} onLogout={handleLogout} />
       
