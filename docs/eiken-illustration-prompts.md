@@ -6,6 +6,10 @@
 生成したら、**その絵で設問に答えられるか**を必ず確認すること。数を聞くなら数える。
 文字が崩れていたら後から重ねる。
 
+準2級Bで一番やりがちな失敗は、**代わりが利いてしまう構図**。「棚の本に手が届かない」
+だと周りの本を取ればよく、できない理由が絵で決まらない。売り切れ・故障・満員など、
+**代替手段が絵の中に無い**状況を選ぶこと。
+
 パッセージの英文は `eiken-interview-format.md` の「パッセージに入れる決まり文句」
 （`so` / `in this way` / `for this reason`）に沿って書くこと。No.1 の答えは
 その直前の文から作る決まりになっている。
@@ -122,11 +126,15 @@ Soft watercolor and colored-pencil illustration in the style of a Japanese Engli
 Scene: A zoo on a weekend. Exactly five people, spread apart so none overlap, each doing a completely different action: a keeper is feeding an elephant, a boy is taking a photo with a camera, a woman is buying ice cream at a stand, a girl is drawing a picture of a giraffe in a sketchbook, a man is pushing a baby stroller. No thought bubbles.
 ```
 
-### eiken-p2-005B 届かない棚
+### eiken-p2-005B ケーキが売り切れ
+
+**最初の案（届かない棚）は作り直した。** 周りに手の届く本が大量にあるため
+「別の本を取ればいい」と言えてしまい、「できない理由」が絵で決まらなかった。
+**代わりが利かない状況**に変えている。
 
 ```
 Soft watercolor and colored-pencil illustration in the style of a Japanese English proficiency test picture card. Thin even outlines, gentle pastel colors, flat lighting, no heavy shadows. Full body visible, nothing cropped. Simple friendly face.
-Scene: A short girl standing in a bookshop, stretching one arm up toward a book on the top shelf. Her fingers are clearly far below the shelf and there is no stool nearby. Above her is a cloud-shaped thought bubble showing her holding that book and reading it, with a red diagonal line across the bubble to show she cannot do it.
+Scene: A girl standing at the counter of a small cake shop. The glass display case in front of her is completely empty except for one card reading "SOLD OUT". A shop clerk behind the counter is bowing apologetically. Above the girl is a cloud-shaped thought bubble showing her holding a strawberry cake, with a red diagonal line across the bubble to show she cannot buy it.
 ```
 
 ---
