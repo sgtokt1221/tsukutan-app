@@ -97,7 +97,14 @@ export const generateDailyPlan = async (userData, userId) => {
     return emptyPlan('invalid-target-date');
   }
 
-  const remainingWordsCount = await estimateNeededWords(userData);
+  // 必要語数・復習単語・保存済みの計画は互いに関係が無い。
+  // 順番に待つと往復のぶんだけ今日のタスクが出るのが遅くなる。
+  const dateKey = getTodayKey();
+  const [remainingWordsCount, reviewSnapshot, stored] = await Promise.all([
+    estimateNeededWords(userData),
+    getDocs(collection(db, 'users', userId, 'reviewWords')),
+    loadDailyPlan(userId, dateKey),
+  ]);
 
   // 期限由来の必要語数と、やる気レベルの希望語数の両方を出す（計画書10.2.3）
   const quota = computeNewWordsQuota({
@@ -109,7 +116,6 @@ export const generateDailyPlan = async (userData, userId) => {
   //--------------------------------------------------------------------------
   // 復習対象
   //--------------------------------------------------------------------------
-  const reviewSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
   // 永続IDへ移行済みの旧文書は二重に出さない
   const allProgressEntries = reviewSnapshot.docs
     .map((docSnapshot) => ({ id: docSnapshot.id, ...docSnapshot.data() }))
@@ -136,9 +142,7 @@ export const generateDailyPlan = async (userData, userId) => {
   //--------------------------------------------------------------------------
   // 保存済みの計画があればそれを使う（その日のうちは並びを変えない）
   //--------------------------------------------------------------------------
-  const dateKey = getTodayKey();
   const signature = planSignature(userData);
-  const stored = await loadDailyPlan(userId, dateKey);
 
   if (isStoredPlanUsable(stored, signature)) {
     // 復習単語はIDだけ保存してある。今日の reviewWords から引き直す。
