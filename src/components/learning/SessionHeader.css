@@ -110,6 +110,10 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: calc(var(--space-8) * var(--wordbook-zoom, 1)) var(--space-12);
+  /* 最後の1枚がホームバーに掛からないようにする。以前は下部タブぶんの
+     余白（.dashboard-container）がたまたま効いていたが、タブを出さない
+     画面ではその余白を空けないので、こちらで持つ。 */
+  padding-bottom: calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
 }
 
 .wordbook-list__grid {

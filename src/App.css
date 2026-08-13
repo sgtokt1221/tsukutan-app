@@ -1828,12 +1828,14 @@ input[type="file"] { display: none; }
 
 /* 診断結果画面のリッチなデザイン */
 .test-result-container {
-  min-height: 100vh;
+  /* 100vh にすると、上のアプリヘッダーのぶんだけ親（.card-main）から
+     はみ出し、下に何も無い帯が残る。親の高さに合わせる。 */
+  min-height: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
 }
 
 .result-hero {
@@ -2216,6 +2218,13 @@ input[type="file"] { display: none; }
     padding-bottom: 65px;
   }
 }
+
+/* 下部タブを出さない画面（フラッシュカード・単語帳・面接）では、タブのぶんの
+   余白も空けない。カードの下に 65〜80px の何も無い帯が残っていた。
+   上の3つの指定より後ろに置いて勝たせている。 */
+.dashboard-container.has-no-tab-bar {
+  padding-bottom: 0;
+}
 /* ===== 日次計画の注意書き ===== */
 .plan-warning,
 .plan-notice {
@@ -2297,7 +2306,9 @@ input[type="file"] { display: none; }
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  padding: 0 20px;
+  /* 下端はホームバーを避ける。下部タブを出さない画面なので、
+     .dashboard-container 側の余白は当てにできない。 */
+  padding: 0 20px calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
   margin-top: 20px;
 }
 .test-nav-btn {

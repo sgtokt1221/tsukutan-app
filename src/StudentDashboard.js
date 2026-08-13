@@ -2285,8 +2285,13 @@ export default function StudentDashboard() {
     </div>
   );
 
+  // フラッシュカード・単語帳・面接では下部タブを出さない。出さないなら、
+  // タブのぶんの余白（.dashboard-container の padding-bottom）も空けない。
+  const showTabBar = !interviewGrade
+    && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result';
+
   return (
-    <div className="dashboard-container">
+    <div className={showTabBar ? 'dashboard-container' : 'dashboard-container has-no-tab-bar'}>
       {/* 初回だけ。読み込みを待つ間に、操作を一度だけ見せる。 */}
       {onboardingOverlay}
 
@@ -2347,7 +2352,7 @@ export default function StudentDashboard() {
         {renderTabContent()}
       </main>
       {/* フラッシュカードページと面接モードではタブバーを非表示 */}
-      {!interviewGrade && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && <TabBar />}
+      {showTabBar && <TabBar />}
     </div>
   );
 }
