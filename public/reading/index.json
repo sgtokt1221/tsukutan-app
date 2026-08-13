@@ -215,6 +215,42 @@
           "category": "society"
         }
       ]
+    },
+    {
+      "id": "pre1",
+      "label": "英検準1級",
+      "readings": [
+        {
+          "id": "eikenp1-society-01",
+          "title": "The Village That Refused to Disappear",
+          "titleJa": "消えることを拒んだ村",
+          "category": "society"
+        },
+        {
+          "id": "eikenp1-science-01",
+          "title": "The Medicine That Is Losing Its Power",
+          "titleJa": "効かなくなる薬",
+          "category": "science"
+        },
+        {
+          "id": "eikenp1-culture-01",
+          "title": "When a Language Falls Silent",
+          "titleJa": "言語が黙るとき",
+          "category": "culture"
+        },
+        {
+          "id": "eikenp1-technology-01",
+          "title": "The Face in the Crowd",
+          "titleJa": "群衆の中の顔",
+          "category": "technology"
+        },
+        {
+          "id": "eikenp1-work-01",
+          "title": "Four Days a Week",
+          "titleJa": "週に4日",
+          "category": "work"
+        }
+      ]
     }
   ]
 }

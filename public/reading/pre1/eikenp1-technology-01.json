@@ -1,0 +1,479 @@
+{
+  "id": "eikenp1-technology-01",
+  "grade": "pre1",
+  "category": "technology",
+  "title": "The Face in the Crowd",
+  "titleJa": "群衆の中の顔",
+  "sentences": [
+    {
+      "ja": "駅や空港に設置されたカメラは、もはや単に映像を記録するだけではありません。",
+      "chunks": [
+        {
+          "en": "Cameras placed in stations and airports",
+          "ja": "駅や空港に設置されたカメラは",
+          "role": "S"
+        },
+        {
+          "en": "no longer simply record",
+          "ja": "もはや単に記録するだけではありません",
+          "role": "V"
+        },
+        {
+          "en": "images.",
+          "ja": "映像を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "多くのものが、顔を識別する仕組みと結びついています。",
+      "chunks": [
+        {
+          "en": "Many of them",
+          "ja": "多くのものが",
+          "role": "S"
+        },
+        {
+          "en": "are connected",
+          "ja": "結びついています",
+          "role": "V"
+        },
+        {
+          "en": "to systems that identify faces.",
+          "ja": "顔を識別する仕組みと",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この技術は、顔の各部分の距離を数値として測ります。",
+      "chunks": [
+        {
+          "en": "This technology",
+          "ja": "この技術は",
+          "role": "S"
+        },
+        {
+          "en": "measures",
+          "ja": "測ります",
+          "role": "V"
+        },
+        {
+          "en": "the distances between parts of a face as numbers.",
+          "ja": "顔の各部分の距離を数値として",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "その数値の組み合わせは、指紋と同じように個人ごとに異なります。",
+      "chunks": [
+        {
+          "en": "The combination of those numbers",
+          "ja": "その数値の組み合わせは",
+          "role": "S"
+        },
+        {
+          "en": "differs",
+          "ja": "異なります",
+          "role": "V"
+        },
+        {
+          "en": "from person to person, like a fingerprint.",
+          "ja": "指紋と同じように個人ごとに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "犯罪の捜査において、この技術は明らかな効果を上げてきました。",
+      "chunks": [
+        {
+          "en": "In criminal investigation,",
+          "ja": "犯罪の捜査において",
+          "role": "M"
+        },
+        {
+          "en": "this technology",
+          "ja": "この技術は",
+          "role": "S"
+        },
+        {
+          "en": "has produced",
+          "ja": "上げてきました",
+          "role": "V"
+        },
+        {
+          "en": "clear results.",
+          "ja": "明らかな効果を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "行方不明者が数時間で見つかった例も報告されています。",
+      "chunks": [
+        {
+          "en": "Cases in which missing people were found within a few hours",
+          "ja": "行方不明者が数時間で見つかった例も",
+          "role": "S"
+        },
+        {
+          "en": "have also been reported.",
+          "ja": "報告されています",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、指紋と顔には決定的な違いがあります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a decisive difference between fingerprints and faces.",
+          "ja": "指紋と顔には決定的な違いが",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "指紋を採るには、本人の協力か、少なくとも接触が必要です。",
+      "chunks": [
+        {
+          "en": "To take a fingerprint,",
+          "ja": "指紋を採るには",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "need",
+          "ja": "必要です",
+          "role": "V"
+        },
+        {
+          "en": "the person's cooperation, or at least contact.",
+          "ja": "本人の協力か少なくとも接触が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "顔は、本人が気づかないうちに、離れた場所から取得できます。",
+      "chunks": [
+        {
+          "en": "A face",
+          "ja": "顔は",
+          "role": "S"
+        },
+        {
+          "en": "can be obtained",
+          "ja": "取得できます",
+          "role": "V"
+        },
+        {
+          "en": "from a distance, without the person noticing.",
+          "ja": "本人が気づかないうちに離れた場所から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまり、同意という考え方がそもそも働きません。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "the idea of consent",
+          "ja": "同意という考え方が",
+          "role": "S"
+        },
+        {
+          "en": "does not work",
+          "ja": "働きません",
+          "role": "V"
+        },
+        {
+          "en": "in the first place.",
+          "ja": "そもそも",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "さらに、この技術の精度は対象によって均一ではありません。",
+      "chunks": [
+        {
+          "en": "Moreover,",
+          "ja": "さらに",
+          "role": "M"
+        },
+        {
+          "en": "the accuracy of this technology",
+          "ja": "この技術の精度は",
+          "role": "S"
+        },
+        {
+          "en": "is not uniform",
+          "ja": "均一ではありません",
+          "role": "V"
+        },
+        {
+          "en": "across different people.",
+          "ja": "対象によって",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "学習に使われた画像が特定の集団に偏っていたためです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "the images used for learning",
+          "ja": "学習に使われた画像が",
+          "role": "S"
+        },
+        {
+          "en": "were biased",
+          "ja": "偏っていました",
+          "role": "V"
+        },
+        {
+          "en": "toward particular groups.",
+          "ja": "特定の集団に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その結果、誤認識の割合が集団によって数倍異なる例が示されました。",
+      "chunks": [
+        {
+          "en": "As a result,",
+          "ja": "その結果",
+          "role": "M"
+        },
+        {
+          "en": "cases were shown",
+          "ja": "例が示されました",
+          "role": "V"
+        },
+        {
+          "en": "in which the rate of false identification differed several times between groups.",
+          "ja": "誤認識の割合が集団によって数倍異なる",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "誤って特定された人が、説明のないまま拘束された事例もあります。",
+      "chunks": [
+        {
+          "en": "There are also cases",
+          "ja": "事例もあります",
+          "role": "V"
+        },
+        {
+          "en": "in which a person who was wrongly identified was held without explanation.",
+          "ja": "誤って特定された人が説明のないまま拘束された",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "問題は、誤りが起きたことだけではありません。",
+      "chunks": [
+        {
+          "en": "The problem",
+          "ja": "問題は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "only that an error occurred.",
+          "ja": "誤りが起きたことだけ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "なぜそう判断されたのかを、当人が確かめられないことです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that the person cannot check why that judgment was made.",
+          "ja": "なぜそう判断されたのかを当人が確かめられないこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "いくつかの都市では、行政による使用が禁止されました。",
+      "chunks": [
+        {
+          "en": "In several cities,",
+          "ja": "いくつかの都市では",
+          "role": "M"
+        },
+        {
+          "en": "use by the government",
+          "ja": "行政による使用が",
+          "role": "S"
+        },
+        {
+          "en": "has been banned.",
+          "ja": "禁止されました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "一方で、禁止は治安の悪化を招くという反論もあります。",
+      "chunks": [
+        {
+          "en": "On the other hand,",
+          "ja": "一方で",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "an argument that a ban leads to worse public safety.",
+          "ja": "禁止は治安の悪化を招くという反論も",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "この対立は、便利さと自由のどちらを取るかという形で語られがちです。",
+      "chunks": [
+        {
+          "en": "This conflict",
+          "ja": "この対立は",
+          "role": "S"
+        },
+        {
+          "en": "tends to be described",
+          "ja": "語られがちです",
+          "role": "V"
+        },
+        {
+          "en": "as a choice between convenience and freedom.",
+          "ja": "便利さと自由のどちらを取るかという形で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、その枠組み自体が正しいかは検討に値します。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "whether that framework itself is right",
+          "ja": "その枠組み自体が正しいかは",
+          "role": "S"
+        },
+        {
+          "en": "is worth examining.",
+          "ja": "検討に値します",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "問われているのは、監視される側が決定に加われるかどうかです。",
+      "chunks": [
+        {
+          "en": "What is being asked",
+          "ja": "問われていることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "whether those who are watched can take part in the decision.",
+          "ja": "監視される側が決定に加われるかどうか",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "技術そのものに善悪はありません。",
+      "chunks": [
+        {
+          "en": "The technology itself",
+          "ja": "技術そのものに",
+          "role": "S"
+        },
+        {
+          "en": "is neither good nor bad.",
+          "ja": "善悪はありません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "それを誰がどのように使うかを決める過程に、善悪が宿ります。",
+      "chunks": [
+        {
+          "en": "Good and bad",
+          "ja": "善悪が",
+          "role": "S"
+        },
+        {
+          "en": "live",
+          "ja": "宿ります",
+          "role": "V"
+        },
+        {
+          "en": "in the process of deciding who uses it and how.",
+          "ja": "それを誰がどのように使うかを決める過程に",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}
