@@ -1,0 +1,58 @@
+{
+  "id": "eiken3-002",
+  "grade": "3",
+  "title": "Cleaning at School",
+  "passage": {
+    "text": "Many junior high school students in Japan clean their classrooms every day. By doing so, they learn to take care of the places they use. Some students say that a clean classroom helps them study better.",
+    "hintPhrase": "By doing so",
+    "wordCount": 36
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken3-002-a.webp",
+      "caption": "放課後の教室。男子が箒で掃き、女子が黒板を拭き、もう一人の男子が雑巾を持って立っている（吹き出しで窓を拭く姿）。後方に机が3つ積んである。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "prompt": "Please look at the passage. How do many junior high school students in Japan learn to take care of the places they use?",
+      "modelAnswer": "By cleaning their classrooms every day."
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "prompt": "Please look at the picture. What is the boy with the cloth going to do?",
+      "modelAnswer": "He's going to clean the window."
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "prompt": "How many desks are there at the back of the room?",
+      "modelAnswer": "There are three desks."
+    },
+    {
+      "no": 4,
+      "type": "personal",
+      "prompt": "What do you usually do after school?",
+      "modelAnswer": "I usually go to the library and do my homework."
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "prompt": "Do you like cleaning your room?",
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I clean my room every weekend. I feel good in a clean room."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "It takes a lot of time. I would rather read books."
+        }
+      }
+    }
+  ]
+}
