@@ -37,35 +37,36 @@
 合わせてある。準2級だけ公式表は音読を含めて計6問と書かれている。
 
 ### 3級
-1. 音読
+1. 音読（30語程度）
 2. No.1 パッセージについて
-3. No.2 イラスト：数や物の状況（"How many …?" など）
-4. No.3 イラスト：人物の動作（"What is the man doing?"）
-5. No.4・No.5 受験者自身のこと（カードを裏返す）
+3. No.2 イラスト：**これから何をするか**（吹き出しで示される）
+4. No.3 イラスト：**数を数える**（"How many …?"）
+5. No.4・No.5 受験者自身のこと（カードを裏返す）。**No.5 は Yes/No で分岐**
 
 ### 準2級
 1. 音読（50語程度）
 2. No.1 パッセージについて
-3. No.2 イラストA：**人物の行動を描写**
-4. No.3 イラストB：**人物の状況を説明**
-5. No.4 カードのトピックに関連した質問（カードを裏返す）
-6. No.5 日常生活の身近な事柄についての質問
+3. No.2 イラストA：**5人が何をしているか、言えるだけ言う**
+4. No.3 イラストB：**1人の状況を説明**（やりたいのにできない構図）
+5. No.4 カードのトピックに関連した質問（カードを裏返す）。**Yes/No で分岐**
+6. No.5 日常生活の身近な事柄についての質問。**Yes/No で分岐**
 
 ### 2級
 1. 音読（60語程度）
-2. No.1 パッセージについて
-3. No.2 **3コマのイラストの展開を説明**
-4. No.3 ある事象・意見について自分の意見を述べる（カードを裏返す）
-5. No.4 日常生活の一般的な事柄に関する自分の意見を述べる
+2. No.1 パッセージについて（"According to the passage, …"）
+3. No.2 **3コマのナレーション**。20秒準備、カードの書き出しから始める
+4. No.3 "Some people say that … What do you think about that?"（カードを裏返す）
+5. No.4 社会の動きについて。**Yes/No で分岐**（Why? / Why not?）
 
 ### 準1級
 0. **自由会話** — 面接委員と簡単な日常会話（公式表に項目として載っている）
-1. **ナレーション** — 4コマのイラストの展開を説明。準備1分、話すのは**2分間**
-2. No.1 イラストに関連した質問
-3. No.2・No.3 カードのトピックに関連した質問（カードを裏返す）
-4. No.4 やや関連した、社会性のある内容についての質問
+1. **ナレーション** — 4コマの展開を説明。準備1分、話すのは**2分間**。
+   カードに「どんな話か」の一文と書き出しの文が書かれている
+2. No.1 **4コマ目の人物になったつもりで**（"If you were the woman, what would you be thinking?"）
+3. No.2・No.3 カードの話題に関連した質問（カードを裏返す）
+4. No.4 社会・政策についての質問
 
-音読は無い。
+音読は無い。準1級だけ Yes/No 分岐は無く、いきなり意見を述べる。
 
 ---
 
@@ -109,7 +110,13 @@
       "cardVisible": true,         // false ならカードを裏返して答える設問
       "prompt": "Please look at the passage. Why do many people enjoy shopping on the Internet?",
       "modelAnswer": "Because they can buy things without going to a store.",
-      "answerSeconds": 20          // 目安。無ければ null
+      "answerSeconds": 20,         // 目安。無ければ null
+
+      // Yes/No で追い質問が来る設問だけ。3級No.5・準2級No.4/5・2級No.4 が該当
+      "followUp": {
+        "yes": { "prompt": "Why?",     "modelAnswer": "…" },
+        "no":  { "prompt": "Why not?", "modelAnswer": "…" }
+      }
     }
   ]
 }
@@ -145,178 +152,218 @@
 
 ---
 
-## 3. 級ごとの実例
+## 3. 級ごとの英語のレベル
 
-**以下は形式を示すためにこちらで書いた見本。** 中身は差し替える前提。
+公式サンプルから読み取った、級ごとの手加減。**ここを外すと練習にならない。**
 
-### 3級 — eiken3-001
+| | 3級 | 準2級 | 2級 | 準1級 |
+|---|---|---|---|---|
+| パッセージの文数 | 3文 | 4文 | 5〜6文 | なし |
+| 1文の長さ | 10〜18語 | 15〜20語 | 18〜25語 | — |
+| 時制 | 現在形が主 | 現在形＋現在完了 | 受動態・関係詞・不定詞 | — |
+| 語彙 | 中学範囲 | 高校基礎 | 抽象名詞が入る | 社会・時事 |
+| 話題 | 身のまわり | 生活に関わる社会 | 社会の仕組み | 政策・社会問題 |
+| No.1 の聞き方 | "What can people learn ...?" | "According to the passage, how ...?" | "According to the passage, how ...?" | （パッセージなし） |
+| 最後の設問 | 受験者自身のこと | 意見（Yes/No分岐） | 社会的な話題への賛否 | 政策への意見 |
+
+**具体的にどう違うか。** 公式サンプルの書き出しを読み比べると分かりやすい。
+
+- 3級「There are many kinds of radio programs.」— 主語＋動詞。修飾が少ない
+- 準2級「These days, recycling is becoming common in people's daily lives.」—
+  副詞句で始まり、進行形＋形容詞
+- 2級「It can be troublesome for parents with young children to go shopping in
+  crowded places.」— 形式主語 it、to不定詞、後置修飾が重なる
+
+**設問の抽象度も上がる。** 準1級の最後は「世論は政府の決定に影響を与えられるか」。
+2級は「中古品はこれから普及するか」。準2級は「新聞をよく読むか」。3級は
+「週末は何をするのが好きか」。**同じ話題を難しく言い換えるのではなく、
+話題そのものの射程が変わる。**
+
+### 全級に共通する仕掛け
+
+**Yes/No で分岐して追い質問が来る。** 3級のNo.5、準2級のNo.4・No.5、2級のNo.4 が
+これ。スキーマの `followUp` はここで要る。
+
+| 答え | 追い質問 |
+|---|---|
+| Yes | "Why?" / "Please tell me more." |
+| No | "Why not?" |
+
+**カードを裏返す合図**が途中に入る。「Now, Mr./Ms. —, please turn over the card
+and put it down.」以降の設問は、カードを見ずに答える。
+
+### 実例
+
+**以下はこちらで書き下ろした見本。** 公式サンプルは形式の参考にしただけで、
+英文も絵も流用していない。
 
 ```jsonc
 {
   "id": "eiken3-001",
   "grade": "3",
-  "title": "Online Shopping",
+  "title": "Morning Radio",
   "passage": {
-    "text": "Many people enjoy shopping on the Internet. They can buy things at any time, and the things come to their homes. Some people say it is easier than going to a store.",
-    "wordCount": 33
-  },
-  "illustrations": [{ "id": "a", "prompt": "§4-3級 を参照", "caption": "リビングで買い物をする女性と、荷物を運ぶ配達員" }],
-  "questions": [
-    { "no": 1, "type": "passage", "cardVisible": true,
-      "prompt": "Please look at the passage. Why do some people say Internet shopping is easier?",
-      "modelAnswer": "Because they can buy things at any time and the things come to their homes." },
-    { "no": 2, "type": "illustration", "cardVisible": true,
-      "prompt": "Please look at the picture. How many boxes are there on the floor?",
-      "modelAnswer": "There are three boxes." },
-    { "no": 3, "type": "illustration", "cardVisible": true,
-      "prompt": "Please look at the woman with long hair. What is she doing?",
-      "modelAnswer": "She's looking at a computer." },
-    { "no": 4, "type": "personal", "cardVisible": false,
-      "prompt": "Do you often buy things on the Internet?",
-      "modelAnswer": "Yes, I do. / No, I don't." },
-    { "no": 5, "type": "personal", "cardVisible": false,
-      "prompt": "What do you like to do on weekends?",
-      "modelAnswer": "I like to play soccer with my friends." }
-  ]
-}
-```
-
-### 2級 — eiken2-001（3コマのナレーション）
-
-```jsonc
-{
-  "id": "eiken2-001",
-  "grade": "2",
-  "title": "The Crowded Bus",
-  "passage": {
-    "text": "Many cities in Japan have problems with crowded buses in the morning. Some city governments have started new services to solve this. They hope that these services will make people's lives more comfortable.",
+    "text": "Many people listen to the radio in the morning. They can hear the news and the weather while they eat breakfast. Some people also enjoy the music, so the radio is still popular today.",
     "wordCount": 34
   },
   "illustrations": [
-    { "id": "1", "prompt": "§4-2級 コマ1", "caption": "満員のバス停で困る会社員" },
-    { "id": "2", "prompt": "§4-2級 コマ2", "caption": "市役所の職員が新しいバス路線の案内を貼る" },
-    { "id": "3", "prompt": "§4-2級 コマ3", "caption": "空いたバスに座って新聞を読む会社員" }
+    { "id": "a", "prompt": "§4-3級 を参照",
+      "caption": "朝の居間。母が食事を並べ、娘が食べ、父は新聞を持って立っている（吹き出しで座って読む姿）。机にカップ2つ" }
   ],
-  "narration": { "openingSentence": "One morning, Mr. Tanaka was waiting for a bus.", "prepareSeconds": 20, "speakSeconds": null },
   "questions": [
     { "no": 1, "type": "passage", "cardVisible": true,
-      "prompt": "According to the passage, why have some city governments started new services?",
-      "modelAnswer": "Because they hope that these services will make people's lives more comfortable." },
-    { "no": 2, "type": "narration", "cardVisible": true,
-      "prompt": "Now, please look at the three pictures and describe the situation.",
-      "modelAnswer": "One morning, Mr. Tanaka was waiting for a bus. The bus was very crowded, so he could not get on it. That afternoon, a city officer was putting up a poster about a new bus route. The next morning, Mr. Tanaka was reading a newspaper on a bus with many empty seats." },
-    { "no": 3, "type": "opinion", "cardVisible": false,
-      "prompt": "Do you think people should use public transportation more often?",
-      "modelAnswer": "Yes. Trains and buses can carry many people at once, so they help reduce traffic." },
-    { "no": 4, "type": "opinion", "cardVisible": false,
-      "prompt": "Some people say that working from home will become more common in the future. What do you think about that?",
-      "modelAnswer": "I agree. Many companies have found that people can work well at home." }
+      "prompt": "Please look at the passage. What can people hear on the radio in the morning?",
+      "modelAnswer": "They can hear the news and the weather." },
+    { "no": 2, "type": "illustration", "cardVisible": true,
+      "prompt": "Please look at the picture. What is the man going to do?",
+      "modelAnswer": "He's going to read a newspaper." },
+    { "no": 3, "type": "illustration", "cardVisible": true,
+      "prompt": "How many cups are there on the table?",
+      "modelAnswer": "There are two cups." },
+    { "no": 4, "type": "personal", "cardVisible": false,
+      "prompt": "What do you usually do before breakfast?",
+      "modelAnswer": "I usually wash my face and change my clothes." },
+    { "no": 5, "type": "personal", "cardVisible": false,
+      "prompt": "Do you often listen to music?",
+      "followUp": {
+        "yes": { "prompt": "Please tell me more.", "modelAnswer": "I listen to music on my phone every day. I like Japanese pop songs." },
+        "no":  { "prompt": "Why not?", "modelAnswer": "I don't have much free time. I usually study after school." }
+      } }
   ]
 }
 ```
 
-準2級・準1級も同じ形。準1級は `passage` を持たず、`illustrations` が4枚、
+2級・準2級・準1級も同じ形。準1級は `passage` を持たず、`illustrations` が4枚、
 `narration.prepareSeconds` が 60、`speakSeconds` が 120。
 
 ---
 
 ## 4. イラストのプロンプト
 
-英検のイラストには決まった見た目がある。バラバラだと本番の練習にならないので、
-共通部分をテンプレートにして、場面だけ差し替える。
+**公式サンプルを見て全面的に書き直した。** 最初に推測で書いた「白黒の線画・文字を
+入れない」は**全部間違い**だった。実物は次のようになっている。
+
+- **カラー**。水彩・色鉛筆のような柔らかい塗り。輪郭線は細く均一
+- **吹き出しを使う**。3級から使われている。セリフ（角の尖った吹き出し）と
+  思考・想像（雲形の吹き出し）の2種類
+- **絵の中に英語の文字が入る**。2級・準1級はコマの間に「Ten minutes later」
+  「The next week」などの経過ラベル、看板やポスターの文字も読ませる
+- **斜線（禁止・不可の印）** を使う。準2級サンプルでは、自販機の前に自転車が
+  停まっていて飲み物を買えない、という状況を斜線で示していた
+- 日本の日常風景。人物は年齢・服装で描き分ける
+
+参照した公式サンプル（いずれも「無断転載・複製を禁じます © 公益財団法人 日本英語検定協会」。
+**形式の参考にするだけで、絵も英文もそのまま使わない**）
+- [3級](https://www.eiken.or.jp/eiken/exam/virtual/grade_3/pdf/grade_3.pdf) — Listening to the Radio
+- [準2級](https://www.eiken.or.jp/eiken/exam/virtual/grade_p2/pdf/grade_p2.pdf) — Recycling
+- [2級](https://www.eiken.or.jp/eiken/exam/virtual/grade_2/pdf/grade_2.pdf) — A New Service for Parents
+- [準1級](https://www.eiken.or.jp/eiken/exam/virtual/grade_p1/pdf/grade_p1.pdf) — 路上喫煙の話
 
 ### 共通（全級の頭に付ける）
 
 ```
-Simple black-and-white line drawing in the style of a Japanese English
-proficiency test illustration. Clean uniform line weight, no shading,
-no hatching, flat white background, no color. Everyday Japanese setting.
-Everyone's action must be unmistakable at a glance. Full bodies visible,
-no cropping. No text, no letters, no numbers, no speech bubbles unless
-specified. Simple neutral faces, no exaggerated expressions.
+Soft watercolor and colored-pencil illustration in the style of a Japanese
+English proficiency test picture card. Thin even outlines, gentle pastel
+colors, flat lighting, no heavy shadows. An ordinary everyday scene in
+Japan. Full bodies visible, nothing cropped at the edges. Simple friendly
+faces. Each person must be told apart by hair, age and clothing.
+Every action must be unmistakable at a glance.
 ```
 
-**なぜこの縛りか**
-- 白黒の線画: 本番の問題カードがそうなっている
-- 「動作が一目で分かる」: 設問が "What is she doing?" なので、動作が曖昧だと問題が成立しない
-- 文字を入れない: 生成AIは英単語を崩して描く。読ませたい文字は後から重ねる
-- 吹き出しは指定時のみ: 準1級だけ、意図を示す吹き出しが要る
+### 3級 — 1枚
 
-### 3級 — 1枚、人物3〜5人
-
-共通のあとに続ける:
+設問は「これから何をするか（吹き出し）」と「数を数える」。**その2つが絵から
+読み取れないと問題が成立しない。**
 
 ```
-One scene. Three to five people, each doing a clearly different action.
-Include a few countable objects (boxes, books, cups) so that a
-"How many ...?" question can be asked. Each person is distinguishable by
-hair length or clothing, not by facial detail.
+One indoor scene with three or four people, each doing a clearly different
+action. One person has a cloud-shaped thought bubble showing what they are
+about to do next. Include several identical countable objects (cups,
+books, boxes) placed in plain view so that a "How many ...?" question has
+one correct answer.
 
-Scene: <ここに場面を書く。例: A living room. A woman with long hair is
-looking at a laptop on a table. A delivery man is carrying a box through
-the door. Three boxes are on the floor. A boy is reading a book on a sofa.>
+Scene: <例: A family in a living room in the morning. A mother is putting
+food on the table. A girl is sitting and eating. A father is standing with
+a newspaper, and his thought bubble shows him sitting in a chair reading
+it. Two cups are on the table.>
 ```
 
 ### 準2級 — 2枚
 
-イラストA（複数の動作）:
-```
-One scene with five people, each performing a distinctly different action,
-spread across the frame so all five are countable and describable.
+**Picture A**（No.2「それぞれ何をしているか、言えるだけ言う」）。模範解答が5つ
+挙がっていたので、**動作は5つ**用意する。
 
-Scene: <例: A park on a sunny day. A man is walking a dog. A woman is
-sitting on a bench and drinking coffee. Two children are throwing a ball.
-An old man is watering flowers.>
+```
+One outdoor scene with exactly five people, spread apart so none overlap.
+Each person performs a completely different, easily named action.
+No thought bubbles.
+
+Scene: <例: A street on a clean-up day. A man is putting a box of bottles
+into a truck. A woman is planting flowers. A woman is walking her dog.
+A man is painting a wall. A boy is riding a bicycle.>
 ```
 
-イラストB（1人の状況）:
-```
-One scene focused on a single person facing a small problem or situation.
-The cause of the situation must be visible in the same frame.
+**Picture B**（No.3「状況を説明する」）。**やりたいのにできない**構図にする。
+理由が同じ絵の中に見えていること。
 
-Scene: <例: A woman is standing in front of a train station gate. Her bag
-is open and her wallet is not inside. A station attendant is looking at her.>
+```
+One scene focused on a single person who wants to do something but cannot.
+The obstacle is visible in the same frame. The person has a cloud-shaped
+thought bubble showing what they want to do, with a red diagonal line
+across the bubble to show it is not possible.
+
+Scene: <例: A girl standing in front of a vending machine. Many bicycles
+are parked in front of the machine so she cannot reach it. Her thought
+bubble shows her holding a drink, crossed out.>
 ```
 
 ### 2級 — 3コマ
 
 ```
-A three-panel comic strip, panels arranged left to right, equal size,
-thin black borders between panels. The same characters appear in every
-panel and must be recognizable across panels (same hair, same clothes).
-The story must be understandable without any text.
+A three-panel colored illustration in one horizontal row, thin borders
+between panels. The same characters appear in all three panels and must be
+recognizable (same hair, same clothes). Between the panels, place a small
+arrow with a short English time label such as "Ten minutes later" or
+"Two hours later at the gift shop". Panel 1 has a speech bubble with one
+short line of dialogue. One later panel has a cloud-shaped thought bubble
+showing a worry or a wish.
 Panel 1: <…>
 Panel 2: <…>
 Panel 3: <…>
 ```
 
-時間の経過を示したいときは、コマの上に日本語で「翌朝」などと入れるのではなく、
-**背景で示す**（朝の光 / 夕方の空 / 掛け時計の針）。文字は生成AIが崩すため。
+経過ラベルと吹き出しの文字は**ナレーションで使わせるための材料**なので、必ず
+読める大きさで入れる。生成AIが英単語を崩したら、その部分だけ後から画像編集で
+差し替える。
 
 ### 準1級 — 4コマ
 
 ```
-A four-panel comic strip in a 2x2 grid, thin black borders. The same
-characters appear throughout and must be recognizable across panels.
-Panel 4 must show a character with a visible thought bubble containing a
-simple picture (not text) that shows what they are thinking or worrying about.
+A four-panel colored illustration in one horizontal row, numbered 1 to 4
+below the panels, thin borders between panels. The same main character
+appears in every panel. Above or between panels, place short English time
+labels such as "The next week", "Six months later", "A few days later".
+Include readable signs, posters or notices inside the scenes when they
+carry the story. Panel 4 must show the main character reacting to an
+unexpected result, so that "If you were her, what would you be thinking?"
+has an answer.
 Panel 1: <…>
 Panel 2: <…>
 Panel 3: <…>
 Panel 4: <…>
 ```
 
-準1級は No.2 で「4コマ目の人物になったつもりで」と聞くので、**4コマ目に
-心情が読み取れる要素が要る**。吹き出しの中は絵にする（文字は崩れる）。
+準1級のサンプルは「問題を解決しようと動いた結果、別の問題が起きた」という
+**皮肉のある落ち**だった。No.1 が「4コマ目の人物になったつもりで」なので、
+4コマ目に**割り切れなさ**が要る。単純なハッピーエンドにしない。
 
 ### 生成したあと
 
-- 動作が読み取れるか、**設問に答えられるか**を必ず自分で確認する。
-  「What is she doing?」に答えられない絵は作り直し
-- 人物の指の本数や物の数がおかしいことがある。"How many" を聞く設問では数を数える
+- **設問に答えられるかを自分で確かめる。**「What is she doing?」に答えられない絵、
+  数が数えられない絵は作り直し
+- 生成AIは物の数と指の本数を間違える。数を聞く設問では必ず数える
+- 英語の文字は崩れる。看板・経過ラベルは読めるか確認し、駄目なら後から重ねる
 - 生成物は `public/eiken/{id}-{illustrationId}.png`
-
----
 
 ## 5. 音声にするもの
 
