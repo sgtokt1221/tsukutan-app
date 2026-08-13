@@ -149,6 +149,9 @@ body {
   max-width: 500px;
   margin: 0 auto;
   height: 100vh;
+  /* URL バーの出入りで変わる実際の表示領域。100vh のままだと iOS Safari で
+     枠がはみ出し、ページごとスクロールしてしまう。 */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -2382,6 +2385,13 @@ select:focus-visible,
    ロゴ、現在のユーザー、ログアウトの3要素に絞る。
    以前は window.innerWidth による分岐つきのインライン指定だった。 */
 .student-header {
+  /* 上に貼り付ける。iOS Safari では URL バーのぶん実際の表示領域が 100vh より
+     低く、.dashboard-container がはみ出してページごと動く。そのときヘッダーが
+     一緒に流れて見えなくなっていた。 */
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;

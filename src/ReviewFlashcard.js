@@ -679,8 +679,14 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   const handleTouchEnd = useCallback((e) => {
     if (!isDragging) return;
-    e.preventDefault();
-    e.stopPropagation();
+    // 単語帳では既定の動作を止めない。touchend で preventDefault すると、
+    // そのあとの click が作られなくなる。「隠す」のような click 頼みの
+    // ボタンが、押しても何も起きないボタンになっていた。
+    // （「答えを見る」は親の onTouchStart でも開くので気づきにくかった）
+    if (viewMode !== 'wordbook') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setIsDragging(false);
     
     const touch = e.changedTouches[0];
