@@ -26,46 +26,70 @@ const toBase64 = (buffer) => {
   return btoa(binary);
 };
 
-/**
- * @param {Blob} blob 録音した音声（端末まかせの形式でよい）
- * @param {object} options
- * @param {'scripted'|'unscripted'} options.mode 音読なら scripted
- * @param {string} [options.referenceText] 音読で読むべき英文
- * @param {string} [options.question] 質問文（unscripted のとき）
- * @param {string} [options.modelAnswer] 模範解答（あれば）
- * @param {string} [options.grade] '3' | 'pre2' | '2' | 'pre1'
- */
-export const transcribeSpeaking = async (blob, options) => {
+/** 生徒本人の証明。サーバーはこれだけを見て、本文の uid は信じない。 */
+const post = async (path, body, failureMessage) => {
   const user = getAuth().currentUser;
   if (!user) throw new Error('ログインし直してください。');
 
-  const wav = await toAssessmentWav(blob);
-  const idToken = await user.getIdToken();
-
-  const response = await fetch(ENDPOINT, {
+  const response = await fetch(`${ENDPOINT}${path}`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${await user.getIdToken()}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      audio: toBase64(await wav.arrayBuffer()),
-      mode: options.mode,
-      referenceText: options.referenceText,
-      question: options.question,
-      modelAnswer: options.modelAnswer,
-      grade: options.grade,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
     const detail = await response.json().catch(() => ({}));
-    logger.warn('文字起こしに失敗しました', response.status, detail);
-    throw new Error(detail.error || '文字起こしできませんでした。もう一度お試しください。');
+    logger.warn(failureMessage, response.status, detail);
+    throw new Error(detail.error || failureMessage);
   }
 
   return response.json();
 };
+
+/**
+ * 録音を文字にするだけ。答えの中身は見ない。
+ *
+ * 判定を分けてあるのは、生徒が文字起こしを直せるから。直す前の文で
+ * 判定してしまうと、認識の間違いのせいで低い点が出る。
+ *
+ * @param {Blob} blob 録音した音声（端末まかせの形式でよい）
+ * @param {object} options
+ * @param {'scripted'|'unscripted'} options.mode 音読なら scripted
+ * @param {string} [options.referenceText] 音読で読むべき英文。認識のヒントになる
+ * @returns {Promise<{transcript: string}>}
+ */
+export const transcribeSpeaking = async (blob, options) => {
+  const wav = await toAssessmentWav(blob);
+  return post('', {
+    audio: toBase64(await wav.arrayBuffer()),
+    mode: options.mode,
+    referenceText: options.referenceText,
+  }, '文字起こしできませんでした。もう一度お試しください。');
+};
+
+/**
+ * 文字にした答えを見てもらう。面接を最後まで通してからまとめて呼ぶ。
+ *
+ * @param {object} options
+ * @param {'scripted'|'unscripted'} options.mode
+ * @param {string} options.transcript 生徒が直したあとの文
+ * @param {string} [options.referenceText] 音読で読むべき英文
+ * @param {string} [options.question] 質問文（unscripted のとき）
+ * @param {string} [options.modelAnswer] 模範解答（あれば）
+ * @param {string} [options.grade] '3' | 'pre2' | '2' | 'pre1'
+ * @returns {Promise<{missing: string[], total: number, content: object|null}>}
+ */
+export const reviewAnswer = async (options) => post('/review', {
+  mode: options.mode,
+  transcript: options.transcript,
+  referenceText: options.referenceText,
+  question: options.question,
+  modelAnswer: options.modelAnswer,
+  grade: options.grade,
+}, '答えを見てもらえませんでした。通信を確かめてもう一度お試しください。');
 
 export const VERDICT_LABELS = {
   good: '質問に答えられています',

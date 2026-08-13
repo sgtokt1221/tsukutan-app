@@ -1,87 +1,50 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { FaFileAlt } from 'react-icons/fa';
-import { VERDICT_LABELS, transcribeSpeaking } from '../../logic/transcribeApi';
-import logger from '../../logic/logger';
+import React from 'react';
 
 /**
- * 録音したあとに出るもの。聞き返しと、文字起こしの結果。
+ * 生徒が声を出したあとの表示。聞き返しと、文字起こし。
  *
- * 録音そのものは画面下のマイクボタン（EikenInterview）が受け持つ。
- * 話している最中に本文が動くと落ち着かないので、ここは録り終えてから出す。
+ * 録音そのものは画面下のマイクボタン（EikenInterview）が受け持ち、
+ * 文字起こしは録り終えた時点で自動で走る。押させるボタンは無い。
+ *
+ * 採点と講評はここには出さない。本番の面接委員は途中で講評しないし、
+ * 1場面ごとに点が出ると、そこで気持ちが切れる。最後の結果画面にまとめる。
+ *
+ * 文字起こしは直せるようにしてある。日本語なまりの英語は取り違えられる
+ * ことがあり、そのまま判定にかけると「言えていたのに低い点」になる。
  */
-export default function SpeakingPanel({ recorder, mode, referenceText, question, modelAnswer, grade, resetKey }) {
-  const [result, setResult] = useState(null);
-  const [working, setWorking] = useState(false);
-  const [failure, setFailure] = useState(null);
-
-  // 場面が変わったら前の結果を捨てる。前の答えが残っていると読み違える。
-  useEffect(() => {
-    setResult(null);
-    setFailure(null);
-  }, [resetKey]);
-
-  const blob = recorder.blob;
-
-  const run = useCallback(async () => {
-    if (!blob) return;
-    setWorking(true);
-    setFailure(null);
-    try {
-      setResult(await transcribeSpeaking(blob, { mode, referenceText, question, modelAnswer, grade }));
-    } catch (error) {
-      logger.warn('文字起こしできませんでした', error);
-      setFailure(error.message);
-    } finally {
-      setWorking(false);
-    }
-  }, [blob, mode, referenceText, question, modelAnswer, grade]);
-
+export default function SpeakingPanel({ recorder, answer, onEditTranscript }) {
   if (recorder.error) return <p className="speaking-error">{recorder.error}</p>;
-  if (!blob || recorder.state === 'recording') return null;
+  if (!answer || recorder.state === 'recording') return null;
 
   return (
     <div className="speaking-panel">
-      <div className="speaking-controls">
-        <audio className="speaking-audio" src={recorder.url} controls preload="metadata">
-          <track kind="captions" />
-        </audio>
-        <button type="button" className="ghost-button" onClick={run} disabled={working}>
-          {working ? '文字にしています…' : <><FaFileAlt aria-hidden="true" /> 文字にする</>}
-        </button>
-      </div>
+      {/* 自分の声を聞くのが一番効く。文字より先に置く。 */}
+      <audio className="speaking-audio" src={answer.url} controls preload="metadata">
+        <track kind="captions" />
+      </audio>
 
-      {failure && <p className="speaking-error">{failure}</p>}
+      {answer.status === 'working' && <p className="speaking-note">聞き取っています…</p>}
 
-      {result && (
-        <div className="speaking-result">
-          <p className="speaking-transcript-main__text">
-            {result.transcript || '聞き取れませんでした。マイクに近づいて、もう一度話してみてください。'}
-          </p>
+      {answer.status === 'failed' && (
+        <p className="speaking-error">
+          {answer.failure || '聞き取れませんでした。'}録音は残っているので、聞き返せます。
+        </p>
+      )}
 
-          {result.missing?.length > 0 && (
-            <div className="speaking-words">
-              <p className="interview-beat__role">読めていなかった語</p>
-              <ul>
-                {result.missing.map((word) => (
-                  <li key={word}><span className="speaking-words__word">{word}</span></li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {result.content && (
-            <div className={`speaking-content is-${result.content.verdict}`}>
-              <p className="speaking-content__verdict">
-                {VERDICT_LABELS[result.content.verdict] || result.content.verdict}
-              </p>
-              {result.content.reasonJa && <p>{result.content.reasonJa}</p>}
-              {result.content.missingJa && <p>足すとよいこと: {result.content.missingJa}</p>}
-              {result.content.betterAnswer && (
-                <p className="speaking-content__better">{result.content.betterAnswer}</p>
-              )}
-            </div>
-          )}
-        </div>
+      {answer.status === 'done' && (
+        <label className="speaking-transcript">
+          <span className="speaking-transcript__label">
+            言えていた内容{answer.edited && <span className="speaking-transcript__edited">直しました</span>}
+          </span>
+          <textarea
+            className="speaking-transcript__input"
+            value={answer.transcript}
+            rows={3}
+            onChange={(event) => onEditTranscript(answer.key, event.target.value)}
+            placeholder="聞き取れませんでした。言ったとおりに書き直せます。"
+          />
+          <span className="speaking-note">聞き間違いがあれば直してください。直した文で採点します。</span>
+        </label>
       )}
     </div>
   );
