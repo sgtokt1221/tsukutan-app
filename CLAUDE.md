@@ -47,7 +47,26 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `src/LevelBadge.js` / `ProgressLamp.js` | 表示用小コンポーネント |
 | `src/firebaseConfig.js` | Firebase 初期化。**gitignore 済み（リポジトリに無い）** |
 | `src/wordsData.json` | クライアント同梱の単語データ |
-| `functions/index.js` | Cloud Functions 3本（下記） |
+| `src/components/` | 分割済みのコンポーネント群（`eiken` / `learning` / `student` / `assessment` / `layout` / `onboarding` / `ui` / `brand`）。新しい画面はここに置く |
+| `functions/index.js` | Cloud Functions 4本（下記） |
+
+### 英検二次試験（面接）モード — `src/components/eiken/`
+
+素材は `public/eiken-interview/`（形式の正本は `docs/eiken-interview-format.md`）。
+
+| File | Role |
+|------|------|
+| `EikenInterview.js` | 入室から退室までを1場面ずつ進める。録音・文字起こし・結果の状態を全部ここが持つ |
+| `SpeakingPanel.js` | 録り終えたあとの聞き返しと、文字起こしの編集欄 |
+| `InterviewResultModal.js` | 通し終えたあとの結果。Chart.js のドーナツと横棒 + 場面ごとの講評 |
+| `src/logic/interviewContent.js` | 素材の読み込み、場面の組み立て（`buildBeats`）、その場面で何を録るか（`speakingFor`） |
+| `src/logic/interviewScore.js` | 結果の点。音読は読めた語の割合、質問は判定（good/partial/off-target） |
+| `src/logic/transcribeApi.js` | `transcribeSpeaking()` 文字起こし / `reviewAnswer()` 採点 |
+| `src/logic/useRecorder.js` | MediaRecorder。端末まかせの形式で録り、送るときだけ 16kHz WAV に変換 |
+
+**採点は面接の途中では出さない。** 録音を止めると自動で文字起こしだけ走り、生徒が
+文字を直せる。判定（Gemini）は「結果を見る」を押した時点で、直したあとの文に対して
+まとめて走る。ここを変えると、認識ミスがそのまま点になる。
 
 ### `src/logic/` — ビジネスロジック層
 
@@ -72,6 +91,7 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `importUsers` | onRequest (Express) | CSV 一括インポート。**既存ユーザーを全削除してから作り直す破壊的処理** |
 | `manageStudents` | onRequest (Express) | `POST /` 生徒作成、`DELETE /:uid` 生徒削除（サブコレクション再帰削除 + Auth 削除） |
 | `generateStoryFromWords` | onRequest | AI ストーリー生成 + 和訳。月1回制限 |
+| `transcribeSpeaking` | onRequest (Express) | `POST /` 録音（16kHz WAV）→ Speech-to-Text で文字起こし。`POST /review` 文字起こし（生徒が直したあとの文）→ 読み飛ばした語 + Gemini による中身の判定 |
 
 ### ルート直下の運用スクリプト（Admin SDK, ローカル実行）
 
