@@ -1,0 +1,489 @@
+{
+  "id": "eikenp1-work-01",
+  "grade": "pre1",
+  "category": "work",
+  "title": "Four Days a Week",
+  "titleJa": "週に4日",
+  "sentences": [
+    {
+      "ja": "週休3日制の試みが、いくつかの国で行われてきました。",
+      "chunks": [
+        {
+          "en": "Trials of a four-day working week",
+          "ja": "週休3日制の試みが",
+          "role": "S"
+        },
+        {
+          "en": "have been carried out",
+          "ja": "行われてきました",
+          "role": "V"
+        },
+        {
+          "en": "in several countries.",
+          "ja": "いくつかの国で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "最も規模の大きかったものの一つは、英国で行われた実験です。",
+      "chunks": [
+        {
+          "en": "One of the largest",
+          "ja": "最も規模の大きかったものの一つは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "an experiment carried out in the United Kingdom.",
+          "ja": "英国で行われた実験",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "約60の企業が参加し、半年にわたって実施されました。",
+      "chunks": [
+        {
+          "en": "About sixty companies",
+          "ja": "約60の企業が",
+          "role": "S"
+        },
+        {
+          "en": "took part,",
+          "ja": "参加しました",
+          "role": "V"
+        },
+        {
+          "en": "and it continued for half a year.",
+          "ja": "そして半年にわたって実施されました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "条件は、給与を下げずに労働日数を減らすことでした。",
+      "chunks": [
+        {
+          "en": "The condition",
+          "ja": "条件は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "to reduce the number of working days without lowering pay.",
+          "ja": "給与を下げずに労働日数を減らすこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "結果として、大半の企業が制度の継続を選びました。",
+      "chunks": [
+        {
+          "en": "As a result,",
+          "ja": "結果として",
+          "role": "M"
+        },
+        {
+          "en": "most of the companies",
+          "ja": "大半の企業が",
+          "role": "S"
+        },
+        {
+          "en": "chose to continue",
+          "ja": "継続を選びました",
+          "role": "V"
+        },
+        {
+          "en": "the system.",
+          "ja": "制度の",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "売上は減らず、いくつかの企業ではむしろ増加しました。",
+      "chunks": [
+        {
+          "en": "Sales",
+          "ja": "売上は",
+          "role": "S"
+        },
+        {
+          "en": "did not fall,",
+          "ja": "減りませんでした",
+          "role": "V"
+        },
+        {
+          "en": "and in some companies they rose instead.",
+          "ja": "そしていくつかの企業ではむしろ増加しました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この結果は、しばしば労働時間の短縮の成功として紹介されます。",
+      "chunks": [
+        {
+          "en": "This result",
+          "ja": "この結果は",
+          "role": "S"
+        },
+        {
+          "en": "is often introduced",
+          "ja": "しばしば紹介されます",
+          "role": "V"
+        },
+        {
+          "en": "as the success of shorter working hours.",
+          "ja": "労働時間の短縮の成功として",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、報告書を詳しく読むと別の面が見えてきます。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "another side",
+          "ja": "別の面が",
+          "role": "S"
+        },
+        {
+          "en": "appears",
+          "ja": "見えてきます",
+          "role": "V"
+        },
+        {
+          "en": "when we read the report closely.",
+          "ja": "報告書を詳しく読むと",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "多くの企業は、単に1日休みを増やしたのではありません。",
+      "chunks": [
+        {
+          "en": "Many companies",
+          "ja": "多くの企業は",
+          "role": "S"
+        },
+        {
+          "en": "did not simply add",
+          "ja": "単に増やしたのではありません",
+          "role": "V"
+        },
+        {
+          "en": "one day off.",
+          "ja": "1日の休みを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "会議の数と長さを、事前に大きく削っていました。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "had greatly cut",
+          "ja": "大きく削っていました",
+          "role": "V"
+        },
+        {
+          "en": "the number and length of meetings",
+          "ja": "会議の数と長さを",
+          "role": "O"
+        },
+        {
+          "en": "beforehand.",
+          "ja": "事前に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "報告のための資料作成も、多くが廃止されました。",
+      "chunks": [
+        {
+          "en": "The preparation of documents for reporting",
+          "ja": "報告のための資料作成も",
+          "role": "S"
+        },
+        {
+          "en": "was also largely abolished.",
+          "ja": "多くが廃止されました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "つまり成果は、休みそのものより、業務の整理から生まれた可能性があります。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "the result",
+          "ja": "成果は",
+          "role": "S"
+        },
+        {
+          "en": "may have come",
+          "ja": "生まれた可能性があります",
+          "role": "V"
+        },
+        {
+          "en": "from organizing the work rather than from the day off itself.",
+          "ja": "休みそのものより業務の整理から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この点を見落とすと、制度だけを真似することになります。",
+      "chunks": [
+        {
+          "en": "If we overlook this point,",
+          "ja": "この点を見落とすと",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "will copy",
+          "ja": "真似することになります",
+          "role": "V"
+        },
+        {
+          "en": "only the system.",
+          "ja": "制度だけを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "実際、失敗した例の多くがそれに当たります。",
+      "chunks": [
+        {
+          "en": "In fact,",
+          "ja": "実際",
+          "role": "M"
+        },
+        {
+          "en": "many of the failed cases",
+          "ja": "失敗した例の多くが",
+          "role": "S"
+        },
+        {
+          "en": "fall into that pattern.",
+          "ja": "それに当たります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "日数だけを減らせば、同じ量の仕事が4日に押し込まれます。",
+      "chunks": [
+        {
+          "en": "If only the number of days is reduced,",
+          "ja": "日数だけを減らせば",
+          "role": "M"
+        },
+        {
+          "en": "the same amount of work",
+          "ja": "同じ量の仕事が",
+          "role": "S"
+        },
+        {
+          "en": "is pushed",
+          "ja": "押し込まれます",
+          "role": "V"
+        },
+        {
+          "en": "into four days.",
+          "ja": "4日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その結果、1日あたりの負担が増え、健康を損なう人が出ます。",
+      "chunks": [
+        {
+          "en": "As a result,",
+          "ja": "その結果",
+          "role": "M"
+        },
+        {
+          "en": "the burden per day",
+          "ja": "1日あたりの負担が",
+          "role": "S"
+        },
+        {
+          "en": "increases,",
+          "ja": "増えます",
+          "role": "V"
+        },
+        {
+          "en": "and some people damage their health.",
+          "ja": "そして健康を損なう人が出ます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "さらに、この制度が向く仕事と向かない仕事があります。",
+      "chunks": [
+        {
+          "en": "Moreover,",
+          "ja": "さらに",
+          "role": "M"
+        },
+        {
+          "en": "there are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "jobs that suit this system and jobs that do not.",
+          "ja": "この制度が向く仕事と向かない仕事が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "医療や介護のように、人がその場にいることが価値である仕事です。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "jobs like medicine and care, in which a person being there is itself the value.",
+          "ja": "医療や介護のように人がその場にいることが価値である仕事",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "こうした分野では、日数を減らすには人を増やすしかありません。",
+      "chunks": [
+        {
+          "en": "In such fields,",
+          "ja": "こうした分野では",
+          "role": "M"
+        },
+        {
+          "en": "the only way to reduce days",
+          "ja": "日数を減らす唯一の方法は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to increase the number of workers.",
+          "ja": "人を増やすこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それは費用の問題であり、働き方の工夫では解けません。",
+      "chunks": [
+        {
+          "en": "That",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a question of cost,",
+          "ja": "費用の問題",
+          "role": "C"
+        },
+        {
+          "en": "and it cannot be solved by changing the way of working.",
+          "ja": "そして働き方の工夫では解けません",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "週休3日制は、それ自体が目的ではありません。",
+      "chunks": [
+        {
+          "en": "A four-day week",
+          "ja": "週休3日制は",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "a purpose in itself.",
+          "ja": "それ自体が目的",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "何を減らせるかを問い直す機会として使えるかどうかが分かれ目です。",
+      "chunks": [
+        {
+          "en": "Whether we can use it as a chance to ask again what can be cut",
+          "ja": "何を減らせるかを問い直す機会として使えるかどうかが",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the dividing point.",
+          "ja": "分かれ目",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

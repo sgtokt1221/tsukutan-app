@@ -1,0 +1,544 @@
+{
+  "id": "eikenp1-science-01",
+  "grade": "pre1",
+  "category": "science",
+  "title": "The Medicine That Is Losing Its Power",
+  "titleJa": "効かなくなる薬",
+  "sentences": [
+    {
+      "ja": "20世紀の医学における最大の成果の一つは、抗生物質の発見でした。",
+      "chunks": [
+        {
+          "en": "One of the greatest achievements in twentieth-century medicine",
+          "ja": "20世紀の医学における最大の成果の一つは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "the discovery of antibiotics.",
+          "ja": "抗生物質の発見",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それ以前、小さな傷が原因で命を落とすことは珍しくありませんでした。",
+      "chunks": [
+        {
+          "en": "Before that,",
+          "ja": "それ以前",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was not rare",
+          "ja": "珍しくありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "for people to lose their lives because of a small wound.",
+          "ja": "小さな傷が原因で命を落とすことは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "抗生物質は、細菌の増殖を止めることでその危険を取り除きました。",
+      "chunks": [
+        {
+          "en": "Antibiotics",
+          "ja": "抗生物質は",
+          "role": "S"
+        },
+        {
+          "en": "removed",
+          "ja": "取り除きました",
+          "role": "V"
+        },
+        {
+          "en": "that danger",
+          "ja": "その危険を",
+          "role": "O"
+        },
+        {
+          "en": "by stopping bacteria from increasing.",
+          "ja": "細菌の増殖を止めることで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし今、この薬の効き目が世界中で弱まっています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the power of these medicines",
+          "ja": "この薬の効き目が",
+          "role": "S"
+        },
+        {
+          "en": "is now weakening",
+          "ja": "今弱まっています",
+          "role": "V"
+        },
+        {
+          "en": "around the world.",
+          "ja": "世界中で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "理由は、細菌そのものが変化したからです。",
+      "chunks": [
+        {
+          "en": "The reason",
+          "ja": "理由は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that the bacteria themselves have changed.",
+          "ja": "細菌そのものが変化したから",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "薬を使うたびに、その薬に耐えられる細菌だけが生き残ります。",
+      "chunks": [
+        {
+          "en": "Each time the medicine is used,",
+          "ja": "薬を使うたびに",
+          "role": "M"
+        },
+        {
+          "en": "only the bacteria that can survive it",
+          "ja": "その薬に耐えられる細菌だけが",
+          "role": "S"
+        },
+        {
+          "en": "remain.",
+          "ja": "生き残ります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "生き残った細菌は増え、次の世代にその性質を伝えます。",
+      "chunks": [
+        {
+          "en": "The surviving bacteria",
+          "ja": "生き残った細菌は",
+          "role": "S"
+        },
+        {
+          "en": "increase",
+          "ja": "増えます",
+          "role": "V"
+        },
+        {
+          "en": "and pass that character to the next generation.",
+          "ja": "そして次の世代にその性質を伝えます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "これは進化の過程そのものであり、防ぐことはできません。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "the process of evolution itself,",
+          "ja": "進化の過程そのもの",
+          "role": "C"
+        },
+        {
+          "en": "and it cannot be prevented.",
+          "ja": "そして防ぐことはできません",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "防げないのであれば、せめて遅らせる必要があります。",
+      "chunks": [
+        {
+          "en": "If it cannot be prevented,",
+          "ja": "防げないのであれば",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "need to slow it down",
+          "ja": "遅らせる必要があります",
+          "role": "V"
+        },
+        {
+          "en": "at least.",
+          "ja": "せめて",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのために最も重要なのは、必要のないときに使わないことです。",
+      "chunks": [
+        {
+          "en": "The most important thing for that",
+          "ja": "そのために最も重要なことは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "not to use them when they are not needed.",
+          "ja": "必要のないときに使わないこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ところが実際には、大量の抗生物質が人間以外に使われています。",
+      "chunks": [
+        {
+          "en": "In fact, however,",
+          "ja": "ところが実際には",
+          "role": "M"
+        },
+        {
+          "en": "a large amount of antibiotics",
+          "ja": "大量の抗生物質が",
+          "role": "S"
+        },
+        {
+          "en": "is used",
+          "ja": "使われています",
+          "role": "V"
+        },
+        {
+          "en": "outside of humans.",
+          "ja": "人間以外に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "家畜を早く育て、病気を防ぐために餌に混ぜられているのです。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "are mixed",
+          "ja": "混ぜられています",
+          "role": "V"
+        },
+        {
+          "en": "into feed",
+          "ja": "餌に",
+          "role": "M"
+        },
+        {
+          "en": "to raise animals quickly and prevent illness.",
+          "ja": "家畜を早く育て病気を防ぐために",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "一部の国では、その量が医療用を上回っています。",
+      "chunks": [
+        {
+          "en": "In some countries,",
+          "ja": "一部の国では",
+          "role": "M"
+        },
+        {
+          "en": "that amount",
+          "ja": "その量が",
+          "role": "S"
+        },
+        {
+          "en": "is greater",
+          "ja": "上回っています",
+          "role": "V"
+        },
+        {
+          "en": "than the amount used in medicine.",
+          "ja": "医療用の量を",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "耐性を得た細菌は、肉や環境を通じて人へ移ります。",
+      "chunks": [
+        {
+          "en": "Bacteria that have gained resistance",
+          "ja": "耐性を得た細菌は",
+          "role": "S"
+        },
+        {
+          "en": "move",
+          "ja": "移ります",
+          "role": "V"
+        },
+        {
+          "en": "to humans through meat and the environment.",
+          "ja": "肉や環境を通じて人へ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "つまりこれは、農業と医療の両方にまたがる問題です。",
+      "chunks": [
+        {
+          "en": "In other words,",
+          "ja": "つまり",
+          "role": "M"
+        },
+        {
+          "en": "this",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a problem that lies across both farming and medicine.",
+          "ja": "農業と医療の両方にまたがる問題",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "新しい薬を作ればよい、という意見もあります。",
+      "chunks": [
+        {
+          "en": "Some people",
+          "ja": "ある人たちは",
+          "role": "S"
+        },
+        {
+          "en": "say",
+          "ja": "言います",
+          "role": "V"
+        },
+        {
+          "en": "that we should simply make new medicines.",
+          "ja": "新しい薬を作ればよいと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、新しい抗生物質はここ30年ほとんど生まれていません。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "almost no new antibiotics",
+          "ja": "新しい抗生物質はほとんど",
+          "role": "S"
+        },
+        {
+          "en": "have appeared",
+          "ja": "生まれていません",
+          "role": "V"
+        },
+        {
+          "en": "in the last thirty years.",
+          "ja": "ここ30年",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "理由の一つは、経済的な性質にあります。",
+      "chunks": [
+        {
+          "en": "One of the reasons",
+          "ja": "理由の一つは",
+          "role": "S"
+        },
+        {
+          "en": "lies",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "in their economic nature.",
+          "ja": "経済的な性質に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "抗生物質は短期間しか使われず、しかも使用を控えるべき薬です。",
+      "chunks": [
+        {
+          "en": "Antibiotics",
+          "ja": "抗生物質は",
+          "role": "S"
+        },
+        {
+          "en": "are used",
+          "ja": "使われます",
+          "role": "V"
+        },
+        {
+          "en": "only for a short period,",
+          "ja": "短期間しか",
+          "role": "M"
+        },
+        {
+          "en": "and they are medicines whose use should be limited.",
+          "ja": "しかも使用を控えるべき薬です",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "開発に成功しても、企業が費用を回収できる見込みは高くありません。",
+      "chunks": [
+        {
+          "en": "Even if development succeeds,",
+          "ja": "開発に成功しても",
+          "role": "M"
+        },
+        {
+          "en": "the chance that a company can recover its cost",
+          "ja": "企業が費用を回収できる見込みは",
+          "role": "S"
+        },
+        {
+          "en": "is not high.",
+          "ja": "高くありません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "市場に任せているかぎり、必要な薬が作られないことがあるのです。",
+      "chunks": [
+        {
+          "en": "As long as we leave it to the market,",
+          "ja": "市場に任せているかぎり",
+          "role": "M"
+        },
+        {
+          "en": "necessary medicines",
+          "ja": "必要な薬が",
+          "role": "S"
+        },
+        {
+          "en": "are sometimes not made.",
+          "ja": "作られないことがあるのです",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "この事実は、技術と社会の関係について考えさせます。",
+      "chunks": [
+        {
+          "en": "This fact",
+          "ja": "この事実は",
+          "role": "S"
+        },
+        {
+          "en": "makes us think",
+          "ja": "考えさせます",
+          "role": "V"
+        },
+        {
+          "en": "about the relation between technology and society.",
+          "ja": "技術と社会の関係について",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "科学が答えを持っていても、それが届くとはかぎりません。",
+      "chunks": [
+        {
+          "en": "Even when science has an answer,",
+          "ja": "科学が答えを持っていても",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それが",
+          "role": "S"
+        },
+        {
+          "en": "does not always reach us.",
+          "ja": "届くとはかぎりません",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "届けるかどうかを決めているのは、わたしたちの仕組みのほうです。",
+      "chunks": [
+        {
+          "en": "What decides whether it reaches us",
+          "ja": "届くかどうかを決めているものは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "our own systems.",
+          "ja": "わたしたちの仕組みのほう",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}
