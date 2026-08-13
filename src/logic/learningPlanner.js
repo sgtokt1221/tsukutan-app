@@ -272,6 +272,11 @@ const getRandomMasteredWords = async (userId, excludedIds, motivation) => {
   snapshot.forEach((docSnapshot) => {
     const data = docSnapshot.data();
     if (excludedIds.has(docSnapshot.id) || data.migratedTo) return;
+    // 生徒が自分で「リストから削除」した語（status: mastered）はここでも出さない。
+    // 繰り返し回数だけで引いていたので、何回か正解してから削除した語が
+    // 忘却防止の枠で戻ってきていた。削除と言いながら出てくるのはおかしい。
+    // status を where に足すと複合インデックスが要るので、ここで落とす。
+    if (data.status === 'mastered') return;
     masteredWords.push({ id: docSnapshot.id, ...data, isMastered: true });
   });
 
