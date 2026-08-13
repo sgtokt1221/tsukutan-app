@@ -9,7 +9,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 // ダッシュボードは遅延読み込みにする。Chart.js は AdminDashboard からしか
 // 使わないので、管理者がその画面を開くまで取りに行かない（計画書13.5）。
 import LoginPage from './LoginPage.js';
-const StudentDashboard = lazy(() => import('./StudentDashboard.js'));
+const loadStudentDashboard = () => import('./StudentDashboard.js');
+const StudentDashboard = lazy(loadStudentDashboard);
 const AdminDashboard = lazy(() => import('./AdminDashboard.js'));
 const GoalSetter = lazy(() => import('./GoalSetter.js'));
 
@@ -29,6 +30,12 @@ function AppContent() {
   const [retryToken, setRetryToken] = useState(0);
   const navigate = useNavigate();
 
+  // 生徒はほぼ必ずここへ来る。認証の復帰を待ってから取りに行くと、
+  // その待ち時間ぶん画面が出るのが遅れる（実測で1.5秒）。先に温めておく。
+  useEffect(() => {
+    loadStudentDashboard();
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     setAuthError(null);
@@ -36,6 +43,8 @@ function AppContent() {
     const unsubscribe = onAuthStateChanged(
       auth,
       async (user) => {
+        // 起動の内訳を測るための目印。ここまでが認証の復帰にかかった時間。
+        performance.mark('auth');
         setCurrentUser(user);
         try {
           if (user) {
