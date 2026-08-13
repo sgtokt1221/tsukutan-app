@@ -79,6 +79,9 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // カード自身の onMouseUp と document の mouseup が両方走るので、
   // 掛け金が無いと卒業が2回動き、隣の単語まで消えていた。
   const swipeHandledRef = useRef(false);
+  // 掴んだカード。動かすと矩形もずれるので、指を置いた時点で覚える。
+  // 座標から引き直すと、ついてきたぶん指が外へ出て途中で見失う。
+  const grabbedCardRef = useRef(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
 
@@ -422,6 +425,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     swipeHandledRef.current = false;
     e.preventDefault();
     setIsDragging(true);
+    grabbedCardRef.current = e.target.closest?.('[data-card-index]')
+      || findCardAtPoint(e.clientX, e.clientY);
     setDragStart({ x: e.clientX, y: e.clientY });
     logger.debug('🔥 ReviewFlashcard Mouse down:', { x: e.clientX, y: e.clientY });
     
@@ -452,7 +457,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードの場合、直接DOM操作でカードの位置を更新
-      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
+      const activeCard = grabbedCardRef.current || findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
         // 単語帳モードでは左右スワイプで評価、上下スワイプで削除
@@ -503,7 +508,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       if (swipeHandledRef.current) return;
       swipeHandledRef.current = true;
 
-      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
+      const activeCard = grabbedCardRef.current || findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
         // 縦は画面のスクロールに使う。上スワイプ（卒業）はカードの
@@ -533,6 +538,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       }
     }
     
+    grabbedCardRef.current = null;
     setDragStart({ x: 0, y: 0 });
   }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
 
@@ -590,6 +596,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     
     setIsDragging(true);
     const touch = e.touches[0];
+    // 触れたカードをここで押さえる。document 側のリスナー経由でも
+    // e.target からたどれる。
+    grabbedCardRef.current = e.target.closest?.('[data-card-index]')
+      || findCardAtPoint(touch.clientX, touch.clientY);
     setDragStart({ x: touch.clientX, y: touch.clientY });
     logger.debug('🔥 ReviewFlashcard Touch start:', { 
       x: touch.clientX, 
@@ -631,9 +641,23 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       dragStartY: dragStart.y
     });
     
-    // 単語帳モードでは左右スワイプで評価、上下スワイプで削除
+    // 単語帳モードでは左右スワイプで採点。縦は一覧のスクロールに使う。
     if (viewMode === 'wordbook') {
-      paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, false));
+      // 縦に振っているならブラウザに任せる。カードは動かさない。
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      if (e.cancelable) e.preventDefault();
+
+      // 掴んだカードは指を置いた座標から引く。単語帳では document にも
+      // リスナーを張っていて、そちら経由だと e.currentTarget が document に
+      // なる。触っているカードを指さないので、色も動きも出ていなかった。
+      const activeCard = grabbedCardRef.current || findCardAtPoint(dragStart.x, dragStart.y);
+      if (!activeCard) return;
+
+      // 指に少しついてくる。押せている手応えが無いと、スワイプが
+      // 効いているのか分からない。横だけ、控えめに。
+      const followX = Math.max(-60, Math.min(60, deltaX));
+      activeCard.style.transform = `translate(${followX}px, 0px)`;
+      paintSwipeFeedback(activeCard, swipeFeedbackFor(deltaX, deltaY, false));
       return;
     }
     
@@ -695,7 +719,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       if (swipeHandledRef.current) return;
       swipeHandledRef.current = true;
 
-      const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
+      const activeCard = grabbedCardRef.current || findCardAtPoint(dragStart.x, dragStart.y);
 
       if (activeCard) {
         // 縦は画面のスクロールに使う（卒業はカードのボタン）
@@ -707,6 +731,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       }
     }
     
+    grabbedCardRef.current = null;
     setDragStart({ x: 0, y: 0 });
     
   }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleGraduateCurrent, judgeWordAt]);
