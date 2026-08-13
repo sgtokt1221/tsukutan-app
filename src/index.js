@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { enableOfflineCache } from './logic/firestorePersistence';
+
+// Firestore の読み書きより先に呼ぶ。描画のあとだと手遅れになる。
+enableOfflineCache();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
