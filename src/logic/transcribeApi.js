@@ -3,18 +3,17 @@ import { toAssessmentWav } from './wavEncoder';
 import logger from './logger';
 
 /**
- * 録音を採点に出す。
+ * 録音を文字にしてもらう。
  *
- * Azure の鍵は Cloud Function 側にある。ここからは Function を叩くだけで、
- * 鍵はクライアントに一切持たない。
+ * 文字起こしは Cloud Function 経由で Google Cloud Speech-to-Text に投げる。
+ * 同じ GCP プロジェクトなので鍵は要らない（Function のサービスアカウントで通る）。
+ * ブラウザから直接叩かないのは、認証情報をクライアントに置かないため。
  *
- * 鍵がまだ入っていないときは Function が 503 を返す。そのときは
- * `available: false` を返し、画面は「録音して聞き返すだけ」に落ちる。
- * 採点が無くても通しの練習はできるので、そこで止めない。
+ * 発音の点は出さない。それには別サービスが要るので、いまは対象外。
  */
 
-const ENDPOINT = process.env.REACT_APP_ASSESS_SPEAKING_URL
-  || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/assessSpeaking';
+const ENDPOINT = process.env.REACT_APP_TRANSCRIBE_URL
+  || 'https://us-central1-tsukutan-58b3f.cloudfunctions.net/transcribeSpeaking';
 
 /** ArrayBuffer を base64 に。大きいので一度に spread せず刻む。 */
 const toBase64 = (buffer) => {
@@ -36,9 +35,9 @@ const toBase64 = (buffer) => {
  * @param {string} [options.modelAnswer] 模範解答（あれば）
  * @param {string} [options.grade] '3' | 'pre2' | '2' | 'pre1'
  */
-export const assessSpeaking = async (blob, options) => {
+export const transcribeSpeaking = async (blob, options) => {
   const user = getAuth().currentUser;
-  if (!user) return { available: false, reason: 'signed-out' };
+  if (!user) throw new Error('ログインし直してください。');
 
   const wav = await toAssessmentWav(blob);
   const idToken = await user.getIdToken();
@@ -59,33 +58,13 @@ export const assessSpeaking = async (blob, options) => {
     }),
   });
 
-  if (response.status === 503) {
-    // 鍵がまだ。採点なしで続けられるようにする
-    return { available: false, reason: 'not-configured' };
-  }
   if (!response.ok) {
     const detail = await response.json().catch(() => ({}));
-    logger.warn('採点に失敗しました', response.status, detail);
-    throw new Error(detail.error || '採点できませんでした。もう一度お試しください。');
+    logger.warn('文字起こしに失敗しました', response.status, detail);
+    throw new Error(detail.error || '文字起こしできませんでした。もう一度お試しください。');
   }
 
-  return { available: true, ...(await response.json()) };
-};
-
-/** 点の帯をどう見せるか。80以上が本番で通る目安。 */
-export const scoreBand = (score) => {
-  if (typeof score !== 'number') return 'unknown';
-  if (score >= 80) return 'good';
-  if (score >= 60) return 'fair';
-  return 'poor';
-};
-
-export const SCORE_LABELS = {
-  PronScore: '総合',
-  AccuracyScore: '発音',
-  FluencyScore: 'なめらかさ',
-  CompletenessScore: '読み落とし',
-  ProsodyScore: '抑揚',
+  return response.json();
 };
 
 export const VERDICT_LABELS = {

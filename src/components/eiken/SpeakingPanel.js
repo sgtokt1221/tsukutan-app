@@ -1,67 +1,46 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FaMicrophone, FaStop, FaRedo, FaPlay, FaCheckCircle } from 'react-icons/fa';
+import { FaMicrophone, FaStop, FaRedo, FaPlay, FaFileAlt } from 'react-icons/fa';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
-import {
-  SCORE_LABELS,
-  VERDICT_LABELS,
-  assessSpeaking,
-  scoreBand,
-} from '../../logic/speakingAssessment';
+import { VERDICT_LABELS, transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
 
 /**
- * 生徒が声を出す場面の、録音と採点。
+ * 生徒が声を出す場面の、録音と文字起こし。
  *
- * 音読は読む英文が決まっているので、読み違えた語まで出せる（scripted）。
- * 質問への答えは何を言うか決まっていないので、発音だけ点にして、
- * 中身は別に「質問に答えているか」を見る（unscripted）。
+ * 自分が実際に何と言ったかが文字で見えると、言えたつもりだった箇所が
+ * 分かる。音読では読むべき英文と突き合わせて、読み飛ばした語を出す。
+ * 質問への答えは、質問に答えられているかを見る。
  *
- * 採点が使えないときも録音と聞き返しはできる。Azure の鍵がまだでも、
- * 自分の声を聞くだけで直せることは多い。
+ * 発音の点は出さない。文字起こしが取れなくても録音と聞き返しはできる。
  */
-
-const ORDER = ['PronScore', 'AccuracyScore', 'FluencyScore', 'ProsodyScore', 'CompletenessScore'];
-
-function ScoreBar({ name, value }) {
-  const band = scoreBand(value);
-  return (
-    <div className="speaking-score">
-      <span className="speaking-score__label">{SCORE_LABELS[name]}</span>
-      <span className="speaking-score__track">
-        <span className={`speaking-score__fill is-${band}`} style={{ width: `${value}%` }} />
-      </span>
-      <span className={`speaking-score__value is-${band}`}>{value}</span>
-    </div>
-  );
-}
 
 export default function SpeakingPanel({ mode, referenceText, question, modelAnswer, grade, resetKey }) {
   const recorder = useRecorder();
   const [result, setResult] = useState(null);
-  const [assessing, setAssessing] = useState(false);
-  const [assessError, setAssessError] = useState(null);
+  const [working, setWorking] = useState(false);
+  const [failure, setFailure] = useState(null);
 
   const { reset } = recorder;
   // 場面が変わったら前の録音と点を捨てる。前の答えが残っていると読み違える。
   useEffect(() => {
     reset();
     setResult(null);
-    setAssessError(null);
+    setFailure(null);
   }, [resetKey, reset]);
 
   const blob = recorder.blob;
 
-  const runAssessment = useCallback(async () => {
+  const runTranscription = useCallback(async () => {
     if (!blob) return;
-    setAssessing(true);
-    setAssessError(null);
+    setWorking(true);
+    setFailure(null);
     try {
-      setResult(await assessSpeaking(blob, { mode, referenceText, question, modelAnswer, grade }));
+      setResult(await transcribeSpeaking(blob, { mode, referenceText, question, modelAnswer, grade }));
     } catch (error) {
-      logger.warn('採点できませんでした', error);
-      setAssessError(error.message);
+      logger.warn('文字起こしできませんでした', error);
+      setFailure(error.message);
     } finally {
-      setAssessing(false);
+      setWorking(false);
     }
   }, [blob, mode, referenceText, question, modelAnswer, grade]);
 
@@ -72,8 +51,6 @@ export default function SpeakingPanel({ mode, referenceText, question, modelAnsw
       </p>
     );
   }
-
-  const scores = result?.scores;
 
   return (
     <div className="speaking-panel">
@@ -100,48 +77,39 @@ export default function SpeakingPanel({ mode, referenceText, question, modelAnsw
             <button
               type="button"
               className="ghost-button"
-              onClick={runAssessment}
-              disabled={assessing}
+              onClick={runTranscription}
+              disabled={working}
             >
-              {assessing ? <>採点中…</> : <><FaCheckCircle aria-hidden="true" /> 採点する</>}
+              {working ? <>文字にしています…</> : <><FaFileAlt aria-hidden="true" /> 文字にする</>}
             </button>
           </>
         )}
       </div>
 
       {recorder.error && <p className="speaking-error">{recorder.error}</p>}
-      {assessError && <p className="speaking-error">{assessError}</p>}
+      {failure && <p className="speaking-error">{failure}</p>}
 
-      {result && !result.available && (
-        <p className="interview-note">
-          採点はまだ使えません。録音を聞き返して、見本と比べてください。
-        </p>
-      )}
-
-      {result?.available && (
+      {result && (
         <div className="speaking-result">
-          {scores && ORDER
-            .filter((name) => typeof scores[name] === 'number')
-            .map((name) => <ScoreBar key={name} name={name} value={scores[name]} />)}
+          {/* まず自分が何と言ったか。ここが本題。 */}
+          <div className="speaking-transcript-main">
+            <p className="interview-beat__role">言えていた内容</p>
+            <p className="speaking-transcript-main__text">
+              {result.transcript || '聞き取れませんでした。マイクに近づいて、もう一度話してみてください。'}
+            </p>
+          </div>
 
-          {result.mispronounced?.length > 0 && (
+          {result.missing?.length > 0 && (
             <div className="speaking-words">
-              <p className="interview-beat__role">気をつける語</p>
+              <p className="interview-beat__role">読めていなかった語</p>
               <ul>
-                {result.mispronounced.map((word, index) => (
-                  <li key={`${word.word}-${index}`}>
-                    <span className="speaking-words__word">{word.word}</span>
-                    <span className="speaking-words__note">
-                      {word.errorType === 'Omission' && '読み飛ばし'}
-                      {word.errorType === 'Insertion' && '余計な語'}
-                      {word.errorType === 'Mispronunciation' && `発音 ${word.accuracy ?? '-'}`}
-                      {word.errorType === 'UnexpectedBreak' && '不要な間'}
-                      {word.errorType === 'MissingBreak' && '間が足りない'}
-                      {word.errorType === 'Monotone' && '平板'}
-                    </span>
-                  </li>
+                {result.missing.map((word) => (
+                  <li key={word}><span className="speaking-words__word">{word}</span></li>
                 ))}
               </ul>
+              <p className="speaking-hint">
+                聞き取りの誤りで出ることもあります。録音を聞き返して確かめてください。
+              </p>
             </div>
           )}
 
@@ -158,21 +126,15 @@ export default function SpeakingPanel({ mode, referenceText, question, modelAnsw
             </div>
           )}
 
-          {result.transcript && (
-            <details className="speaking-transcript">
-              <summary>聞き取られた内容</summary>
-              <p>{result.transcript}</p>
-            </details>
-          )}
         </div>
       )}
 
       {recorder.state === 'idle' && !blob && (
         <p className="speaking-hint">
-          <FaPlay aria-hidden="true" /> 録音してから「採点する」を押すと、発音の点が出ます。
+          <FaPlay aria-hidden="true" /> 録音してから「文字にする」を押すと、言えていた内容が出ます。
         </p>
       )}
-      {blob && !result && recorder.state !== 'recording' && !assessing && (
+      {blob && !result && recorder.state !== 'recording' && !working && (
         <p className="speaking-hint">
           <FaRedo aria-hidden="true" /> 納得いくまで録り直せます。
         </p>
