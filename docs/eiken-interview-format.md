@@ -179,6 +179,49 @@
 「週末は何をするのが好きか」。**同じ話題を難しく言い換えるのではなく、
 話題そのものの射程が変わる。**
 
+### パッセージに入れる決まり文句
+
+**No.1 の答えは、決まり文句の直前の文から作る。** 公式サンプル3本とも例外なく
+この作りだった。ここを外すと No.1 が答えられない問題になる。
+
+| 級 | パッセージに置く型 | No.1 の聞き方 | 答えの形 |
+|---|---|---|---|
+| 3級 | `…, so + 結果` | "What can …?" / "Why …?" | 直前の節をそのまま |
+| 準2級 | `…, and in this way, they + 結果` | "According to the passage, how do …?" | **"By 〜ing …"** |
+| 2級 | `In this way, they + 結果` / `For this reason, …` | "According to the passage, how do …?" | **"By 〜ing …"** |
+
+**仕組み**
+
+```
+（前の文）  ← ここが答えの中身
+In this way, they + 結果      ← ここを質問文がそのまま借りる
+```
+
+準2級のサンプルなら「recycled paper で作られた製品を使う」→「in this way, 環境を
+よくしようとしている」。No.1 は後半をそのまま借りて "how do many families try to
+make the environment better?" と聞き、答えは前半を By 〜ing にした
+"By using products made from recycled paper."
+
+**書くときの手順**
+
+1. 結果の文を先に決める（「〜しようとしている」「〜が楽になる」）
+2. その手段を前の文に書く
+3. 2つを `in this way` / `so` / `for this reason` でつなぐ
+4. 結果の文をほぼそのまま疑問文にして No.1 にする
+
+**使える決まり文句**（サンプルで確認できたもの、および同型のもの）
+
+- `so` — 3級。因果を一番やさしくつなぐ
+- `in this way` — 準2級・2級。**手段 → 結果**。By 〜ing で答えさせたいときはこれ
+- `for this reason` — 2級。**理由 → 対応**。「だから〜するようになった」
+- `as a result` — 2級。結果を強調する
+- `by doing so` — 2級。in this way とほぼ同じ働き
+- `however` — 2級以上。逆接。No.3/No.4 の意見設問につなげる伏線に使える
+
+**注意** — 答えでは代名詞を名詞に戻す。パッセージが `they` でも、模範解答は
+"some customers with children" のように具体名詞で始まる。質問文を作るときに
+`they` が誰を指すかが一意に決まるようにしておくこと。
+
 ### 全級に共通する仕掛け
 
 **Yes/No で分岐して追い質問が来る。** 3級のNo.5、準2級のNo.4・No.5、2級のNo.4 が
@@ -203,8 +246,8 @@ and put it down.」以降の設問は、カードを見ずに答える。
   "grade": "3",
   "title": "Morning Radio",
   "passage": {
-    "text": "Many people listen to the radio in the morning. They can hear the news and the weather while they eat breakfast. Some people also enjoy the music, so the radio is still popular today.",
-    "wordCount": 34
+    "text": "Many people listen to the radio in the morning. They can hear the news and the weather while they eat breakfast. The radio tells them about traffic and trains, so it helps them get to work on time.",
+    "wordCount": 38
   },
   "illustrations": [
     { "id": "a", "prompt": "§4-3級 を参照",
@@ -212,8 +255,8 @@ and put it down.」以降の設問は、カードを見ずに答える。
   ],
   "questions": [
     { "no": 1, "type": "passage", "cardVisible": true,
-      "prompt": "Please look at the passage. What can people hear on the radio in the morning?",
-      "modelAnswer": "They can hear the news and the weather." },
+      "prompt": "Please look at the passage. How does the radio help people get to work on time?",
+      "modelAnswer": "It tells them about traffic and trains." },
     { "no": 2, "type": "illustration", "cardVisible": true,
       "prompt": "Please look at the picture. What is the man going to do?",
       "modelAnswer": "He's going to read a newspaper." },
