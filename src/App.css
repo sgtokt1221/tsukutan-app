@@ -2938,16 +2938,6 @@ select:focus-visible,
   color: var(--color-olive-muted);
 }
 
-/* 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
-.free-study-groups {
-  display: grid;
-  gap: var(--space-16);
-}
-
-.free-study-group > .home-section-eyebrow {
-  margin-bottom: var(--space-8);
-}
-
 .tile-button__label {
   display: flex;
   align-items: center;
