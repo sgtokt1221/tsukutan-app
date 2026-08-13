@@ -3,7 +3,7 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
-import { FaUndo, FaArrowLeft, FaArrowUp, FaPlay, FaStop } from 'react-icons/fa';
+import { FaUndo, FaArrowLeft, FaArrowUp, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
 import PeekNudge from './components/learning/PeekNudge';
 import SessionHeader from './components/learning/SessionHeader';
@@ -440,7 +440,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
         activeCard.style.transform = `translate(${limitedDeltaX}px, ${limitedDeltaY}px)`;
         
         // 単語帳モードでの視覚的フィードバック
-        paintSwipeFeedback(activeCard, swipeFeedbackFor(limitedDeltaX, limitedDeltaY));
+        paintSwipeFeedback(activeCard, swipeFeedbackFor(limitedDeltaX, limitedDeltaY, false));
       }
     }
   }, [isDragging, dragStart, x, y, viewMode]);
@@ -472,33 +472,18 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
       
       if (activeCard) {
-        if (isSwipe) {
-          if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -15) {
-            // 上スワイプ（卒業）。掴んでいたカードの単語を外す。
-            // 以前は「先頭の単語を消して wordbookProgress を1進める」
-            // だったので、途中のカードを上げると別の単語が消えていた。
-            activeCard.style.transform = `translate(0px, -300px)`;
-            activeCard.style.opacity = '0';
-
-            const swipedIndex = Number(activeCard.dataset.cardIndex);
-            setTimeout(() => graduateWordAt(swipedIndex), 300);
-          } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // 左右スワイプ（採点）。カードは一覧に残し、色で結果を示す。
-            const swipedIndex = Number(activeCard.dataset.cardIndex);
-            if (deltaX > 30) {
-              judgeWordAt(swipedIndex, 'good');
-            } else if (deltaX < -30) {
-              judgeWordAt(swipedIndex, 'again');
-            }
-
-            activeCard.style.transform = 'translate(0px, 0px)';
-            clearSwipeFeedback(activeCard);
+        // 縦は画面のスクロールに使う。上スワイプ（卒業）はカードの
+        // ボタンに移した。一覧をたぐる指の動きと取り合いになるため。
+        if (isSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+          const swipedIndex = Number(activeCard.dataset.cardIndex);
+          if (deltaX > 30) {
+            judgeWordAt(swipedIndex, 'good');
+          } else if (deltaX < -30) {
+            judgeWordAt(swipedIndex, 'again');
           }
-        } else {
-          // スワイプが不十分な場合、元の位置に戻す
-          activeCard.style.transform = 'translate(0px, 0px)';
-          clearSwipeFeedback(activeCard);
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     } else {
       // フラッシュカードモードの場合、従来のスワイプ判定
@@ -515,7 +500,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     }
     
     setDragStart({ x: 0, y: 0 });
-  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, graduateWordAt, judgeWordAt]);
+  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -544,9 +529,12 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
 
   const handleTouchStart = useCallback((e) => {
     swipeHandledRef.current = false;
-    // スマホでのタッチイベントを確実に処理するため、passive: falseで登録
-    e.preventDefault();
-    e.stopPropagation();
+    // 単語帳では既定の動作を止めない。preventDefault すると
+    // 「答えを見る」のタップが click まで届かず、縦スクロールも殺される。
+    if (viewMode !== 'wordbook') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     
     // マルチタッチの場合は無視
     if (e.touches.length > 1) {
@@ -554,10 +542,11 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       return;
     }
     
-    // ダブルタップ検出（スマホ用）
+    // ダブルタップ検出（スマホ用）。カードをめくる操作なので
+    // フラッシュカードだけ。単語帳では1タップで答えを出したい。
     const currentTime = new Date().getTime();
     const tapLength = currentTime - lastTap;
-    if (tapLength < 500 && tapLength > 0) {
+    if (viewMode !== 'wordbook' && tapLength < 500 && tapLength > 0) {
       logger.debug('🔥 Double tap detected on mobile!');
       handleDoubleClick(e);
       setLastTap(0);
@@ -602,7 +591,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     
     // 単語帳モードでは左右スワイプで評価、上下スワイプで削除
     if (viewMode === 'wordbook') {
-      paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY));
+      paintSwipeFeedback(e.currentTarget, swipeFeedbackFor(deltaX, deltaY, false));
       return;
     }
     
@@ -667,25 +656,18 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       const activeCard = findCardAtPoint(dragStart.x, dragStart.y);
 
       if (activeCard) {
-        const swipedIndex = Number(activeCard.dataset.cardIndex);
-
-        if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -threshold) {
-          activeCard.style.transform = 'translate(0px, -300px)';
-          activeCard.style.opacity = '0';
-          setTimeout(() => graduateWordAt(swipedIndex), 300);
-        } else {
-          if (Math.abs(deltaX) > threshold) {
-            judgeWordAt(swipedIndex, deltaX > 0 ? 'good' : 'again');
-          }
-          activeCard.style.transform = 'translate(0px, 0px)';
-          clearSwipeFeedback(activeCard);
+        // 縦は画面のスクロールに使う（卒業はカードのボタン）
+        if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
+          judgeWordAt(Number(activeCard.dataset.cardIndex), deltaX > 0 ? 'good' : 'again');
         }
+        activeCard.style.transform = 'translate(0px, 0px)';
+        clearSwipeFeedback(activeCard);
       }
     }
     
     setDragStart({ x: 0, y: 0 });
     
-  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleGraduateCurrent, graduateWordAt, judgeWordAt]);
+  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleGraduateCurrent, judgeWordAt]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
@@ -780,12 +762,25 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
               <div className="wordbook-card__grid">
                 {/* 左側：問題。英→和なら英単語、和→英なら意味 */}
                 <div className="wordbook-card__side wordbook-card__left">
-                  <BookmarkButton
-                    size="inline"
-                    active={isBookmarked(word)}
-                    onToggle={() => toggleBookmark(word)}
-                    label={word.word}
-                  />
+                  <div className="wordbook-card__tools">
+                    <BookmarkButton
+                      size="inline"
+                      active={isBookmarked(word)}
+                      onToggle={() => toggleBookmark(word)}
+                      label={word.word}
+                    />
+                    {/* 卒業。上スワイプだと一覧のスクロールと取り合いになるので
+                        ボタンにしている。 */}
+                    <button
+                      type="button"
+                      className="wordbook-graduate"
+                      onClick={(e) => { e.stopPropagation(); graduateWordAt(actualIndex); }}
+                      aria-label={`${word.word} はもう覚えた。復習から外す`}
+                      title="もう覚えた（復習から外す）"
+                    >
+                      <FaCheck aria-hidden="true" />
+                    </button>
+                  </div>
                   <button
                     type="button"
                     className={isJaToEn ? 'wordbook-word wordbook-word--ja' : 'wordbook-word'}
