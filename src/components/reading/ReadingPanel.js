@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { FaArrowLeft, FaMicrophone, FaStop, FaPlay } from 'react-icons/fa';
+import { FaArrowLeft, FaMicrophone, FaStop, FaPlay, FaStar } from 'react-icons/fa';
 import ReadingView, { READING_MODES } from './ReadingView';
 import {
   loadReading, loadReadingIndex, readingEnglish, speechPlanFor,
@@ -9,6 +9,9 @@ import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
+import { loadWordMaster } from '../../logic/wordMaster';
+import { buildWordIndex, findWord } from '../../logic/wordLookup';
+import { useBookmarks } from '../../logic/useBookmarks';
 import './Reading.css';
 
 /**
@@ -21,7 +24,7 @@ import './Reading.css';
  * 「読めた割合」を出せる。発音は測らない。
  */
 
-export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets }) {
+export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, userId }) {
   const [index, setIndex] = useState(null);
   const [grade, setGrade] = useState(null);
   const [reading, setReading] = useState(null);
@@ -34,6 +37,35 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets })
   const [aloud, setAloud] = useState(null);
   const recorder = useRecorder();
   const handledBlobRef = useRef(null);
+
+  // 長押しで「毎日みる」に入れるための照合。本文の語は活用しているので、
+  // 単語カードのデータと突き合わせてから登録する。
+  const [wordIndex, setWordIndex] = useState(null);
+  const [picked, setPicked] = useState(null);
+  const { isBookmarked, toggle: toggleBookmark } = useBookmarks(userId);
+
+  useEffect(() => {
+    loadWordMaster()
+      .then((master) => setWordIndex(buildWordIndex(master)))
+      .catch((loadError) => logger.warn('単語カードを読めませんでした', loadError));
+  }, []);
+
+  /** 本文の語を長押ししたとき。カードにある語だけ登録する。 */
+  const holdWord = useCallback((token) => {
+    const word = findWord(token, wordIndex);
+    if (!word) {
+      setPicked({ token, missing: true });
+      return;
+    }
+    toggleBookmark(word);
+    setPicked({ token, word, added: !isBookmarked(word) });
+  }, [wordIndex, toggleBookmark, isBookmarked]);
+
+  /** その語が登録済みか。本文の見た目に印を付ける。 */
+  const markedWord = useCallback((token) => {
+    const word = findWord(token, wordIndex);
+    return Boolean(word) && isBookmarked(word);
+  }, [wordIndex, isBookmarked]);
 
   useEffect(() => {
     loadReadingIndex()
@@ -68,13 +100,25 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets })
     setSpeakingIndex(null);
   }, []);
 
+  // 通しで読み上げている最中か。止める口を出すのに使う。
+  const [readingAll, setReadingAll] = useState(false);
+
   /** 通しで読み上げる。和訳モードなら日本語も混ぜる。 */
   const readAll = useCallback(() => {
     if (!reading) return;
     stopSpeaking();
     setSpeakingIndex(null);
-    speakSequence(reading.sentences.flatMap((sentence) => speechPlanFor(sentence, mode === 'ja')));
+    setReadingAll(true);
+    const plan = reading.sentences.flatMap((sentence) => speechPlanFor(sentence, mode === 'ja'));
+    // speakSequence は Promise を返さない。読み終わりは onDone で受ける。
+    speakSequence(plan, { onDone: () => setReadingAll(false) });
   }, [reading, mode]);
+
+  const stopAll = useCallback(() => {
+    stopSpeaking();
+    setReadingAll(false);
+    setSpeakingIndex(null);
+  }, []);
 
   // 録り終えたら文字起こしへ送る。押させるボタンは置かない。
   const { blob, stop: stopRecorder, reset: resetRecorder } = recorder;
@@ -193,9 +237,17 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets })
 
         {mode === 'slash' && <p className="reading-note">まとまりを押すと、そこの訳が出ます。</p>}
 
-        <button type="button" className="ghost-button reading-readall" onClick={readAll}>
-          <FaPlay aria-hidden="true" /> 通して読み上げる{mode === 'ja' && '（英語→日本語）'}
-        </button>
+        {readingAll ? (
+          <button type="button" className="ghost-button reading-readall is-stop" onClick={stopAll}>
+            <FaStop aria-hidden="true" /> 読み上げを止める
+          </button>
+        ) : (
+          <button type="button" className="ghost-button reading-readall" onClick={readAll}>
+            <FaPlay aria-hidden="true" /> 通して読み上げる{mode === 'ja' && '（英語→日本語）'}
+          </button>
+        )}
+
+        <p className="reading-note">語を長押しすると「毎日みる」に入ります。</p>
 
         <ReadingView
           reading={reading}
@@ -203,7 +255,24 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets })
           speakingIndex={speakingIndex}
           onSpeak={speak}
           onStop={stop}
+          isMarked={markedWord}
+          onHold={holdWord}
         />
+
+        {/* 長押しの結果。押した本人にだけ短く返す。 */}
+        {picked && (
+          <p className={picked.missing ? 'reading-picked is-missing' : 'reading-picked'} role="status">
+            {picked.missing
+              ? `「${picked.token}」は単語カードにありません。`
+              : (
+                <>
+                  <FaStar aria-hidden="true" />{' '}
+                  {picked.word.word}（{picked.word.meaning}）を
+                  {picked.added ? '毎日みるに入れました。' : '毎日みるから外しました。'}
+                </>
+              )}
+          </p>
+        )}
 
         {/* 音読。面接の音読と同じ仕組みで、読み飛ばした語を見る。 */}
         {canRecord() && (

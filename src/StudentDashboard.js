@@ -1699,20 +1699,25 @@ export default function StudentDashboard() {
       case 'story':
         return (
           <>
-            {/* 級ごと・カテゴリごとの読みもの。月1本のAIストーリーはその下に残す。 */}
+            {/* 級ごと・カテゴリごとの読みもの。 */}
             <ReadingPanel
               schoolGrade={userData?.grade}
               abilityLevel={testResultLevel}
               goalTargets={userData?.goal?.targets || []}
+              userId={auth.currentUser?.uid}
             />
-            <StoryPanel
-            monthlyStory={monthlyStory}
-            pastStories={pastStories}
-            storiesLoading={storiesLoading}
-            isGeneratingStory={isGeneratingStory}
-            storyError={storyError}
-            onGenerate={handleGenerateStory}
-            />
+            {/* 月1本のAIストーリー。読みものが揃うまでは出さない。
+                消していないので、戻すのは false を外すだけ。 */}
+            {false && (
+              <StoryPanel
+                monthlyStory={monthlyStory}
+                pastStories={pastStories}
+                storiesLoading={storiesLoading}
+                isGeneratingStory={isGeneratingStory}
+                storyError={storyError}
+                onGenerate={handleGenerateStory}
+              />
+            )}
           </>
         );
       case 'free-study':

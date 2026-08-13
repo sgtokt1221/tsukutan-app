@@ -271,3 +271,40 @@
   font-weight: 700;
   color: var(--color-ink-olive);
 }
+
+/* 本文の1語。長押しで「毎日みる」に入る。押せることが分かるよう、
+   登録済みだけ印を付ける（全部に下線を引くと読みにくい）。 */
+.reading-word {
+  cursor: pointer;
+  border-radius: 3px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.reading-word.is-marked {
+  background-color: rgba(163, 230, 53, 0.35);
+  box-shadow: 0 1px 0 var(--color-brand-lime);
+}
+
+.reading-readall.is-stop {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.reading-picked {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-12) 0 0;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-12);
+}
+
+.reading-picked.is-missing {
+  background-color: rgba(54, 66, 30, 0.06);
+  color: var(--color-olive-muted);
+}
