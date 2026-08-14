@@ -66,7 +66,13 @@ for (const theme of THEMES) {
  */
 export const themesForWord = (word) => {
   if (!word) return [];
-  if (word.theme && THEME_IDS.includes(word.theme)) return [word.theme];
+
+  // ライティングの型は、意味のテーマとは別にひとまとめでも引けるようにする。
+  // 「英検2級の書ける型を一覧したい」という探し方があるため、意味別の
+  // テーマと重ねて持たせる（1語が2つのテーマに出る）。
+  const extra = word.source === 'writing' ? ['writing'] : [];
+
+  if (word.theme && THEME_IDS.includes(word.theme)) return [word.theme, ...extra];
 
   const matched = new Set();
 
@@ -85,7 +91,7 @@ export const themesForWord = (word) => {
     }
   }
 
-  return [...matched];
+  return [...matched, ...extra];
 };
 
 /**
