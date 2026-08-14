@@ -1,0 +1,329 @@
+{
+  "id": "eiken3-technology-01",
+  "grade": "3",
+  "category": "technology",
+  "title": "The Robot at the Supermarket",
+  "titleJa": "スーパーのロボット",
+  "sentences": [
+    {
+      "ja": "わたしの町のスーパーに、新しいロボットが来ました。",
+      "chunks": [
+        {
+          "en": "A new robot",
+          "ja": "新しいロボットが",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "来ました",
+          "role": "V"
+        },
+        {
+          "en": "to the supermarket in my town.",
+          "ja": "わたしの町のスーパーに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それは店の中を動いて、床をきれいにします。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "moves",
+          "ja": "動きます",
+          "role": "V"
+        },
+        {
+          "en": "around the shop",
+          "ja": "店の中を",
+          "role": "M"
+        },
+        {
+          "en": "and cleans the floor.",
+          "ja": "そして床をきれいにします",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "高さはわたしのひざくらいで、青い色をしています。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "about as high as my knee, and blue.",
+          "ja": "高さがわたしのひざくらいで、青い色",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "最初、お年寄りの多くはそれをこわがっていました。",
+      "chunks": [
+        {
+          "en": "At first,",
+          "ja": "最初",
+          "role": "M"
+        },
+        {
+          "en": "many old people",
+          "ja": "お年寄りの多くは",
+          "role": "S"
+        },
+        {
+          "en": "were afraid",
+          "ja": "こわがっていました",
+          "role": "V"
+        },
+        {
+          "en": "of it.",
+          "ja": "それを",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし今では、子どもたちがそれに名前をつけています。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "now",
+          "ja": "今では",
+          "role": "M"
+        },
+        {
+          "en": "children",
+          "ja": "子どもたちが",
+          "role": "S"
+        },
+        {
+          "en": "have given",
+          "ja": "つけています",
+          "role": "V"
+        },
+        {
+          "en": "it",
+          "ja": "それに",
+          "role": "O"
+        },
+        {
+          "en": "a name.",
+          "ja": "名前を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "店で働く女性が、こんなことを話してくれました。",
+      "chunks": [
+        {
+          "en": "A woman who works at the shop",
+          "ja": "店で働く女性が",
+          "role": "S"
+        },
+        {
+          "en": "told",
+          "ja": "話してくれました",
+          "role": "V"
+        },
+        {
+          "en": "me",
+          "ja": "わたしに",
+          "role": "O"
+        },
+        {
+          "en": "this.",
+          "ja": "こんなことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "ロボットが来る前、彼女は毎晩2時間、床をそうじしていました。",
+      "chunks": [
+        {
+          "en": "Before the robot came,",
+          "ja": "ロボットが来る前",
+          "role": "M"
+        },
+        {
+          "en": "she",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "had cleaned",
+          "ja": "そうじしていました",
+          "role": "V"
+        },
+        {
+          "en": "the floor",
+          "ja": "床を",
+          "role": "O"
+        },
+        {
+          "en": "for two hours every night.",
+          "ja": "毎晩2時間",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今、その時間を客と話すことに使っています。",
+      "chunks": [
+        {
+          "en": "Now",
+          "ja": "今",
+          "role": "M"
+        },
+        {
+          "en": "she",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "uses",
+          "ja": "使っています",
+          "role": "V"
+        },
+        {
+          "en": "that time",
+          "ja": "その時間を",
+          "role": "O"
+        },
+        {
+          "en": "to talk with the people who come to the shop.",
+          "ja": "店に来る客と話すことに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼女は、仕事がなくなるのではないかと心配していたそうです。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "そうです",
+          "role": "V"
+        },
+        {
+          "en": "that she had been worried that her work would be lost.",
+          "ja": "仕事がなくなるのではないかと心配していたと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし実際には、仕事の中身が変わっただけでした。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "in fact,",
+          "ja": "実際には",
+          "role": "M"
+        },
+        {
+          "en": "only the inside of her work",
+          "ja": "仕事の中身だけが",
+          "role": "S"
+        },
+        {
+          "en": "changed.",
+          "ja": "変わりました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "ロボットにできるのは、決まったことを続けることです。",
+      "chunks": [
+        {
+          "en": "What the robot can do",
+          "ja": "ロボットにできることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "to continue doing a fixed thing.",
+          "ja": "決まったことを続けること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "客の顔を見て、その日の様子に気づくことはできません。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "cannot",
+          "ja": "できません",
+          "role": "V"
+        },
+        {
+          "en": "look at a person's face and notice how they are that day.",
+          "ja": "客の顔を見てその日の様子に気づくことは",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "だから、その仕事は人に残りました。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "that work",
+          "ja": "その仕事は",
+          "role": "S"
+        },
+        {
+          "en": "was left",
+          "ja": "残りました",
+          "role": "V"
+        },
+        {
+          "en": "to people.",
+          "ja": "人に",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

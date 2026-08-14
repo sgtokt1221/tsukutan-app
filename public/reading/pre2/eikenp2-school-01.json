@@ -1,0 +1,389 @@
+{
+  "id": "eikenp2-school-01",
+  "grade": "pre2",
+  "category": "school",
+  "title": "Should Schools Have Uniforms?",
+  "titleJa": "制服は必要か",
+  "sentences": [
+    {
+      "ja": "日本の中学校と高校の多くには、制服があります。",
+      "chunks": [
+        {
+          "en": "Most junior high schools and high schools in Japan",
+          "ja": "日本の中学校と高校の多くには",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "uniforms.",
+          "ja": "制服が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし世界では、制服のない国のほうが多いのが実際です。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "in fact",
+          "ja": "実際には",
+          "role": "M"
+        },
+        {
+          "en": "there are more countries without uniforms in the world.",
+          "ja": "世界では制服のない国のほうが多いのです",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "制服に賛成する意見は、いくつかの点を挙げます。",
+      "chunks": [
+        {
+          "en": "The opinion in favor of uniforms",
+          "ja": "制服に賛成する意見は",
+          "role": "S"
+        },
+        {
+          "en": "raises",
+          "ja": "挙げます",
+          "role": "V"
+        },
+        {
+          "en": "several points.",
+          "ja": "いくつかの点を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "第一に、朝に何を着るか考える時間が要りません。",
+      "chunks": [
+        {
+          "en": "First,",
+          "ja": "第一に",
+          "role": "M"
+        },
+        {
+          "en": "students",
+          "ja": "生徒は",
+          "role": "S"
+        },
+        {
+          "en": "do not need",
+          "ja": "要りません",
+          "role": "V"
+        },
+        {
+          "en": "time to think about what to wear in the morning.",
+          "ja": "朝に何を着るか考える時間が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "第二に、家庭の経済状態が見えにくくなります。",
+      "chunks": [
+        {
+          "en": "Second,",
+          "ja": "第二に",
+          "role": "M"
+        },
+        {
+          "en": "the economic condition of each family",
+          "ja": "家庭の経済状態が",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なります",
+          "role": "V"
+        },
+        {
+          "en": "harder to see.",
+          "ja": "見えにくく",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "服による差が、いじめにつながることがあるからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "differences in clothes",
+          "ja": "服による差が",
+          "role": "S"
+        },
+        {
+          "en": "sometimes lead",
+          "ja": "つながることがあるからです",
+          "role": "V"
+        },
+        {
+          "en": "to bullying.",
+          "ja": "いじめに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "一方、反対する意見も強い根拠を持っています。",
+      "chunks": [
+        {
+          "en": "On the other hand,",
+          "ja": "一方",
+          "role": "M"
+        },
+        {
+          "en": "the opinion against them",
+          "ja": "反対する意見も",
+          "role": "S"
+        },
+        {
+          "en": "has",
+          "ja": "持っています",
+          "role": "V"
+        },
+        {
+          "en": "strong grounds.",
+          "ja": "強い根拠を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "まず、制服は決して安くありません。",
+      "chunks": [
+        {
+          "en": "First,",
+          "ja": "まず",
+          "role": "M"
+        },
+        {
+          "en": "uniforms",
+          "ja": "制服は",
+          "role": "S"
+        },
+        {
+          "en": "are not",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "cheap at all.",
+          "ja": "決して安く",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "入学時に、家庭は数万円を一度に払うことになります。",
+      "chunks": [
+        {
+          "en": "At the time of entering school,",
+          "ja": "入学時に",
+          "role": "M"
+        },
+        {
+          "en": "families",
+          "ja": "家庭は",
+          "role": "S"
+        },
+        {
+          "en": "have to pay",
+          "ja": "払うことになります",
+          "role": "V"
+        },
+        {
+          "en": "tens of thousands of yen at once.",
+          "ja": "数万円を一度に",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "経済的な差を隠すはずのものが、最初に負担になるのです。",
+      "chunks": [
+        {
+          "en": "What is supposed to hide economic differences",
+          "ja": "経済的な差を隠すはずのものが",
+          "role": "S"
+        },
+        {
+          "en": "becomes",
+          "ja": "なるのです",
+          "role": "V"
+        },
+        {
+          "en": "a burden at the start.",
+          "ja": "最初に負担に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "また、体の性別と合わない服を求められる生徒もいます。",
+      "chunks": [
+        {
+          "en": "Also,",
+          "ja": "また",
+          "role": "M"
+        },
+        {
+          "en": "some students",
+          "ja": "生徒もいます",
+          "role": "S"
+        },
+        {
+          "en": "are asked to wear clothes that do not match who they are.",
+          "ja": "自分と合わない服を求められる",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "近年、この点から見直しを進める学校が増えています。",
+      "chunks": [
+        {
+          "en": "In recent years,",
+          "ja": "近年",
+          "role": "M"
+        },
+        {
+          "en": "more schools",
+          "ja": "より多くの学校が",
+          "role": "S"
+        },
+        {
+          "en": "have been changing their rules",
+          "ja": "見直しを進めています",
+          "role": "V"
+        },
+        {
+          "en": "from this point of view.",
+          "ja": "この点から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "いくつかの学校は、スカートとズボンを自由に選べるようにしました。",
+      "chunks": [
+        {
+          "en": "Some schools",
+          "ja": "いくつかの学校は",
+          "role": "S"
+        },
+        {
+          "en": "have made it possible",
+          "ja": "できるようにしました",
+          "role": "V"
+        },
+        {
+          "en": "to choose a skirt or trousers freely.",
+          "ja": "スカートとズボンを自由に選ぶことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "これは制服をなくすことなく、問題の一部を解いています。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "solves",
+          "ja": "解いています",
+          "role": "V"
+        },
+        {
+          "en": "part of the problem",
+          "ja": "問題の一部を",
+          "role": "O"
+        },
+        {
+          "en": "without removing uniforms.",
+          "ja": "制服をなくすことなく",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "大切なのは、制服の有無そのものではないのかもしれません。",
+      "chunks": [
+        {
+          "en": "What is important",
+          "ja": "大切なことは",
+          "role": "S"
+        },
+        {
+          "en": "may not be",
+          "ja": "ではないのかもしれません",
+          "role": "V"
+        },
+        {
+          "en": "whether there are uniforms or not.",
+          "ja": "制服の有無そのもの",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "だれが決めたのか、変えたいときに変えられるのか、という点です。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "who decided it, and whether it can be changed when we want to.",
+          "ja": "だれが決めたのか、変えたいときに変えられるのか、という点",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "規則を守る練習と同じくらい、規則を直す練習も必要です。",
+      "chunks": [
+        {
+          "en": "Practice in changing rules",
+          "ja": "規則を直す練習も",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "as necessary as practice in keeping them.",
+          "ja": "規則を守る練習と同じくらい必要",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

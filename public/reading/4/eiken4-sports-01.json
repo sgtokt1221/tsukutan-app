@@ -1,0 +1,289 @@
+{
+  "id": "eiken4-sports-01",
+  "grade": "4",
+  "category": "sports",
+  "title": "The Last Runner",
+  "titleJa": "最後の走者",
+  "sentences": [
+    {
+      "ja": "先月、わたしたちの学校で長い距離を走る大会がありました。",
+      "chunks": [
+        {
+          "en": "Last month,",
+          "ja": "先月",
+          "role": "M"
+        },
+        {
+          "en": "there was",
+          "ja": "ありました",
+          "role": "V"
+        },
+        {
+          "en": "a long running meet",
+          "ja": "長い距離を走る大会が",
+          "role": "S"
+        },
+        {
+          "en": "at our school.",
+          "ja": "わたしたちの学校で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "全部の生徒が5キロメートルを走りました。",
+      "chunks": [
+        {
+          "en": "All the students",
+          "ja": "全部の生徒が",
+          "role": "S"
+        },
+        {
+          "en": "ran",
+          "ja": "走りました",
+          "role": "V"
+        },
+        {
+          "en": "five kilometers.",
+          "ja": "5キロメートルを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは走るのが好きではありません。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "do not like",
+          "ja": "好きではありません",
+          "role": "V"
+        },
+        {
+          "en": "running.",
+          "ja": "走ることが",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "去年は、途中で歩いてしまいました。",
+      "chunks": [
+        {
+          "en": "Last year,",
+          "ja": "去年は",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "walked",
+          "ja": "歩いてしまいました",
+          "role": "V"
+        },
+        {
+          "en": "on the way.",
+          "ja": "途中で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "今年は、最後まで走ろうと決めました。",
+      "chunks": [
+        {
+          "en": "This year,",
+          "ja": "今年は",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "decided to run",
+          "ja": "走ろうと決めました",
+          "role": "V"
+        },
+        {
+          "en": "to the end.",
+          "ja": "最後まで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは毎朝、家の近くを20分走りました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "ran",
+          "ja": "走りました",
+          "role": "V"
+        },
+        {
+          "en": "near my house",
+          "ja": "家の近くを",
+          "role": "M"
+        },
+        {
+          "en": "for twenty minutes each morning.",
+          "ja": "毎朝20分",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "大会の日、わたしは最後から2番目でした。",
+      "chunks": [
+        {
+          "en": "On the day of the meet,",
+          "ja": "大会の日",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "the second from the last.",
+          "ja": "最後から2番目",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかしわたしは、一度も歩きませんでした。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "did not walk",
+          "ja": "歩きませんでした",
+          "role": "V"
+        },
+        {
+          "en": "even once.",
+          "ja": "一度も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしのうしろには、けがをした男の子がいました。",
+      "chunks": [
+        {
+          "en": "Behind me",
+          "ja": "わたしのうしろには",
+          "role": "M"
+        },
+        {
+          "en": "there was",
+          "ja": "いました",
+          "role": "V"
+        },
+        {
+          "en": "a boy who had hurt his leg.",
+          "ja": "けがをした男の子が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "彼は最後に来ましたが、みんなが待っていました。",
+      "chunks": [
+        {
+          "en": "He",
+          "ja": "彼は",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "来ました",
+          "role": "V"
+        },
+        {
+          "en": "last,",
+          "ja": "最後に",
+          "role": "M"
+        },
+        {
+          "en": "but everyone was waiting.",
+          "ja": "しかしみんなが待っていました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは彼のために大きな声を出しました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "made",
+          "ja": "出しました",
+          "role": "V"
+        },
+        {
+          "en": "a big sound",
+          "ja": "大きな声を",
+          "role": "O"
+        },
+        {
+          "en": "for him.",
+          "ja": "彼のために",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "速く走ることだけが大切ではないと思いました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "thought",
+          "ja": "思いました",
+          "role": "V"
+        },
+        {
+          "en": "that running fast is not the only important thing.",
+          "ja": "速く走ることだけが大切ではないと",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

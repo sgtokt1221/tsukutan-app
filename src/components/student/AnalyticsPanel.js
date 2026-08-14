@@ -316,7 +316,7 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
                           <span className="type-name">
                             {type.type === 'learning_session' && '新規学習'}
                             {type.type === 'review_session' && '復習学習'}
-                            {type.type === 'free_study_session' && '自由学習'}
+                            {type.type === 'free_study_session' && 'えらんで学習'}
                             {type.type === 'placement_test' && '実力テスト'}
                             {!['learning_session', 'review_session', 'free_study_session', 'placement_test'].includes(type.type) && type.type}
                           </span>

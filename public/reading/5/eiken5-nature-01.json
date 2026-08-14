@@ -1,0 +1,209 @@
+{
+  "id": "eiken5-nature-01",
+  "grade": "5",
+  "category": "nature",
+  "title": "The Cat and the Tree",
+  "titleJa": "ネコと木",
+  "sentences": [
+    {
+      "ja": "わたしの家の前に大きな木があります。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a big tree",
+          "ja": "大きな木が",
+          "role": "S"
+        },
+        {
+          "en": "in front of my house.",
+          "ja": "わたしの家の前に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その木にはよく鳥が来ます。",
+      "chunks": [
+        {
+          "en": "Birds",
+          "ja": "鳥が",
+          "role": "S"
+        },
+        {
+          "en": "often come",
+          "ja": "よく来ます",
+          "role": "V"
+        },
+        {
+          "en": "to the tree.",
+          "ja": "その木には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "鳥たちは朝に歌います。",
+      "chunks": [
+        {
+          "en": "The birds",
+          "ja": "鳥たちは",
+          "role": "S"
+        },
+        {
+          "en": "sing",
+          "ja": "歌います",
+          "role": "V"
+        },
+        {
+          "en": "in the morning.",
+          "ja": "朝に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "白いネコもその木の下にいます。",
+      "chunks": [
+        {
+          "en": "A white cat",
+          "ja": "白いネコも",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "います",
+          "role": "V"
+        },
+        {
+          "en": "under the tree,",
+          "ja": "その木の下に",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのネコはとてもかわいいです。",
+      "chunks": [
+        {
+          "en": "The cat",
+          "ja": "そのネコは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "very cute.",
+          "ja": "とてもかわいい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ネコは鳥を見ますが、木にのぼりません。",
+      "chunks": [
+        {
+          "en": "The cat",
+          "ja": "ネコは",
+          "role": "S"
+        },
+        {
+          "en": "watches",
+          "ja": "見ます",
+          "role": "V"
+        },
+        {
+          "en": "the birds,",
+          "ja": "鳥を",
+          "role": "O"
+        },
+        {
+          "en": "but it does not go up the tree.",
+          "ja": "しかし木にのぼりません",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "暑い日には、ネコは木の下でねむります。",
+      "chunks": [
+        {
+          "en": "On hot days",
+          "ja": "暑い日には",
+          "role": "M"
+        },
+        {
+          "en": "the cat",
+          "ja": "ネコは",
+          "role": "S"
+        },
+        {
+          "en": "sleeps",
+          "ja": "ねむります",
+          "role": "V"
+        },
+        {
+          "en": "under the tree.",
+          "ja": "木の下で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは窓からネコを見ます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "see",
+          "ja": "見ます",
+          "role": "V"
+        },
+        {
+          "en": "the cat",
+          "ja": "ネコを",
+          "role": "O"
+        },
+        {
+          "en": "from my window.",
+          "ja": "窓から",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは友だちです。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "friends.",
+          "ja": "友だち",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,359 @@
+{
+  "id": "eiken3-town-01",
+  "grade": "3",
+  "category": "town",
+  "title": "The Morning Market",
+  "titleJa": "朝の市場",
+  "sentences": [
+    {
+      "ja": "わたしの町では毎週日曜日に朝の市場が開かれます。",
+      "chunks": [
+        {
+          "en": "A morning market",
+          "ja": "朝の市場が",
+          "role": "S"
+        },
+        {
+          "en": "is held",
+          "ja": "開かれます",
+          "role": "V"
+        },
+        {
+          "en": "in my town",
+          "ja": "わたしの町では",
+          "role": "M"
+        },
+        {
+          "en": "every Sunday.",
+          "ja": "毎週日曜日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それは駅の近くの広場で始まります。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "starts",
+          "ja": "始まります",
+          "role": "V"
+        },
+        {
+          "en": "in the square near the station.",
+          "ja": "駅の近くの広場で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "近くの農場の人たちが野菜や果物を持ってきます。",
+      "chunks": [
+        {
+          "en": "People from the farms near the town",
+          "ja": "近くの農場の人たちが",
+          "role": "S"
+        },
+        {
+          "en": "bring",
+          "ja": "持ってきます",
+          "role": "V"
+        },
+        {
+          "en": "vegetables and fruit.",
+          "ja": "野菜や果物を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それらはとても新しいので、味がちがいます。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "are",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "very fresh,",
+          "ja": "とても新しい",
+          "role": "C"
+        },
+        {
+          "en": "so",
+          "ja": "なので",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "taste",
+          "ja": "味がします",
+          "role": "V"
+        },
+        {
+          "en": "different.",
+          "ja": "ちがう",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは毎週、母とそこへ買い物に行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "go shopping",
+          "ja": "買い物に行きます",
+          "role": "V"
+        },
+        {
+          "en": "there",
+          "ja": "そこへ",
+          "role": "M"
+        },
+        {
+          "en": "with my mother",
+          "ja": "母と",
+          "role": "M"
+        },
+        {
+          "en": "every week.",
+          "ja": "毎週",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "先週の日曜日、わたしたちは大きなトマトを買いました。",
+      "chunks": [
+        {
+          "en": "Last Sunday,",
+          "ja": "先週の日曜日",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "bought",
+          "ja": "買いました",
+          "role": "V"
+        },
+        {
+          "en": "some big tomatoes.",
+          "ja": "大きなトマトを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それを売っていた女性は、育て方を教えてくれました。",
+      "chunks": [
+        {
+          "en": "The woman who sold them",
+          "ja": "それを売っていた女性は",
+          "role": "S"
+        },
+        {
+          "en": "taught",
+          "ja": "教えてくれました",
+          "role": "V"
+        },
+        {
+          "en": "us",
+          "ja": "わたしたちに",
+          "role": "O"
+        },
+        {
+          "en": "how to grow them.",
+          "ja": "育て方を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "彼女は40年間ずっと野菜を作っています。",
+      "chunks": [
+        {
+          "en": "She",
+          "ja": "彼女は",
+          "role": "S"
+        },
+        {
+          "en": "has grown",
+          "ja": "作っています",
+          "role": "V"
+        },
+        {
+          "en": "vegetables",
+          "ja": "野菜を",
+          "role": "O"
+        },
+        {
+          "en": "for forty years.",
+          "ja": "40年間ずっと",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "市場は買い物をする場所であるだけでなく、話をする場所でもあります。",
+      "chunks": [
+        {
+          "en": "The market",
+          "ja": "市場は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "not only a place to shop",
+          "ja": "買い物をする場所であるだけでなく",
+          "role": "C"
+        },
+        {
+          "en": "but also a place to talk.",
+          "ja": "話をする場所でも",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "多くの人がそこで友だちに会います。",
+      "chunks": [
+        {
+          "en": "Many people",
+          "ja": "多くの人が",
+          "role": "S"
+        },
+        {
+          "en": "meet",
+          "ja": "会います",
+          "role": "V"
+        },
+        {
+          "en": "their friends",
+          "ja": "友だちに",
+          "role": "O"
+        },
+        {
+          "en": "there.",
+          "ja": "そこで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、若い農家は年々少なくなっています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "the number of young farmers",
+          "ja": "若い農家の数は",
+          "role": "S"
+        },
+        {
+          "en": "is becoming",
+          "ja": "なっています",
+          "role": "V"
+        },
+        {
+          "en": "smaller",
+          "ja": "少なく",
+          "role": "C"
+        },
+        {
+          "en": "year by year.",
+          "ja": "年々",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "だからわたしは、この市場が続いてほしいと思います。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "hope",
+          "ja": "思います",
+          "role": "V"
+        },
+        {
+          "en": "that this market will continue.",
+          "ja": "この市場が続いてほしいと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "いつか、わたしもそこで何かを売ってみたいです。",
+      "chunks": [
+        {
+          "en": "Someday",
+          "ja": "いつか",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしも",
+          "role": "S"
+        },
+        {
+          "en": "want to sell",
+          "ja": "売ってみたいです",
+          "role": "V"
+        },
+        {
+          "en": "something",
+          "ja": "何かを",
+          "role": "O"
+        },
+        {
+          "en": "there,",
+          "ja": "そこで",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

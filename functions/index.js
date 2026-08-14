@@ -20,6 +20,22 @@ const {
 } = require('./lib/studentImport');
 const { getCurrentMonthKey } = require('./lib/dateKeys');
 
+/**
+ * 使う Gemini。
+ *
+ * gemini-2.0-flash-001 は提供が終わっていて 404 を返す（2026-08-13 に確認）。
+ * ストーリー生成が黙って失敗していたのはこれが原因。モデル名を1か所にまとめ、
+ * 次に切り替わったときここだけ直せばよいようにする。
+ *
+ * 生きているかの確かめ方:
+ *   curl -s -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+ *     -H 'Content-Type: application/json' -d '{"contents":[{"role":"user","parts":[{"text":"ok"}]}]}' \
+ *     https://us-central1-aiplatform.googleapis.com/v1/projects/$GCLOUD_PROJECT/locations/us-central1/publishers/google/models/<model>:generateContent
+ */
+const GEMINI_MODEL = 'gemini-2.5-flash';
+const { transcribe, missingWords, uniqueWordCount, MAX_AUDIO_BYTES } = require('./lib/transcription');
+const { judgeAnswer } = require('./lib/answerJudge');
+
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
 //==============================================================================
@@ -30,6 +46,12 @@ importUsersApp.use(express.json({ limit: '10mb' }));
 const manageStudentsApp = express();
 manageStudentsApp.use(cors({ origin: true }));
 manageStudentsApp.use(express.json({ limit: '1mb' }));
+
+// 録音は 16kHz 16bit モノラルで、3分だと約 3.8MB。base64 で約 5.1MB になる。
+// 既定の 100kb では入らないので、余裕を見て 12mb にする。
+const transcribeSpeakingApp = express();
+transcribeSpeakingApp.use(cors({ origin: true }));
+transcribeSpeakingApp.use(express.json({ limit: '12mb' }));
 
 /**
  * HttpsError のコードを HTTP のステータスへ写す。
@@ -508,7 +530,7 @@ Please adhere to the following rules:
 
   const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
   const generativeModel = vertexAi.getGenerativeModel({
-    model: 'gemini-2.0-flash-001',
+    model: GEMINI_MODEL,
     generationConfig: { responseMimeType: 'application/json' },
   });
 
@@ -711,4 +733,163 @@ exports.generateStoryFromWords = onRequest(
       }
     });
   }
+);
+//==============================================================================
+// 英検二次試験の発音・内容の採点
+//==============================================================================
+
+/** その回で見るもの。音読は読むべき英文が決まっている。 */
+const MODES = new Set(['scripted', 'unscripted']);
+
+/** Vertex AI の Gemini を1回叩く。generateStory と同じ設定。 */
+const generateJson = async (prompt) => {
+  const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+  const model = vertexAi.getGenerativeModel({
+    model: GEMINI_MODEL,
+    generationConfig: { responseMimeType: 'application/json' },
+  });
+  const response = await model.generateContent(prompt);
+  return response.response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+};
+
+/** Speech-to-Text の窓口。呼ばれたときに作る（起動を重くしない）。 */
+let speechClient = null;
+const recognize = (request) => {
+  if (!speechClient) {
+    // eslint-disable-next-line global-require
+    const { SpeechClient } = require('@google-cloud/speech');
+    speechClient = new SpeechClient();
+  }
+  return speechClient.recognize(request);
+};
+
+/**
+ * 録音した英語を文字にする。
+ *
+ * 音読（scripted）は読むべき英文を認識のヒントに渡し、読み飛ばした語を返す。
+ * 質問への答え（unscripted）は文字にしたうえで、Gemini に
+ * 「質問に答えているか」を見せる。
+ *
+ * 発音の点は出さない。それには別サービスが要り、いまは対象外。
+ */
+/**
+ * 生徒本人であることだけ確かめる。uid はトークンから取り、本文の値は信じない。
+ * 通っていなければ 401 を返して false。呼び出し側はそこで抜ける。
+ */
+const verifyStudent = async (req, res) => {
+  const idToken = req.get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return false;
+  }
+  try {
+    await admin.auth().verifyIdToken(idToken);
+    return true;
+  } catch (error) {
+    logger.error('transcribeSpeaking: トークンを検証できませんでした', error);
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return false;
+  }
+};
+
+transcribeSpeakingApp.post('/', async (req, res) => {
+  if (!(await verifyStudent(req, res))) return undefined;
+
+  const { audio, mode, referenceText, question, modelAnswer, grade } = req.body || {};
+  if (typeof audio !== 'string' || audio.length === 0) {
+    return res.status(400).json({ error: '音声が送られていません。' });
+  }
+  if (!MODES.has(mode)) {
+    return res.status(400).json({ error: 'mode が不正です。' });
+  }
+
+  const wav = Buffer.from(audio, 'base64');
+  if (wav.length > MAX_AUDIO_BYTES) {
+    return res.status(413).json({ error: '録音が長すぎます。3分以内にしてください。' });
+  }
+
+  try {
+    const { transcript } = await transcribe(
+      wav,
+      // 音読は読む英文が分かっている。渡すと認識が寄る。
+      mode === 'scripted' && referenceText ? { phrases: referenceText.split(/\s+/) } : {},
+      recognize
+    );
+
+    // 読み飛ばしは音読のときだけ見る。発音の良し悪しは測らない。
+    const missing = mode === 'scripted' && referenceText
+      ? missingWords(referenceText, transcript)
+      : [];
+
+    // 中身の判定は質問に答える回だけ。音読には要らない。
+    let content = null;
+    if (mode === 'unscripted' && question) {
+      content = await judgeAnswer(
+        { grade, question, modelAnswer, transcript },
+        generateJson
+      ).catch((judgeError) => {
+        // 文字起こしは取れているので、ここで全部を落とさない。
+        logger.warn('transcribeSpeaking: 内容の判定に失敗しました', judgeError);
+        return null;
+      });
+    }
+
+    return res.status(200).json({ transcript, missing, content });
+  } catch (error) {
+    logger.error('transcribeSpeaking: 文字起こしに失敗しました', error);
+    const message = /音声が空|長すぎ/.test(error.message)
+      ? error.message
+      : '文字起こしできませんでした。もう一度お試しください。';
+    return res.status(502).json({ error: message });
+  }
+});
+
+/**
+ * 文字にしたあとの答えを見る。
+ *
+ * 音声認識は日本語なまりの英語をよく取り違える。生徒が画面で直せるように
+ * したので、判定は「直したあとの文」に対してかけないと意味がない。だから
+ * 音声を受けずにテキストだけで判定する口を分けてある。
+ *
+ * 読み飛ばした語もここで数え直す。分母（total）も返すのは、同じ正規化を
+ * クライアントに書き写すと、ずれたときに気づけないため。
+ */
+transcribeSpeakingApp.post('/review', async (req, res) => {
+  if (!(await verifyStudent(req, res))) return undefined;
+
+  const { mode, referenceText, question, modelAnswer, grade, transcript } = req.body || {};
+  if (!MODES.has(mode)) {
+    return res.status(400).json({ error: 'mode が不正です。' });
+  }
+  if (typeof transcript !== 'string') {
+    return res.status(400).json({ error: '文字起こしが送られていません。' });
+  }
+
+  const scripted = mode === 'scripted' && referenceText;
+  const missing = scripted ? missingWords(referenceText, transcript) : [];
+  const total = scripted ? uniqueWordCount(referenceText) : 0;
+
+  let content = null;
+  if (mode === 'unscripted' && question) {
+    content = await judgeAnswer(
+      { grade, question, modelAnswer, transcript },
+      generateJson
+    ).catch((judgeError) => {
+      // 1問の判定が取れなくても、他の問題の結果は見せたい。ここで落とさない。
+      logger.warn('transcribeSpeaking: 内容の判定に失敗しました', judgeError);
+      return null;
+    });
+  }
+
+  return res.status(200).json({ missing, total, content });
+});
+
+exports.transcribeSpeaking = onRequest(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 120,
+    memory: '512MiB',
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  transcribeSpeakingApp
 );

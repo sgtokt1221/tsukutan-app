@@ -1,0 +1,629 @@
+{
+  "id": "eikenp1-society-01",
+  "grade": "pre1",
+  "category": "society",
+  "title": "The Village That Refused to Disappear",
+  "titleJa": "消えることを拒んだ村",
+  "sentences": [
+    {
+      "ja": "日本の地方には、数十年のうちに消えると予測されている集落が数多くあります。",
+      "chunks": [
+        {
+          "en": "In rural areas of Japan,",
+          "ja": "日本の地方には",
+          "role": "M"
+        },
+        {
+          "en": "there are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "many settlements that are expected to disappear within a few decades.",
+          "ja": "数十年のうちに消えると予測されている集落が数多く",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "若い世代が都市へ出ていき、残された住民の平均年齢は上がり続けています。",
+      "chunks": [
+        {
+          "en": "Younger generations",
+          "ja": "若い世代が",
+          "role": "S"
+        },
+        {
+          "en": "have moved",
+          "ja": "出ていきました",
+          "role": "V"
+        },
+        {
+          "en": "to cities,",
+          "ja": "都市へ",
+          "role": "M"
+        },
+        {
+          "en": "and the average age of the remaining residents keeps rising.",
+          "ja": "そして残された住民の平均年齢は上がり続けています",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "学校が閉じ、店が閉じ、やがて路線バスが止まります。",
+      "chunks": [
+        {
+          "en": "Schools close, shops close,",
+          "ja": "学校が閉じ、店が閉じ",
+          "role": "M"
+        },
+        {
+          "en": "and eventually",
+          "ja": "やがて",
+          "role": "M"
+        },
+        {
+          "en": "the bus service",
+          "ja": "路線バスが",
+          "role": "S"
+        },
+        {
+          "en": "stops.",
+          "ja": "止まります",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "この流れは、ふつう避けられないものとして語られます。",
+      "chunks": [
+        {
+          "en": "This process",
+          "ja": "この流れは",
+          "role": "S"
+        },
+        {
+          "en": "is usually described",
+          "ja": "ふつう語られます",
+          "role": "V"
+        },
+        {
+          "en": "as something that cannot be avoided.",
+          "ja": "避けられないものとして",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、その説明を受け入れなかった村があります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a village that did not accept that explanation.",
+          "ja": "その説明を受け入れなかった村が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "その村の人口は、1970年に約1200人でした。",
+      "chunks": [
+        {
+          "en": "The population of the village",
+          "ja": "その村の人口は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "about twelve hundred",
+          "ja": "約1200人",
+          "role": "C"
+        },
+        {
+          "en": "in 1970.",
+          "ja": "1970年に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "2005年には、300人を下回っていました。",
+      "chunks": [
+        {
+          "en": "By 2005,",
+          "ja": "2005年には",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "had fallen",
+          "ja": "下回っていました",
+          "role": "V"
+        },
+        {
+          "en": "below three hundred.",
+          "ja": "300人を",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "行政は、近くの町との合併を提案しました。",
+      "chunks": [
+        {
+          "en": "The local government",
+          "ja": "行政は",
+          "role": "S"
+        },
+        {
+          "en": "proposed",
+          "ja": "提案しました",
+          "role": "V"
+        },
+        {
+          "en": "joining a nearby town.",
+          "ja": "近くの町との合併を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし住民は、その案を投票で退けました。",
+      "chunks": [
+        {
+          "en": "But the residents",
+          "ja": "しかし住民は",
+          "role": "S"
+        },
+        {
+          "en": "rejected",
+          "ja": "退けました",
+          "role": "V"
+        },
+        {
+          "en": "the proposal",
+          "ja": "その案を",
+          "role": "O"
+        },
+        {
+          "en": "in a vote.",
+          "ja": "投票で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼らが選んだのは、村の資源をもう一度数え直すことでした。",
+      "chunks": [
+        {
+          "en": "What they chose",
+          "ja": "彼らが選んだことは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "to count the resources of the village again.",
+          "ja": "村の資源をもう一度数え直すこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "そこにあったのは、手入れされないまま残された広い森でした。",
+      "chunks": [
+        {
+          "en": "What was there",
+          "ja": "そこにあったものは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "a large forest that had been left without care.",
+          "ja": "手入れされないまま残された広い森",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "木材の価格が下がって以来、だれもそれを使っていませんでした。",
+      "chunks": [
+        {
+          "en": "Since the price of wood had fallen,",
+          "ja": "木材の価格が下がって以来",
+          "role": "M"
+        },
+        {
+          "en": "nobody",
+          "ja": "だれも",
+          "role": "S"
+        },
+        {
+          "en": "had been using",
+          "ja": "使っていませんでした",
+          "role": "V"
+        },
+        {
+          "en": "it.",
+          "ja": "それを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "村は、その木を燃料として使う小さな発電所を建てました。",
+      "chunks": [
+        {
+          "en": "The village",
+          "ja": "村は",
+          "role": "S"
+        },
+        {
+          "en": "built",
+          "ja": "建てました",
+          "role": "V"
+        },
+        {
+          "en": "a small power station that uses the wood as fuel.",
+          "ja": "その木を燃料として使う小さな発電所を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "電気は村の中で使われ、余った分は電力会社に売られました。",
+      "chunks": [
+        {
+          "en": "The electricity",
+          "ja": "電気は",
+          "role": "S"
+        },
+        {
+          "en": "was used",
+          "ja": "使われました",
+          "role": "V"
+        },
+        {
+          "en": "in the village,",
+          "ja": "村の中で",
+          "role": "M"
+        },
+        {
+          "en": "and what was left was sold to a power company.",
+          "ja": "そして余った分は電力会社に売られました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その収入で、村は保育料を無料にしました。",
+      "chunks": [
+        {
+          "en": "With that income,",
+          "ja": "その収入で",
+          "role": "M"
+        },
+        {
+          "en": "the village",
+          "ja": "村は",
+          "role": "S"
+        },
+        {
+          "en": "made",
+          "ja": "しました",
+          "role": "V"
+        },
+        {
+          "en": "child care free.",
+          "ja": "保育料を無料に",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "これは、子どもを持つ家庭にとって大きな意味を持ちました。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "had",
+          "ja": "持ちました",
+          "role": "V"
+        },
+        {
+          "en": "great meaning for families with children.",
+          "ja": "子どもを持つ家庭にとって大きな意味を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "10年の間に、40世帯以上が村へ移り住みました。",
+      "chunks": [
+        {
+          "en": "Over ten years,",
+          "ja": "10年の間に",
+          "role": "M"
+        },
+        {
+          "en": "more than forty households",
+          "ja": "40世帯以上が",
+          "role": "S"
+        },
+        {
+          "en": "moved",
+          "ja": "移り住みました",
+          "role": "V"
+        },
+        {
+          "en": "into the village.",
+          "ja": "村へ",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "人口の減少は止まり、わずかながら増加に転じました。",
+      "chunks": [
+        {
+          "en": "The fall in population",
+          "ja": "人口の減少は",
+          "role": "S"
+        },
+        {
+          "en": "stopped",
+          "ja": "止まりました",
+          "role": "V"
+        },
+        {
+          "en": "and turned into a slight increase.",
+          "ja": "そしてわずかながら増加に転じました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ただし、この例をそのまま他の地域に当てはめることはできません。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "ただし",
+          "role": "M"
+        },
+        {
+          "en": "this example",
+          "ja": "この例を",
+          "role": "O"
+        },
+        {
+          "en": "cannot be applied",
+          "ja": "当てはめることはできません",
+          "role": "V"
+        },
+        {
+          "en": "to other areas as it is.",
+          "ja": "そのまま他の地域に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "発電所の建設には、住民自身が資金の一部を出しました。",
+      "chunks": [
+        {
+          "en": "The residents themselves",
+          "ja": "住民自身が",
+          "role": "S"
+        },
+        {
+          "en": "put up",
+          "ja": "出しました",
+          "role": "V"
+        },
+        {
+          "en": "part of the money",
+          "ja": "資金の一部を",
+          "role": "O"
+        },
+        {
+          "en": "for building the station.",
+          "ja": "発電所の建設に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "一世帯あたりの負担は決して小さくありませんでした。",
+      "chunks": [
+        {
+          "en": "The burden for each household",
+          "ja": "一世帯あたりの負担は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "by no means small.",
+          "ja": "決して小さくない",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "反対した住民も少なくなく、話し合いは3年続きました。",
+      "chunks": [
+        {
+          "en": "Not a few residents",
+          "ja": "少なくない住民が",
+          "role": "S"
+        },
+        {
+          "en": "were against it,",
+          "ja": "反対しました",
+          "role": "V"
+        },
+        {
+          "en": "and the discussions continued for three years.",
+          "ja": "そして話し合いは3年続きました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その3年間こそが、実は最も重要だったと言う人もいます。",
+      "chunks": [
+        {
+          "en": "Some people say",
+          "ja": "言う人もいます",
+          "role": "V"
+        },
+        {
+          "en": "that those three years were in fact the most important part.",
+          "ja": "その3年間こそが実は最も重要だったと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "計画そのものより、決め方を共有したことに意味があったのです。",
+      "chunks": [
+        {
+          "en": "The meaning",
+          "ja": "意味は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "ありました",
+          "role": "V"
+        },
+        {
+          "en": "in sharing the way of deciding, rather than in the plan itself.",
+          "ja": "計画そのものより決め方を共有したことに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "森という資源があったことは、この村に固有の条件でした。",
+      "chunks": [
+        {
+          "en": "Having a forest as a resource",
+          "ja": "森という資源があったことは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "a condition unique to this village.",
+          "ja": "この村に固有の条件",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、この事例が示していることは一般的です。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "what this case shows",
+          "ja": "この事例が示していることは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "general.",
+          "ja": "一般的",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "衰退は自然現象ではなく、選択の積み重ねの結果だということです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that decline is not a natural phenomenon but the result of many choices.",
+          "ja": "衰退は自然現象ではなく選択の積み重ねの結果だということ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "避けられないと語られるとき、だれがその言葉から利益を得るのかを問う価値があります。",
+      "chunks": [
+        {
+          "en": "When something is described as unavoidable,",
+          "ja": "避けられないと語られるとき",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is worth asking",
+          "ja": "問う価値があります",
+          "role": "V"
+        },
+        {
+          "en": "who benefits from those words.",
+          "ja": "だれがその言葉から利益を得るのかを",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

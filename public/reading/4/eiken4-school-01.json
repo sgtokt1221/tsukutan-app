@@ -1,0 +1,369 @@
+{
+  "id": "eiken4-school-01",
+  "grade": "4",
+  "category": "school",
+  "title": "The School Festival",
+  "titleJa": "学校の文化祭",
+  "sentences": [
+    {
+      "ja": "先週、わたしたちの学校で文化祭がありました。",
+      "chunks": [
+        {
+          "en": "Last week,",
+          "ja": "先週",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "had",
+          "ja": "ありました",
+          "role": "V"
+        },
+        {
+          "en": "a school festival",
+          "ja": "文化祭が",
+          "role": "O"
+        },
+        {
+          "en": "at our school.",
+          "ja": "わたしたちの学校で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしのクラスは小さな店を作りました。",
+      "chunks": [
+        {
+          "en": "My class",
+          "ja": "わたしのクラスは",
+          "role": "S"
+        },
+        {
+          "en": "made",
+          "ja": "作りました",
+          "role": "V"
+        },
+        {
+          "en": "a small shop.",
+          "ja": "小さな店を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちはそこでケーキと飲み物を売りました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "sold",
+          "ja": "売りました",
+          "role": "V"
+        },
+        {
+          "en": "cakes and drinks",
+          "ja": "ケーキと飲み物を",
+          "role": "O"
+        },
+        {
+          "en": "there.",
+          "ja": "そこで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは前の日に母とケーキを作りました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "made",
+          "ja": "作りました",
+          "role": "V"
+        },
+        {
+          "en": "the cakes",
+          "ja": "ケーキを",
+          "role": "O"
+        },
+        {
+          "en": "with my mother",
+          "ja": "母と",
+          "role": "M"
+        },
+        {
+          "en": "the day before.",
+          "ja": "前の日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それはむずかしかったですが、とても楽しかったです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "difficult,",
+          "ja": "むずかしい",
+          "role": "C"
+        },
+        {
+          "en": "but",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "a lot of fun.",
+          "ja": "とても楽しい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "文化祭の日、たくさんの人がわたしたちの店に来ました。",
+      "chunks": [
+        {
+          "en": "On the day of the festival,",
+          "ja": "文化祭の日に",
+          "role": "M"
+        },
+        {
+          "en": "many people",
+          "ja": "たくさんの人が",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "来ました",
+          "role": "V"
+        },
+        {
+          "en": "to our shop.",
+          "ja": "わたしたちの店に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの友だちのユミが店の前で歌いました。",
+      "chunks": [
+        {
+          "en": "My friend Yumi",
+          "ja": "わたしの友だちのユミが",
+          "role": "S"
+        },
+        {
+          "en": "sang",
+          "ja": "歌いました",
+          "role": "V"
+        },
+        {
+          "en": "in front of the shop.",
+          "ja": "店の前で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼女の歌はとても美しかったです。",
+      "chunks": [
+        {
+          "en": "Her song",
+          "ja": "彼女の歌は",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very beautiful.",
+          "ja": "とても美しい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "2時間でケーキは全部売れました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "sold",
+          "ja": "売りました",
+          "role": "V"
+        },
+        {
+          "en": "all the cakes",
+          "ja": "ケーキを全部",
+          "role": "O"
+        },
+        {
+          "en": "in two hours.",
+          "ja": "2時間で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちはとてもうれしかったです。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "were",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "very happy.",
+          "ja": "とてもうれしい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "来年もまた店をやりたいです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "want to have",
+          "ja": "やりたいです",
+          "role": "V"
+        },
+        {
+          "en": "a shop",
+          "ja": "店を",
+          "role": "O"
+        },
+        {
+          "en": "again",
+          "ja": "また",
+          "role": "M"
+        },
+        {
+          "en": "next year.",
+          "ja": "来年も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "お金は全部、町の図書館に送りました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "sent",
+          "ja": "送りました",
+          "role": "V"
+        },
+        {
+          "en": "all the money",
+          "ja": "お金を全部",
+          "role": "O"
+        },
+        {
+          "en": "to the town library.",
+          "ja": "町の図書館に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "図書館は子どものために新しい本を買うそうです。",
+      "chunks": [
+        {
+          "en": "The library",
+          "ja": "図書館は",
+          "role": "S"
+        },
+        {
+          "en": "will buy",
+          "ja": "買うそうです",
+          "role": "V"
+        },
+        {
+          "en": "new books",
+          "ja": "新しい本を",
+          "role": "O"
+        },
+        {
+          "en": "for children.",
+          "ja": "子どものために",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちの仕事がだれかの役に立つのはうれしいことです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a happy thing",
+          "ja": "うれしいこと",
+          "role": "C"
+        },
+        {
+          "en": "that our work helps someone.",
+          "ja": "わたしたちの仕事がだれかの役に立つのは",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

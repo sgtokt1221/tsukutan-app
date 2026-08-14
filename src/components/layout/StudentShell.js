@@ -14,7 +14,7 @@ import './StudentShell.css';
 
 export const STUDENT_TABS = [
   { id: 'home', label: 'ホーム', Icon: FaHome },
-  { id: 'free-study', label: '自由学習', Icon: FaLayerGroup },
+  { id: 'free-study', label: 'えらぶ', Icon: FaLayerGroup },
   { id: 'story', label: '長文', Icon: FaBookOpen },
   { id: 'analytics', label: 'きろく', Icon: FaChartLine },
 ];

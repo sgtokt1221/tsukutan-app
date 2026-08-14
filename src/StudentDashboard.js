@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import './Analytics.css';
@@ -17,14 +17,27 @@ import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
 import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
+import LevelNudge from './components/assessment/LevelNudge';
+import ReadingPanel from './components/reading/ReadingPanel';
+import { isAheadOfAssessment } from './logic/estimatedLevel';
+import Onboarding from './components/onboarding/Onboarding';
+import DashboardSkeleton from './components/student/DashboardSkeleton';
+import { useOnboarding } from './logic/useOnboarding';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
+import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStudyMenu';
+import RecommendationBadge from './components/student/RecommendationBadge';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
 import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster, loadManifest } from './logic/wordMaster';
+import { INTERVIEW_GRADES } from './logic/interviewContent';
 import logger from './logic/logger';
+
+// 面接モードは画像と素材を伴うので、開いたときだけ読む。
+// 起動時の塊に入れると、使わない生徒の起動まで遅くなる。
+const EikenInterview = React.lazy(() => import('./components/eiken/EikenInterview'));
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
 /** 英検の級を、やさしい順に並べたもの。実データに1級の語は無い。 */
@@ -227,79 +240,7 @@ const isRecommendedLevel = (level, testLevel) => {
     return getRecommendedTextbooks(toGoalIds(userData.goal.targets)).includes('osaka-koukou-nyuushi');
   };
 
-// 推奨バッジコンポーネント（カード内部表示用）
-const RecommendationBadge = ({ type, priority = 'medium' }) => {
-  const getBadgeStyle = () => {
-    switch (priority) {
-      case 'high':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
-          color: 'white',
-          text: '推奨',
-          icon: null,
-          borderColor: '#dc2626'
-        };
-      case 'medium':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-          color: 'white',
-          text: 'おすすめ',
-          icon: null,
-          borderColor: '#d97706'
-        };
-      case 'low':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #10b981, #059669)',
-          color: 'white',
-          text: '復習',
-          icon: null,
-          borderColor: '#047857'
-        };
-      default:
-        return {
-          backgroundColor: 'linear-gradient(135deg, #6b7280, #4b5563)',
-          color: 'white',
-          text: '推奨',
-          icon: null,
-          borderColor: '#374151'
-        };
-    }
-  };
-
-  const badgeStyle = getBadgeStyle();
-
-  return (
-    <div
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        background: badgeStyle.backgroundColor,
-        color: badgeStyle.color,
-        fontSize: '11px',
-        fontWeight: '600',
-        padding: '4px 8px',
-        borderRadius: '12px',
-        border: `1px solid ${badgeStyle.borderColor}`,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        whiteSpace: 'nowrap',
-        textShadow: '0 1px 2px rgba(0,0,0,0.1)',
-        letterSpacing: '0.025em'
-      }}
-    >
-      {/* 記号を出さず、文言と枠の色だけで区別する（絵文字を使わない方針） */}
-      <span>{badgeStyle.text}</span>
-    </div>
-  );
-};
-
 // 既存の定数やヘルパー関数（すべて維持）
-/** 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
-export const FREE_STUDY_GROUPS = [
-  { id: 'school', label: '学年で選ぶ' },
-  { id: 'eiken', label: '英検で選ぶ' },
-];
-
 const freeStudyOptions = [
   { id: 'osaka-koukou-nyuushi', group: 'school', label: '中学英語（大阪府公立入試）', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
   { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
@@ -435,6 +376,8 @@ export default function StudentDashboard() {
   const [dashboardError, setDashboardError] = useState(null);
   const [viewMode, setViewMode] = useState('select');
   const [selectionMode, setSelectionMode] = useState('main');
+  // 面接モードを開いている級。null なら開いていない。
+  const [interviewGrade, setInterviewGrade] = useState(null);
   const [testResultLevel, setTestResultLevel] = useState(0);
   
   // デバッグログ: testResultLevelの値を監視
@@ -460,6 +403,9 @@ export default function StudentDashboard() {
 
   // 能力スコアとランク。現行の level からの暫定換算（計画書12 フェーズ1）。
   const abilityScore = scoreFromLegacyLevel(testResultLevel);
+  // 復習の卒業ぐあいから見たレベル（progressLogic が書く）。表示だけに使う。
+  const estimatedLevel = userData?.progress?.estimatedLevel || null;
+  const levelAhead = isAheadOfAssessment(estimatedLevel, testResultLevel);
   const currentRankId = rankForScore(abilityScore)?.id ?? null;
   // 自己ベストは下がっても消さない。保存済みが無ければ現在値を使う。
   const bestRankId = bestRankOf(userData?.assessment?.bestRank ?? null, currentRankId);
@@ -482,6 +428,9 @@ export default function StudentDashboard() {
   const [freeStudyProgress, setFreeStudyProgress] = useState({});
   const [storyError, setStoryError] = useState(null);
   const [masterWords, setMasterWords] = useState([]);
+  // 単語データの保存の進み具合（0〜1）。初回の案内画面で出す。
+  const [wordDataProgress, setWordDataProgress] = useState(0);
+  const [showOnboarding, finishOnboarding] = useOnboarding();
   const [wordDataError, setWordDataError] = useState(null);
   const [textbookCounts, setTextbookCounts] = useState({});
   
@@ -497,9 +446,11 @@ export default function StudentDashboard() {
   // ここで画面全体を止めると、単語データだけの問題で今日の学習まで開けなくなる。
   const loadMasterWords = useCallback(({ force = false } = {}) => {
     setWordDataError(null);
-    return loadWordMaster({ force })
+    // 初回だけ端末に保存する。その進み具合を案内画面に出す。
+    return loadWordMaster({ force, onProgress: setWordDataProgress })
       .then((words) => {
         setMasterWords(words);
+        setWordDataProgress(1);
         return words;
       })
       .catch((error) => {
@@ -633,28 +584,31 @@ export default function StudentDashboard() {
         });
         setTestResultLevel(levelToSet);
         
-        const plan = await generateDailyPlan(data, uid);
-        setDailyPlan(plan);
-
-        // Check for daily completion
+        // 今日の計画・完了フラグ・直近のログは互いに関係が無い。
+        // 順番に待つと往復のぶんだけ起動が遅くなるので、まとめて投げる。
         const todayStr = getTodayKey();
-        const dailyCompletionDocRef = doc(db, 'users', uid, 'dailyCompletion', todayStr);
-        const dailyCompletionDoc = await getDoc(dailyCompletionDocRef);
-        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
-
-        // Pace analysis from recent logs (過去5日)
         const lookbackDate = new Date();
         lookbackDate.setDate(lookbackDate.getDate() - 5);
 
+        const [plan, dailyCompletionDoc, logsResult] = await Promise.all([
+          generateDailyPlan(data, uid),
+          getDoc(doc(db, 'users', uid, 'dailyCompletion', todayStr)),
+          getDocs(query(
+            collection(db, 'users', uid, 'logs'),
+            where('timestamp', '>=', lookbackDate),
+            orderBy('timestamp', 'desc'),
+          )).catch((paceError) => {
+            console.error('Failed to load recent logs:', paceError);
+            return null;
+          }),
+        ]);
+
+        setDailyPlan(plan);
+        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
+
         try {
-          const logsRef = collection(db, 'users', uid, 'logs');
-          const logsSnapshot = await getDocs(
-            query(
-              logsRef,
-              where('timestamp', '>=', lookbackDate),
-              orderBy('timestamp', 'desc')
-            )
-          );
+          if (!logsResult) throw new Error('recent logs unavailable');
+          const logsSnapshot = logsResult;
 
           const dailyNewMap = new Map();
 
@@ -1022,7 +976,8 @@ export default function StudentDashboard() {
 
         if (filteredWords.length === 0) {
           alert('このメニューには該当する単語がまだ登録されていません。別のメニューを選んでください。');
-          setSelectionMode('main');
+          // 選ぶ前の一覧に置いたままにする。main へ戻すと、英検の級を選んだ人が
+          // 3カードまで放り出されて、隣の級を試すのに辿り直しになる。
           setSelectedTextbookId(null);
           setAllWords([]);
           return;
@@ -1036,8 +991,9 @@ export default function StudentDashboard() {
     }
   };
 
+  /** 自由学習で一段だけ戻る。行き先は freeStudyBackTarget が決める。 */
   const handleBackToMainMenu = () => {
-    setSelectionMode('main');
+    setSelectionMode(freeStudyBackTarget(selectionMode, selectedTextbookId));
     setSelectedTextbookId(null);
     setAllWords([]);
   };
@@ -1388,13 +1344,37 @@ export default function StudentDashboard() {
   };
   
   // --- レンダリングロジック ---
+
+  // 初回の案内は、読み込みを待たずに出す。待っている間に読んでもらうのが
+  // 目的なので、Firestore を読み終えてから出したのでは意味がない。
+  const onboardingOverlay = showOnboarding ? (
+    <Onboarding
+      progress={wordDataProgress}
+      ready={(masterWords.length > 0 || Boolean(wordDataError)) && !loading}
+      onFinish={finishOnboarding}
+    />
+  ) : null;
+
   if (loading) {
-    return <div className="loading-container"><div className="spinner"></div></div>;
+    // 真っ白にスピナーだけだと壊れて見える。出来上がりと同じ形を先に描く。
+    return (
+      <>
+        {onboardingOverlay}
+        <div className="dashboard-container">
+          <StudentHeader userName={userData?.name} onLogout={handleLogout} />
+          <main className="card-main">
+            <DashboardSkeleton />
+          </main>
+          <StudentBottomNav activeTab="home" onChange={() => {}} />
+        </div>
+      </>
+    );
   }
 
   if (dashboardError) {
     return (
       <div className="loading-container">
+        {onboardingOverlay}
         <div className="app-status-card">
           <h1 className="app-status-title">今日の学習を開けませんでした</h1>
           <p className="app-status-message">{dashboardError}</p>
@@ -1501,8 +1481,21 @@ export default function StudentDashboard() {
                 compact
               />
 
-              {/* 学習計画最適化ボタン */}
-              {showRetestPrompt && (
+              {/* 覚えたぶんがテストの値を追い越したら、そう伝える。
+                  レベルはテストでしか動かないので、黙っていると進んだ実感が
+                  出ない。出題の範囲は測った値のままにしてある。 */}
+              {levelAhead && (
+                <LevelNudge
+                  assessedLevel={testResultLevel}
+                  estimatedLevel={estimatedLevel}
+                  nextRatio={userData?.progress?.estimatedNextRatio || 0}
+                  onRetest={startCheckTest}
+                />
+              )}
+
+              {/* 学習計画最適化ボタン。見積もりの知らせを出しているときは、
+                  同じ「テストを受けて」を二重に出さない。 */}
+              {!levelAhead && showRetestPrompt && (
                 <div style={{ 
                   marginTop: '12px', 
                   padding: '8px 12px', 
@@ -1648,7 +1641,7 @@ export default function StudentDashboard() {
               <div className="section-card word-data-error" role="alert">
                 <p>{wordDataError}</p>
                 <p className="field-error">
-                  単語力チェックと自由学習が使えません。今日の学習プランはそのまま進められます。
+                  単語力チェックと「えらぶ」が使えません。今日の学習プランはそのまま進められます。
                 </p>
                 <button
                   type="button"
@@ -1685,6 +1678,15 @@ export default function StudentDashboard() {
 
   // タブ別コンテンツのレンダリング
   const renderTabContent = () => {
+    // 面接モードは1画面を占有する。学習カードと同じ扱い。
+    if (interviewGrade) {
+      return (
+        <Suspense fallback={<p className="interview-lead">読み込んでいます…</p>}>
+          <EikenInterview grade={interviewGrade} onExit={() => setInterviewGrade(null)} />
+        </Suspense>
+      );
+    }
+
     // フラッシュカードページの場合は、タブに関係なく適切なコンテンツを表示
     if (viewMode === 'learn' || viewMode === 'review' || viewMode === 'test' || viewMode === 'result') {
       return renderContent();
@@ -1696,14 +1698,27 @@ export default function StudentDashboard() {
         return renderContent();
       case 'story':
         return (
-          <StoryPanel
-            monthlyStory={monthlyStory}
-            pastStories={pastStories}
-            storiesLoading={storiesLoading}
-            isGeneratingStory={isGeneratingStory}
-            storyError={storyError}
-            onGenerate={handleGenerateStory}
-          />
+          <>
+            {/* 級ごと・カテゴリごとの読みもの。 */}
+            <ReadingPanel
+              schoolGrade={userData?.grade}
+              abilityLevel={testResultLevel}
+              goalTargets={userData?.goal?.targets || []}
+              userId={auth.currentUser?.uid}
+            />
+            {/* 月1本のAIストーリー。読みものが揃うまでは出さない。
+                消していないので、戻すのは false を外すだけ。 */}
+            {false && (
+              <StoryPanel
+                monthlyStory={monthlyStory}
+                pastStories={pastStories}
+                storiesLoading={storiesLoading}
+                isGeneratingStory={isGeneratingStory}
+                storyError={storyError}
+                onGenerate={handleGenerateStory}
+              />
+            )}
+          </>
         );
       case 'free-study':
         return renderFreeStudyContent();
@@ -1727,16 +1742,37 @@ export default function StudentDashboard() {
 
   // 長文タブのコンテンツ
 
+  /** 語数。単語データを読む前は数えられないので null。0語の級を隠す判定にも使う。 */
+  const wordCountOf = (textbookId) =>
+    masterWords.length === 0 ? null : getTextbookWordCount(textbookId, masterWords, textbookCounts);
+
+  /** 「おすすめ」バッジの強さ。今の力に合っていなければ null。 */
+  const recommendationOf = (textbookId) => {
+    if (!isRecommendedTextbook(textbookId, testResultLevel, userData)) return null;
+    const match = getRecommendedLevels(testResultLevel).recommended
+      .find((rec) => isRecommendedTextbook(textbookId, rec.level, userData));
+    return match ? match.priority : 'medium';
+  };
+
+  /** 戻るボタンの右に出す、今いる場所の名前。 */
+  const freeStudyTitle = {
+    eiken: '英検',
+    'eiken-words': '英検の単語',
+    'eiken-interview': '英検 二次試験（面接）',
+  }[selectionMode]
+    || freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label
+    || selectedTextbookId;
+
   // 自由学習タブのコンテンツ
   const renderFreeStudyContent = () => (
     <div className="free-study-tab-content">
             <div className="section-card">
               {/* 見出しと「選択中の教材」を横に並べると、狭い幅で本文に
-                  重なっていた。縦に積んで、教材を選んだあとは説明文を出さない。 */}
+                  重なっていた。縦に積んで、先へ進んだあとは説明文を出さない。 */}
               {selectionMode === 'main' ? (
                 <div className="free-study-head">
-                  <h3 className="home-section-eyebrow">自由学習</h3>
-                  <p className="tile-caption">気になる教材を選んで、自分のペースで進められます。</p>
+                  <h3 className="home-section-eyebrow">えらぶ</h3>
+                  <p className="tile-caption">やりたいところを選んで、自分のペースで進められます。</p>
                 </div>
               ) : (
                 <div className="free-study-head free-study-head--selected">
@@ -1744,66 +1780,28 @@ export default function StudentDashboard() {
                     type="button"
                     className="free-study-back"
                     onClick={handleBackToMainMenu}
-                    aria-label="教材選択に戻る"
+                    aria-label="ひとつ前に戻る"
                   >
                     <FaArrowLeft aria-hidden="true" />
                   </button>
                   <div>
-                    <p className="home-section-eyebrow">自由学習</p>
-                    <p className="free-study-title">
-                      {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
-                    </p>
+                    <p className="home-section-eyebrow">えらぶ</p>
+                    <p className="free-study-title">{freeStudyTitle}</p>
                   </div>
                 </div>
               )}
 
-              {selectionMode === 'main' ? (
-                <div className="free-study-groups">
-                  {FREE_STUDY_GROUPS.map((group) => {
-                    const options = freeStudyOptions.filter((option) => {
-                      if (option.group !== group.id) return false;
-                      // 収録が0語の教材は出さない。選んでも何も学べない。
-                      // 単語データの読み込み前は判定できないので出したままにする。
-                      const count = getTextbookWordCount(option.id, masterWords, textbookCounts);
-                      return !(masterWords.length > 0 && count === 0);
-                    });
-                    if (options.length === 0) return null;
-
-                    return (
-                      <section key={group.id} className="free-study-group">
-                        <h4 className="home-section-eyebrow">{group.label}</h4>
-                        <div className="list-group">
-                          {options.map(({ id, label }) => {
-                            const isRecommended = isRecommendedTextbook(id, testResultLevel, userData);
-                            const recommendations = getRecommendedLevels(testResultLevel);
-                            const recommendationType = recommendations.recommended.find((rec) =>
-                              isRecommendedTextbook(id, rec.level, userData)
-                            );
-                            const priority = recommendationType ? recommendationType.priority : 'medium';
-                            const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
-
-                            return (
-                              <button
-                                key={id}
-                                type="button"
-                                className="tile-button"
-                                onClick={() => handleSelectTextbook(id)}
-                              >
-                                <span className="tile-button__label">
-                                  {label}
-                                  {isRecommended && (
-                                    <RecommendationBadge type="textbook" priority={priority} />
-                                  )}
-                                </span>
-                                <span className="tile-button__count">{wordCount.toLocaleString()}語</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </section>
-                    );
-                  })}
-                </div>
+              {selectionMode !== 'filter' ? (
+                <FreeStudyMenu
+                  mode={selectionMode}
+                  onNavigate={setSelectionMode}
+                  eikenOptions={freeStudyOptions.filter((option) => option.group === 'eiken')}
+                  interviewGrades={INTERVIEW_GRADES}
+                  wordCountOf={wordCountOf}
+                  recommendationOf={recommendationOf}
+                  onSelectTextbook={handleSelectTextbook}
+                  onSelectInterview={setInterviewGrade}
+                />
               ) : (
                 <>
                   <div className="free-study-tabs" role="tablist" aria-label="絞り込み">
@@ -2319,8 +2317,16 @@ export default function StudentDashboard() {
     </div>
   );
 
+  // フラッシュカード・単語帳・面接では下部タブを出さない。出さないなら、
+  // タブのぶんの余白（.dashboard-container の padding-bottom）も空けない。
+  const showTabBar = !interviewGrade
+    && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result';
+
   return (
-    <div className="dashboard-container">
+    <div className={showTabBar ? 'dashboard-container' : 'dashboard-container has-no-tab-bar'}>
+      {/* 初回だけ。読み込みを待つ間に、操作を一度だけ見せる。 */}
+      {onboardingOverlay}
+
       <StudentHeader userName={userData?.name} onLogout={handleLogout} />
       
       {/* 初回テストと学習計画最適化のボタン */}
@@ -2377,8 +2383,8 @@ export default function StudentDashboard() {
       <main className="card-main">
         {renderTabContent()}
       </main>
-      {/* フラッシュカードページではタブバーを非表示 */}
-      {viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && <TabBar />}
+      {/* フラッシュカードページと面接モードではタブバーを非表示 */}
+      {showTabBar && <TabBar />}
     </div>
   );
 }

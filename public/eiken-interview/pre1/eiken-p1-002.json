@@ -1,0 +1,53 @@
+{
+  "id": "eiken-p1-002",
+  "grade": "pre1",
+  "title": "Crowded Trains",
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p1-002-a.webp",
+      "caption": "4コマ。①毎朝、満員電車で疲れきった男性 ②社内会議でグラフを指して提案。壁に「Flexible Working Hours」（The next month）③早い時間の空いた電車で読書（Three months later）④同じ早い時間のホームが通勤客で満杯。駅の表示は「7:00」。男性は落胆（Half a year later）。",
+      "panels": 4
+    }
+  ],
+  "narration": {
+    "storyLine": "This is a story about a man who tried to do something about crowded trains.",
+    "openingSentence": "Every morning, a man was riding to work on an extremely crowded train.",
+    "prepareSeconds": 60,
+    "speakSeconds": 120
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "roleplay",
+      "cardVisible": true,
+      "prompt": "Please look at the fourth picture. If you were the person in the picture, what would you be thinking?",
+      "modelAnswer": "I'd be thinking that my idea only moved the problem to an earlier hour. Everyone chose the same solution, so the crowding simply followed us. Perhaps the real answer is not changing the time but letting people work from home, and I should suggest that at the next meeting.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 2,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think companies in Japan should let their employees work from home?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that people in cities spend too much time commuting. What do you think?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think the government should encourage people to move away from large cities?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    }
+  ]
+}

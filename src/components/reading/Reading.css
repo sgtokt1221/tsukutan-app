@@ -1,0 +1,402 @@
+/* 読みもの。同じ素材を4通りに見せるので、切り替えても行の位置が動かないよう
+   1文ごとに枠を持たせる。 */
+
+.reading-note {
+  margin: var(--space-8) 0 0;
+  font-size: var(--font-size-12);
+  line-height: var(--line-normal);
+  color: var(--color-olive-muted);
+}
+
+/* ---- 一覧 ---- */
+
+.reading-grades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin: var(--space-12) 0;
+}
+
+.reading-grade {
+  padding: var(--space-8) var(--space-12);
+  border: var(--border-default);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-olive-muted);
+  font-family: inherit;
+  font-size: var(--font-size-12);
+  cursor: pointer;
+}
+
+.reading-grade.is-active {
+  border-color: var(--color-lime-border);
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+  font-weight: 700;
+}
+
+.reading-list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.reading-item {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-12);
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.reading-item:hover { background-color: var(--color-lime-soft); }
+
+.reading-item__category {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-olive-subtle);
+}
+
+.reading-item__title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.reading-item__title-ja {
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+/* ---- 本文 ---- */
+
+.reading-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  margin-bottom: var(--space-12);
+}
+
+.reading-title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.reading-title-ja {
+  margin: 2px 0 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.reading-modes {
+  display: flex;
+  border-bottom: 1px solid var(--color-olive-border);
+}
+
+.reading-mode {
+  flex: 1;
+  padding: var(--space-8) var(--space-4);
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--color-olive-muted);
+  font-family: inherit;
+  font-size: var(--font-size-12);
+  cursor: pointer;
+}
+
+.reading-mode.is-active {
+  border-bottom-color: var(--color-brand-lime);
+  color: var(--color-ink-olive);
+  font-weight: 700;
+}
+
+.reading-readall { margin-top: var(--space-12); width: 100%; }
+
+.reading-body {
+  display: grid;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+}
+
+.reading-line {
+  display: flex;
+  gap: var(--space-8);
+  padding: var(--space-8);
+  border-radius: var(--radius-control);
+}
+
+/* 読み上げ中の文。どこを読んでいるか目で追えるようにする。 */
+.reading-line.is-speaking { background-color: var(--color-lime-soft); }
+
+.reading-line__speak {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--color-olive-subtle);
+  cursor: pointer;
+}
+
+.reading-line__text { flex: 1; min-width: 0; }
+
+.reading-sentence {
+  margin: 0;
+  font-size: var(--font-size-16);
+  line-height: 1.9;
+  color: var(--color-ink-olive);
+}
+
+.reading-sentence__ja {
+  margin: var(--space-4) 0 0;
+  font-size: var(--font-size-14);
+  line-height: 1.8;
+  color: var(--color-olive-muted);
+}
+
+/* ---- スラッシュ読み ---- */
+
+.reading-slash {
+  /* 区切りの / は英語の行にそろえる。訳の行まで伸ばさない。 */
+  align-self: flex-start;
+  margin: 0 2px;
+  color: var(--color-brand-lime);
+  font-weight: 700;
+}
+
+/* まとまりごとに、英語の下へ訳を置く。目が上下に往復できる。 */
+.reading-sentence--slash {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-8) 2px;
+}
+
+.reading-chunk {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 0 2px;
+}
+
+.reading-chunk__ja {
+  font-size: 0.7em;
+  line-height: 1.5;
+  color: var(--color-olive-muted);
+}
+
+/* ---- SVOC ---- */
+
+.reading-sentence--svoc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-8) 6px;
+}
+
+/* まとまりごとに薄い枠を持たせる。札だけ並べても、どこからどこまでが
+   その要素なのか目で追えない。 */
+.reading-svoc {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 2px 6px 3px;
+  border-radius: 8px;
+  background-color: rgba(54, 66, 30, 0.04);
+}
+
+.reading-svoc__role {
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-surface);
+  background-color: var(--color-olive-subtle);
+}
+
+/* 主要素は色を付け、修飾語は沈める。全部同じ色だと構造が見えない。 */
+.reading-svoc.is-s .reading-svoc__role { background-color: #2563eb; }
+.reading-svoc.is-v .reading-svoc__role { background-color: #dc2626; }
+.reading-svoc.is-o .reading-svoc__role { background-color: #16a34a; }
+.reading-svoc.is-c .reading-svoc__role { background-color: #d97706; }
+.reading-svoc.is-m .reading-svoc__role { background-color: rgba(54, 66, 30, 0.35); }
+
+.reading-svoc__en { font-size: 1em; line-height: 1.5; }
+
+.reading-svoc__ja {
+  font-size: 0.7em;
+  line-height: 1.5;
+  color: var(--color-olive-muted);
+}
+
+/* ---- 音読 ---- */
+
+.reading-aloud {
+  margin-top: var(--space-16);
+  padding-top: var(--space-16);
+  border-top: var(--border-subtle);
+}
+
+.reading-aloud__mic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  width: 100%;
+  min-height: var(--tap-target);
+  margin-top: var(--space-8);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reading-aloud__mic.is-recording { background-color: #dc2626; }
+
+.reading-aloud__score {
+  margin: var(--space-12) 0 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+/* 本文の1語。長押しで「毎日みる」に入る。押せることが分かるよう、
+   登録済みだけ印を付ける（全部に下線を引くと読みにくい）。 */
+.reading-word {
+  cursor: pointer;
+  border-radius: 3px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.reading-word.is-marked {
+  background-color: rgba(163, 230, 53, 0.35);
+  box-shadow: 0 1px 0 var(--color-brand-lime);
+}
+
+.reading-readall.is-stop {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+/* 押した指のすぐ上に出すふきだし。画面の下に置くと、スクロール位置に
+   よっては見えないまま消える。座標は指の位置（fixed）。 */
+.reading-picked {
+  position: fixed;
+  z-index: 40;
+  transform: translate(-50%, calc(-100% - 14px));
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-size: var(--font-size-12);
+  white-space: nowrap;
+  box-shadow: var(--shadow-2);
+  pointer-events: none;
+  animation: reading-picked-in 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.reading-picked.is-missing { background-color: rgba(54, 66, 30, 0.82); }
+
+@keyframes reading-picked-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% - 4px)); }
+  to   { opacity: 1; transform: translate(-50%, calc(-100% - 14px)); }
+}
+
+/* 熟語のまとまり。1語ずつではなく、ここを押させる。 */
+.reading-word.is-phrase {
+  border-bottom: 1px dotted var(--color-olive-subtle);
+}
+
+/* 文字サイズ。読みものは読むものなので、単語帳より下限を上げてある。 */
+.reading-scale {
+  font-size: calc(1rem * var(--reading-zoom, 1));
+}
+
+.reading-scale .reading-sentence,
+.reading-scale .reading-svoc__en {
+  font-size: 1em;
+}
+
+.reading-scale .reading-sentence__ja {
+  font-size: 0.85em;
+}
+
+.reading-zoom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+}
+
+.reading-zoom input { flex: 1; }
+
+.reading-zoom__mark {
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: var(--color-olive-subtle);
+}
+
+.reading-zoom__mark--large { font-size: 1.05rem; }
+
+/* ---- 浮かせた操作 ----
+   長い読みものでは、本文の一番下に置くと毎回スクロールして戻ることになる。
+   どこを読んでいても押せるように浮かせる。 */
+.reading-dock {
+  position: sticky;
+  bottom: calc(var(--space-12) + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+  pointer-events: none;
+}
+
+.reading-dock__button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: var(--tap-target);
+  padding: 0 var(--space-16);
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-2);
+}
+
+.reading-dock__button.is-active { background-color: #2563eb; }
+.reading-dock__button.is-recording { background-color: #dc2626; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reading-picked { animation: none; }
+}

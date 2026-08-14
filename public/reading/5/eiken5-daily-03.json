@@ -1,0 +1,219 @@
+{
+  "id": "eiken5-daily-03",
+  "grade": "5",
+  "category": "daily",
+  "title": "My Bike",
+  "titleJa": "わたしの自転車",
+  "sentences": [
+    {
+      "ja": "わたしは青い自転車を持っています。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "持っています",
+          "role": "V"
+        },
+        {
+          "en": "a blue bike.",
+          "ja": "青い自転車を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "それは父の自転車でした。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "my father's bike.",
+          "ja": "父の自転車",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはそれで学校へ行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "go",
+          "ja": "行きます",
+          "role": "V"
+        },
+        {
+          "en": "to school",
+          "ja": "学校へ",
+          "role": "M"
+        },
+        {
+          "en": "on it.",
+          "ja": "それで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "土曜日には、公園まで自転車で行きます。",
+      "chunks": [
+        {
+          "en": "On Saturday",
+          "ja": "土曜日には",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "go",
+          "ja": "行きます",
+          "role": "V"
+        },
+        {
+          "en": "to the park",
+          "ja": "公園まで",
+          "role": "M"
+        },
+        {
+          "en": "on my bike.",
+          "ja": "自転車で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "道には木がたくさんあります。",
+      "chunks": [
+        {
+          "en": "There are",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "many trees",
+          "ja": "木がたくさん",
+          "role": "S"
+        },
+        {
+          "en": "on the way.",
+          "ja": "道には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "夏は暑いですが、公園は気持ちがいいです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "hot in summer,",
+          "ja": "夏は暑い",
+          "role": "C"
+        },
+        {
+          "en": "but the park is good.",
+          "ja": "しかし公園は気持ちがいいです",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはそこで友だちに会います。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "see",
+          "ja": "会います",
+          "role": "V"
+        },
+        {
+          "en": "my friends",
+          "ja": "友だちに",
+          "role": "O"
+        },
+        {
+          "en": "there.",
+          "ja": "そこで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちはボールで遊びます。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "play",
+          "ja": "遊びます",
+          "role": "V"
+        },
+        {
+          "en": "with a ball.",
+          "ja": "ボールで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "この自転車は古いですが、わたしは好きです。",
+      "chunks": [
+        {
+          "en": "This bike",
+          "ja": "この自転車は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "old,",
+          "ja": "古い",
+          "role": "C"
+        },
+        {
+          "en": "but I like it.",
+          "ja": "しかしわたしは好きです",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

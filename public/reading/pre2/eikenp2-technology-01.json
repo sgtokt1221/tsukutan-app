@@ -1,0 +1,424 @@
+{
+  "id": "eikenp2-technology-01",
+  "grade": "pre2",
+  "category": "technology",
+  "title": "The Map That Everyone Draws",
+  "titleJa": "みんなで描く地図",
+  "sentences": [
+    {
+      "ja": "わたしたちが毎日使う地図は、だれが作っているのでしょうか。",
+      "chunks": [
+        {
+          "en": "Who",
+          "ja": "だれが",
+          "role": "S"
+        },
+        {
+          "en": "makes",
+          "ja": "作っているのでしょうか",
+          "role": "V"
+        },
+        {
+          "en": "the maps we use every day?",
+          "ja": "わたしたちが毎日使う地図を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "多くは大きな会社が作り、そこには費用がかかっています。",
+      "chunks": [
+        {
+          "en": "Most of them",
+          "ja": "多くは",
+          "role": "S"
+        },
+        {
+          "en": "are made",
+          "ja": "作られています",
+          "role": "V"
+        },
+        {
+          "en": "by large companies,",
+          "ja": "大きな会社によって",
+          "role": "M"
+        },
+        {
+          "en": "and money is spent on them.",
+          "ja": "そしてそこには費用がかかっています",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、世界には別の方法で作られている地図があります。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "there is",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "a map in the world that is made in another way.",
+          "ja": "世界には別の方法で作られている地図が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "それは、だれでも書き加えることができる地図です。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "a map that anyone can add to.",
+          "ja": "だれでも書き加えることができる地図",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "2004年に始まり、今では何百万人もが参加しています。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "started",
+          "ja": "始まりました",
+          "role": "V"
+        },
+        {
+          "en": "in 2004,",
+          "ja": "2004年に",
+          "role": "M"
+        },
+        {
+          "en": "and millions of people take part in it now.",
+          "ja": "そして今では何百万人もが参加しています",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "道を歩いた人が、新しくできた店を書き込みます。",
+      "chunks": [
+        {
+          "en": "A person who has walked a street",
+          "ja": "道を歩いた人が",
+          "role": "S"
+        },
+        {
+          "en": "writes in",
+          "ja": "書き込みます",
+          "role": "V"
+        },
+        {
+          "en": "a shop that has just opened.",
+          "ja": "新しくできた店を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "車いすを使う人が、段差のある場所を記録します。",
+      "chunks": [
+        {
+          "en": "A person who uses a wheelchair",
+          "ja": "車いすを使う人が",
+          "role": "S"
+        },
+        {
+          "en": "records",
+          "ja": "記録します",
+          "role": "V"
+        },
+        {
+          "en": "places where there are steps.",
+          "ja": "段差のある場所を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "会社が作る地図には、こうした情報はあまり入りません。",
+      "chunks": [
+        {
+          "en": "Such information",
+          "ja": "こうした情報は",
+          "role": "S"
+        },
+        {
+          "en": "does not often enter",
+          "ja": "あまり入りません",
+          "role": "V"
+        },
+        {
+          "en": "maps made by companies.",
+          "ja": "会社が作る地図には",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "お金にならない情報だからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "it",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "information that does not become money.",
+          "ja": "お金にならない情報",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この地図が最も役に立ったのは、災害のときでした。",
+      "chunks": [
+        {
+          "en": "The time when this map was most useful",
+          "ja": "この地図が最も役に立ったときは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "during disasters.",
+          "ja": "災害のとき",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "ある大きな地震のあと、被害を受けた地域の地図がありませんでした。",
+      "chunks": [
+        {
+          "en": "After one large earthquake,",
+          "ja": "ある大きな地震のあと",
+          "role": "M"
+        },
+        {
+          "en": "there was",
+          "ja": "ありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "no map of the damaged area.",
+          "ja": "被害を受けた地域の地図が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "世界中の人が、写真を見ながら道や建物を書き込みました。",
+      "chunks": [
+        {
+          "en": "People around the world",
+          "ja": "世界中の人が",
+          "role": "S"
+        },
+        {
+          "en": "wrote in",
+          "ja": "書き込みました",
+          "role": "V"
+        },
+        {
+          "en": "roads and buildings",
+          "ja": "道や建物を",
+          "role": "O"
+        },
+        {
+          "en": "while looking at photographs.",
+          "ja": "写真を見ながら",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "数日のうちに、助けに向かう人が使える地図ができました。",
+      "chunks": [
+        {
+          "en": "Within a few days,",
+          "ja": "数日のうちに",
+          "role": "M"
+        },
+        {
+          "en": "a map that helpers could use",
+          "ja": "助けに向かう人が使える地図が",
+          "role": "S"
+        },
+        {
+          "en": "was made.",
+          "ja": "できました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "もちろん、この方法には弱いところもあります。",
+      "chunks": [
+        {
+          "en": "Of course,",
+          "ja": "もちろん",
+          "role": "M"
+        },
+        {
+          "en": "this way",
+          "ja": "この方法には",
+          "role": "S"
+        },
+        {
+          "en": "has",
+          "ja": "あります",
+          "role": "V"
+        },
+        {
+          "en": "weak points,",
+          "ja": "弱いところも",
+          "role": "O"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "人が多い場所は詳しく、少ない場所は空白のままです。",
+      "chunks": [
+        {
+          "en": "Places where there are many people",
+          "ja": "人が多い場所は",
+          "role": "S"
+        },
+        {
+          "en": "are detailed,",
+          "ja": "詳しいです",
+          "role": "V"
+        },
+        {
+          "en": "and places with few people stay empty.",
+          "ja": "そして少ない場所は空白のままです",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "まちがった情報が書き込まれることもあります。",
+      "chunks": [
+        {
+          "en": "Wrong information",
+          "ja": "まちがった情報が",
+          "role": "S"
+        },
+        {
+          "en": "is sometimes written in,",
+          "ja": "書き込まれることもあります",
+          "role": "V"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、この地図は一つのことを示しています。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "this map",
+          "ja": "この地図は",
+          "role": "S"
+        },
+        {
+          "en": "shows",
+          "ja": "示しています",
+          "role": "V"
+        },
+        {
+          "en": "one thing.",
+          "ja": "一つのことを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "情報は、使う人が作ることもできるということです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that information can also be made by the people who use it.",
+          "ja": "情報は使う人が作ることもできるということ",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "与えられるものだと思うかどうかで、関わり方は変わります。",
+      "chunks": [
+        {
+          "en": "Whether we think it is something given to us",
+          "ja": "与えられるものだと思うかどうかで",
+          "role": "M"
+        },
+        {
+          "en": "changes",
+          "ja": "変わります",
+          "role": "V"
+        },
+        {
+          "en": "the way we take part.",
+          "ja": "関わり方は",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

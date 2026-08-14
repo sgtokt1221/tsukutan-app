@@ -1,0 +1,599 @@
+{
+  "id": "eiken2-technology-01",
+  "grade": "2",
+  "category": "technology",
+  "title": "The Language That Machines Learned",
+  "titleJa": "機械が覚えた言葉",
+  "sentences": [
+    {
+      "ja": "30年前、コンピュータに人間の言葉を理解させることは、ほとんど不可能だと考えられていました。",
+      "chunks": [
+        {
+          "en": "Thirty years ago,",
+          "ja": "30年前",
+          "role": "M"
+        },
+        {
+          "en": "making computers understand human language",
+          "ja": "コンピュータに人間の言葉を理解させることは",
+          "role": "S"
+        },
+        {
+          "en": "was thought",
+          "ja": "考えられていました",
+          "role": "V"
+        },
+        {
+          "en": "to be almost impossible.",
+          "ja": "ほとんど不可能だと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "当時の研究者たちは、文法の規則を一つずつ機械に教えようとしました。",
+      "chunks": [
+        {
+          "en": "Researchers at that time",
+          "ja": "当時の研究者たちは",
+          "role": "S"
+        },
+        {
+          "en": "tried to teach",
+          "ja": "教えようとしました",
+          "role": "V"
+        },
+        {
+          "en": "machines",
+          "ja": "機械に",
+          "role": "O"
+        },
+        {
+          "en": "the rules of grammar one by one.",
+          "ja": "文法の規則を一つずつ",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、その方法はうまくいきませんでした。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "that way",
+          "ja": "その方法は",
+          "role": "S"
+        },
+        {
+          "en": "did not work.",
+          "ja": "うまくいきませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "言葉には、規則で説明できない部分があまりにも多かったからです。",
+      "chunks": [
+        {
+          "en": "This is because",
+          "ja": "なぜなら",
+          "role": "M"
+        },
+        {
+          "en": "there were too many parts of language",
+          "ja": "言葉にはあまりにも多くの部分があった",
+          "role": "S"
+        },
+        {
+          "en": "that could not be explained by rules.",
+          "ja": "規則で説明できない",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "たとえば、同じ文でも場面によって意味が変わります。",
+      "chunks": [
+        {
+          "en": "For example,",
+          "ja": "たとえば",
+          "role": "M"
+        },
+        {
+          "en": "the same sentence",
+          "ja": "同じ文でも",
+          "role": "S"
+        },
+        {
+          "en": "changes",
+          "ja": "変わります",
+          "role": "V"
+        },
+        {
+          "en": "its meaning",
+          "ja": "その意味が",
+          "role": "O"
+        },
+        {
+          "en": "in different situations.",
+          "ja": "場面によって",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "転機が訪れたのは、研究者が教え方を変えたときでした。",
+      "chunks": [
+        {
+          "en": "The change came",
+          "ja": "転機が訪れました",
+          "role": "V"
+        },
+        {
+          "en": "when researchers changed the way of teaching.",
+          "ja": "研究者が教え方を変えたときに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "彼らは規則を教えるのをやめ、代わりに大量の文章を機械に読ませました。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "彼らは",
+          "role": "S"
+        },
+        {
+          "en": "stopped teaching rules",
+          "ja": "規則を教えるのをやめました",
+          "role": "V"
+        },
+        {
+          "en": "and instead let machines read a huge amount of writing.",
+          "ja": "代わりに大量の文章を機械に読ませました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "機械は、どの語がどの語のあとに来やすいかを、自分で数えていきました。",
+      "chunks": [
+        {
+          "en": "The machines",
+          "ja": "機械は",
+          "role": "S"
+        },
+        {
+          "en": "counted",
+          "ja": "数えていきました",
+          "role": "V"
+        },
+        {
+          "en": "by themselves",
+          "ja": "自分で",
+          "role": "M"
+        },
+        {
+          "en": "which words often came after which words.",
+          "ja": "どの語がどの語のあとに来やすいかを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "そこには意味の理解はありません。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "no understanding of meaning",
+          "ja": "意味の理解は",
+          "role": "S"
+        },
+        {
+          "en": "there.",
+          "ja": "そこには",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "あるのは、数え切れないほどの例から見つけた規則性だけです。",
+      "chunks": [
+        {
+          "en": "There is",
+          "ja": "あるだけです",
+          "role": "V"
+        },
+        {
+          "en": "only a pattern found in a countless number of examples.",
+          "ja": "数え切れないほどの例から見つけた規則性が",
+          "role": "S"
+        }
+      ]
+    },
+    {
+      "ja": "それでも、その結果は多くの人を驚かせました。",
+      "chunks": [
+        {
+          "en": "Still,",
+          "ja": "それでも",
+          "role": "M"
+        },
+        {
+          "en": "the results",
+          "ja": "その結果は",
+          "role": "S"
+        },
+        {
+          "en": "surprised",
+          "ja": "驚かせました",
+          "role": "V"
+        },
+        {
+          "en": "many people.",
+          "ja": "多くの人を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "今日、機械は文章を翻訳し、質問に答え、物語さえ書くことができます。",
+      "chunks": [
+        {
+          "en": "Today,",
+          "ja": "今日",
+          "role": "M"
+        },
+        {
+          "en": "machines",
+          "ja": "機械は",
+          "role": "S"
+        },
+        {
+          "en": "can translate writing, answer questions, and even write stories.",
+          "ja": "文章を翻訳し、質問に答え、物語さえ書くことができます",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "この技術は、多くの人の暮らしを変えました。",
+      "chunks": [
+        {
+          "en": "This technology",
+          "ja": "この技術は",
+          "role": "S"
+        },
+        {
+          "en": "has changed",
+          "ja": "変えました",
+          "role": "V"
+        },
+        {
+          "en": "the lives of many people.",
+          "ja": "多くの人の暮らしを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "外国語を話せない人が、旅先で店の人と話せるようになりました。",
+      "chunks": [
+        {
+          "en": "People who cannot speak a foreign language",
+          "ja": "外国語を話せない人が",
+          "role": "S"
+        },
+        {
+          "en": "have become able to talk",
+          "ja": "話せるようになりました",
+          "role": "V"
+        },
+        {
+          "en": "with shop workers",
+          "ja": "店の人と",
+          "role": "M"
+        },
+        {
+          "en": "when they travel.",
+          "ja": "旅先で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "目の見えない人が、写真の中身を言葉で聞けるようにもなりました。",
+      "chunks": [
+        {
+          "en": "People who cannot see",
+          "ja": "目の見えない人が",
+          "role": "S"
+        },
+        {
+          "en": "have also become able to hear",
+          "ja": "聞けるようにもなりました",
+          "role": "V"
+        },
+        {
+          "en": "what is in a photograph",
+          "ja": "写真の中身を",
+          "role": "O"
+        },
+        {
+          "en": "in words.",
+          "ja": "言葉で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、この便利さには問題も含まれています。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "this usefulness",
+          "ja": "この便利さには",
+          "role": "S"
+        },
+        {
+          "en": "also includes",
+          "ja": "含まれています",
+          "role": "V"
+        },
+        {
+          "en": "problems.",
+          "ja": "問題も",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "機械は、読んだ文章の中にある偏りをそのまま覚えてしまいます。",
+      "chunks": [
+        {
+          "en": "Machines",
+          "ja": "機械は",
+          "role": "S"
+        },
+        {
+          "en": "learn",
+          "ja": "覚えてしまいます",
+          "role": "V"
+        },
+        {
+          "en": "the bias in the writing they have read",
+          "ja": "読んだ文章の中にある偏りを",
+          "role": "O"
+        },
+        {
+          "en": "just as it is.",
+          "ja": "そのまま",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ある職業を、特定の性別と結びつけて答えることがあります。",
+      "chunks": [
+        {
+          "en": "They",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "sometimes connect",
+          "ja": "結びつけて答えることがあります",
+          "role": "V"
+        },
+        {
+          "en": "a job",
+          "ja": "ある職業を",
+          "role": "O"
+        },
+        {
+          "en": "with a certain sex.",
+          "ja": "特定の性別と",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "それは機械が悪いのではなく、人間の書いたものがそうだったのです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "is not",
+          "ja": "ではありません",
+          "role": "V"
+        },
+        {
+          "en": "the fault of the machine",
+          "ja": "機械のせい",
+          "role": "C"
+        },
+        {
+          "en": "but the writing that humans made.",
+          "ja": "人間が書いたものがそうだったのです",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "もう一つの問題は、機械が自信を持って間違えることです。",
+      "chunks": [
+        {
+          "en": "Another problem",
+          "ja": "もう一つの問題は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that machines make mistakes with confidence.",
+          "ja": "機械が自信を持って間違えること",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "知らないことを聞かれても、本当らしい答えを作ってしまいます。",
+      "chunks": [
+        {
+          "en": "Even when they are asked about something they do not know,",
+          "ja": "知らないことを聞かれても",
+          "role": "M"
+        },
+        {
+          "en": "they",
+          "ja": "それらは",
+          "role": "S"
+        },
+        {
+          "en": "make",
+          "ja": "作ってしまいます",
+          "role": "V"
+        },
+        {
+          "en": "an answer that sounds true.",
+          "ja": "本当らしい答えを",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "だから、使う側には確かめる力が必要になります。",
+      "chunks": [
+        {
+          "en": "So",
+          "ja": "だから",
+          "role": "M"
+        },
+        {
+          "en": "the people who use them",
+          "ja": "使う側には",
+          "role": "S"
+        },
+        {
+          "en": "need",
+          "ja": "必要になります",
+          "role": "V"
+        },
+        {
+          "en": "the ability to check.",
+          "ja": "確かめる力が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "これは、英語を学ぶわたしたちにも関係があります。",
+      "chunks": [
+        {
+          "en": "This",
+          "ja": "これは",
+          "role": "S"
+        },
+        {
+          "en": "is related",
+          "ja": "関係があります",
+          "role": "V"
+        },
+        {
+          "en": "to us who are learning English,",
+          "ja": "英語を学ぶわたしたちにも",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "翻訳の道具があるなら、なぜ言葉を学ぶのかと聞く人がいます。",
+      "chunks": [
+        {
+          "en": "Some people",
+          "ja": "ある人たちは",
+          "role": "S"
+        },
+        {
+          "en": "ask",
+          "ja": "聞きます",
+          "role": "V"
+        },
+        {
+          "en": "why we learn a language if we have tools for translation.",
+          "ja": "翻訳の道具があるならなぜ言葉を学ぶのかと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "しかし、道具が出した答えが正しいかどうかを決めるのは、やはり人間です。",
+      "chunks": [
+        {
+          "en": "However,",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "it is humans",
+          "ja": "人間です",
+          "role": "S"
+        },
+        {
+          "en": "who decide whether the answer of the tool is right.",
+          "ja": "道具が出した答えが正しいかどうかを決めるのは",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その判断をするためには、自分の中に言葉がなければなりません。",
+      "chunks": [
+        {
+          "en": "To make that decision,",
+          "ja": "その判断をするためには",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "must have",
+          "ja": "なければなりません",
+          "role": "V"
+        },
+        {
+          "en": "language inside ourselves.",
+          "ja": "自分の中に言葉が",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

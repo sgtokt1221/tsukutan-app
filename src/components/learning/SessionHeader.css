@@ -110,6 +110,10 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: calc(var(--space-8) * var(--wordbook-zoom, 1)) var(--space-12);
+  /* 最後の1枚がホームバーに掛からないようにする。以前は下部タブぶんの
+     余白（.dashboard-container）がたまたま効いていたが、タブを出さない
+     画面ではその余白を空けないので、こちらで持つ。 */
+  padding-bottom: calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
 }
 
 .wordbook-list__grid {
@@ -125,7 +129,9 @@
   background-color: var(--color-surface);
   box-shadow: var(--shadow-1);
   cursor: grab;
-  touch-action: none; /* ブラウザのデフォルトタッチ動作を無効化 */
+  /* 縦は一覧のスクロールに使い、横スワイプ（採点）だけをこちらで拾う。
+     none にしていたのでスマホでカードの上を触るとページが動かなかった。 */
+  touch-action: pan-y;
   transition: transform var(--motion-fast) var(--ease-standard),
               background-color var(--motion-standard) var(--ease-standard);
 }
@@ -459,4 +465,42 @@
 .wordbook-card--correct .wordbook-card__left,
 .wordbook-card--incorrect .wordbook-card__left {
   background-color: inherit;
+}
+
+/* カード右上の小さな操作（毎日みる / もう覚えた） */
+.wordbook-card__tools {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* 中の星ボタンは自前で絶対配置しているので、並びに戻す */
+.wordbook-card__tools .bookmark-button--inline {
+  position: static;
+}
+
+.wordbook-graduate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(22px * var(--wordbook-zoom, 1) + 10px);
+  height: calc(22px * var(--wordbook-zoom, 1) + 10px);
+  min-width: 20px;
+  min-height: 20px;
+  padding: 0;
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-olive-muted);
+  font-size: calc(11px * var(--wordbook-zoom, 1) + 3px);
+  cursor: pointer;
+}
+
+.wordbook-graduate:hover {
+  background-color: var(--color-lime-soft);
+  color: var(--color-ink-olive);
 }

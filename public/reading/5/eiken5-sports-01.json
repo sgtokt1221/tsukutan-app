@@ -1,0 +1,239 @@
+{
+  "id": "eiken5-sports-01",
+  "grade": "5",
+  "category": "sports",
+  "title": "I Play Soccer",
+  "titleJa": "サッカーをする",
+  "sentences": [
+    {
+      "ja": "わたしはサッカーが好きです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "like",
+          "ja": "好きです",
+          "role": "V"
+        },
+        {
+          "en": "soccer.",
+          "ja": "サッカーが",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは月曜日と金曜日に学校で練習します。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "practice",
+          "ja": "練習します",
+          "role": "V"
+        },
+        {
+          "en": "at school",
+          "ja": "学校で",
+          "role": "M"
+        },
+        {
+          "en": "on Monday and Friday.",
+          "ja": "月曜日と金曜日に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの友だちのケンもサッカーをします。",
+      "chunks": [
+        {
+          "en": "My friend Ken",
+          "ja": "わたしの友だちのケンも",
+          "role": "S"
+        },
+        {
+          "en": "plays",
+          "ja": "します",
+          "role": "V"
+        },
+        {
+          "en": "soccer,",
+          "ja": "サッカーを",
+          "role": "O"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "ケンはとても速く走ります。",
+      "chunks": [
+        {
+          "en": "Ken",
+          "ja": "ケンは",
+          "role": "S"
+        },
+        {
+          "en": "runs",
+          "ja": "走ります",
+          "role": "V"
+        },
+        {
+          "en": "very fast.",
+          "ja": "とても速く",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは速くありませんが、ボールがよく見えます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "am not",
+          "ja": "ありません",
+          "role": "V"
+        },
+        {
+          "en": "fast,",
+          "ja": "速く",
+          "role": "C"
+        },
+        {
+          "en": "but I see the ball well.",
+          "ja": "しかしボールがよく見えます",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちはいつもいっしょに練習します。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "always practice",
+          "ja": "いつも練習します",
+          "role": "V"
+        },
+        {
+          "en": "together.",
+          "ja": "いっしょに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "日曜日に、わたしたちは試合をします。",
+      "chunks": [
+        {
+          "en": "On Sunday",
+          "ja": "日曜日に",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "have",
+          "ja": "します",
+          "role": "V"
+        },
+        {
+          "en": "a game.",
+          "ja": "試合を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしの先生も試合を見に来ます。",
+      "chunks": [
+        {
+          "en": "My teacher",
+          "ja": "わたしの先生も",
+          "role": "S"
+        },
+        {
+          "en": "comes",
+          "ja": "来ます",
+          "role": "V"
+        },
+        {
+          "en": "to see the game,",
+          "ja": "試合を見に",
+          "role": "M"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "試合はとても楽しいです。",
+      "chunks": [
+        {
+          "en": "The game",
+          "ja": "試合は",
+          "role": "S"
+        },
+        {
+          "en": "is",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "very fun.",
+          "ja": "とても楽しい",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは6月に新しいボールがほしいです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "want",
+          "ja": "ほしいです",
+          "role": "V"
+        },
+        {
+          "en": "a new ball",
+          "ja": "新しいボールが",
+          "role": "O"
+        },
+        {
+          "en": "in June.",
+          "ja": "6月に",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}

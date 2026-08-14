@@ -1,0 +1,58 @@
+{
+  "id": "eiken3-001",
+  "grade": "3",
+  "title": "Morning Radio",
+  "passage": {
+    "text": "Many people listen to the radio in the morning. They can hear the news and the weather while they eat breakfast. The radio also tells them about traffic and trains, so it helps them get to work on time.",
+    "hintPhrase": "so",
+    "wordCount": 39
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken3-001-a.webp",
+      "caption": "朝の居間。母が食事を並べ、娘が食べ、父は新聞を持って立っている（吹き出しで座って読む姿）。机にカップ2つ。棚にラジオ。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "prompt": "Please look at the passage. Why does the radio help people get to work on time?",
+      "modelAnswer": "Because it tells them about traffic and trains."
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "prompt": "Please look at the picture. What is the man going to do?",
+      "modelAnswer": "He's going to read a newspaper."
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "prompt": "How many cups are there on the table?",
+      "modelAnswer": "There are two cups."
+    },
+    {
+      "no": 4,
+      "type": "personal",
+      "prompt": "What do you usually do before breakfast?",
+      "modelAnswer": "I usually wash my face and change my clothes."
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "prompt": "Do you often listen to music?",
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I listen to music on my phone every day. I like Japanese pop songs."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "I don't have much free time. I usually study after school."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,344 @@
+{
+  "id": "eiken3-school-01",
+  "grade": "3",
+  "category": "school",
+  "title": "The Speech I Did Not Want to Give",
+  "titleJa": "したくなかったスピーチ",
+  "sentences": [
+    {
+      "ja": "先月、わたしは英語のスピーチ大会に出ました。",
+      "chunks": [
+        {
+          "en": "Last month,",
+          "ja": "先月",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "took part",
+          "ja": "出ました",
+          "role": "V"
+        },
+        {
+          "en": "in an English speech contest.",
+          "ja": "英語のスピーチ大会に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "本当は、出たくありませんでした。",
+      "chunks": [
+        {
+          "en": "In fact,",
+          "ja": "本当は",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "did not want to take part.",
+          "ja": "出たくありませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "先生がわたしを選んだとき、わたしは断ろうとしました。",
+      "chunks": [
+        {
+          "en": "When my teacher chose me,",
+          "ja": "先生がわたしを選んだとき",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "tried to say no.",
+          "ja": "断ろうとしました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "人の前で話すことが、子どものころからこわかったのです。",
+      "chunks": [
+        {
+          "en": "Speaking in front of people",
+          "ja": "人の前で話すことが",
+          "role": "S"
+        },
+        {
+          "en": "had been",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "something I was afraid of since I was a child.",
+          "ja": "子どものころからこわいこと",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "しかし先生は、わたしの書いた文章がよかったと言いました。",
+      "chunks": [
+        {
+          "en": "But",
+          "ja": "しかし",
+          "role": "M"
+        },
+        {
+          "en": "my teacher",
+          "ja": "先生は",
+          "role": "S"
+        },
+        {
+          "en": "said",
+          "ja": "言いました",
+          "role": "V"
+        },
+        {
+          "en": "that the writing I had done was good.",
+          "ja": "わたしの書いた文章がよかったと",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは1か月間、毎日その原稿を読みました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "read",
+          "ja": "読みました",
+          "role": "V"
+        },
+        {
+          "en": "the paper",
+          "ja": "その原稿を",
+          "role": "O"
+        },
+        {
+          "en": "every day for a month.",
+          "ja": "1か月間毎日",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "家族の前で20回以上練習しました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "practiced",
+          "ja": "練習しました",
+          "role": "V"
+        },
+        {
+          "en": "more than twenty times",
+          "ja": "20回以上",
+          "role": "M"
+        },
+        {
+          "en": "in front of my family.",
+          "ja": "家族の前で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "大会の日、わたしの手はふるえていました。",
+      "chunks": [
+        {
+          "en": "On the day of the contest,",
+          "ja": "大会の日",
+          "role": "M"
+        },
+        {
+          "en": "my hands",
+          "ja": "わたしの手は",
+          "role": "S"
+        },
+        {
+          "en": "were shaking.",
+          "ja": "ふるえていました",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "話し始めたとき、最初の言葉が出てきませんでした。",
+      "chunks": [
+        {
+          "en": "When I began to speak,",
+          "ja": "話し始めたとき",
+          "role": "M"
+        },
+        {
+          "en": "the first words",
+          "ja": "最初の言葉が",
+          "role": "S"
+        },
+        {
+          "en": "did not come out.",
+          "ja": "出てきませんでした",
+          "role": "V"
+        }
+      ]
+    },
+    {
+      "ja": "3秒ほど、何も言えずに立っていました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "stood",
+          "ja": "立っていました",
+          "role": "V"
+        },
+        {
+          "en": "without saying anything",
+          "ja": "何も言えずに",
+          "role": "M"
+        },
+        {
+          "en": "for about three seconds.",
+          "ja": "3秒ほど",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのとき、いちばん前にいた友だちが小さく手をふりました。",
+      "chunks": [
+        {
+          "en": "At that moment,",
+          "ja": "そのとき",
+          "role": "M"
+        },
+        {
+          "en": "my friend in the front",
+          "ja": "いちばん前にいた友だちが",
+          "role": "S"
+        },
+        {
+          "en": "moved",
+          "ja": "ふりました",
+          "role": "V"
+        },
+        {
+          "en": "her hand a little.",
+          "ja": "小さく手を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは息をゆっくり入れて、もう一度始めました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "took air slowly",
+          "ja": "息をゆっくり入れました",
+          "role": "V"
+        },
+        {
+          "en": "and started again.",
+          "ja": "そしてもう一度始めました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "賞は取れませんでしたが、わたしは最後まで話しました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "did not win a prize,",
+          "ja": "賞は取れませんでした",
+          "role": "V"
+        },
+        {
+          "en": "but I spoke to the end.",
+          "ja": "しかし最後まで話しました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "いま思うと、大切だったのは賞ではありませんでした。",
+      "chunks": [
+        {
+          "en": "Now I think",
+          "ja": "いま思うと",
+          "role": "M"
+        },
+        {
+          "en": "that the important thing",
+          "ja": "大切だったことは",
+          "role": "S"
+        },
+        {
+          "en": "was not",
+          "ja": "ではありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "the prize.",
+          "ja": "賞",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "こわいと思ったことを、やってみたということです。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "です",
+          "role": "V"
+        },
+        {
+          "en": "that I tried the thing I was afraid of.",
+          "ja": "こわいと思ったことをやってみたということ",
+          "role": "C"
+        }
+      ]
+    }
+  ]
+}

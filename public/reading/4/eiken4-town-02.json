@@ -1,0 +1,269 @@
+{
+  "id": "eiken4-town-02",
+  "grade": "4",
+  "category": "town",
+  "title": "The Bus Stop in the Rain",
+  "titleJa": "雨のバス停",
+  "sentences": [
+    {
+      "ja": "わたしの家から学校まで、バスで20分かかります。",
+      "chunks": [
+        {
+          "en": "It",
+          "ja": "それは",
+          "role": "S"
+        },
+        {
+          "en": "takes",
+          "ja": "かかります",
+          "role": "V"
+        },
+        {
+          "en": "twenty minutes by bus",
+          "ja": "バスで20分",
+          "role": "O"
+        },
+        {
+          "en": "from my house to school.",
+          "ja": "わたしの家から学校まで",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "バス停には屋根がありませんでした。",
+      "chunks": [
+        {
+          "en": "The bus stop",
+          "ja": "バス停には",
+          "role": "S"
+        },
+        {
+          "en": "did not have",
+          "ja": "ありませんでした",
+          "role": "V"
+        },
+        {
+          "en": "a roof.",
+          "ja": "屋根が",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "雨の日、わたしたちはぬれて待たなければなりませんでした。",
+      "chunks": [
+        {
+          "en": "On rainy days,",
+          "ja": "雨の日",
+          "role": "M"
+        },
+        {
+          "en": "we",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "had to wait",
+          "ja": "待たなければなりませんでした",
+          "role": "V"
+        },
+        {
+          "en": "and got wet.",
+          "ja": "そしてぬれました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "去年の6月、わたしはそのことを作文に書きました。",
+      "chunks": [
+        {
+          "en": "Last June,",
+          "ja": "去年の6月",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "wrote",
+          "ja": "書きました",
+          "role": "V"
+        },
+        {
+          "en": "about it",
+          "ja": "そのことについて",
+          "role": "O"
+        },
+        {
+          "en": "in a school paper.",
+          "ja": "学校の作文に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "先生がそれを読んで、町の人に見せてくれました。",
+      "chunks": [
+        {
+          "en": "My teacher",
+          "ja": "先生が",
+          "role": "S"
+        },
+        {
+          "en": "read",
+          "ja": "読みました",
+          "role": "V"
+        },
+        {
+          "en": "it",
+          "ja": "それを",
+          "role": "O"
+        },
+        {
+          "en": "and showed it to a person in the town office.",
+          "ja": "そして町の人に見せてくれました",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "3か月後、町の人が学校に来ました。",
+      "chunks": [
+        {
+          "en": "Three months later,",
+          "ja": "3か月後",
+          "role": "M"
+        },
+        {
+          "en": "that person",
+          "ja": "その人が",
+          "role": "S"
+        },
+        {
+          "en": "came",
+          "ja": "来ました",
+          "role": "V"
+        },
+        {
+          "en": "to our school.",
+          "ja": "わたしたちの学校に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "その人は、バス停を使う生徒の数を聞きました。",
+      "chunks": [
+        {
+          "en": "The person",
+          "ja": "その人は",
+          "role": "S"
+        },
+        {
+          "en": "asked",
+          "ja": "聞きました",
+          "role": "V"
+        },
+        {
+          "en": "how many students used the bus stop.",
+          "ja": "バス停を使う生徒の数を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "わたしたちは1週間、毎朝数を数えました。",
+      "chunks": [
+        {
+          "en": "We",
+          "ja": "わたしたちは",
+          "role": "S"
+        },
+        {
+          "en": "counted",
+          "ja": "数えました",
+          "role": "V"
+        },
+        {
+          "en": "the number every morning",
+          "ja": "毎朝その数を",
+          "role": "O"
+        },
+        {
+          "en": "for a week.",
+          "ja": "1週間",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "答えは、1日に40人以上でした。",
+      "chunks": [
+        {
+          "en": "The answer",
+          "ja": "答えは",
+          "role": "S"
+        },
+        {
+          "en": "was",
+          "ja": "でした",
+          "role": "V"
+        },
+        {
+          "en": "more than forty people a day.",
+          "ja": "1日に40人以上",
+          "role": "C"
+        }
+      ]
+    },
+    {
+      "ja": "この冬、バス停に小さな屋根ができました。",
+      "chunks": [
+        {
+          "en": "This winter,",
+          "ja": "この冬",
+          "role": "M"
+        },
+        {
+          "en": "a small roof",
+          "ja": "小さな屋根が",
+          "role": "S"
+        },
+        {
+          "en": "was built",
+          "ja": "できました",
+          "role": "V"
+        },
+        {
+          "en": "at the bus stop.",
+          "ja": "バス停に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは、書いてよかったと思いました。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "thought",
+          "ja": "思いました",
+          "role": "V"
+        },
+        {
+          "en": "that it was good to write.",
+          "ja": "書いてよかったと",
+          "role": "O"
+        }
+      ]
+    }
+  ]
+}

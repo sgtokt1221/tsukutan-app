@@ -149,6 +149,9 @@ body {
   max-width: 500px;
   margin: 0 auto;
   height: 100vh;
+  /* URL バーの出入りで変わる実際の表示領域。100vh のままだと iOS Safari で
+     枠がはみ出し、ページごとスクロールしてしまう。 */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -729,6 +732,17 @@ body {
   overflow-x: hidden;
   overflow-wrap: anywhere;
   text-align: center;
+  /* 上スワイプ（もう覚えた）でページまで動かない。overflow を持つ要素は
+     touch-action のさかのぼりをここで止めるので、#flashcard の none が
+     指まで届かない。触れる面のこちらで止める。 */
+  touch-action: none;
+}
+
+/* 中身がはみ出している面だけ、指でたぐれるようにする（CardFace が付ける）。
+   contain が無いと、面の端まで来たところでページへスクロールが渡る。 */
+.card-face.is-scrollable {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 /* 中央寄せのまま縦に溢れると、上端が切れて読めなくなる（flexbox の既知の挙動）。
@@ -1817,12 +1831,14 @@ input[type="file"] { display: none; }
 
 /* 診断結果画面のリッチなデザイン */
 .test-result-container {
-  min-height: 100vh;
+  /* 100vh にすると、上のアプリヘッダーのぶんだけ親（.card-main）から
+     はみ出し、下に何も無い帯が残る。親の高さに合わせる。 */
+  min-height: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
 }
 
 .result-hero {
@@ -2205,6 +2221,13 @@ input[type="file"] { display: none; }
     padding-bottom: 65px;
   }
 }
+
+/* 下部タブを出さない画面（フラッシュカード・単語帳・面接）では、タブのぶんの
+   余白も空けない。カードの下に 65〜80px の何も無い帯が残っていた。
+   上の3つの指定より後ろに置いて勝たせている。 */
+.dashboard-container.has-no-tab-bar {
+  padding-bottom: 0;
+}
 /* ===== 日次計画の注意書き ===== */
 .plan-warning,
 .plan-notice {
@@ -2286,7 +2309,9 @@ input[type="file"] { display: none; }
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  padding: 0 20px;
+  /* 下端はホームバーを避ける。下部タブを出さない画面なので、
+     .dashboard-container 側の余白は当てにできない。 */
+  padding: 0 20px calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
   margin-top: 20px;
 }
 .test-nav-btn {
@@ -2360,6 +2385,13 @@ select:focus-visible,
    ロゴ、現在のユーザー、ログアウトの3要素に絞る。
    以前は window.innerWidth による分岐つきのインライン指定だった。 */
 .student-header {
+  /* 上に貼り付ける。iOS Safari では URL バーのぶん実際の表示領域が 100vh より
+     低く、.dashboard-container がはみ出してページごと動く。そのときヘッダーが
+     一緒に流れて見えなくなっていた。 */
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2936,16 +2968,6 @@ select:focus-visible,
   margin: 0;
   font-size: var(--font-size-12);
   color: var(--color-olive-muted);
-}
-
-/* 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
-.free-study-groups {
-  display: grid;
-  gap: var(--space-16);
-}
-
-.free-study-group > .home-section-eyebrow {
-  margin-bottom: var(--space-8);
 }
 
 .tile-button__label {
