@@ -110,7 +110,7 @@ export default function RankCard({
             <p className="rank-card__compact-position">実力テストからランクの旅を始めよう</p>
             {onRetest && (
               <button type="button" className="rank-card__start-action" onClick={onRetest}>
-                実力テストを受ける
+                テスト
               </button>
             )}
           </div>
@@ -191,10 +191,11 @@ export default function RankCard({
                 type="button"
                 className="rank-card__retest-link"
                 onClick={onRetest}
-                aria-label="実力を測り直す"
                 title="実力を測り直す"
               >
+                {/* 印だけだと何のボタンか読めない。短く添える */}
                 <FaRedo aria-hidden="true" />
+                再テスト
               </button>
             )}
           </div>

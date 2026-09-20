@@ -378,15 +378,17 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-8);
+  /* **小さく見せても、当たり判定は 44px を保つ。** 上下の余白で稼ぐ */
+  white-space: nowrap;
   min-height: var(--tap-target);
-  margin-top: var(--space-12);
-  padding: var(--space-8) var(--space-24);
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-16);
   border: none;
   border-radius: var(--radius-pill);
   background-color: var(--color-brand-lime);
   box-shadow: var(--shadow-1);
   font-family: var(--font-family-heading);
-  font-size: var(--font-size-14);
+  font-size: var(--font-size-12);
   font-weight: 700;
   color: var(--color-ink-olive);
   cursor: pointer;
@@ -394,12 +396,6 @@
     transform var(--motion-fast) var(--ease-standard),
     box-shadow var(--motion-fast) var(--ease-standard),
     background-color var(--motion-fast) var(--ease-standard);
-}
-
-.rank-card__start-action::after {
-  content: '→';
-  font-size: var(--font-size-18);
-  line-height: 1;
 }
 
 .rank-card__start-action:hover {
@@ -451,6 +447,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
+  /* 「再テス／ト」と割れる。短いので折り返さない */
+  white-space: nowrap;
+  flex-shrink: 0;
   min-height: var(--tap-target);
   padding: var(--space-8) var(--space-12);
   border: 1px solid var(--color-blue-border);

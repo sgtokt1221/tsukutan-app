@@ -1477,7 +1477,9 @@ export default function StudentDashboard() {
               <RankCard
                 score={abilityScore}
                 bestRankId={bestRankId}
-                onRetest={testResultLevel > 0 ? startCheckTest : undefined}
+                /* **測る前も出す。** 以前は測ったあとだけ渡していたので、
+                   まだ受けていない生徒の画面に入口が1つも無かった。 */
+                onRetest={startCheckTest}
                 compact
               />
 
