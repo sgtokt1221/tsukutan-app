@@ -9,6 +9,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 // ダッシュボードは遅延読み込みにする。Chart.js は AdminDashboard からしか
 // 使わないので、管理者がその画面を開くまで取りに行かない（計画書13.5）。
 import LoginPage from './LoginPage.js';
+// つくばホームから `#token=` で渡ってきたときの入場。**アカウントを2つ作らない**
+import { enterFromTsukubaHome } from './logic/tsukubaEntry.js';
+// 勉強時間をつくばホームへ送る。**前回閉じたぶんも、ここで締めて送る**
+import { resumeAndFlush } from './logic/studySession.js';
 const loadStudentDashboard = () => import('./StudentDashboard.js');
 const StudentDashboard = lazy(loadStudentDashboard);
 const AdminDashboard = lazy(() => import('./AdminDashboard.js'));
@@ -36,6 +40,27 @@ function AppContent() {
     loadStudentDashboard();
   }, []);
 
+  /*
+    つくばホームから渡ってきたか。**認証の監視より先に済ませる。**
+
+    先に `onAuthStateChanged` が「未ログイン」で確定すると、入場券を使う前に
+    ログイン画面へ飛ばしてしまう。トークンがあるあいだは待たせる。
+  */
+  const [entering, setEntering] = useState(
+    typeof window !== 'undefined' && /[#&]token=/.test(window.location.hash || '')
+  );
+  useEffect(() => {
+    if (!entering) return;
+    let alive = true;
+    void enterFromTsukubaHome().then((r) => {
+      if (!alive) return;
+      // **失敗しても行き止まりにしない。** 理由を出して、ログイン画面へ落とす
+      if (r.tried && !r.ok) setAuthError(r.message);
+      setEntering(false);
+    });
+    return () => { alive = false; };
+  }, [entering]);
+
   useEffect(() => {
     setLoading(true);
     setAuthError(null);
@@ -53,6 +78,12 @@ function AppContent() {
             setUserRole(role);
 
             if (!isAdmin) {
+              /*
+                前回タブを閉じて宙に浮いた勉強時間を締めて、貯まっているぶんと
+                一緒につくばホームへ送る。**待たない**——送れなくても学習は始められる
+                （次に開いたときにまた送る）。
+              */
+              void resumeAndFlush();
               const userDocRef = doc(db, 'users', user.uid);
               const userDoc = await getDoc(userDocRef);
               if (userDoc.exists() && userDoc.data().goal && userDoc.data().goal.isSet) {
@@ -104,7 +135,7 @@ function AppContent() {
     setIsGoalSet(false);
   };
 
-  if (loading) {
+  if (loading || entering) {
     return (
       <div className="loading-container">
         <p>読み込み中...</p>

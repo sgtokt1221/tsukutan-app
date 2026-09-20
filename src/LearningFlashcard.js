@@ -5,6 +5,9 @@ import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
+// 勉強時間を測るのは**ここ1か所だけ**（→ `logic/studySession.js`）。
+// 自前で `new Date()` の差を取ると、つくばホームへ送る値と食い違う
+import { startStudySession, endStudySession, noteActivity } from './logic/studySession.js';
 import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import { initialize, speak, speakWordThenMeaning } from './logic/speechUtils';
 import { prefetchClips } from './logic/audioLibrary';
@@ -81,7 +84,6 @@ export default function LearningFlashcard({
   const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
   
   const auth = getAuth();
-  const sessionStartTime = useRef(new Date());
 
   // 音声合成の初期化
   useEffect(() => {
@@ -160,7 +162,8 @@ export default function LearningFlashcard({
       initialIndex
     });
     
-    sessionStartTime.current = new Date();
+    // **裏に回っているあいだは数えない。** 測り方は1か所にまとめてある
+    startStudySession();
   }, [words, sessionInfo, initialIndex]);
 
   // shuffledWordsの状態変化を監視
@@ -224,8 +227,7 @@ export default function LearningFlashcard({
   const handleBackButtonClick = useCallback(() => {
     logger.debug('LearningFlashcard: 戻るボタンがクリックされました');
     
-    const sessionEndTime = new Date();
-    const sessionDuration = sessionEndTime - sessionStartTime.current;
+    const { activeMs: sessionDuration } = endStudySession();
     
     // セッション情報を保存（途中終了の場合）
     if (currentIndex < shuffledWords.length - 1 && sessionInfo && onSaveLog) {
@@ -335,6 +337,8 @@ export default function LearningFlashcard({
   }, [shuffledWords, auth, trackWrite]);
 
   const handleAnswer = useCallback(async (quality) => {
+    // **手を動かした印。** 放置の判定と、タブを閉じたときの締め時刻に使う
+    noteActivity('new');
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
 
@@ -365,8 +369,7 @@ export default function LearningFlashcard({
       }
       
       // セッション情報を保存（完了時）
-      const sessionEndTime = new Date();
-      const sessionDuration = sessionEndTime - sessionStartTime.current;
+      const { activeMs: sessionDuration } = endStudySession();
       
       if (sessionInfo && onSaveLog) {
         const sessionData = {
@@ -401,6 +404,7 @@ export default function LearningFlashcard({
   const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
 
   const handleIncorrect = useCallback(async () => {
+    noteActivity('new');
     const currentWord = shuffledWords?.[currentIndex];
     const user = auth.currentUser;
     
@@ -432,8 +436,7 @@ export default function LearningFlashcard({
       }
       
       // セッション情報を保存（完了時）
-      const sessionEndTime = new Date();
-      const sessionDuration = sessionEndTime - sessionStartTime.current;
+      const { activeMs: sessionDuration } = endStudySession();
       
       if (sessionInfo && onSaveLog) {
         const sessionData = {
