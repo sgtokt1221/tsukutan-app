@@ -81,6 +81,12 @@ const startsWithVerbal = (chunk) => {
  * 「have / so much interest?」と動詞と目的語が割れる。
  */
 const DEGREE_AFTER_SO = new Set(['much', 'many', 'little', 'few', 'long', 'far', 'big', 'small', 'hard']);
+
+/**
+ * 2語で1つの前置詞になるもの（next to / close to / according to …）。
+ * 後ろの語だけ見て切ると「the house next / to number one」と割れる。
+ */
+const COMPOUND_BEFORE = new Set(['next', 'close', 'due', 'according', 'thanks', 'prior', 'out', 'because', 'instead']);
 const isDegreeSo = (chunk) => {
   const [first, second] = words(chunk.en).map(bareWord);
   return first === 'so' && DEGREE_AFTER_SO.has(second || '');
@@ -110,10 +116,61 @@ const isLongPhrase = (chunk) => (
 );
 
 /**
+ * まとまりの**中**も切る。
+ *
+ * 区切れるのがチャンクとチャンクの間だけだと、1つのチャンクが長いときに
+ * 目印が中に埋もれて切れない（実データで接続詞163・前置詞593・関係詞187か所）。
+ * 語の並びを見て、同じ目印の前で切る。
+ *
+ * **訳は切らない。** 訳はチャンク単位でしか無いので、中で切った小片には
+ * 付けられない。英語だけに `/` を足し、訳はまとまり全体に1つ付ける。
+ *
+ * @param {string} en まとまりの英語
+ * @returns {string[]} 切った小片。切るところが無ければ1つだけ
+ */
+const splitInside = (en) => {
+  const list = words(en);
+  if (list.length < 2) return [en];
+
+  const pieces = [];
+  let current = [list[0]];
+  for (let i = 1; i < list.length; i += 1) {
+    const word = bareWord(list[i]);
+    const previous = bareWord(list[i - 1]);
+    const next = bareWord(list[i + 1] || '');
+    // next to / according to … は2語で1つの前置詞。**手前**で切り、間では切らない
+    const insideCompound = COMPOUND_BEFORE.has(previous) && word === 'to';
+    const startsCompound = COMPOUND_BEFORE.has(word) && next === 'to';
+    const cut = !insideCompound && (
+      startsCompound
+      || (CONJUNCTIONS.has(word) && !(word === 'so' && DEGREE_AFTER_SO.has(next)))
+      || PREPOSITIONS.has(word)
+      || RELATIVES.has(word)
+    );
+    // **1語だけの小片を作らない。** 「and / new things」のように切ると読みにくい
+    if (cut && current.length >= 2) {
+      pieces.push(current.join(' '));
+      current = [list[i]];
+    } else {
+      current.push(list[i]);
+    }
+  }
+  pieces.push(current.join(' '));
+
+  // **終わりが1語だけになったら戻す。** 「the time / that the bowl has passed / through.」
+  // のように、最後の1語だけが浮いて読みにくくなる
+  if (pieces.length > 1 && words(pieces[pieces.length - 1]).length < 2) {
+    const tail = pieces.pop();
+    pieces[pieces.length - 1] = `${pieces[pieces.length - 1]} ${tail}`;
+  }
+  return pieces;
+};
+
+/**
  * チャンクをスラッシュ読みのまとまりへ組み直す。
  *
  * @param {Array<{en: string, ja: string, role: string}>} chunks
- * @returns {Array<{en: string, ja: string, parts: Array<object>}>}
+ * @returns {Array<{en: string, ja: string, pieces: string[], parts: Array<object>}>}
  */
 export function slashGroups(chunks) {
   const list = (chunks || []).filter((chunk) => chunk && String(chunk.en || '').trim());
@@ -137,12 +194,17 @@ export function slashGroups(chunks) {
   }
   groups.push(current);
 
-  return groups.map((parts) => ({
-    en: parts.map((part) => String(part.en).trim()).join(' '),
-    // 頭から順に訳す練習なので、**英語の並びのまま**つなぐ
-    ja: parts.map((part) => String(part.ja || '').trim()).filter(Boolean).join(' '),
-    parts,
-  }));
+  return groups.map((parts) => {
+    const en = parts.map((part) => String(part.en).trim()).join(' ');
+    return {
+      en,
+      // 頭から順に訳す練習なので、**英語の並びのまま**つなぐ
+      ja: parts.map((part) => String(part.ja || '').trim()).filter(Boolean).join(' '),
+      // まとまりの中の区切り。訳はこの単位では持てないので英語だけ
+      pieces: splitInside(en),
+      parts,
+    };
+  });
 }
 
 export default slashGroups;

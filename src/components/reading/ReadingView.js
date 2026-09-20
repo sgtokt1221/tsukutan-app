@@ -81,7 +81,13 @@ function SlashSentence({ sentence, phrases, isMarked, onHold }) {
           {index > 0 && <span className="reading-slash" aria-hidden="true">/</span>}
           <span className="reading-chunk">
             <span className="reading-chunk__en">
-              <Words text={group.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+              {/* まとまりの中の区切り。訳はチャンク単位しか無いので英語だけに入れる */}
+              {group.pieces.map((piece, pieceIndex) => (
+                <React.Fragment key={pieceIndex}>
+                  {pieceIndex > 0 && <span className="reading-slash" aria-hidden="true">/</span>}
+                  <Words text={piece} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+                </React.Fragment>
+              ))}
             </span>
             <span className="reading-chunk__ja">{group.ja}</span>
           </span>

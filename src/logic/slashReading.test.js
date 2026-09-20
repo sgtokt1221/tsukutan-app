@@ -191,3 +191,49 @@ describe('まとまりの中身', () => {
     expect(slashGroups([{ en: '  ', ja: '' }])).toEqual([]);
   });
 });
+
+describe('まとまりの中も切る', () => {
+  /** 目印が1つのチャンクの中に埋もれていると、間だけ見ていても切れない */
+  const pieces = (chunks) => slashGroups(chunks).flatMap((g) => g.pieces);
+
+  it('**チャンクの中の前置詞でも切る**', () => {
+    expect(pieces([c('there is a skill of repairing broken bowls with gold.', 'そこに…', 'V')]))
+      .toEqual(['there is a skill', 'of repairing broken bowls', 'with gold.']);
+  });
+
+  it('**チャンクの中の接続詞でも切る**', () => {
+    expect(pieces([c('Real kintsugi needs several months and a high level of skill.', '…', 'V')]))
+      .toEqual(['Real kintsugi needs several months', 'and a high level', 'of skill.']);
+  });
+
+  it('**チャンクの中の関係詞でも切る**', () => {
+    expect(pieces([c('People who have experienced failure or illness', '失敗や病気を経験した人は', 'S')]))
+      .toEqual(['People who have experienced failure', 'or illness']);
+  });
+
+  it('**1語だけの小片を作らない。** 切ると読みにくくなる', () => {
+    // 先頭側（「and / new things」にしない）
+    expect(pieces([c('big and new things', '…', 'O')])).toEqual(['big and new things']);
+    // 末尾側（「… / through.」にしない）
+    expect(pieces([c('the time that the bowl has passed through.', '…', 'O')]))
+      .toEqual(['the time', 'that the bowl has passed through.']);
+  });
+
+  it('**訳はまとまりに1つ。** 中の小片には訳を付けない（訳はチャンク単位しか無い）', () => {
+    const [group] = slashGroups([c('a skill of repairing bowls with gold.', '金で器を直す技', 'O')]);
+    expect(group.pieces.length).toBeGreaterThan(1);
+    expect(group.ja).toBe('金で器を直す技');
+  });
+
+  it('**2語で1つの前置詞は割らない**（next to / according to）', () => {
+    expect(pieces([c('the house next to number one', '1番の家のとなりが', 'S')]))
+      .toEqual(['the house', 'next to number one']);
+    expect(pieces([c('we changed it according to the rule.', '…', 'V')]))
+      .toEqual(['we changed it', 'according to the rule.']);
+  });
+
+  it('切るところが無ければ小片は1つ', () => {
+    const [group] = slashGroups([c('I run.', '走ります', 'V')]);
+    expect(group.pieces).toEqual(['I run.']);
+  });
+});
