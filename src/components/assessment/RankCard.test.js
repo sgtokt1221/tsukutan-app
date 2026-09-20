@@ -43,7 +43,7 @@ describe('RankCard compact rank journey', () => {
     expect(screen.getByText('実力テストからランクの旅を始めよう')).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
 
-    fireEvent.click(screen.getByRole('button', { name: '実力テストを受ける' }));
+    fireEvent.click(screen.getByRole('button', { name: 'テスト' }));
     expect(onRetest).toHaveBeenCalledTimes(1);
   });
 
@@ -51,7 +51,7 @@ describe('RankCard compact rank journey', () => {
     const onRetest = jest.fn();
     render(<RankCard score={610} compact onRetest={onRetest} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '実力を測り直す' }));
+    fireEvent.click(screen.getByRole('button', { name: '再テスト' }));
     expect(onRetest).toHaveBeenCalledTimes(1);
   });
 });
