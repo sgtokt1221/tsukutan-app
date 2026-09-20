@@ -24,7 +24,7 @@ export function StudentHeader({ userName, avatarUrl, onLogout }) {
     <header className="student-header">
       <BrandLogo placement="student-header" priority decorative />
       {/* ロゴ画像が読めない環境でも製品名が分かるようにする */}
-      <h1 className="visually-hidden">つくたん</h1>
+      <h1 className="visually-hidden">つくつく</h1>
 
       <UserMenu userName={userName} avatarUrl={avatarUrl} onLogout={onLogout} />
     </header>

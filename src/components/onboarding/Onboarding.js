@@ -20,7 +20,7 @@ import './Onboarding.css';
 const STEPS = [
   {
     id: 'welcome',
-    title: 'つくたんへようこそ',
+    title: 'つくつくへようこそ',
     body: '目標から逆算して、今日やるぶんだけ出します。まずは操作を30秒だけ。',
     points: [],
   },
@@ -121,7 +121,7 @@ export default function Onboarding({ progress = 0, ready = false, onFinish }) {
   };
 
   return (
-    <div className="onboarding" role="dialog" aria-modal="true" aria-label="つくたんの使い方">
+    <div className="onboarding" role="dialog" aria-modal="true" aria-label="つくつくの使い方">
       <div className="onboarding__sheet">
         <ol className="onboarding__dots" aria-hidden="true">
           {STEPS.map((item, i) => (
