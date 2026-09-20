@@ -2186,24 +2186,29 @@ input[type="file"] { display: none; }
   border-top: var(--border-default);
   display: flex;
   justify-content: space-around;
-  /* ホームバーのある端末で操作が隠れないようにする（計画書13.2） */
-  padding: var(--space-8) 0 calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+  /* ホームバーのある端末で操作が隠れないようにする（計画書13.2）。
+     **上下の余白はタブ自身が持つ。** ここで足すと、受験サポートより厚くなる */
+  padding: 0 0 env(safe-area-inset-bottom, 0px);
   z-index: 1000;
   box-shadow: var(--shadow-1);
 }
 
+/* **受験サポートの下タブと同じ高さ（58px）。**
+   （`tsukuba-manager/src/exam-support/student/TabBar.tsx`）
+   44px だとアイコンと文字を縦に積んだときに窮屈で、同じ塾のアプリに見えない。 */
 .tab-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--tap-target);
-  padding: var(--space-12) var(--space-16);
+  flex: 1;
+  min-height: 58px;
+  padding: var(--space-8) var(--space-4);
   border: none;
   background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 8px;
-  min-width: 80px;
+  min-width: 0;
   font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
 }
 
