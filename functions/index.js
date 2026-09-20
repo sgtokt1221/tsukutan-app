@@ -1,5 +1,5 @@
 // Firebase SDK
-const { onRequest, HttpsError } = require("firebase-functions/v2/https");
+const { onRequest, onCall, HttpsError } = require("firebase-functions/v2/https");
 const { logger } = require("firebase-functions");
 const admin = require("firebase-admin");
 const crypto = require("node:crypto");
@@ -34,6 +34,12 @@ const { getCurrentMonthKey } = require('./lib/dateKeys');
  */
 const GEMINI_MODEL = 'gemini-2.5-flash';
 const { transcribe, missingWords, uniqueWordCount, MAX_AUDIO_BYTES } = require('./lib/transcription');
+// つくばホームの ID トークン → つくたんの入場券。**アカウントを2つ作らない**
+const {
+  tsukubaAuth,
+  assertTsukubaClaims,
+  ensureStudentProfile,
+} = require('./lib/tsukubaToken');
 const { judgeAnswer } = require('./lib/answerJudge');
 
 //==============================================================================
@@ -893,3 +899,50 @@ exports.transcribeSpeaking = onRequest(
   },
   transcribeSpeakingApp
 );
+
+//==============================================================================
+// つくばホームからの入場
+//==============================================================================
+
+/**
+ * 生徒の入場券を発行する。
+ *
+ * 1. つくばホームの ID トークンを受け取る
+ * 2. **つくばホームのプロジェクトの公開鍵で**検証する
+ * 3. role を検査する（「認証できた」と「入ってよい」は別）
+ * 4. つくたんの Custom Token を発行する。**uid はつくばホームのものをそのまま使う**
+ * 5. 初回ならプロフィールを作る（無いと目標設定が `updateDoc` で落ちる）
+ *
+ * **トークンそのものはログに出さない。** 出すと有効期限まで誰でも使える。
+ */
+exports.exchangeTsukubaToken = onCall({ region: 'us-central1' }, async (request) => {
+  const idToken = (request.data || {}).idToken;
+  if (typeof idToken !== 'string' || idToken === '') {
+    throw new HttpsError('invalid-argument', 'idToken が必要です');
+  }
+
+  let decoded;
+  try {
+    /*
+      `checkRevoked` は付けない。付けるとつくばホームの Auth をユーザー単位で
+      読む必要があり、つくたんの資格情報では読めない。
+      （失効はトークンの有効期限＝最長1時間で効く）
+    */
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    logger.warn('つくばホームのトークンを検証できなかった', { message: e && e.message });
+    throw new HttpsError('unauthenticated', 'つくばホームのトークンを検証できませんでした');
+  }
+
+  try {
+    assertTsukubaClaims(decoded);
+  } catch (e) {
+    logger.warn('入場を拒否した', { uid: decoded.uid, message: e && e.message });
+    throw new HttpsError('permission-denied', e && e.message);
+  }
+
+  const customToken = await admin.auth().createCustomToken(decoded.uid);
+  // **await する。** 返したあとの fire-and-forget は取りこぼす
+  await ensureStudentProfile(db, decoded);
+  return { customToken };
+});

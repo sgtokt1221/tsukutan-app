@@ -3,6 +3,8 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { updateUserWordProgress, undoWordProgress } from './logic/reviewLogic';
 import { getAuth } from 'firebase/auth';
+// 勉強時間を測るのは**ここ1か所だけ**（→ `logic/studySession.js`）
+import { startStudySession, endStudySession, noteActivity } from './logic/studySession.js';
 import { FaUndo, FaArrowUp, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
 import PeekNudge from './components/learning/PeekNudge';
@@ -89,7 +91,6 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 毎日みたい単語の登録状態
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks(auth.currentUser?.uid);
   const userId = auth.currentUser ? auth.currentUser.uid : null;
-  const sessionStartTime = useRef(new Date());
 
   // Motion values must be defined before any useCallback that uses them
   const x = useMotionValue(0);
@@ -134,7 +135,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     setSessionWords(shuffled);
     setCurrentIndex(0);
     setGraduatedCount(0);
-    sessionStartTime.current = new Date();
+    // **裏に回っているあいだは数えない。** 測り方は1か所にまとめてある
+    startStudySession();
   }, [words]);
 
   // 自動読み上げ機能
@@ -213,8 +215,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   );
 
   const handleBackButtonClick = useCallback(() => {
-    const sessionEndTime = new Date();
-    const durationInSeconds = (sessionEndTime - sessionStartTime.current) / 1000;
+    const { activeMs } = endStudySession();
+    const durationInSeconds = activeMs / 1000;
 
     if (onSaveLog && durationInSeconds > 5 && (currentIndex > 0 || graduatedCount > 0)) {
       onSaveLog({
@@ -227,7 +229,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     }
     
     onBack();
-  }, [onBack, onSaveLog, sessionInfo, currentIndex, graduatedCount, sessionStartTime]);
+  }, [onBack, onSaveLog, sessionInfo, currentIndex, graduatedCount]);
 
 
   const handleDoubleClick = useCallback((e) => {
@@ -272,6 +274,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 3段階の回答をまとめて扱う。'good' / 'hard' で次へ進み、
   // 'again' は handleIncorrect が受け持つ。
   const handleAnswer = useCallback(async (quality) => {
+    // **手を動かした印。** 放置の判定と、タブを閉じたときの締め時刻に使う
+    noteActivity('review');
     // 答えを見たまま「わかった」を押したら、止めはしないが気づかせる
     if (isFlipped && quality === 'good') setPeekCount((prev) => prev + 1);
 
@@ -290,8 +294,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       y.set(0);
     } else {
       // 復習完了
-      const sessionEndTime = new Date();
-      const sessionDuration = sessionEndTime - sessionStartTime.current;
+      const { activeMs: sessionDuration } = endStudySession();
       
       if (sessionInfo && onSaveLog) {
         const sessionData = {
@@ -387,6 +390,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   }, [currentIndex, sessionWords, handleReviewRemove, trackWrite, flushWrites, onBack, x, y]);
 
   const handleIncorrect = useCallback(async () => {
+    noteActivity('review');
     const currentWord = sessionWords?.[currentIndex];
     
     if (userId && currentWord) {
@@ -401,8 +405,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       y.set(0);
     } else {
       // 復習完了
-      const sessionEndTime = new Date();
-      const sessionDuration = sessionEndTime - sessionStartTime.current;
+      const { activeMs: sessionDuration } = endStudySession();
       
       if (sessionInfo && onSaveLog) {
         const sessionData = {
