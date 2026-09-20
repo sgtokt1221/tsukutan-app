@@ -1696,15 +1696,17 @@ input[type="file"] { display: none; }
   color: rgba(15, 23, 42, 0.6);
 }
 
+/* 2カラムのグリッド。折り返しの行数が違っても行内で高さが揃い、
+   奇数で余った1つも1カラムのままで横いっぱいに伸びない。
+   flex-wrap + flex: 1 1 45% だとこの2つが両方できない。 */
 .goal-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--space-12);
 }
 
 .goal-chip {
-  flex: 1 1 45%;
-  min-width: 140px;
   padding: 14px;
   border-radius: 14px;
   border: 1px solid rgba(148, 163, 184, 0.25);
@@ -1732,10 +1734,19 @@ input[type="file"] { display: none; }
   color: rgba(15, 23, 42, 0.6);
 }
 
+/* 注意文とボタンを横並びにすると 390px で収まらない（注意文が左へ、
+   ボタンが右へはみ出す）。縦積みにして、幅は親に合わせる。 */
 .goal-footer {
   margin-top: auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-8);
+}
+
+.goal-footer .field-error {
+  margin: 0;
+  text-align: center;
 }
 
 .loading-placeholder,
@@ -1786,6 +1797,15 @@ input[type="file"] { display: none; }
   .motivation-time {
     align-self: flex-end;
   }
+}
+
+/* 選択中の ✓ は角に重ねる（印そのものは primitives.css）。
+   その居場所を選択前から空けておかないと、選んだ瞬間に折り返しが変わる。
+   @media (min-width: 768px) の padding 指定より後に置くこと。 */
+.goal-chip,
+.motivation-option {
+  position: relative;
+  padding-right: var(--space-24);
 }
 
 /* --- 知識ギャップヒント --- */
@@ -2375,11 +2395,20 @@ select:focus-visible,
   min-height: 44px;
 }
 
-/* 選択状態を色だけで表さない。押されている項目に印を付ける。 */
-.goal-chip[aria-pressed="true"]::before,
-.motivation-option[aria-pressed="true"]::before {
-  content: '✓ ';
-  font-weight: 700;
+/* 選択状態を色だけで表さない印（✓）は primitives.css が持つ。ここに重ねて書かない。 */
+
+/* .card-main は `overflow-y: auto` の flex 列。子は既定で `flex-shrink: 1` なので、
+   中身が入り切らないと**スクロールせずにカードが縮む**。実機の高さ（700px前後）だと
+   目標カードが30pxの帯に潰れ、「目標」の字と「変更」ボタンが切れる。
+   縦に余裕があるときは正常に出るので、画面で見ないと気づけない。 */
+.card-main > .section-card {
+  flex-shrink: 0;
+}
+
+/* 折り返したときに中央寄せになると、1行の項目と行頭が揃わない。
+   .motivation-option は既に左寄せなので、そちらへ合わせる。 */
+.goal-chip {
+  text-align: left;
 }
 
 /* ===== 単語データ読み込み失敗の案内 ===== */
@@ -3037,6 +3066,13 @@ select:focus-visible,
   border: 0;
   color: #fff;
   box-shadow: var(--shadow-2);
+}
+
+/* ::after の飾りは中身より後に描かれるので、日数の上に乗って読みにくくなる。
+   見出し行（.goal-card__edit）と同じで、こちらも持ち上げる。 */
+.goal-card__deadline {
+  position: relative;
+  z-index: 1;
 }
 
 .goal-card::after {

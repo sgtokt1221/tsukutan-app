@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { auth, db } from './firebaseConfig';
 import { doc, updateDoc } from 'firebase/firestore';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { getGoalsByCategory, getMotivationConfig, MOTIVATION_LEVELS, DEFAULT_MOTIVATION_LEVEL } from './config';
 import { getTodayKey } from './logic/dateKeys';
+import { loadWordMaster } from './logic/wordMaster';
 
 /**
  * 目標設定画面。目標定義とやる気レベルは src/config を正本とする。
@@ -21,8 +22,30 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
   const categories = useMemo(() => getGoalsByCategory(), []);
   const today = getTodayKey();
 
+  /*
+    **単語マスタ（411KB）を先に取っておく。**
+
+    保存を押すと `updateProgressPercentage` が走り、その中で `loadWordMaster()` を
+    待つ。ここまで一度も読んでいないので、**保存した瞬間に411KBを取りに行く**ことに
+    なり、携帯だと数秒「保存中...」で止まる（読むのは本来 `StudentDashboard`、
+    つまり画面が切り替わったあと）。
+
+    生徒が目標を選んで達成日を入れているあいだに終わらせておく。
+    取れなくても保存はできる（`loadWordMaster` 側が失敗を握る）ので待たない。
+  */
+  useEffect(() => {
+    void loadWordMaster().catch(() => {});
+  }, []);
+
+  /*
+    達成日の上限。**上限が無いと年に5桁以上が入る**（`<input type="date">` は
+    それを許す）。実際に `202701-03-01` が保存でき、ホームが「あと73294807日」を
+    出した。日付として妥当なので、どこもエラーにならず黙って通る。
+  */
+  const maxDate = `${Number(today.slice(0, 4)) + 10}${today.slice(4)}`;
+
   // 保存できる条件: 目標が1件以上、達成日が入力済み、達成日が今日以降
-  const isDateValid = Boolean(targetDate) && targetDate >= today;
+  const isDateValid = Boolean(targetDate) && targetDate >= today && targetDate <= maxDate;
   const canSubmit = selectedGoalIds.length > 0 && isDateValid && !isSaving;
 
   const toggleGoalSelection = (goalId) => {
@@ -131,12 +154,13 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
         <input
           type="date"
           min={today}
+          max={maxDate}
           value={targetDate}
           onChange={(e) => setTargetDate(e.target.value)}
           aria-label="達成日"
         />
         {targetDate && !isDateValid && (
-          <p className="field-error">達成日は今日以降を選んでください。</p>
+          <p className="field-error">達成日は今日から{maxDate.slice(0, 4)}年までで選んでください。</p>
         )}
       </section>
 

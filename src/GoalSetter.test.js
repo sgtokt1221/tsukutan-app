@@ -24,7 +24,14 @@ jest.mock('./logic/progressLogic', () => ({
 // eslint-disable-next-line import/first
 import GoalSetter from './GoalSetter';
 
-const futureDate = '2099-12-31';
+/* **今日から数えて作る。** 固定の '2099-12-31' だと達成日の上限（今日+10年）に
+   引っかかり、「未来の日付」のつもりが弾かれる。 */
+const plusYears = (n) => {
+  const d = new Date();
+  return `${d.getFullYear() + n}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+const futureDate = plusYears(1);
+const tooFarDate = plusYears(11);
 const pastDate = '2000-01-01';
 
 beforeEach(() => {
@@ -59,7 +66,17 @@ describe('保存できる条件', () => {
     fireEvent.click(screen.getByRole('button', { name: /英検3級 合格/ }));
     setDate(pastDate);
     expect(getSubmitButton()).toBeDisabled();
-    expect(screen.getByText('達成日は今日以降を選んでください。')).toBeInTheDocument();
+    expect(screen.getByText(/達成日は今日から\d{4}年までで選んでください。/)).toBeInTheDocument();
+  });
+
+  /* **上限が無いと年に5桁以上が入る。** 実際に `202701-03-01` が保存でき、
+     ホームが「あと73294807日」を出した。日付としては妥当なので黙って通る。 */
+  test('遠すぎる達成日では保存できない', () => {
+    render(<GoalSetter />);
+    fireEvent.click(screen.getByRole('button', { name: /英検3級 合格/ }));
+    setDate(tooFarDate);
+    expect(getSubmitButton()).toBeDisabled();
+    expect(screen.getByText(/達成日は今日から\d{4}年までで選んでください。/)).toBeInTheDocument();
   });
 
   test('目標1件以上 + 今日以降の達成日で保存できるようになる', () => {
