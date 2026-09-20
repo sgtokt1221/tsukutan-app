@@ -1,0 +1,94 @@
+/* 音読の結果。下から出す（親指の届くところに操作を置く） */
+.aloud-result-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;   /* 下のタブ（1000）より上 */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-16);
+  background: var(--color-scrim);
+}
+
+.aloud-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: var(--space-24) var(--space-16);
+  /* ホームバーのある端末で「閉じる」が隠れないようにする */
+  padding-bottom: calc(var(--space-24) + env(safe-area-inset-bottom, 0px));
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-2);
+}
+
+.aloud-result__title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  text-align: center;
+}
+
+.aloud-result__score {
+  margin: 0;
+  text-align: center;
+}
+
+.aloud-result__value {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-40);
+  font-weight: 700;
+  /* 数字は文字なので、面用のライムを使わない（白地に 1.82:1 で読めない） */
+  color: var(--color-ink-olive);
+}
+
+.aloud-result__unit {
+  margin-left: var(--space-4);
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+.aloud-result__comment {
+  margin: 0;
+  font-size: var(--font-size-14);
+  line-height: 1.6;
+  color: var(--color-olive-muted);
+  text-align: center;
+}
+
+.aloud-result__missing {
+  padding: var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--color-canvas-lime);
+}
+
+.aloud-result__missing-head {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+}
+
+.aloud-result__missing-body {
+  margin: 0;
+  font-size: var(--font-size-14);
+  line-height: 1.7;
+  color: var(--color-ink-olive);
+  word-break: break-word;
+}
+
+.aloud-result__actions {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.aloud-result__actions button {
+  flex: 1;
+  min-height: var(--tap-target);
+}

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaArrowLeft, FaMicrophone, FaStop, FaPlay, FaStar } from 'react-icons/fa';
 import ReadingView, { READING_MODES } from './ReadingView';
+import ReadAloudResult from './ReadAloudResult';
 import {
   loadReading, loadReadingIndex, readingEnglish, speechPlanFor,
 } from '../../logic/readingContent';
@@ -300,21 +301,16 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           </p>
         )}
 
-        {/* 音読の結果。操作そのものは下に浮かせたボタンへ移した。 */}
-        {(aloud || recorder.state === 'recording') && (
+        {/* 読んでいる最中と聞き取り中だけ、本文の下に出す。
+            **結果は下から出すモーダル**——本文の下に静かに出していたときは、
+            スクロールして戻らないと気づけず「音読しても何も起きない」に見えた。 */}
+        {(recorder.state === 'recording' || recorder.error) && (
           <div className="reading-aloud">
             <p className="home-section-eyebrow">音読</p>
             {recorder.state === 'recording' && <p className="reading-note">読み終わったら、下のボタンで止めてください。</p>}
-            {aloud?.working && <p className="reading-note">聞き取っています…</p>}
-            {aloud?.failure && <p className="message-box message-box-error">{aloud.failure}</p>}
-            {readAloudScore !== null && (
-              <>
-                <p className="reading-aloud__score">読めた語 {readAloudScore}%</p>
-                {aloud.missing?.length > 0 && (
-                  <p className="reading-note">読み飛ばした語: {aloud.missing.join(' / ')}</p>
-                )}
-              </>
-            )}
+            {/* **録音そのものの失敗を出す。** 出していなかったので、マイクを
+                許可していない端末では押しても本当に何も起きなかった */}
+            {recorder.error && <p className="message-box message-box-error">{recorder.error}</p>}
           </div>
         )}
       </div>
@@ -352,6 +348,21 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           </button>
         )}
       </div>
+
+      {aloud && (
+        <ReadAloudResult
+          working={Boolean(aloud.working)}
+          score={readAloudScore}
+          missing={aloud.missing || []}
+          failure={aloud.failure || ''}
+          onClose={() => setAloud(null)}
+          onRetry={canRecord() ? () => {
+            setAloud(null);
+            handledBlobRef.current = null;
+            recorder.start();
+          } : undefined}
+        />
+      )}
     </div>
   );
 }
