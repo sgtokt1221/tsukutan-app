@@ -55,8 +55,16 @@ describe('失敗の伝え方', () => {
 });
 
 describe('校舎の既定', () => {
-  it('**4校を落とさない。** マスタが読めなくても自分の校舎を選べるように', () => {
+  /*
+    **一覧をマスタ任せにしない。** 本番の `school_master` には `highschool` の
+    1件しか入っておらず、マスタだけにすると3校の生徒が自分の校舎を選べない。
+  */
+  it('**4校を落とさない**', () => {
     expect(IDS).toEqual(['makami', 'hokkan', 'okanmuri', 'highschool']);
-    for (const s of DEFAULT_SCHOOLS) expect(s.name).not.toBe('');
+  });
+
+  it('**名前はつくばホームと同じ**（生徒が自分の校舎を見つけられるように）', () => {
+    expect(DEFAULT_SCHOOLS.map((s) => s.name))
+      .toEqual(['真上校', '北冠校', '大冠校', 'ハイスクール']);
   });
 });

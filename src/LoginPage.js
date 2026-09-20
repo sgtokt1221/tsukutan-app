@@ -141,14 +141,16 @@ function LoginPage() {
                 id="login-student-id"
                 name="username"
                 type="text"
-                inputMode="numeric"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-                placeholder="例：1203"
+                placeholder="例：s1203"
                 autoComplete="username"
                 disabled={isProcessing}
                 required
               />
+              {/* つくばホームと同じ打ち方にする。`s` を落として打つ生徒が出ると、
+                  保護者のアドレスを叩いて「違います」になり、原因が見えない */}
+              <p className="field-note">生徒番号は先頭に <b>s</b> が付きます（例: s1066）。</p>
             </div>
           </>
         )}
