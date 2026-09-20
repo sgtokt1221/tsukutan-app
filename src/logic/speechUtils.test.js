@@ -89,8 +89,10 @@ test('**まとめて積まない。** iOS Safari は一度に積んだ2つ目以
   window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
 
   const onDone = jest.fn();
+  // **まとまらない並びで見る。** 同じ言語が続くと1つの発話にまとめる作りなので、
+  // 言語を変えて「積む回数」そのものを見る
   speakSequence(
-    [{ text: 'One.' }, { text: 'Two.' }, { text: 'Three.' }],
+    [{ text: 'One.', lang: 'en-US' }, { text: 'いち。', lang: 'ja-JP' }, { text: 'Three.', lang: 'en-US' }],
     { onDone },
   );
   await settle();
@@ -99,9 +101,9 @@ test('**まとめて積まない。** iOS Safari は一度に積んだ2つ目以
   expect(spoken).toEqual(['One.']);
 
   queue[0].onend();
-  expect(spoken).toEqual(['One.', 'Two.']);
+  expect(spoken).toEqual(['One.', 'いち。']);
   queue[1].onend();
-  expect(spoken).toEqual(['One.', 'Two.', 'Three.']);
+  expect(spoken).toEqual(['One.', 'いち。', 'Three.']);
   expect(onDone).not.toHaveBeenCalled();
 
   queue[2].onend();
@@ -115,11 +117,11 @@ test('**途中で失敗しても止まらない。** 次の文へ進む', async 
   window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
 
   const onDone = jest.fn();
-  speakSequence([{ text: 'One.' }, { text: 'Two.' }], { onDone });
+  speakSequence([{ text: 'One.', lang: 'en-US' }, { text: 'いち。', lang: 'ja-JP' }], { onDone });
   await settle();
 
   queue[0].onerror({ error: 'synthesis-failed' });
-  expect(spoken).toEqual(['One.', 'Two.']);
+  expect(spoken).toEqual(['One.', 'いち。']);
   queue[1].onend();
   expect(onDone).toHaveBeenCalled();
 });
@@ -129,11 +131,51 @@ test('**止めたら次へ進まない**（通しの読み上げを途中で止�
   const queue = [];
   window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
 
-  speakSequence([{ text: 'One.' }, { text: 'Two.' }]);
+  speakSequence([{ text: 'One.', lang: 'en-US' }, { text: 'いち。', lang: 'ja-JP' }]);
   await settle();
   expect(spoken).toEqual(['One.']);
 
   stopSpeaking();
   queue[0].onend();
   expect(spoken).toEqual(['One.']);
+});
+
+describe('通しの読み上げを待たせない', () => {
+  /*
+    **1文ずつ積むと、文と文のあいだに合成の待ちが必ず入る。**
+    ネット音声だと1文ごとに200〜400ms。10文の読みものなら数秒ぶん黙る。
+    続けて読むぶんは1つの発話にまとめる。
+  */
+  test('**同じ言語のぶんは1つにまとめる**', async () => {
+    const { speakSequence } = require('./speechUtils');
+    speakSequence([{ text: 'One.' }, { text: 'Two.' }, { text: 'Three.' }]);
+    await settle();
+    expect(spoken).toEqual(['One. Two. Three.']);
+  });
+
+  test('言語が変わるところでは切る（英語→日本語）', async () => {
+    const { speakSequence } = require('./speechUtils');
+    const queue = [];
+    window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
+    speakSequence([
+      { text: 'One.', lang: 'en-US' },
+      { text: 'Two.', lang: 'en-US' },
+      { text: 'いち。', lang: 'ja-JP' },
+    ]);
+    await settle();
+    expect(spoken).toEqual(['One. Two.']);
+    queue[0].onend();
+    expect(spoken).toEqual(['One. Two.', 'いち。']);
+  });
+
+  test('**1文ずつ光らせる経路はまとめない。** どの文を読んでいるか分からなくなる', async () => {
+    const { speakSequence } = require('./speechUtils');
+    const started = [];
+    speakSequence([
+      { text: 'One.', onStart: () => started.push(1) },
+      { text: 'Two.', onStart: () => started.push(2) },
+    ]);
+    await settle();
+    expect(spoken).toEqual(['One.']);
+  });
 });

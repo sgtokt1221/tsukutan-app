@@ -149,8 +149,10 @@ const buildUtterance = (text, lang) => {
         logger.debug('Japanese voices found (desktop):', japaneseVoices.map(v => `${v.name} (${v.lang})`));
         
         if (japaneseVoices.length > 0) {
-          const selectedVoice = 
-            japaneseVoices.find(voice => voice.name.includes('Google')) ||
+          const selectedVoice =
+            // **端末の中にある声を先に選ぶ。** Google の声はサーバで合成するので、
+            // 読み始めるまでに毎回待ちが入る（通しの読み上げが遅いのはこれ）
+            japaneseVoices.find(voice => voice.localService) ||
             japaneseVoices.find(voice => voice.name.includes('Kyoko')) || // macOSの日本語音声
             japaneseVoices.find(voice => voice.name.includes('Microsoft')) ||
             japaneseVoices.find(voice => voice.name.includes('日本語')) ||
@@ -168,8 +170,10 @@ const buildUtterance = (text, lang) => {
         );
         
         if (englishVoices.length > 0) {
-          const selectedVoice = 
-            englishVoices.find(voice => voice.name.includes('Google')) ||
+          const selectedVoice =
+            // **端末の中にある声を先に選ぶ**（上の日本語と同じ理由）
+            englishVoices.find(voice => voice.localService && voice.lang === 'en-US') ||
+            englishVoices.find(voice => voice.localService) ||
             englishVoices.find(voice => voice.name === 'Alex') || // macOSの高品質な音声
             englishVoices.find(voice => voice.name.includes('Microsoft')) ||
             englishVoices.find(voice => voice.name.includes('English')) ||
@@ -275,8 +279,36 @@ const playClip = (blob) => new Promise((resolve) => {
   audio.play().catch(done);
 });
 
+/**
+ * 続けて読むぶんを、1つの発話にまとめる。
+ *
+ * **通しの読み上げが遅いのはここ。** 1文ずつ積むと、文と文のあいだに
+ * 合成の待ちが必ず入る（ネット音声だと1文ごとに200〜400ms）。
+ * 10文の読みものなら数秒ぶん、ただ黙っている時間になる。
+ *
+ * 言語が同じで、**始まりを知らせる必要が無い**ぶんだけ繋ぐ。
+ * 1文ずつ光らせている経路（`onStart` を持つ）は繋がない——
+ * まとめると、どの文を読んでいるか分からなくなる。
+ *
+ * @param {Array<{text: string, lang?: string, onStart?: Function}>} queue
+ * @returns {Array<{text: string, lang?: string, onStart?: Function}>}
+ */
+const mergeSameVoice = (queue) => {
+  const out = [];
+  for (const item of queue) {
+    const last = out[out.length - 1];
+    const sameVoice = last
+      && (last.lang || 'en-US') === (item.lang || 'en-US')
+      && typeof last.onStart !== 'function'
+      && typeof item.onStart !== 'function';
+    if (sameVoice) last.text = `${last.text} ${item.text}`;
+    else out.push({ ...item });
+  }
+  return out;
+};
+
 const speakSequence = (items, options = {}) => {
-  const queue = (items || []).filter((item) => item && item.text);
+  const queue = mergeSameVoice((items || []).filter((item) => item && item.text));
   if (queue.length === 0) {
     if (typeof options.onDone === 'function') options.onDone();
     return;
