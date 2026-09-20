@@ -1248,76 +1248,71 @@ input[type="file"] { display: none; }
 }
 
 .login-screen {
-  padding: clamp(24px, 6vw, 40px);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  padding: clamp(24px, 6vw, 72px);
   min-height: 100vh;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(260px, 400px) minmax(340px, 440px);
+  align-items: center;
   justify-content: center;
-  /* ロゴPNGに焼き込まれた淡い黄緑と地の色を合わせる（計画書4.5）。
-     以前は青緑のグラデーションで、ロゴの背景が四角く浮いて見えていた。
-     青緑はブランド色でもないので単色にする。 */
-  background: var(--color-canvas-lime);
-  gap: var(--space-24);
+  gap: clamp(32px, 5vw, 64px);
+  background:
+    linear-gradient(112deg, rgba(72, 215, 165, 0.16), transparent 48%),
+    var(--color-canvas-lime);
+}
+
+.login-screen::before,
+.login-screen::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 32px;
+  transform: rotate(13deg);
+  pointer-events: none;
+}
+
+.login-screen::before {
+  width: 260px;
+  height: 330px;
+  top: -150px;
+  right: 7vw;
+  background: var(--color-warm-soft);
+}
+
+.login-screen::after {
+  width: 220px;
+  height: 300px;
+  left: -110px;
+  bottom: -170px;
+  background: var(--color-blue-soft);
 }
 
 .login-hero {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  color: #0f172a;
-  text-align: center;
+  width: 100%;
   align-items: center;
-}
-
-.hero-pill {
-  display: inline-flex;
-  align-self: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(14, 165, 233, 0.12);
-  color: rgba(14, 165, 233, 0.85);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.hero-title {
-  font-size: clamp(2.2rem, 14vw, 3rem);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-  font-family: 'Zen Kaku Gothic New', sans-serif;
-}
-
-.hero-title span {
-  display: block;
-  font-size: 0.9rem;
-  letter-spacing: 0.38em;
-  color: rgba(15, 23, 42, 0.45);
-  margin-top: 6px;
-}
-
-.hero-caption {
-  font-size: 0.95rem;
-  color: rgba(15, 23, 42, 0.6);
+  justify-content: center;
+  justify-self: center;
 }
 
 .login-card {
-  /* PCで横いっぱいに伸びないよう最大幅を決める（計画書13.1） */
   width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(14px);
-  border-radius: 22px;
-  padding: clamp(20px, 5vw, 30px);
+  max-width: var(--width-login-card);
+  margin: 0;
+  justify-self: start;
+  background: rgba(255, 253, 247, 0.94);
+  backdrop-filter: blur(18px);
+  border-radius: var(--radius-feature);
+  padding: clamp(24px, 5vw, 38px);
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  gap: var(--space-16);
+  box-shadow: var(--shadow-3);
+  border: var(--border-subtle);
 }
 
 .input-stack {
@@ -1327,29 +1322,31 @@ input[type="file"] { display: none; }
 }
 
 .input-label {
-  font-weight: 600;
-  color: rgba(15, 23, 42, 0.7);
+  font-weight: 700;
+  color: var(--color-olive-muted);
 }
 
 .login-card input {
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  border-radius: 12px;
-  padding: 14px;
+  min-height: 52px;
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  padding: 14px 15px;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.85);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--color-ink-olive);
+  background: #fff;
+  transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
 }
 
 .login-card input:focus-visible {
   /* フォーカスリングは消さない。キーボード操作で現在位置が分かるようにする */
-  outline: 2px solid #0284c7;
+  outline: 3px solid var(--color-focus-ring);
   outline-offset: 2px;
-  border-color: rgba(14, 165, 233, 0.6);
+  border-color: var(--color-accent-blue);
 }
 
 .login-card input:focus {
-  border-color: rgba(14, 165, 233, 0.6);
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 0 0 4px var(--color-blue-soft);
 }
 
 .login-card input:disabled {
@@ -1358,9 +1355,23 @@ input[type="file"] { display: none; }
 }
 
 .helper-text {
-  font-size: 0.85rem;
-  color: rgba(15, 23, 42, 0.55);
+  margin: var(--space-4) 0 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-subtle);
   text-align: center;
+}
+
+@media (max-width: 820px) {
+  .login-screen {
+    grid-template-columns: minmax(0, 520px);
+    gap: 28px;
+  }
+  .login-card { justify-self: center; }
+}
+
+@media (max-width: 420px) {
+  .login-screen { padding: 28px 18px; gap: var(--space-24); }
+  .login-card { padding: 24px 20px; }
 }
 
 .dashboard-header {
@@ -2995,4 +3006,125 @@ select:focus-visible,
   font-family: 'Zen Maru Gothic', sans-serif;
   font-weight: 600;
   line-height: 1.35;
+}
+
+/* ===== 2026 つくつく brand refresh ===== */
+.App {
+  background:
+    radial-gradient(circle at 100% 0, var(--color-lime-soft), transparent 32%),
+    var(--color-canvas-lime);
+  color: var(--color-ink-olive);
+}
+
+.student-header {
+  min-height: 66px;
+  background: rgba(255, 253, 247, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom-color: var(--color-olive-divider);
+}
+
+.section-card {
+  gap: var(--space-12);
+  background: rgba(255, 253, 247, 0.96);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-1);
+}
+
+.goal-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-ink-olive);
+  border: 0;
+  color: #fff;
+  box-shadow: var(--shadow-2);
+}
+
+.goal-card::after {
+  content: '';
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -34px;
+  bottom: -62px;
+  border-radius: 34px;
+  transform: rotate(18deg);
+  background: rgba(72, 215, 165, 0.32);
+}
+
+.goal-card .goal-card__eyebrow,
+.goal-card .goal-card__deadline { color: rgba(255, 255, 255, 0.68); }
+.goal-card .goal-card__title,
+.goal-card .goal-card__remaining strong { color: #fff; }
+.goal-card .goal-card__deadline { border-color: rgba(255, 255, 255, 0.14); }
+.goal-card .goal-card__edit {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.goal-card .goal-card__edit:hover { background: rgba(255, 255, 255, 0.17); color: #fff; }
+
+.home-section-eyebrow {
+  color: #169b78;
+  font-size: var(--font-size-12);
+  letter-spacing: 0.08em;
+}
+
+.task-card {
+  min-height: 112px;
+  display: grid;
+  align-content: center;
+  background: #fff;
+  border-color: var(--color-olive-divider);
+  box-shadow: none;
+}
+.task-card:hover { background: var(--color-lime-soft); border-color: var(--color-lime-border); }
+.task-card .task-icon { color: #169b78; }
+.task-card .task-info span { color: var(--color-ink-olive); font-size: var(--font-size-28); }
+.task-card .task-info p { color: var(--color-olive-muted); }
+.okawari-card {
+  background: var(--color-warm-soft);
+  color: var(--color-ink-olive);
+  border-color: rgba(255, 200, 87, 0.62);
+}
+.okawari-card .task-info p,
+.okawari-card .task-info span,
+.okawari-card .task-icon { color: var(--color-ink-olive); }
+
+.home-progress__bar { background: rgba(24, 49, 83, 0.08); }
+.home-progress__fill { background: linear-gradient(90deg, #169b78, var(--color-brand-lime)); }
+
+.tab-bar {
+  left: 50%;
+  right: auto;
+  width: min(100%, 720px);
+  transform: translateX(-50%);
+  background: rgba(255, 253, 247, 0.94);
+  backdrop-filter: blur(18px);
+  border-top-color: var(--color-olive-divider);
+  box-shadow: 0 -8px 28px rgba(24, 49, 83, 0.07);
+}
+
+.tab-item {
+  position: relative;
+  border-radius: var(--radius-control);
+  color: var(--color-olive-subtle);
+}
+
+.tab-item.active {
+  background: var(--color-lime-soft);
+  color: #12775d;
+  box-shadow: none;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  left: 28%;
+  right: 28%;
+  bottom: 3px;
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: #169b78;
 }

@@ -147,7 +147,7 @@ function AppContent() {
     return (
       <div className="loading-container">
         <div className="app-status-card">
-          <h1 className="app-status-title">つくたんを開けませんでした</h1>
+          <h1 className="app-status-title">つくつくを開けませんでした</h1>
           <p className="app-status-message">{authError}</p>
           <button
             type="button"

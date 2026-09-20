@@ -1,83 +1,56 @@
 import React from 'react';
 import './BrandLogo.css';
 
-/**
- * ブランドロゴ。DESIGN_IMPLEMENTATION_PLAN.md 4章。
- *
- * 画像パスをここ1箇所に集める。画面ごとに <img> を直接置かない。
- *
- * 原本 assets-source/tsukutan-logo-lockup-v1.png（2172×724, 3:1, 872KB）は
- * v1の原本として保持する。public/ に置くと配信対象になってしまうため
- * リポジトリ内の別の場所へ移した。表示には public/brand/ の派生を使う。
- *
- * 背景について（計画書4.5）:
- *   PNGには淡い黄緑の背景が焼き込まれているので、ロゴの周囲も
- *   --color-canvas-lime にする。白いカードへ直接置かない。
- *   白地に置く必要がある場所は .brand-logo--on-surface を付けて、
- *   ロゴ領域だけ淡い黄緑のブロックにする。
- */
-
-// v2 は原本から余白を落としたもの。v1 は上下36%・左右24%が余白で、
-// 箱の大きさに対してロゴが小さく見えていた。ヘッダーを高くせずに
-// ロゴを大きく見せるため、余白の側を削っている。
-// 背景もヘッダーの地色（--color-canvas-lime）ぴったりに塗り直してあり、
-// v1 にあったわずかな色ずれの継ぎ目が出ない。
-const SRC_WEBP = '/brand/tsukutan-logo-lockup-v3.webp';
-const SRC_WEBP_SMALL = '/brand/tsukutan-logo-lockup-v3@440.webp';
-const SRC_PNG = '/brand/tsukutan-logo-lockup-v3.png';
-
-// 原本の比率。width/height を必ず渡して読込時のレイアウトずれを防ぐ。
-const ASPECT_WIDTH = 1706;
-const ASPECT_HEIGHT = 506;
-
 const PLACEMENTS = ['login', 'student-header', 'study-header', 'admin-sidebar'];
+
+/**
+ * 「つくつく」のブランドロゴ。
+ * 2枚のカードは「くり返し」、右上の光は「身についた瞬間」。
+ */
+export function TsukuTsukuMark({ className = '' }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={`brand-logo__mark ${className}`.trim()}
+      viewBox="0 0 64 64"
+      focusable="false"
+    >
+      <g transform="rotate(-8 29 33)">
+        <rect x="6" y="17" width="38" height="39" rx="10" fill="#48D7A5" stroke="#183153" strokeWidth="2.5" />
+        <rect x="16" y="9" width="40" height="42" rx="11" fill="#FFFDF7" stroke="#183153" strokeWidth="2.5" />
+        <circle cx="27" cy="22" r="4" fill="#48D7A5" />
+        <path d="M35 20.5h12M26 33h21M26 40h14" fill="none" stroke="#183153" strokeWidth="3" strokeLinecap="round" />
+      </g>
+      <path d="M50 2c.7 4.1 3.1 6.5 7.2 7.3-4.1.8-6.5 3.2-7.2 7.3-.8-4.1-3.1-6.5-7.2-7.3C46.9 8.5 49.2 6.1 50 2Z" fill="#FFC857" stroke="#183153" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function BrandLogo({
   placement = 'student-header',
   linked = false,
-  priority = false,
-  onSurface = false,
-  /** 隣に「つくたん」の文字がある場合は decorative にして読み上げの重複を防ぐ */
   decorative = false,
   onClick,
 }) {
   const safePlacement = PLACEMENTS.includes(placement) ? placement : 'student-header';
-
-  const image = (
-    <picture>
-      <source
-        type="image/webp"
-        srcSet={`${SRC_WEBP_SMALL} 440w, ${SRC_WEBP} 880w`}
-        sizes="(max-width: 767px) 60vw, 280px"
-      />
-      <img
-        className="brand-logo__image"
-        src={SRC_PNG}
-        width={ASPECT_WIDTH}
-        height={ASPECT_HEIGHT}
-        alt={decorative ? '' : 'つくたん'}
-        // ログインの主役画像は遅延させない（計画書4.4）
-        loading={priority ? 'eager' : 'lazy'}
-        fetchpriority={priority ? 'high' : undefined}
-        decoding="async"
-        draggable="false"
-      />
-    </picture>
+  const className = `brand-logo brand-logo--${safePlacement}`;
+  const content = (
+    <>
+      <TsukuTsukuMark />
+      <span className="brand-logo__wordmark" aria-hidden="true">
+        <span>つく</span><span className="brand-logo__wordmark-accent">つく</span>
+      </span>
+      {!decorative && <span className="visually-hidden">つくつく</span>}
+    </>
   );
-
-  const className = [
-    'brand-logo',
-    `brand-logo--${safePlacement}`,
-    onSurface ? 'brand-logo--on-surface' : '',
-  ].filter(Boolean).join(' ');
 
   if (linked) {
     return (
-      <button type="button" className={`${className} brand-logo--link`} onClick={onClick} aria-label="つくたん ホーム">
-        {image}
+      <button type="button" className={`${className} brand-logo--link`} onClick={onClick} aria-label="つくつく ホーム">
+        {content}
       </button>
     );
   }
 
-  return <span className={className}>{image}</span>;
+  return <span className={className}>{content}</span>;
 }

@@ -57,14 +57,10 @@ function LoginPage() {
   return (
     <div className="login-screen">
       <div className="login-hero">
-        <div className="hero-pill">毎日の英語習慣を支える</div>
         {/* 画像の中の文字だけに見出しの意味を持たせない。
             h1 は残し、視覚的にだけ隠す（計画書4.4）。 */}
-        <h1 className="visually-hidden">つくたん</h1>
+        <h1 className="visually-hidden">つくつく</h1>
         <BrandLogo placement="login" priority decorative />
-        <p className="hero-caption">
-          単語学習・復習・ゴール設定をひとつのアプリで。
-        </p>
       </div>
 
       <form className="login-card" onSubmit={handleSubmit}>
@@ -80,7 +76,7 @@ function LoginPage() {
             type="text"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            placeholder="例: 1203 或いは name@example.com"
+            placeholder="例：1203 または name@example.com"
             autoComplete="username"
             disabled={isProcessing}
             required
@@ -103,7 +99,7 @@ function LoginPage() {
         </div>
 
         <button type="submit" className="primary-action" disabled={isProcessing}>
-          {isProcessing ? 'ログイン中...' : 'ログイン'}
+          {isProcessing ? 'ログイン中...' : 'つくつくをはじめる'}
         </button>
 
         <p className="helper-text">

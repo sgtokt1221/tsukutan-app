@@ -1,63 +1,53 @@
-/*
- * BrandLogo の表示サイズ。DESIGN_IMPLEMENTATION_PLAN.md 4.3。
- * 固定ピクセルだけにせず clamp() と max-width: 100% を併用する。
- */
-
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  /* PNGに焼き込まれた淡い黄緑と地の色を合わせる（計画書4.5） */
-  background-color: var(--color-canvas-lime);
-  line-height: 0;
-}
-
-.brand-logo__image {
-  display: block;
-  width: 100%;
-  height: auto;
+  gap: clamp(8px, 1.5vw, 12px);
+  width: max-content;
   max-width: 100%;
+  color: var(--color-ink-olive);
+  line-height: 1;
 }
 
-/* 白いカードの上に置くときは、ロゴ領域だけ淡い黄緑のブロックにする */
-.brand-logo--on-surface {
-  padding: var(--space-8) var(--space-12);
-  border-radius: var(--radius-control);
+.brand-logo__mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  filter: drop-shadow(0 8px 9px rgba(24, 49, 83, 0.13));
 }
 
-/* ログイン: ページの主役 */
-.brand-logo--login {
-  width: clamp(200px, 56vw, 280px);
+.brand-logo__wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-family-heading);
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: -0.075em;
+  white-space: nowrap;
 }
 
-/* 生徒ヘッダー。ヘッダーの高さ(60px)は変えずに、画像側の余白を削って
-   ロゴ本体を大きくしてある。 */
-.brand-logo--student-header {
-  width: clamp(140px, 38vw, 168px);
-}
+.brand-logo__wordmark-accent { color: #169b78; }
 
-/* 学習ヘッダー: 単語カードより弱くする。生徒ヘッダーより一回り小さい。 */
-.brand-logo--study-header {
-  width: clamp(124px, 32vw, 148px);
-}
+.brand-logo--login .brand-logo__mark { width: clamp(72px, 11vw, 92px); height: clamp(72px, 11vw, 92px); }
+.brand-logo--login .brand-logo__wordmark { font-size: clamp(42px, 7vw, 64px); letter-spacing: -0.09em; }
+.brand-logo--student-header .brand-logo__mark { width: 38px; height: 38px; }
+.brand-logo--student-header .brand-logo__wordmark { font-size: clamp(21px, 4vw, 25px); }
+.brand-logo--study-header .brand-logo__mark { width: 32px; height: 32px; }
+.brand-logo--study-header .brand-logo__wordmark { font-size: 20px; }
+.brand-logo--admin-sidebar .brand-logo__mark { width: 46px; height: 46px; }
+.brand-logo--admin-sidebar .brand-logo__wordmark { font-size: 28px; }
 
-/* 管理サイドバー */
-.brand-logo--admin-sidebar {
-  width: clamp(144px, 18vw, 180px);
-}
-
-/* リンクとして使う場合 */
 .brand-logo--link {
-  border: 1px solid transparent;
+  border: 0;
   padding: 0;
+  background: transparent;
   cursor: pointer;
   border-radius: var(--radius-control);
   transition: transform var(--motion-fast) var(--ease-standard);
 }
+.brand-logo--link:hover { transform: translateY(-1px); }
+.brand-logo--link:active { transform: scale(0.98); }
 
-.brand-logo--link:hover {
-  transform: translateY(-1px);
-}
-
-.brand-logo--link:active {
-  transform: scale(0.98);
+@media (max-width: 420px) {
+  .brand-logo--login { flex-direction: column; gap: 10px; }
 }

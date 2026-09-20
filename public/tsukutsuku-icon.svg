@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">つくつく</title>
+  <desc id="desc">繰り返し学ぶ二枚のカードと、身についた瞬間を表す光</desc>
+  <rect width="512" height="512" rx="140" fill="#183153"/>
+  <g transform="rotate(-8 250 270)">
+    <rect x="90" y="145" width="275" height="285" rx="72" fill="#48D7A5"/>
+    <rect x="155" y="105" width="280" height="295" rx="72" fill="#FFFDF7"/>
+    <circle cx="232" cy="202" r="30" fill="#48D7A5"/>
+    <path d="M291 190h86M222 278h155M222 330h105" fill="none" stroke="#183153" stroke-width="26" stroke-linecap="round"/>
+  </g>
+  <path d="M407 48c7 36 28 57 65 65-37 8-58 29-65 65-7-36-28-57-65-65 37-8 58-29 65-65Z" fill="#FFC857"/>
+</svg>
