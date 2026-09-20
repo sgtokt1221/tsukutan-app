@@ -9,6 +9,37 @@ let initializationPromise = null;
 let activeUtterance = null;
 // 実行中の読み上げの並び。打ち切ったあとに古いイベントで進まないようにする。
 let activeSequence = null;
+/*
+  最後に cancel() を呼んだ時刻。
+
+  **Chrome は cancel() の直後の speak() を黙って捨てる。**
+  ところが直後は `synthesis.speaking` も `pending` も false なので、
+  「鳴っていたら100ms待つ」という下の守りをすり抜ける。
+  呼び出し側が stopSpeaking() してすぐ speakSequence() する経路
+  （ReadingPanel の読み上げボタン）がまさにこれで、**2回目以降が無音になる**。
+  鳴っているかではなく「直前に打ち切ったか」で待つ。
+*/
+let lastCancelAt = 0;
+const CANCEL_GUARD_MS = 150;
+
+const noteCancel = () => {
+  lastCancelAt = Date.now();
+};
+
+/*
+  待ってから積むぶんの予約。**止めたら取り消す。**
+  取り消さないと、止めたあとに前の予約が起きて鳴り、次のぶんと重なる
+  （押し直すたびに古い文が混ざる）。
+*/
+let pendingStart = null;
+const scheduleStart = (run, ms) => {
+  clearTimeout(pendingStart);
+  pendingStart = setTimeout(run, ms);
+};
+const cancelScheduledStart = () => {
+  clearTimeout(pendingStart);
+  pendingStart = null;
+};
 
 const initialize = () => {
   if (initializationPromise) {
@@ -328,8 +359,16 @@ const speakSequence = (items, options = {}) => {
   if (synthesis.speaking || synthesis.pending) {
     // 前の読み上げは打ち切る。カードを次々めくったときに溜まらないように。
     synthesis.cancel();
+    noteCancel();
     // cancel() の直後に speak() を呼ぶと Chrome が無視することがあるので間を置く。
-    setTimeout(enqueueAll, 100);
+    scheduleStart(enqueueAll, CANCEL_GUARD_MS);
+    return;
+  }
+
+  // 鳴っていなくても、直前に打ち切っていれば同じだけ待つ
+  const sinceCancel = Date.now() - lastCancelAt;
+  if (sinceCancel < CANCEL_GUARD_MS) {
+    scheduleStart(enqueueAll, CANCEL_GUARD_MS - sinceCancel);
     return;
   }
 
@@ -352,8 +391,10 @@ const speakWordThenMeaning = (word, meaning, direction = 'en-ja') => {
 const stopSpeaking = () => {
   activeUtterance = null;
   activeSequence = null;
+  cancelScheduledStart();
   stopClip();
   synthesis.cancel();
+  noteCancel();
 };
 
 export { initialize, speak, speakSequence, speakWordThenMeaning, stopSpeaking };

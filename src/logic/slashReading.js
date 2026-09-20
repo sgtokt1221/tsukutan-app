@@ -1,0 +1,148 @@
+/**
+ * スラッシュリーディングの区切り。
+ *
+ * **SVOC の区切りをそのまま使わない。** 読みもののデータ（`chunks`）は
+ * S / V / O / C / M の単位で切ってある。それをそのまま `/` にすると
+ * 「I / get up / at six / in the morning.」のように**主語と動詞まで割れる**。
+ * 頭から読む練習では、主語と動詞はふつう一息で読む。
+ *
+ * **区切りを2つ持たない。** データに slash 用の区切りを別に書くと、片方だけ
+ * 直したときにズレても画面は普通に動いてしまう（docs/reading-format.md）。
+ * ここでは chunks を**まとめ直すだけ**で、新しいデータは持たない。
+ *
+ * ## 区切る目印（塾で教えている5つ）
+ * 1. 前置詞の前（in, on, at, to, with …）
+ * 2. 接続詞の前（and, but, because, if …）
+ * 3. 関係代名詞・関係副詞・疑問詞の前（who, which, that, where …）
+ * 4. 不定詞・動名詞・分詞（準動詞）の前
+ * 5. カンマ（,）コロン（:）セミコロン（;）の後ろ
+ * 6. 主語や長い目的語・補語の後ろ（**文の構造が長くなるときだけ**）
+ *
+ * 絶対的な正解は無いので、**迷ったらまとめる**。切りすぎた区切りは
+ * 「頭から意味を取る」練習の邪魔になる。
+ */
+
+/** 1. 前置詞。`to` は不定詞の目印も兼ねる（どちらでも区切るので分けない） */
+export const PREPOSITIONS = new Set([
+  'in', 'on', 'at', 'to', 'with', 'for', 'from', 'by', 'of', 'about',
+  'into', 'onto', 'over', 'under', 'above', 'below', 'after', 'before',
+  'during', 'through', 'between', 'among', 'against', 'without', 'within',
+  'across', 'around', 'near', 'since', 'until', 'till', 'like', 'than',
+  'behind', 'beside', 'beyond', 'toward', 'towards', 'upon', 'off',
+]);
+
+/** 2. 接続詞 */
+export const CONJUNCTIONS = new Set([
+  'and', 'but', 'or', 'nor', 'so', 'yet', 'because', 'if', 'when', 'while',
+  'although', 'though', 'unless', 'whether', 'as', 'once', 'whenever',
+]);
+
+/** 3. 関係代名詞・関係副詞・疑問詞。`that` は接続詞も兼ねる */
+export const RELATIVES = new Set([
+  'who', 'whom', 'whose', 'which', 'that', 'where', 'why', 'how', 'what',
+]);
+
+/**
+ * 4. 動名詞・分詞に**見えるだけ**の語。`-ing` で終わるが準動詞ではない。
+ * これを外さないと「in the morning」の morning などで切ってしまう。
+ */
+const NOT_PARTICIPLE = new Set([
+  'everything', 'something', 'nothing', 'anything', 'morning', 'evening',
+  'during', 'spring', 'king', 'thing', 'things', 'ring', 'wing', 'string',
+  'ceiling', 'building', 'buildings', 'meaning', 'feeling', 'feelings',
+  'clothing', 'shopping', 'swimming',
+]);
+
+/** 6. 「長い」の目安。これ以上の語数なら、そこで一度切る */
+export const LONG_CHUNK_WORDS = 3;
+
+const words = (text) => String(text || '').trim().split(/\s+/).filter(Boolean);
+
+/** 記号を落として比べる。`(`、引用符、末尾の句読点を外す */
+const bareWord = (word) => String(word || '').toLowerCase().replace(/^[^a-z']+|[^a-z']+$/g, '');
+
+/** 5. カンマ・コロン・セミコロンで終わっているか */
+const endsWithPause = (text) => /[,:;]["')\]]?$/.test(String(text || '').trim());
+
+/** 4. 準動詞（動名詞・分詞）で始まっているか。`to` 不定詞は前置詞側で拾う */
+const startsWithVerbal = (chunk) => {
+  // 主語・動詞の位置で `-ing` が出るのは進行形なので切らない。
+  // 修飾（M）や補語（C）の頭に出るものだけを準動詞とみなす。
+  if (chunk.role !== 'M' && chunk.role !== 'C') return false;
+  const first = bareWord(words(chunk.en)[0]);
+  if (!first || first.length < 5) return false;
+  if (NOT_PARTICIPLE.has(first)) return false;
+  return first.endsWith('ing');
+};
+
+/**
+ * 接続詞ではない `so`。「so much interest」「so many people」の `so` は
+ * 程度を表す副詞で、節の頭ではない。ここで外さないと
+ * 「have / so much interest?」と動詞と目的語が割れる。
+ */
+const DEGREE_AFTER_SO = new Set(['much', 'many', 'little', 'few', 'long', 'far', 'big', 'small', 'hard']);
+const isDegreeSo = (chunk) => {
+  const [first, second] = words(chunk.en).map(bareWord);
+  return first === 'so' && DEGREE_AFTER_SO.has(second || '');
+};
+
+/** 1〜4. このまとまりの**前**で切る目印があるか */
+const startsBoundary = (chunk) => {
+  const first = bareWord(words(chunk.en)[0]);
+  if (!first) return false;
+  // 接続詞は動詞のまとまりの頭に来ることがある（and ran …）ので先に見る
+  if (CONJUNCTIONS.has(first) && !isDegreeSo(chunk)) return true;
+  /*
+    **動詞のまとまりは、主語から切り離さない。**
+    `like` / `off` / `near` のように前置詞と同じ綴りの動詞があり、
+    綴りだけで見ると「I / like everything」と割れる。役割で外す。
+  */
+  if (chunk.role === 'V') return false;
+  if (PREPOSITIONS.has(first)) return true;
+  if (RELATIVES.has(first)) return true;
+  return startsWithVerbal(chunk);
+};
+
+/** 6. 主語・目的語・補語が長いか。長いときだけ後ろで切る */
+const isLongPhrase = (chunk) => (
+  (chunk.role === 'S' || chunk.role === 'O' || chunk.role === 'C')
+  && words(chunk.en).length >= LONG_CHUNK_WORDS
+);
+
+/**
+ * チャンクをスラッシュ読みのまとまりへ組み直す。
+ *
+ * @param {Array<{en: string, ja: string, role: string}>} chunks
+ * @returns {Array<{en: string, ja: string, parts: Array<object>}>}
+ */
+export function slashGroups(chunks) {
+  const list = (chunks || []).filter((chunk) => chunk && String(chunk.en || '').trim());
+  if (list.length === 0) return [];
+
+  const groups = [];
+  let current = [list[0]];
+
+  for (let i = 1; i < list.length; i += 1) {
+    const chunk = list[i];
+    const previous = list[i - 1];
+    const cut = endsWithPause(previous.en)   // 5
+      || startsBoundary(chunk)               // 1〜4
+      || isLongPhrase(previous);             // 6
+    if (cut) {
+      groups.push(current);
+      current = [chunk];
+    } else {
+      current.push(chunk);
+    }
+  }
+  groups.push(current);
+
+  return groups.map((parts) => ({
+    en: parts.map((part) => String(part.en).trim()).join(' '),
+    // 頭から順に訳す練習なので、**英語の並びのまま**つなぐ
+    ja: parts.map((part) => String(part.ja || '').trim()).filter(Boolean).join(' '),
+    parts,
+  }));
+}
+
+export default slashGroups;
