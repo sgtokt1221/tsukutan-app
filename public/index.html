@@ -11,7 +11,9 @@
     <title>つくつく</title>
 
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/tsukutsuku-mark.svg" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!-- iOS は透明を黒で塗ってから自分で角を丸める。**角丸なし・透明なしの180px**を渡す
+         （`logo192.png` は角が透明なので、渡すと外側に黒い三角が残る）→ scripts/build-icons.mjs -->
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -1326,7 +1326,10 @@ input[type="file"] { display: none; }
   color: var(--color-olive-muted);
 }
 
-.login-card input {
+/* 校舎の選択も入力欄と同じ見た目にする。片方だけ高さや枠が違うと、
+   並んだときに壊れて見える。 */
+.login-card input,
+.login-card select {
   min-height: 52px;
   border: var(--border-default);
   border-radius: var(--radius-control);
@@ -1337,21 +1340,38 @@ input[type="file"] { display: none; }
   transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
 }
 
-.login-card input:focus-visible {
+.login-card input:focus-visible,
+.login-card select:focus-visible {
   /* フォーカスリングは消さない。キーボード操作で現在位置が分かるようにする */
   outline: 3px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-color: var(--color-accent-blue);
 }
 
-.login-card input:focus {
+.login-card input:focus,
+.login-card select:focus {
   border-color: var(--color-accent-blue);
   box-shadow: 0 0 0 4px var(--color-blue-soft);
 }
 
-.login-card input:disabled {
+.login-card input:disabled,
+.login-card select:disabled {
   background: rgba(241, 245, 249, 0.9);
   color: #64748b;
+}
+
+/* 生徒の窓と先生の窓の切り替え。**目立たせない**——生徒が間違って入ると
+   「つくばホームのIDが通らない」になる。押せる大きさ（44px）は保つ。 */
+.login-switch {
+  align-self: center;
+  min-height: var(--tap-target);
+  padding: 0 var(--space-12);
+  border: 0;
+  background: none;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-subtle);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .helper-text {
