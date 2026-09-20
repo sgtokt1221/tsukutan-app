@@ -98,18 +98,29 @@
 
 .reading-modes {
   display: flex;
-  border-bottom: 1px solid var(--color-olive-border);
+  border-bottom: 2px solid var(--color-olive-border);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
+.reading-modes::-webkit-scrollbar { display: none; }
+
+/* **つくばホームのアンダータブと同じ寸法**（`admin/styles/mobile-core.css` の
+   `.under-tab`）。ここだけ低いと、同じ塾のアプリなのに別物に見える。
+   選択中の下線を行の枠線に重ねるため、2px ぶん食い込ませる。 */
 .reading-mode {
   flex: 1;
-  padding: var(--space-8) var(--space-4);
+  min-width: 0;
+  min-height: var(--tap-target);
+  padding: 10px var(--space-4) 8px;
   border: none;
   border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
   background: none;
   color: var(--color-olive-muted);
   font-family: inherit;
-  font-size: var(--font-size-12);
+  font-size: var(--font-size-14);
+  white-space: nowrap;
   cursor: pointer;
 }
 
