@@ -35,15 +35,17 @@ const TSUKUBA_CONFIG = {
 const APP_NAME = 'tsukuba-home';
 
 /**
- * 校舎の既定。**正本は つくばホームの `school_master`**（未ログインで読める）。
- * 読めないときのために持つ。**マスタだけにしない**——痩せていると
- * 自分の校舎を選べない生徒が出る（受験サポートで実際に踏んでいる）。
+ * 校舎の既定。**名前と並びの正本は つくばホームの `src/shared/utils.js`。**
+ *
+ * `school_master` から名前は上書きするが、**一覧をマスタ任せにしない**。
+ * 本番のマスタには `highschool` の1件しか入っておらず（2026-09-20 に確認）、
+ * マスタだけにすると**3校の生徒が自分の校舎を選べなくなる**。
  */
 export const DEFAULT_SCHOOLS = [
-  { id: 'makami', name: '真上' },
-  { id: 'hokkan', name: '北館' },
-  { id: 'okanmuri', name: '大冠' },
-  { id: 'highschool', name: '高等部' },
+  { id: 'makami', name: '真上校' },
+  { id: 'hokkan', name: '北冠校' },
+  { id: 'okanmuri', name: '大冠校' },
+  { id: 'highschool', name: 'ハイスクール' },
 ];
 
 const tsukubaApp = () => (getApps().some((a) => a.name === APP_NAME)
@@ -51,7 +53,12 @@ const tsukubaApp = () => (getApps().some((a) => a.name === APP_NAME)
   : initializeApp(TSUKUBA_CONFIG, APP_NAME));
 
 /**
- * 校舎の一覧。マスタを先に、足りないぶんを既定で埋める。
+ * 校舎の一覧。
+ *
+ * **並びは既定のまま。** マスタは名前の上書きと、増えた校舎の追加にだけ使う。
+ * マスタを先に並べると、1件しか入っていない本番では
+ * 「ハイスクール → 真上校 → …」という不自然な順になる。
+ *
  * @returns {Promise<Array<{id: string, name: string}>>}
  */
 export async function loadSchools() {
@@ -60,13 +67,18 @@ export async function loadSchools() {
     const db = getFirestore(tsukubaApp());
     const snap = await getDocs(query(collection(db, 'school_master'), orderBy('displayOrder', 'asc')));
     master = snap.docs
-      .map((d) => ({ id: d.id, name: String(d.data().name || d.id) }))
-      .filter((s) => s.id !== '');
+      .map((d) => ({ id: d.id, name: String(d.data().name || d.id), active: d.data().active }))
+      .filter((s) => s.id !== '' && s.active !== false);
   } catch (error) {
     master = [];
   }
-  const seen = new Set(master.map((s) => s.id));
-  return [...master, ...DEFAULT_SCHOOLS.filter((s) => !seen.has(s.id))];
+
+  const names = new Map(master.map((s) => [s.id, s.name]));
+  const known = new Set(DEFAULT_SCHOOLS.map((s) => s.id));
+  return [
+    ...DEFAULT_SCHOOLS.map((s) => ({ id: s.id, name: names.get(s.id) || s.name })),
+    ...master.filter((s) => !known.has(s.id)).map((s) => ({ id: s.id, name: s.name })),
+  ];
 }
 
 /**

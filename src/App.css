@@ -1374,6 +1374,13 @@ input[type="file"] { display: none; }
   cursor: pointer;
 }
 
+/* 入力欄に添える一言。打ち方が分からないと、生徒は何度も間違える */
+.field-note {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-subtle);
+}
+
 .helper-text {
   margin: var(--space-4) 0 0;
   font-size: var(--font-size-12);
