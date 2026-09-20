@@ -166,6 +166,10 @@ cd functions && npm run serve   # Functions エミュレータ
 - **ルート直下の `*.js` スクリプトは本番 Firestore を直接叩く。** 実行前に定数（コレクション名・ファイルパス）を必ず読むこと
 - `words_backup_*.json` が多数あるが、どれが最新の正本かはファイル名からしか判断できない。現行の正本は `words.json` と `src/wordsData.json`
 
+- 単語の重複排除・突合は表記でなく永続ID（`w_` + SHA-256）で行う。配列インデックス由来のIDは使わない。
+- レベルは `src/config/levels.json`（1-7）が正本。英検級と難易度は大小の向きが逆なので同じ変数に入れない。
+- 英検級は数字が小さいほど難しい。級の比較に `level <= target` を使わない。複数級に属する語は最も易しい級でのみ数える。
+
 ## 8. Current State / Known Issues
 
 **リポジトリ衛生**
