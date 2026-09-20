@@ -169,16 +169,20 @@ const splitInside = (en) => {
 /**
  * チャンクをスラッシュ読みのまとまりへ組み直す。
  *
- * @param {Array<{en: string, ja: string, role: string}>} chunks
- * @returns {Array<{en: string, ja: string, pieces: string[], parts: Array<object>}>}
+ * まとまりの中の区切りは、**訳が用意してあるチャンク（`chunk.slash`）だけ**。
+ * 訳の無いところで切ると「区切りはあるのに訳が無い」まとまりができる。
+ * 訳は `scripts/slash-translate.mjs` が作る（切る位置は `splitInside` が決める）。
+ *
+ * @param {Array<{en: string, ja: string, role: string, slash?: Array<{en: string, ja: string}>}>} chunks
+ * @returns {Array<{en: string, ja: string}>} 前から読む順に並んだまとまり
  */
-export function slashGroups(chunks) {
+export function slashUnits(chunks) {
   const list = (chunks || []).filter((chunk) => chunk && String(chunk.en || '').trim());
   if (list.length === 0) return [];
 
+  // 1. チャンクとチャンクの間で切るかを決める
   const groups = [];
   let current = [list[0]];
-
   for (let i = 1; i < list.length; i += 1) {
     const chunk = list[i];
     const previous = list[i - 1];
@@ -194,17 +198,35 @@ export function slashGroups(chunks) {
   }
   groups.push(current);
 
-  return groups.map((parts) => {
-    const en = parts.map((part) => String(part.en).trim()).join(' ');
-    return {
-      en,
-      // 頭から順に訳す練習なので、**英語の並びのまま**つなぐ
-      ja: parts.map((part) => String(part.ja || '').trim()).filter(Boolean).join(' '),
-      // まとまりの中の区切り。訳はこの単位では持てないので英語だけ
-      pieces: splitInside(en),
-      parts,
-    };
-  });
+  // 2. まとまりの中を開く。チャンクの中の区切りだけが新しい切れ目になる
+  const units = [];
+  for (const parts of groups) {
+    let unit = [];
+    for (const chunk of parts) {
+      const inner = Array.isArray(chunk.slash) && chunk.slash.length > 0
+        ? chunk.slash
+        : [{ en: chunk.en, ja: chunk.ja }];
+      // 先頭はいま作っているまとまりに続ける（チャンクの境目では切らない）
+      unit.push(inner[0]);
+      for (let k = 1; k < inner.length; k += 1) {
+        units.push(unit);
+        unit = [inner[k]];
+      }
+    }
+    units.push(unit);
+  }
+
+  return units.map((parts) => ({
+    en: parts.map((part) => String(part.en).trim()).join(' '),
+    // 頭から順に訳す練習なので、**英語の並びのまま**つなぐ
+    ja: parts.map((part) => String(part.ja || '').trim()).filter(Boolean).join(' '),
+  }));
 }
 
-export default slashGroups;
+/**
+ * そのチャンクを切るとしたらどこか。**訳を作るときだけ使う**（→ `scripts/slash-translate.mjs`）。
+ * 画面はここではなく `chunk.slash` を見る。
+ */
+export const slashPiecesFor = (chunk) => splitInside(String(chunk?.en || ''));
+
+export default slashUnits;

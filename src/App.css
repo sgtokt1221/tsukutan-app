@@ -3164,3 +3164,357 @@ select:focus-visible,
   border-radius: var(--radius-pill);
   background: #169b78;
 }
+
+/* ===== スマホ表示の安定化 =====
+   iOS の日付入力は固有の最小幅を持つため、カード幅より横へ出ないよう明示する。
+   診断結果は .card-main の内側でも情報幅を確保できるよう、入れ子の余白を整理する。 */
+.goal-screen {
+  width: 100%;
+  gap: var(--space-16);
+  background:
+    radial-gradient(circle at 100% 0, var(--color-warm-soft), transparent 28%),
+    var(--color-canvas-lime);
+}
+
+.goal-screen > *,
+.goal-screen .section-card,
+.goal-screen .motivation-option,
+.goal-screen .goal-chip {
+  min-width: 0;
+}
+
+.goal-date-card {
+  overflow: hidden;
+}
+
+.goal-date-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-ink-olive);
+  font: inherit;
+  line-height: 1.2;
+  color-scheme: light;
+}
+
+.goal-date-input::-webkit-date-and-time-value {
+  min-width: 0;
+  text-align: left;
+}
+
+.goal-date-input::-webkit-calendar-picker-indicator {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: var(--space-8);
+  cursor: pointer;
+}
+
+.motivation-header,
+.motivation-details {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.goal-name,
+.goal-desc,
+.motivation-title,
+.motivation-description,
+.motivation-details span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.test-result-container {
+  width: 100%;
+  min-width: 0;
+  align-items: flex-start;
+  background:
+    radial-gradient(circle at 100% 0, var(--color-lime-muted), transparent 36%),
+    var(--color-canvas-lime);
+}
+
+.result-hero,
+.result-content,
+.result-main-card,
+.result-stats,
+.stat-item,
+.stat-content {
+  min-width: 0;
+}
+
+.result-hero {
+  max-width: 520px;
+  background: var(--color-surface);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-2);
+}
+
+.result-header {
+  background: var(--color-lime-soft);
+}
+
+.result-rank-award {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+}
+
+.result-rank-award .rank-badge__image {
+  filter: drop-shadow(0 12px 18px var(--color-olive-border));
+}
+
+.result-rank-caption {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: var(--space-4) var(--space-12);
+  border: var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-olive);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: var(--shadow-1);
+}
+
+.result-main-card {
+  background: var(--color-canvas-lime);
+  border: var(--border-subtle);
+}
+
+.level-display,
+.stat-item {
+  background: var(--color-surface);
+  border-color: var(--color-olive-border);
+}
+
+.result-stats .stat-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.result-stats .stat-content {
+  align-items: flex-start;
+}
+
+.result-title,
+.result-greeting h3,
+.level-label,
+.progress-percentage,
+.stat-value {
+  color: var(--color-ink-olive);
+}
+
+.result-subtitle,
+.level-equivalent,
+.progress-label,
+.level-description,
+.stat-label {
+  color: var(--color-olive-muted);
+}
+
+.result-subtitle,
+.level-equivalent,
+.stat-label,
+.stat-value {
+  overflow-wrap: anywhere;
+}
+
+.meter-background {
+  background: var(--color-olive-divider);
+}
+
+.stat-icon {
+  flex: 0 0 auto;
+  background: var(--color-lime-soft);
+  color: var(--color-ink-olive);
+}
+
+.feedback-section {
+  margin-top: var(--space-16);
+  padding: var(--space-16);
+  border: var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.feedback-title {
+  margin: 0 0 var(--space-12);
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-18);
+}
+
+@media (max-width: 520px) {
+  .goal-screen {
+    padding: var(--space-16) var(--space-12) calc(var(--space-24) + env(safe-area-inset-bottom, 0px));
+    gap: var(--space-12);
+  }
+
+  .goal-hero {
+    gap: var(--space-8);
+  }
+
+  .goal-hero h1 {
+    font-size: var(--font-size-28);
+  }
+
+  .goal-hero .ghost-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .goal-screen .section-card {
+    padding: var(--space-16);
+    gap: var(--space-12);
+  }
+
+  .goal-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .motivation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .motivation-time {
+    align-self: flex-start;
+  }
+
+  .motivation-details {
+    gap: var(--space-8);
+  }
+
+  .goal-footer {
+    padding-top: var(--space-4);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .test-result-container {
+    min-height: auto;
+    padding: 0 0 calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
+    background: transparent;
+  }
+
+  .result-hero {
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-1);
+  }
+
+  .result-header {
+    padding: var(--space-16) var(--space-12);
+  }
+
+  .result-rank-award {
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .result-rank-award .rank-badge--large {
+    width: 104px;
+    height: 104px;
+  }
+
+  .result-rank-caption {
+    min-height: 24px;
+    padding: var(--space-2) var(--space-8);
+    font-size: var(--font-size-12);
+  }
+
+  .level-badge-large {
+    width: 56px;
+    height: 56px;
+    margin-bottom: var(--space-8);
+  }
+
+  .level-number,
+  .result-title {
+    font-size: var(--font-size-22);
+  }
+
+  .result-content {
+    padding: var(--space-12);
+  }
+
+  .result-main-card {
+    padding: var(--space-16);
+  }
+
+  .result-greeting,
+  .level-display,
+  .progress-section,
+  .result-stats {
+    margin-bottom: var(--space-24);
+  }
+
+  .result-greeting h3 {
+    font-size: var(--font-size-18);
+  }
+
+  .result-subtitle,
+  .level-equivalent {
+    font-size: var(--font-size-14);
+  }
+
+  .level-display {
+    padding: var(--space-16) var(--space-12);
+  }
+
+  .level-label {
+    font-size: clamp(var(--font-size-22), 7vw, var(--font-size-28));
+    line-height: var(--line-tight);
+  }
+
+  .progress-header {
+    gap: var(--space-8);
+  }
+
+  .result-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .stat-item {
+    gap: var(--space-12);
+    padding: var(--space-12);
+  }
+
+  .feedback-section {
+    margin-top: var(--space-12);
+    padding: var(--space-12);
+  }
+
+  .recommendation-item {
+    min-width: 0;
+    padding: var(--space-16);
+  }
+
+  .recommendation-header {
+    min-width: 0;
+    gap: var(--space-8);
+  }
+
+  .result-actions {
+    margin-top: var(--space-16);
+  }
+
+  .restart-btn {
+    width: 100%;
+    min-height: var(--tap-target);
+    justify-content: center;
+    padding: var(--space-12) var(--space-16);
+  }
+}

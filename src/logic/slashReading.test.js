@@ -4,13 +4,13 @@
  * **切りすぎない**ことを止める検査。SVOC の区切りをそのまま `/` にすると
  * 主語と動詞まで割れて、「頭から意味を取る」練習にならない。
  */
-import { slashGroups, LONG_CHUNK_WORDS } from './slashReading';
+import { slashUnits, slashPiecesFor, LONG_CHUNK_WORDS } from './slashReading';
 
 /** 読みもののデータと同じ形。role は S / V / O / C / M */
 const c = (en, ja, role = 'M') => ({ en, ja, role });
 
 /** 区切りを `/` でつないだ1行にして見る */
-const line = (chunks) => slashGroups(chunks).map((g) => g.en).join(' / ');
+const line = (chunks) => slashUnits(chunks).map((u) => u.en).join(' / ');
 
 describe('切りすぎない', () => {
   it('**主語と動詞は割らない。** SVOC の区切りをそのまま使うとここが割れる', () => {
@@ -32,7 +32,7 @@ describe('切りすぎない', () => {
   });
 
   it('区切りが1つも無ければ、まとまりも1つ', () => {
-    expect(slashGroups([c('I', 'わたしは', 'S'), c('run.', '走ります', 'V')])).toHaveLength(1);
+    expect(slashUnits([c('I', 'わたしは', 'S'), c('run.', '走ります', 'V')])).toHaveLength(1);
   });
 });
 
@@ -142,7 +142,7 @@ describe('5. カンマ・コロン・セミコロンの後ろで切る', () => {
   });
 
   it('**文末のピリオドでは切らない**（次の文が無い）', () => {
-    expect(slashGroups([c('I run.', '走ります', 'V')])).toHaveLength(1);
+    expect(slashUnits([c('I run.', '走ります', 'V')])).toHaveLength(1);
   });
 });
 
@@ -172,7 +172,7 @@ describe('6. 長い主語・目的語・補語の後ろで切る', () => {
 
 describe('まとまりの中身', () => {
   it('**訳は英語の並びのままつなぐ。** 頭から順に取る練習なので入れ替えない', () => {
-    const [first] = slashGroups([
+    const [first] = slashUnits([
       c('I', 'わたしは', 'S'),
       c('wash', '洗います', 'V'),
       c('my face.', '顔を', 'O'),
@@ -180,60 +180,75 @@ describe('まとまりの中身', () => {
     expect(first.ja).toBe('わたしは 洗います 顔を');
   });
 
-  it('元のチャンクを残す（SVOC の札や語の長押しが引けるように）', () => {
-    const [first] = slashGroups([c('I', 'わたしは', 'S'), c('run.', '走ります', 'V')]);
-    expect(first.parts.map((p) => p.role)).toEqual(['S', 'V']);
-  });
-
   it('空や壊れた入力で落ちない', () => {
-    expect(slashGroups(null)).toEqual([]);
-    expect(slashGroups([])).toEqual([]);
-    expect(slashGroups([{ en: '  ', ja: '' }])).toEqual([]);
+    expect(slashUnits(null)).toEqual([]);
+    expect(slashUnits([])).toEqual([]);
+    expect(slashUnits([{ en: '  ', ja: '' }])).toEqual([]);
   });
 });
 
-describe('まとまりの中も切る', () => {
-  /** 目印が1つのチャンクの中に埋もれていると、間だけ見ていても切れない */
-  const pieces = (chunks) => slashGroups(chunks).flatMap((g) => g.pieces);
+describe('まとまりの中を切る位置（訳を作るときに使う）', () => {
+  const pieces = (en) => slashPiecesFor({ en });
 
   it('**チャンクの中の前置詞でも切る**', () => {
-    expect(pieces([c('there is a skill of repairing broken bowls with gold.', 'そこに…', 'V')]))
+    expect(pieces('there is a skill of repairing broken bowls with gold.'))
       .toEqual(['there is a skill', 'of repairing broken bowls', 'with gold.']);
   });
 
   it('**チャンクの中の接続詞でも切る**', () => {
-    expect(pieces([c('Real kintsugi needs several months and a high level of skill.', '…', 'V')]))
+    expect(pieces('Real kintsugi needs several months and a high level of skill.'))
       .toEqual(['Real kintsugi needs several months', 'and a high level', 'of skill.']);
   });
 
   it('**チャンクの中の関係詞でも切る**', () => {
-    expect(pieces([c('People who have experienced failure or illness', '失敗や病気を経験した人は', 'S')]))
+    expect(pieces('People who have experienced failure or illness'))
       .toEqual(['People who have experienced failure', 'or illness']);
   });
 
   it('**1語だけの小片を作らない。** 切ると読みにくくなる', () => {
-    // 先頭側（「and / new things」にしない）
-    expect(pieces([c('big and new things', '…', 'O')])).toEqual(['big and new things']);
-    // 末尾側（「… / through.」にしない）
-    expect(pieces([c('the time that the bowl has passed through.', '…', 'O')]))
+    expect(pieces('big and new things')).toEqual(['big and new things']);
+    expect(pieces('the time that the bowl has passed through.'))
       .toEqual(['the time', 'that the bowl has passed through.']);
   });
 
-  it('**訳はまとまりに1つ。** 中の小片には訳を付けない（訳はチャンク単位しか無い）', () => {
-    const [group] = slashGroups([c('a skill of repairing bowls with gold.', '金で器を直す技', 'O')]);
-    expect(group.pieces.length).toBeGreaterThan(1);
-    expect(group.ja).toBe('金で器を直す技');
-  });
-
   it('**2語で1つの前置詞は割らない**（next to / according to）', () => {
-    expect(pieces([c('the house next to number one', '1番の家のとなりが', 'S')]))
-      .toEqual(['the house', 'next to number one']);
-    expect(pieces([c('we changed it according to the rule.', '…', 'V')]))
+    expect(pieces('the house next to number one')).toEqual(['the house', 'next to number one']);
+    expect(pieces('we changed it according to the rule.'))
       .toEqual(['we changed it', 'according to the rule.']);
   });
 
   it('切るところが無ければ小片は1つ', () => {
-    const [group] = slashGroups([c('I run.', '走ります', 'V')]);
-    expect(group.pieces).toEqual(['I run.']);
+    expect(pieces('I run.')).toEqual(['I run.']);
+  });
+});
+
+describe('区切りには必ず訳が付く', () => {
+  const split = { en: 'a skill of repairing bowls', ja: '器を直す技', role: 'O',
+    slash: [{ en: 'a skill', ja: '技' }, { en: 'of repairing bowls', ja: '器を直す' }] };
+
+  it('**訳のある小片（`chunk.slash`）だけで切る**', () => {
+    expect(slashUnits([split])).toEqual([
+      { en: 'a skill', ja: '技' },
+      { en: 'of repairing bowls', ja: '器を直す' },
+    ]);
+  });
+
+  it('**訳が無ければ切らない。** 区切りだけあって訳が無い、を作らない', () => {
+    const noJa = { en: 'a skill of repairing bowls', ja: '器を直す技', role: 'O' };
+    expect(slashUnits([noJa])).toEqual([{ en: 'a skill of repairing bowls', ja: '器を直す技' }]);
+  });
+
+  it('**チャンクの境目では切らない。** 前のまとまりに続ける', () => {
+    // S「I」＋ V（中で切れる）→「I get up」「at six」
+    const v = { en: 'get up at six', ja: '6時に起きます', role: 'V',
+      slash: [{ en: 'get up', ja: '起きます' }, { en: 'at six', ja: '6時に' }] };
+    expect(slashUnits([c('I', 'わたしは', 'S'), v]).map((u) => u.en))
+      .toEqual(['I get up', 'at six']);
+  });
+
+  it('どのまとまりにも訳がある', () => {
+    for (const unit of slashUnits([c('I', 'わたしは', 'S'), split])) {
+      expect(unit.ja).not.toBe('');
+    }
   });
 });

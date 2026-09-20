@@ -1,549 +1,815 @@
 {
-  "id": "eikenp1-culture-01",
-  "grade": "pre1",
-  "category": "culture",
-  "title": "When a Language Falls Silent",
-  "titleJa": "言語が黙るとき",
-  "sentences": [
+ "id": "eikenp1-culture-01",
+ "grade": "pre1",
+ "category": "culture",
+ "title": "When a Language Falls Silent",
+ "titleJa": "言語が黙るとき",
+ "sentences": [
+  {
+   "ja": "世界には現在およそ7000の言語があると言われています。",
+   "chunks": [
     {
-      "ja": "世界には現在およそ7000の言語があると言われています。",
-      "chunks": [
-        {
-          "en": "It",
-          "ja": "それは",
-          "role": "S"
-        },
-        {
-          "en": "is said",
-          "ja": "言われています",
-          "role": "V"
-        },
-        {
-          "en": "that there are about seven thousand languages in the world today.",
-          "ja": "世界には現在およそ7000の言語があると",
-          "role": "O"
-        }
-      ]
+     "en": "It",
+     "ja": "それは",
+     "role": "S"
     },
     {
-      "ja": "そのうちの半数近くが、今世紀中に話されなくなると予測されています。",
-      "chunks": [
-        {
-          "en": "Nearly half of them",
-          "ja": "そのうちの半数近くが",
-          "role": "S"
-        },
-        {
-          "en": "are expected",
-          "ja": "予測されています",
-          "role": "V"
-        },
-        {
-          "en": "to stop being spoken during this century.",
-          "ja": "今世紀中に話されなくなると",
-          "role": "C"
-        }
-      ]
+     "en": "is said",
+     "ja": "言われています",
+     "role": "V"
     },
     {
-      "ja": "2週間に1つの割合で、最後の話者が亡くなっている計算になります。",
-      "chunks": [
-        {
-          "en": "It",
-          "ja": "それは",
-          "role": "S"
-        },
-        {
-          "en": "means",
-          "ja": "計算になります",
-          "role": "V"
-        },
-        {
-          "en": "that the last speaker of a language dies once every two weeks.",
-          "ja": "2週間に1つの割合で最後の話者が亡くなっているということを",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "言語が消えることは、単語の集まりが失われることではありません。",
-      "chunks": [
-        {
-          "en": "The disappearance of a language",
-          "ja": "言語が消えることは",
-          "role": "S"
-        },
-        {
-          "en": "is not",
-          "ja": "ではありません",
-          "role": "V"
-        },
-        {
-          "en": "the loss of a collection of words.",
-          "ja": "単語の集まりが失われること",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "それぞれの言語は、世界の切り分け方をひとつずつ持っています。",
-      "chunks": [
-        {
-          "en": "Each language",
-          "ja": "それぞれの言語は",
-          "role": "S"
-        },
-        {
-          "en": "has",
-          "ja": "持っています",
-          "role": "V"
-        },
-        {
-          "en": "its own way of dividing the world.",
-          "ja": "世界の切り分け方をひとつずつ",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "たとえば、ある言語には「昨日」と「一昨日」を区別しない語しかありません。",
-      "chunks": [
-        {
-          "en": "For example,",
-          "ja": "たとえば",
-          "role": "M"
-        },
-        {
-          "en": "some languages",
-          "ja": "ある言語には",
-          "role": "S"
-        },
-        {
-          "en": "have",
-          "ja": "しかありません",
-          "role": "V"
-        },
-        {
-          "en": "only one word that does not separate yesterday from the day before.",
-          "ja": "「昨日」と「一昨日」を区別しない語",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "別の言語では、雪の状態を表す語が数十に分かれています。",
-      "chunks": [
-        {
-          "en": "In another language,",
-          "ja": "別の言語では",
-          "role": "M"
-        },
-        {
-          "en": "the words for the state of snow",
-          "ja": "雪の状態を表す語が",
-          "role": "S"
-        },
-        {
-          "en": "are divided",
-          "ja": "分かれています",
-          "role": "V"
-        },
-        {
-          "en": "into dozens.",
-          "ja": "数十に",
-          "role": "M"
-        }
-      ]
-    },
-    {
-      "ja": "これは、話者がそれだけ雪と深く関わってきたことの記録です。",
-      "chunks": [
-        {
-          "en": "This",
-          "ja": "これは",
-          "role": "S"
-        },
-        {
-          "en": "is",
-          "ja": "です",
-          "role": "V"
-        },
-        {
-          "en": "a record that its speakers have been deeply involved with snow.",
-          "ja": "話者がそれだけ雪と深く関わってきたことの記録",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "言語には、その土地で生き延びるための知識が畳み込まれています。",
-      "chunks": [
-        {
-          "en": "Knowledge for surviving in that land",
-          "ja": "その土地で生き延びるための知識が",
-          "role": "S"
-        },
-        {
-          "en": "is folded",
-          "ja": "畳み込まれています",
-          "role": "V"
-        },
-        {
-          "en": "into a language.",
-          "ja": "言語には",
-          "role": "M"
-        }
-      ]
-    },
-    {
-      "ja": "薬になる植物の名前、危険な季節を表す言い方などです。",
-      "chunks": [
-        {
-          "en": "The names of plants that become medicine, and ways of saying which season is dangerous,",
-          "ja": "薬になる植物の名前、危険な季節を表す言い方などが",
-          "role": "S"
-        },
-        {
-          "en": "are examples.",
-          "ja": "その例です",
-          "role": "V"
-        }
-      ]
-    },
-    {
-      "ja": "それらは書かれずに、話し言葉として受け渡されてきました。",
-      "chunks": [
-        {
-          "en": "They",
-          "ja": "それらは",
-          "role": "S"
-        },
-        {
-          "en": "have been passed on",
-          "ja": "受け渡されてきました",
-          "role": "V"
-        },
-        {
-          "en": "as spoken words, without being written.",
-          "ja": "書かれずに話し言葉として",
-          "role": "M"
-        }
-      ]
-    },
-    {
-      "ja": "だから話者が途切れれば、その知識も同時に消えます。",
-      "chunks": [
-        {
-          "en": "So",
-          "ja": "だから",
-          "role": "M"
-        },
-        {
-          "en": "if the speakers are cut off,",
-          "ja": "話者が途切れれば",
-          "role": "M"
-        },
-        {
-          "en": "that knowledge",
-          "ja": "その知識も",
-          "role": "S"
-        },
-        {
-          "en": "disappears",
-          "ja": "消えます",
-          "role": "V"
-        },
-        {
-          "en": "at the same time.",
-          "ja": "同時に",
-          "role": "M"
-        }
-      ]
-    },
-    {
-      "ja": "では、なぜ人々は自分の言語を手放すのでしょうか。",
-      "chunks": [
-        {
-          "en": "Then",
-          "ja": "では",
-          "role": "M"
-        },
-        {
-          "en": "why",
-          "ja": "なぜ",
-          "role": "M"
-        },
-        {
-          "en": "do people",
-          "ja": "人々は",
-          "role": "S"
-        },
-        {
-          "en": "give up",
-          "ja": "手放すのでしょうか",
-          "role": "V"
-        },
-        {
-          "en": "their own language?",
-          "ja": "自分の言語を",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "多くの場合、それは自由な選択ではありません。",
-      "chunks": [
-        {
-          "en": "In many cases,",
-          "ja": "多くの場合",
-          "role": "M"
-        },
-        {
-          "en": "it",
-          "ja": "それは",
-          "role": "S"
-        },
-        {
-          "en": "is not",
-          "ja": "ではありません",
-          "role": "V"
-        },
-        {
-          "en": "a free choice.",
-          "ja": "自由な選択",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "学校や職場で使えるのが一つの言語だけなら、親は子にそれを教えます。",
-      "chunks": [
-        {
-          "en": "If only one language can be used at school and at work,",
-          "ja": "学校や職場で使えるのが一つの言語だけなら",
-          "role": "M"
-        },
-        {
-          "en": "parents",
-          "ja": "親は",
-          "role": "S"
-        },
-        {
-          "en": "teach",
-          "ja": "教えます",
-          "role": "V"
-        },
-        {
-          "en": "their children that language.",
-          "ja": "子にそれを",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "それは、子の将来を思う判断として合理的です。",
-      "chunks": [
-        {
-          "en": "That",
-          "ja": "それは",
-          "role": "S"
-        },
-        {
-          "en": "is",
-          "ja": "です",
-          "role": "V"
-        },
-        {
-          "en": "reasonable as a judgment made for the child's future.",
-          "ja": "子の将来を思う判断として合理的",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "つまり言語の消滅は、個人の怠慢ではなく構造の結果です。",
-      "chunks": [
-        {
-          "en": "In other words,",
-          "ja": "つまり",
-          "role": "M"
-        },
-        {
-          "en": "the loss of a language",
-          "ja": "言語の消滅は",
-          "role": "S"
-        },
-        {
-          "en": "is",
-          "ja": "です",
-          "role": "V"
-        },
-        {
-          "en": "the result of a structure, not of individual laziness.",
-          "ja": "個人の怠慢ではなく構造の結果",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "近年、記録を残す取り組みが各地で進められています。",
-      "chunks": [
-        {
-          "en": "In recent years,",
-          "ja": "近年",
-          "role": "M"
-        },
-        {
-          "en": "efforts to leave records",
-          "ja": "記録を残す取り組みが",
-          "role": "S"
-        },
-        {
-          "en": "have been carried out",
-          "ja": "進められています",
-          "role": "V"
-        },
-        {
-          "en": "in many places.",
-          "ja": "各地で",
-          "role": "M"
-        }
-      ]
-    },
-    {
-      "ja": "しかし、記録は保存であって、生きた使用ではありません。",
-      "chunks": [
-        {
-          "en": "However,",
-          "ja": "しかし",
-          "role": "M"
-        },
-        {
-          "en": "a record",
-          "ja": "記録は",
-          "role": "S"
-        },
-        {
-          "en": "is",
-          "ja": "です",
-          "role": "V"
-        },
-        {
-          "en": "preservation, not living use.",
-          "ja": "保存であって生きた使用ではない",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "言語が生き続けるには、それで冗談を言う人が必要です。",
-      "chunks": [
-        {
-          "en": "For a language to keep living,",
-          "ja": "言語が生き続けるには",
-          "role": "M"
-        },
-        {
-          "en": "it",
-          "ja": "それは",
-          "role": "S"
-        },
-        {
-          "en": "needs",
-          "ja": "必要です",
-          "role": "V"
-        },
-        {
-          "en": "people who make jokes in it.",
-          "ja": "それで冗談を言う人が",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "辞書に載ることと、台所で使われることは別のことです。",
-      "chunks": [
-        {
-          "en": "Being listed in a dictionary and being used in a kitchen",
-          "ja": "辞書に載ることと台所で使われることは",
-          "role": "S"
-        },
-        {
-          "en": "are",
-          "ja": "です",
-          "role": "V"
-        },
-        {
-          "en": "different things.",
-          "ja": "別のこと",
-          "role": "C"
-        }
-      ]
-    },
-    {
-      "ja": "わたしたちが英語を学ぶとき、この点は忘れられがちです。",
-      "chunks": [
-        {
-          "en": "When we learn English,",
-          "ja": "わたしたちが英語を学ぶとき",
-          "role": "M"
-        },
-        {
-          "en": "this point",
-          "ja": "この点は",
-          "role": "S"
-        },
-        {
-          "en": "tends to be forgotten.",
-          "ja": "忘れられがちです",
-          "role": "V"
-        }
-      ]
-    },
-    {
-      "ja": "共通語を持つことには、大きな利益があります。",
-      "chunks": [
-        {
-          "en": "Having a common language",
-          "ja": "共通語を持つことには",
-          "role": "S"
-        },
-        {
-          "en": "brings",
-          "ja": "あります",
-          "role": "V"
-        },
-        {
-          "en": "great benefits.",
-          "ja": "大きな利益が",
-          "role": "O"
-        }
-      ]
-    },
-    {
-      "ja": "しかし同時に、何が使われなくなるのかも見ておく必要があります。",
-      "chunks": [
-        {
-          "en": "But at the same time,",
-          "ja": "しかし同時に",
-          "role": "M"
-        },
-        {
-          "en": "we",
-          "ja": "わたしたちは",
-          "role": "S"
-        },
-        {
-          "en": "need to watch",
-          "ja": "見ておく必要があります",
-          "role": "V"
-        },
-        {
-          "en": "what stops being used.",
-          "ja": "何が使われなくなるのかも",
-          "role": "O"
-        }
-      ]
+     "en": "that there are about seven thousand languages in the world today.",
+     "ja": "世界には現在およそ7000の言語があると",
+     "role": "O",
+     "slash": [
+      {
+       "en": "that there are",
+       "ja": "〜があると"
+      },
+      {
+       "en": "about seven thousand languages",
+       "ja": "およそ7000の言語が"
+      },
+      {
+       "en": "in the world today.",
+       "ja": "世界には現在"
+      }
+     ]
     }
-  ]
+   ]
+  },
+  {
+   "ja": "そのうちの半数近くが、今世紀中に話されなくなると予測されています。",
+   "chunks": [
+    {
+     "en": "Nearly half of them",
+     "ja": "そのうちの半数近くが",
+     "role": "S",
+     "slash": [
+      {
+       "en": "Nearly half",
+       "ja": "半数近くが"
+      },
+      {
+       "en": "of them",
+       "ja": "そのうちの"
+      }
+     ]
+    },
+    {
+     "en": "are expected",
+     "ja": "予測されています",
+     "role": "V"
+    },
+    {
+     "en": "to stop being spoken during this century.",
+     "ja": "今世紀中に話されなくなると",
+     "role": "C",
+     "slash": [
+      {
+       "en": "to stop being spoken",
+       "ja": "話されなくなると"
+      },
+      {
+       "en": "during this century.",
+       "ja": "今世紀中に"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "2週間に1つの割合で、最後の話者が亡くなっている計算になります。",
+   "chunks": [
+    {
+     "en": "It",
+     "ja": "それは",
+     "role": "S"
+    },
+    {
+     "en": "means",
+     "ja": "計算になります",
+     "role": "V"
+    },
+    {
+     "en": "that the last speaker of a language dies once every two weeks.",
+     "ja": "2週間に1つの割合で最後の話者が亡くなっているということを",
+     "role": "O",
+     "slash": [
+      {
+       "en": "that the last speaker",
+       "ja": "最後の話者が"
+      },
+      {
+       "en": "of a language dies",
+       "ja": "言語の最後の話者が亡くなるということを"
+      },
+      {
+       "en": "once every two weeks.",
+       "ja": "2週間に1つの割合で"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "言語が消えることは、単語の集まりが失われることではありません。",
+   "chunks": [
+    {
+     "en": "The disappearance of a language",
+     "ja": "言語が消えることは",
+     "role": "S",
+     "slash": [
+      {
+       "en": "The disappearance",
+       "ja": "消滅は"
+      },
+      {
+       "en": "of a language",
+       "ja": "言語の"
+      }
+     ]
+    },
+    {
+     "en": "is not",
+     "ja": "ではありません",
+     "role": "V"
+    },
+    {
+     "en": "the loss of a collection of words.",
+     "ja": "単語の集まりが失われること",
+     "role": "C",
+     "slash": [
+      {
+       "en": "the loss",
+       "ja": "失われること"
+      },
+      {
+       "en": "of a collection",
+       "ja": "集まりが"
+      },
+      {
+       "en": "of words.",
+       "ja": "単語の"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "それぞれの言語は、世界の切り分け方をひとつずつ持っています。",
+   "chunks": [
+    {
+     "en": "Each language",
+     "ja": "それぞれの言語は",
+     "role": "S"
+    },
+    {
+     "en": "has",
+     "ja": "持っています",
+     "role": "V"
+    },
+    {
+     "en": "its own way of dividing the world.",
+     "ja": "世界の切り分け方をひとつずつ",
+     "role": "O",
+     "slash": [
+      {
+       "en": "its own way",
+       "ja": "独自の切り分け方を"
+      },
+      {
+       "en": "of dividing the world.",
+       "ja": "世界を切り分ける"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "たとえば、ある言語には「昨日」と「一昨日」を区別しない語しかありません。",
+   "chunks": [
+    {
+     "en": "For example,",
+     "ja": "たとえば",
+     "role": "M"
+    },
+    {
+     "en": "some languages",
+     "ja": "ある言語には",
+     "role": "S"
+    },
+    {
+     "en": "have",
+     "ja": "しかありません",
+     "role": "V"
+    },
+    {
+     "en": "only one word that does not separate yesterday from the day before.",
+     "ja": "「昨日」と「一昨日」を区別しない語",
+     "role": "O",
+     "slash": [
+      {
+       "en": "only one word",
+       "ja": "一つの語しかなく"
+      },
+      {
+       "en": "that does not separate yesterday",
+       "ja": "昨日を区別しない"
+      },
+      {
+       "en": "from the day before.",
+       "ja": "一昨日と"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "別の言語では、雪の状態を表す語が数十に分かれています。",
+   "chunks": [
+    {
+     "en": "In another language,",
+     "ja": "別の言語では",
+     "role": "M"
+    },
+    {
+     "en": "the words for the state of snow",
+     "ja": "雪の状態を表す語が",
+     "role": "S",
+     "slash": [
+      {
+       "en": "the words",
+       "ja": "語が"
+      },
+      {
+       "en": "for the state",
+       "ja": "状態を表す"
+      },
+      {
+       "en": "of snow",
+       "ja": "雪の"
+      }
+     ]
+    },
+    {
+     "en": "are divided",
+     "ja": "分かれています",
+     "role": "V"
+    },
+    {
+     "en": "into dozens.",
+     "ja": "数十に",
+     "role": "M"
+    }
+   ]
+  },
+  {
+   "ja": "これは、話者がそれだけ雪と深く関わってきたことの記録です。",
+   "chunks": [
+    {
+     "en": "This",
+     "ja": "これは",
+     "role": "S"
+    },
+    {
+     "en": "is",
+     "ja": "です",
+     "role": "V"
+    },
+    {
+     "en": "a record that its speakers have been deeply involved with snow.",
+     "ja": "話者がそれだけ雪と深く関わってきたことの記録",
+     "role": "C",
+     "slash": [
+      {
+       "en": "a record",
+       "ja": "記録です"
+      },
+      {
+       "en": "that its speakers have been deeply involved",
+       "ja": "話者が深く関わってきたことの"
+      },
+      {
+       "en": "with snow.",
+       "ja": "雪と"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "言語には、その土地で生き延びるための知識が畳み込まれています。",
+   "chunks": [
+    {
+     "en": "Knowledge for surviving in that land",
+     "ja": "その土地で生き延びるための知識が",
+     "role": "S",
+     "slash": [
+      {
+       "en": "Knowledge for surviving",
+       "ja": "生き残るための知識が"
+      },
+      {
+       "en": "in that land",
+       "ja": "その土地で"
+      }
+     ]
+    },
+    {
+     "en": "is folded",
+     "ja": "畳み込まれています",
+     "role": "V"
+    },
+    {
+     "en": "into a language.",
+     "ja": "言語には",
+     "role": "M"
+    }
+   ]
+  },
+  {
+   "ja": "薬になる植物の名前、危険な季節を表す言い方などです。",
+   "chunks": [
+    {
+     "en": "The names of plants that become medicine, and ways of saying which season is dangerous,",
+     "ja": "薬になる植物の名前、危険な季節を表す言い方などが",
+     "role": "S",
+     "slash": [
+      {
+       "en": "The names",
+       "ja": "名前"
+      },
+      {
+       "en": "of plants",
+       "ja": "植物の"
+      },
+      {
+       "en": "that become medicine,",
+       "ja": "薬になる"
+      },
+      {
+       "en": "and ways",
+       "ja": "言い方"
+      },
+      {
+       "en": "of saying",
+       "ja": "〜を言う"
+      },
+      {
+       "en": "which season is dangerous,",
+       "ja": "どの季節が危険かを"
+      }
+     ]
+    },
+    {
+     "en": "are examples.",
+     "ja": "その例です",
+     "role": "V"
+    }
+   ]
+  },
+  {
+   "ja": "それらは書かれずに、話し言葉として受け渡されてきました。",
+   "chunks": [
+    {
+     "en": "They",
+     "ja": "それらは",
+     "role": "S"
+    },
+    {
+     "en": "have been passed on",
+     "ja": "受け渡されてきました",
+     "role": "V"
+    },
+    {
+     "en": "as spoken words, without being written.",
+     "ja": "書かれずに話し言葉として",
+     "role": "M",
+     "slash": [
+      {
+       "en": "as spoken words,",
+       "ja": "話し言葉として"
+      },
+      {
+       "en": "without being written.",
+       "ja": "書かれずに"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "だから話者が途切れれば、その知識も同時に消えます。",
+   "chunks": [
+    {
+     "en": "So",
+     "ja": "だから",
+     "role": "M"
+    },
+    {
+     "en": "if the speakers are cut off,",
+     "ja": "話者が途切れれば",
+     "role": "M"
+    },
+    {
+     "en": "that knowledge",
+     "ja": "その知識も",
+     "role": "S"
+    },
+    {
+     "en": "disappears",
+     "ja": "消えます",
+     "role": "V"
+    },
+    {
+     "en": "at the same time.",
+     "ja": "同時に",
+     "role": "M"
+    }
+   ]
+  },
+  {
+   "ja": "では、なぜ人々は自分の言語を手放すのでしょうか。",
+   "chunks": [
+    {
+     "en": "Then",
+     "ja": "では",
+     "role": "M"
+    },
+    {
+     "en": "why",
+     "ja": "なぜ",
+     "role": "M"
+    },
+    {
+     "en": "do people",
+     "ja": "人々は",
+     "role": "S"
+    },
+    {
+     "en": "give up",
+     "ja": "手放すのでしょうか",
+     "role": "V"
+    },
+    {
+     "en": "their own language?",
+     "ja": "自分の言語を",
+     "role": "O"
+    }
+   ]
+  },
+  {
+   "ja": "多くの場合、それは自由な選択ではありません。",
+   "chunks": [
+    {
+     "en": "In many cases,",
+     "ja": "多くの場合",
+     "role": "M"
+    },
+    {
+     "en": "it",
+     "ja": "それは",
+     "role": "S"
+    },
+    {
+     "en": "is not",
+     "ja": "ではありません",
+     "role": "V"
+    },
+    {
+     "en": "a free choice.",
+     "ja": "自由な選択",
+     "role": "C"
+    }
+   ]
+  },
+  {
+   "ja": "学校や職場で使えるのが一つの言語だけなら、親は子にそれを教えます。",
+   "chunks": [
+    {
+     "en": "If only one language can be used at school and at work,",
+     "ja": "学校や職場で使えるのが一つの言語だけなら",
+     "role": "M",
+     "slash": [
+      {
+       "en": "If only one language can be used",
+       "ja": "一つの言語しか使えないなら"
+      },
+      {
+       "en": "at school",
+       "ja": "学校で"
+      },
+      {
+       "en": "and at work,",
+       "ja": "そして職場で"
+      }
+     ]
+    },
+    {
+     "en": "parents",
+     "ja": "親は",
+     "role": "S"
+    },
+    {
+     "en": "teach",
+     "ja": "教えます",
+     "role": "V"
+    },
+    {
+     "en": "their children that language.",
+     "ja": "子にそれを",
+     "role": "O",
+     "slash": [
+      {
+       "en": "their children",
+       "ja": "子供たちに"
+      },
+      {
+       "en": "that language.",
+       "ja": "その言語を"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "それは、子の将来を思う判断として合理的です。",
+   "chunks": [
+    {
+     "en": "That",
+     "ja": "それは",
+     "role": "S"
+    },
+    {
+     "en": "is",
+     "ja": "です",
+     "role": "V"
+    },
+    {
+     "en": "reasonable as a judgment made for the child's future.",
+     "ja": "子の将来を思う判断として合理的",
+     "role": "C",
+     "slash": [
+      {
+       "en": "reasonable as a judgment made",
+       "ja": "合理的な判断として"
+      },
+      {
+       "en": "for the child's future.",
+       "ja": "子供の将来のための"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "つまり言語の消滅は、個人の怠慢ではなく構造の結果です。",
+   "chunks": [
+    {
+     "en": "In other words,",
+     "ja": "つまり",
+     "role": "M"
+    },
+    {
+     "en": "the loss of a language",
+     "ja": "言語の消滅は",
+     "role": "S",
+     "slash": [
+      {
+       "en": "the loss",
+       "ja": "消滅は"
+      },
+      {
+       "en": "of a language",
+       "ja": "言語の"
+      }
+     ]
+    },
+    {
+     "en": "is",
+     "ja": "です",
+     "role": "V"
+    },
+    {
+     "en": "the result of a structure, not of individual laziness.",
+     "ja": "個人の怠慢ではなく構造の結果",
+     "role": "C",
+     "slash": [
+      {
+       "en": "the result",
+       "ja": "結果です"
+      },
+      {
+       "en": "of a structure, not",
+       "ja": "構造の、個人の怠慢ではなく"
+      },
+      {
+       "en": "of individual laziness.",
+       "ja": "個人の怠慢の"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "近年、記録を残す取り組みが各地で進められています。",
+   "chunks": [
+    {
+     "en": "In recent years,",
+     "ja": "近年",
+     "role": "M"
+    },
+    {
+     "en": "efforts to leave records",
+     "ja": "記録を残す取り組みが",
+     "role": "S"
+    },
+    {
+     "en": "have been carried out",
+     "ja": "進められています",
+     "role": "V"
+    },
+    {
+     "en": "in many places.",
+     "ja": "各地で",
+     "role": "M"
+    }
+   ]
+  },
+  {
+   "ja": "しかし、記録は保存であって、生きた使用ではありません。",
+   "chunks": [
+    {
+     "en": "However,",
+     "ja": "しかし",
+     "role": "M"
+    },
+    {
+     "en": "a record",
+     "ja": "記録は",
+     "role": "S"
+    },
+    {
+     "en": "is",
+     "ja": "です",
+     "role": "V"
+    },
+    {
+     "en": "preservation, not living use.",
+     "ja": "保存であって生きた使用ではない",
+     "role": "C"
+    }
+   ]
+  },
+  {
+   "ja": "言語が生き続けるには、それで冗談を言う人が必要です。",
+   "chunks": [
+    {
+     "en": "For a language to keep living,",
+     "ja": "言語が生き続けるには",
+     "role": "M",
+     "slash": [
+      {
+       "en": "For a language",
+       "ja": "言語が"
+      },
+      {
+       "en": "to keep living,",
+       "ja": "生き続けるには"
+      }
+     ]
+    },
+    {
+     "en": "it",
+     "ja": "それは",
+     "role": "S"
+    },
+    {
+     "en": "needs",
+     "ja": "必要です",
+     "role": "V"
+    },
+    {
+     "en": "people who make jokes in it.",
+     "ja": "それで冗談を言う人が",
+     "role": "O",
+     "slash": [
+      {
+       "en": "people who make jokes",
+       "ja": "人々が"
+      },
+      {
+       "en": "in it.",
+       "ja": "それで"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ja": "辞書に載ることと、台所で使われることは別のことです。",
+   "chunks": [
+    {
+     "en": "Being listed in a dictionary and being used in a kitchen",
+     "ja": "辞書に載ることと台所で使われることは",
+     "role": "S",
+     "slash": [
+      {
+       "en": "Being listed",
+       "ja": "載ること"
+      },
+      {
+       "en": "in a dictionary",
+       "ja": "辞書に"
+      },
+      {
+       "en": "and being used",
+       "ja": "そして使われること"
+      },
+      {
+       "en": "in a kitchen",
+       "ja": "台所で"
+      }
+     ]
+    },
+    {
+     "en": "are",
+     "ja": "です",
+     "role": "V"
+    },
+    {
+     "en": "different things.",
+     "ja": "別のこと",
+     "role": "C"
+    }
+   ]
+  },
+  {
+   "ja": "わたしたちが英語を学ぶとき、この点は忘れられがちです。",
+   "chunks": [
+    {
+     "en": "When we learn English,",
+     "ja": "わたしたちが英語を学ぶとき",
+     "role": "M"
+    },
+    {
+     "en": "this point",
+     "ja": "この点は",
+     "role": "S"
+    },
+    {
+     "en": "tends to be forgotten.",
+     "ja": "忘れられがちです",
+     "role": "V"
+    }
+   ]
+  },
+  {
+   "ja": "共通語を持つことには、大きな利益があります。",
+   "chunks": [
+    {
+     "en": "Having a common language",
+     "ja": "共通語を持つことには",
+     "role": "S"
+    },
+    {
+     "en": "brings",
+     "ja": "あります",
+     "role": "V"
+    },
+    {
+     "en": "great benefits.",
+     "ja": "大きな利益が",
+     "role": "O"
+    }
+   ]
+  },
+  {
+   "ja": "しかし同時に、何が使われなくなるのかも見ておく必要があります。",
+   "chunks": [
+    {
+     "en": "But at the same time,",
+     "ja": "しかし同時に",
+     "role": "M"
+    },
+    {
+     "en": "we",
+     "ja": "わたしたちは",
+     "role": "S"
+    },
+    {
+     "en": "need to watch",
+     "ja": "見ておく必要があります",
+     "role": "V"
+    },
+    {
+     "en": "what stops being used.",
+     "ja": "何が使われなくなるのかも",
+     "role": "O"
+    }
+   ]
+  }
+ ]
 }

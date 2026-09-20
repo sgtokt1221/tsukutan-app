@@ -75,7 +75,14 @@ export const fetchClip = async (text, lang) => {
   try {
     if (cache) {
       const hit = await cache.match(url);
-      if (hit) return await hit.blob();
+      if (hit) {
+        // **取ってあるものも中身を見る。** 下の判定を足す前のつくたんは
+        // SPA が返した index.html を音声として保存していた。端末に残っていると、
+        // 鳴らないまま「鳴った」ことになり、端末の読み上げにも戻らない
+        const cachedType = hit.headers.get('content-type') || '';
+        if (cachedType.startsWith('audio/')) return await hit.blob();
+        await cache.delete(url);
+      }
     }
 
     const response = await fetch(url);

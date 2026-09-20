@@ -149,9 +149,11 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
       {error && <p className="message-box message-box-error" role="alert">{error}</p>}
       {notice && <p className="message-box message-box-success" role="status">{notice}</p>}
 
-      <section className="section-card">
+      <section className="section-card goal-date-card">
         <h2 className="section-title">達成日を設定</h2>
         <input
+          id="goal-target-date"
+          className="goal-date-input"
           type="date"
           min={today}
           max={maxDate}

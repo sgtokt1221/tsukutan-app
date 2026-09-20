@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { analyzeUserPerformance, generateLearningRecommendations } from './logic/basicAnalytics';
 import { auth } from './firebaseConfig';
 import logger from './logic/logger';
+import RankBadge from './components/assessment/RankBadge';
+import { rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
 
 // レベル定義
 
@@ -57,6 +59,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
   const info = getLevel(level);
   const label = info?.label || 'レベル判定中';
   const equivalent = info ? getLevelEquivalent(level) : '';
+  const resultRank = rankForScore(scoreFromLegacyLevel(level));
 
   return (
     <div className="test-result-container stylish-result">
@@ -71,10 +74,12 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="level-badge-large"
-            style={{ backgroundColor: getLevelColor(level) }}
+            className="result-rank-award"
           >
-            <span className="level-number">{level}</span>
+            <RankBadge rankId={resultRank?.id ?? null} size="large" />
+            <span className="result-rank-caption">
+              {resultRank ? `ランク ${resultRank.id} 獲得` : 'ランク測定中'}
+            </span>
           </motion.div>
           <h2 className="result-title">診断結果</h2>
         </div>
@@ -92,7 +97,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
             </div>
             
             <div className="level-display">
-              <h1 className="level-label">{label}</h1>
+              <p className="level-label">{label}</p>
               <p className="level-equivalent">{equivalent}</p>
             </div>
             
