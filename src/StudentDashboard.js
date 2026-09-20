@@ -1504,9 +1504,12 @@ export default function StudentDashboard() {
                   borderRadius: '6px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  // 390px では「最適化」が「最適／化」に割れる。折り返しを許す。
+                  flexWrap: 'wrap',
+                  gap: '8px'
                 }}>
-                  <div style={{ fontSize: '0.85rem', color: '#92400e' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#92400e', flex: '1 1 180px', minWidth: 0 }}>
                     <span style={{ fontWeight: '500' }}>学習計画を最適化</span>
                     <span style={{ marginLeft: '8px', opacity: 0.8 }}>しばらく実力テストを受けていません</span>
                   </div>
@@ -1521,7 +1524,9 @@ export default function StudentDashboard() {
                       fontSize: '0.8rem',
                       fontWeight: '500',
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      transition: 'all 0.2s',
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap'
                     }}
                     onMouseOver={(e) => {
                       e.target.style.backgroundColor = '#d97706';
@@ -2335,14 +2340,18 @@ export default function StudentDashboard() {
           backgroundColor: '#3b82f6',
           color: 'white',
           padding: '16px 20px',
-          margin: '0 20px 20px 20px',
+          margin: '0 15px 20px 15px',   // .card-main の padding と揃える（20px だと他のカードと5pxズレる）
           borderRadius: '12px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          // 390px では横に並びきらず、ボタンが「テスト／を開始」と2行に割れる。
+          // 折り返しを許して、入らないときはボタンを次の行へ送る。
+          flexWrap: 'wrap',
+          gap: '12px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
         }}>
-          <div>
+          <div style={{ flex: '1 1 180px', minWidth: 0 }}>
             <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold' }}>
               単語力チェックテスト
             </h3>
@@ -2362,6 +2371,8 @@ export default function StudentDashboard() {
               fontWeight: 'bold',
               cursor: 'pointer',
               transition: 'all 0.2s',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
             }}
             onMouseOver={(e) => {
