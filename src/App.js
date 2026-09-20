@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 // ダッシュボードは遅延読み込みにする。Chart.js は AdminDashboard からしか
 // 使わないので、管理者がその画面を開くまで取りに行かない（計画書13.5）。
 import LoginPage from './LoginPage.js';
+import BrandLoader from './components/brand/BrandLoader';
 // つくばホームから `#token=` で渡ってきたときの入場。**アカウントを2つ作らない**
 import { enterFromTsukubaHome } from './logic/tsukubaEntry.js';
 // 勉強時間をつくばホームへ送る。**前回閉じたぶんも、ここで締めて送る**
@@ -19,9 +20,7 @@ const AdminDashboard = lazy(() => import('./AdminDashboard.js'));
 const GoalSetter = lazy(() => import('./GoalSetter.js'));
 
 const RouteFallback = () => (
-  <div className="loading-container">
-    <p>読み込み中...</p>
-  </div>
+  <BrandLoader fullScreen label="画面を準備しています…" />
 );
 
 function AppContent() {
@@ -136,11 +135,7 @@ function AppContent() {
   };
 
   if (loading || entering) {
-    return (
-      <div className="loading-container">
-        <p>読み込み中...</p>
-      </div>
-    );
+    return <BrandLoader fullScreen label={entering ? 'ログインしています…' : 'つくつくを準備しています…'} />;
   }
 
   if (authError) {

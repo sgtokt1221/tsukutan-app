@@ -97,7 +97,9 @@
   --motion-fast: 120ms;
   --motion-standard: 200ms;
   --motion-card: 320ms;
+  --motion-loader: 2200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-loader: cubic-bezier(0.45, 0, 0.2, 1);
 }
 
 /*

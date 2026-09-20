@@ -291,7 +291,10 @@ const speakSequence = (items, options = {}) => {
     for (const item of queue) {
       // eslint-disable-next-line no-await-in-loop
       const blob = await fetchClip(item.text, item.lang || 'en-US');
-      if (!blob) return false;
+      // **音声でないものを鳴らしたことにしない。** 端末に古い取り違え
+      // （SPA が返した index.html）が残っていると、`audio.onerror` が
+      // 「再生し終わった」と同じ扱いになり、無音のまま先へ進む
+      if (!blob || !String(blob.type || '').startsWith('audio/')) return false;
       blobs.push(blob);
     }
 
@@ -323,8 +326,21 @@ const speakSequence = (items, options = {}) => {
     });
   };
 
+  /*
+    **1つずつ積む。まとめて積まない。**
+
+    以前は queue を全部 speak() に渡していた。1つ読んでいる間に次の音声が
+    用意されるので速い——のだが、**iOS Safari は一度に積んだ2つ目以降を黙って落とす**。
+    「1文ずつの読み上げは鳴るのに、通しの読み上げボタンだけ効かない」という形で出る
+    （2026-09-20 に実機で報告）。エラーは出ないので画面からは分からない。
+
+    読み終わりを待って次を積むので、ネット音声だと文の間が少し空く。
+    鳴らないより間が空く方がよい。
+  */
   const enqueueUtterances = (token) => {
-    const pending = [];
+    const held = [];
+    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残す。
+    activeUtterance = held;
 
     const finish = () => {
       if (activeSequence !== token) return;
@@ -332,28 +348,28 @@ const speakSequence = (items, options = {}) => {
       if (typeof options.onDone === 'function') options.onDone();
     };
 
-    queue.forEach((item, index) => {
+    const speakAt = (index) => {
+      if (activeSequence !== token) return;
+      if (index >= queue.length) {
+        finish();
+        return;
+      }
+      const item = queue[index];
       const utterance = buildUtterance(item.text, item.lang || 'en-US');
-      const isLast = index === queue.length - 1;
+      held.push(utterance);
 
       utterance.onstart = () => {
         if (activeSequence !== token) return;
         if (typeof item.onStart === 'function') item.onStart();
       };
-      utterance.onend = () => {
-        if (isLast) finish();
-      };
-      // 読み上げに失敗しても止めない（音声が無い端末で固まらないように）
-      utterance.onerror = () => {
-        if (isLast) finish();
-      };
+      // 失敗しても止めない（音声が無い端末で固まらないように）次へ進む
+      utterance.onend = () => speakAt(index + 1);
+      utterance.onerror = () => speakAt(index + 1);
 
-      pending.push(utterance);
-    });
+      synthesis.speak(utterance);
+    };
 
-    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残す。
-    activeUtterance = pending;
-    pending.forEach((utterance) => synthesis.speak(utterance));
+    speakAt(0);
   };
 
   if (synthesis.speaking || synthesis.pending) {

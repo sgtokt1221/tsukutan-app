@@ -15,13 +15,15 @@ export function TsukuTsukuMark({ className = '' }) {
       viewBox="0 0 64 64"
       focusable="false"
     >
-      <g transform="rotate(-8 29 33)">
-        <rect x="6" y="17" width="38" height="39" rx="10" fill="#48D7A5" stroke="#183153" strokeWidth="2.5" />
-        <rect x="16" y="9" width="40" height="42" rx="11" fill="#FFFDF7" stroke="#183153" strokeWidth="2.5" />
-        <circle cx="27" cy="22" r="4" fill="#48D7A5" />
-        <path d="M35 20.5h12M26 33h21M26 40h14" fill="none" stroke="#183153" strokeWidth="3" strokeLinecap="round" />
+      <g className="brand-logo__card-stack" transform="rotate(-8 29 33)">
+        <rect className="brand-logo__card--back" x="6" y="17" width="38" height="39" rx="10" fill="#48D7A5" stroke="#183153" strokeWidth="2.5" />
+        <g className="brand-logo__card--front">
+          <rect x="16" y="9" width="40" height="42" rx="11" fill="#FFFDF7" stroke="#183153" strokeWidth="2.5" />
+          <circle cx="27" cy="22" r="4" fill="#48D7A5" />
+          <path d="M35 20.5h12M26 33h21M26 40h14" fill="none" stroke="#183153" strokeWidth="3" strokeLinecap="round" />
+        </g>
       </g>
-      <path d="M50 2c.7 4.1 3.1 6.5 7.2 7.3-4.1.8-6.5 3.2-7.2 7.3-.8-4.1-3.1-6.5-7.2-7.3C46.9 8.5 49.2 6.1 50 2Z" fill="#FFC857" stroke="#183153" strokeWidth="1.5" strokeLinejoin="round" />
+      <path className="brand-logo__spark" d="M50 2c.7 4.1 3.1 6.5 7.2 7.3-4.1.8-6.5 3.2-7.2 7.3-.8-4.1-3.1-6.5-7.2-7.3C46.9 8.5 49.2 6.1 50 2Z" fill="#FFC857" stroke="#183153" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }

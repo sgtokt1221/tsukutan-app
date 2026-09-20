@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig.js';
 import BrandLogo from './components/brand/BrandLogo';
+import BrandLoader from './components/brand/BrandLoader';
 
 /** Firebase のエラーコードを、生徒が読んで分かる文言にする */
 const messageForError = (error) => {
@@ -99,7 +100,7 @@ function LoginPage() {
         </div>
 
         <button type="submit" className="primary-action" disabled={isProcessing}>
-          {isProcessing ? 'ログイン中...' : 'つくつくをはじめる'}
+          {isProcessing ? <BrandLoader inline label="ログイン中…" /> : 'つくつくをはじめる'}
         </button>
 
         <p className="helper-text">

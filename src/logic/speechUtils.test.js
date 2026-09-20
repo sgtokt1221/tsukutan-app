@@ -80,3 +80,60 @@ test('読むものが無ければ、そのまま終わりを知らせる', async
   expect(onDone).toHaveBeenCalled();
   expect(spoken).toEqual([]);
 });
+
+test('**まとめて積まない。** iOS Safari は一度に積んだ2つ目以降を黙って落とす', async () => {
+  const { speakSequence } = require('./speechUtils');
+  const ended = [];
+  // speak() された utterance を覚えておき、手で読み終わらせる
+  const queue = [];
+  window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
+
+  const onDone = jest.fn();
+  speakSequence(
+    [{ text: 'One.' }, { text: 'Two.' }, { text: 'Three.' }],
+    { onDone },
+  );
+  await settle();
+
+  // 1つ目しか積んでいない
+  expect(spoken).toEqual(['One.']);
+
+  queue[0].onend();
+  expect(spoken).toEqual(['One.', 'Two.']);
+  queue[1].onend();
+  expect(spoken).toEqual(['One.', 'Two.', 'Three.']);
+  expect(onDone).not.toHaveBeenCalled();
+
+  queue[2].onend();
+  expect(onDone).toHaveBeenCalled();
+  expect(ended).toEqual([]);
+});
+
+test('**途中で失敗しても止まらない。** 次の文へ進む', async () => {
+  const { speakSequence } = require('./speechUtils');
+  const queue = [];
+  window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
+
+  const onDone = jest.fn();
+  speakSequence([{ text: 'One.' }, { text: 'Two.' }], { onDone });
+  await settle();
+
+  queue[0].onerror({ error: 'synthesis-failed' });
+  expect(spoken).toEqual(['One.', 'Two.']);
+  queue[1].onend();
+  expect(onDone).toHaveBeenCalled();
+});
+
+test('**止めたら次へ進まない**（通しの読み上げを途中で止める）', async () => {
+  const { speakSequence, stopSpeaking } = require('./speechUtils');
+  const queue = [];
+  window.speechSynthesis.speak = (u) => { spoken.push(u.text); queue.push(u); };
+
+  speakSequence([{ text: 'One.' }, { text: 'Two.' }]);
+  await settle();
+  expect(spoken).toEqual(['One.']);
+
+  stopSpeaking();
+  queue[0].onend();
+  expect(spoken).toEqual(['One.']);
+});
