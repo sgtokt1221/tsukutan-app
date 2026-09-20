@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaVolumeUp, FaStop } from 'react-icons/fa';
 import { speechPlanFor } from '../../logic/readingContent';
+import { slashGroups } from '../../logic/slashReading';
 import { useLongPress } from '../../logic/useLongPress';
 import { splitIntoUnits } from '../../logic/wordLookup';
 
@@ -14,6 +15,11 @@ import { splitIntoUnits } from '../../logic/wordLookup';
  *
  * スラッシュとSVOCは同じ chunks を見ている。区切りを2つ持つと、片方だけ
  * 直したときにズレても画面は普通に動いてしまう（docs/reading-format.md）。
+ *
+ * **ただし slash は chunks をそのまま割らない。** SVOC の単位で `/` を入れると
+ * 「I / get up / …」と主語と動詞まで割れる。塾で教えている区切りの目印
+ * （前置詞・接続詞・関係詞・準動詞の前、カンマの後ろ、長い主語の後ろ）で
+ * まとめ直す。規則の正本は `logic/slashReading.js`。
  */
 
 export const READING_MODES = [
@@ -70,14 +76,14 @@ function Words({ text, phrases, isMarked, onHold }) {
 function SlashSentence({ sentence, phrases, isMarked, onHold }) {
   return (
     <p className="reading-sentence reading-sentence--slash">
-      {sentence.chunks.map((chunk, index) => (
+      {slashGroups(sentence.chunks).map((group, index) => (
         <React.Fragment key={index}>
           {index > 0 && <span className="reading-slash" aria-hidden="true">/</span>}
           <span className="reading-chunk">
             <span className="reading-chunk__en">
-              <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+              <Words text={group.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
             </span>
-            <span className="reading-chunk__ja">{chunk.ja}</span>
+            <span className="reading-chunk__ja">{group.ja}</span>
           </span>
         </React.Fragment>
       ))}
