@@ -307,7 +307,27 @@ const mergeSameVoice = (queue) => {
   return out;
 };
 
+/**
+ * 作り置きの音声が置いてあるか。`null` はまだ分からない。
+ *
+ * **鳴らす前に確かめない。** 確かめには通信が要るので、待っているあいだに
+ * 操作の瞬間が過ぎ、iOS では鳴らなくなる。裏で1回だけ見に行く。
+ */
+let clipLibrary = null;
+let probing = false;
+
+const probeClipLibrary = (item) => {
+  if (clipLibrary !== null || probing || !item) return;
+  probing = true;
+  fetchClip(item.text, item.lang || 'en-US')
+    .then((blob) => { clipLibrary = Boolean(blob && String(blob.type || '').startsWith('audio/')); })
+    .catch(() => { clipLibrary = false; })
+    .finally(() => { probing = false; });
+};
+
 const speakSequence = (items, options = {}) => {
+  // 前の再生が残っていれば止める。**通信を待たないので操作の瞬間を逃さない**
+  stopClip();
   const queue = mergeSameVoice((items || []).filter((item) => item && item.text));
   if (queue.length === 0) {
     if (typeof options.onDone === 'function') options.onDone();
@@ -351,11 +371,25 @@ const speakSequence = (items, options = {}) => {
     const token = {};
     activeSequence = token;
 
-    // まず作っておいた音声を試す。無ければ端末の読み上げへ。
-    playAllClips(token).then((played) => {
-      if (played || activeSequence !== token) return;
+    /*
+      **作っておいた音声を「あるか確かめてから」鳴らさない。**
+
+      iOS Safari は、押した操作と同じ処理の中で `speak()` を呼ばないと鳴らさない。
+      確かめには通信が要る（`fetchClip`）ので、待っているあいだに操作の瞬間が過ぎ、
+      **エラーも出ないまま無音になる**（2026-09-20 に実機で「読み上げが効かない」）。
+
+      置いてあると分かっているときだけ使い、分からないうちは端末の読み上げで鳴らす。
+      あるかどうかは裏で1回だけ見に行き、次の再生から効かせる。
+    */
+    if (clipLibrary === true) {
+      playAllClips(token).then((played) => {
+        if (played || activeSequence !== token) return;
+        enqueueUtterances(token);
+      });
+    } else {
       enqueueUtterances(token);
-    });
+    }
+    probeClipLibrary(queue[0]);
   };
 
   /*

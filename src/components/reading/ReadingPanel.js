@@ -104,8 +104,12 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
 
   useEffect(() => stopSpeaking, []);
 
+  /*
+    **`stopSpeaking()` を先に呼ばない。** 呼ぶと打ち切りの待ち（150ms）に入り、
+    `speak()` が押した操作と別の処理になる。iOS Safari はそれを鳴らさない。
+    止めるのは `speakSequence` の中で、必要なときだけ。
+  */
   const speak = useCallback((sentenceIndex, plan) => {
-    stopSpeaking();
     setSpeakingIndex(sentenceIndex);
     speakSequence(plan);
   }, []);
@@ -121,7 +125,6 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
   /** 通しで読み上げる。和訳モードなら日本語も混ぜる。 */
   const readAll = useCallback(() => {
     if (!reading) return;
-    stopSpeaking();
     setSpeakingIndex(null);
     setReadingAll(true);
     const plan = reading.sentences.flatMap((sentence) => speechPlanFor(sentence, mode === 'ja'));

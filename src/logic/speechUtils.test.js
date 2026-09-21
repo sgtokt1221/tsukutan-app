@@ -179,3 +179,30 @@ describe('通しの読み上げを待たせない', () => {
     expect(spoken).toEqual(['One.']);
   });
 });
+
+describe('押した瞬間に鳴らす（iOS）', () => {
+  /*
+    **iOS Safari は、押した操作と同じ処理の中で `speak()` を呼ばないと鳴らさない。**
+    通信（作り置き音声の確認）や `setTimeout` を挟むと、エラーも出ないまま無音になる。
+    「1文ずつは鳴るのに通しの読み上げが効かない」という形でしか気づけない。
+  */
+  test('**待たずにその場で積む**（await も setTimeout も挟まない）', () => {
+    const { speakSequence } = require('./speechUtils');
+    speakSequence([{ text: 'Hello.' }]);
+    // await を1つも挟んでいないので、この行ですでに積まれている
+    expect(spoken).toEqual(['Hello.']);
+  });
+
+  test('鳴っている最中に頼まれたときだけ、打ち切って間を置く', async () => {
+    const { speakSequence } = require('./speechUtils');
+    window.speechSynthesis.speaking = true;
+    speakSequence([{ text: 'Next.' }]);
+    // 前のを打ち切ったので、その場では積まない
+    expect(spoken).toEqual([]);
+    expect(cancelled).toBe(1);
+
+    window.speechSynthesis.speaking = false;
+    await settle();
+    expect(spoken).toEqual(['Next.']);
+  });
+});
