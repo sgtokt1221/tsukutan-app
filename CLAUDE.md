@@ -169,6 +169,8 @@ cd functions && npm run serve   # Functions エミュレータ
 - 単語の重複排除・突合は表記でなく永続ID（`w_` + SHA-256）で行う。配列インデックス由来のIDは使わない。
 - レベルは `src/config/levels.json`（1-7）が正本。英検級と難易度は大小の向きが逆なので同じ変数に入れない。
 - 英検級は数字が小さいほど難しい。級の比較に `level <= target` を使わない。複数級に属する語は最も易しい級でのみ数える。
+- **`public/index.html` の `viewport-fit=cover` を外さない。** 無いと iOS は `env(safe-area-inset-*)` を**すべて 0 で返す**。CSS は15か所で安全領域を見ているので、1行落とすだけで全部が黙って効かなくなる（下タブがホーム操作バーに潜り、低く窮屈に見える）。**Safari のタブでは再現しない**——ブラウザの下バーがその場所を埋めるので、**ホーム画面から開いたときだけ**出る。寸法を直しても変化が無いときは、まずここを見る。**cover にすると上も潜る**ので `.student-header` の `env(safe-area-inset-top)` とセット。番人は `src/components/layout/tabBar.test.js`
+- **下タブの寸法は受験サポート（つくばホーム）と同じに保つ。** 同じ塾の生徒が両方使うので、並べて片方だけ低いと雑に見える。正本は `tsukuba-manager/src/exam-support/student/TabBar.tsx`（58px / 11px / 21px / gap 3px）
 
 ## 8. Current State / Known Issues
 
