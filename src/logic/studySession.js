@@ -88,8 +88,8 @@ export function activeMsOf(s) {
  * 測り終えたものを、送る形にする。
  *
  * @param {object} s
- * @returns {{ startedAt: string, endedAt: string, newWords: number, reviewWords: number }|null}
- *   短すぎるときは null
+ * @returns {{ startedAt: string, endedAt: string, newWords: number, reviewWords: number,
+ *   aloud?: { count: number, title: string|null } }|null} 短すぎるときは null
  */
 export function toPayload(s) {
     const ms = activeMsOf(s);
@@ -102,6 +102,17 @@ export function toPayload(s) {
         endedAt: new Date(start + ms).toISOString(),
         newWords: Math.max(0, Number(s.newWords) || 0),
         reviewWords: Math.max(0, Number(s.reviewWords) || 0),
+        /*
+          **音読は「やったか」だけ送る。** つくばホームは頻度で見る
+          （2026-09-22「取り組む頻度だね」）ので、読めた割合や速さは送らない。
+          **題名は最後の1本**——全部送ると向こうの利用状況の doc が膨らむ。
+
+          **0本のときは欄ごと出さない。** 送る中身が増えると、貯めてある
+          古い記録（欄が無い形）と混ざったときに読み分けが要る。
+        */
+        ...(Number(s.aloudCount) > 0
+            ? { aloud: { count: Math.floor(Number(s.aloudCount)), title: s.aloudTitle || null } }
+            : {}),
     };
 }
 
@@ -153,6 +164,9 @@ export function startStudySession() {
         lastAt: t,
         newWords: 0,
         reviewWords: 0,
+        // 音読した本数と、最後に読んだものの題名
+        aloudCount: 0,
+        aloudTitle: null,
     };
     save();
     listen();
@@ -174,6 +188,31 @@ export function noteActivity(kind) {
     current.lastAt = t;
     if (kind === 'new') current.newWords += 1;
     if (kind === 'review') current.reviewWords += 1;
+    save();
+}
+
+/**
+ * 音読を1本読み終えた。**測っていなければ、そこから測り始める。**
+ *
+ * 長文タブは単語カードと違って「始める」ボタンが無い。**黙って数えないと、
+ * 音読だけしている生徒がつくばホームから見えない**（いちばん見たいのがそこ）。
+ *
+ * @param {string} [title] 読んだものの題名。**最後の1本だけ持つ**
+ */
+export function noteAloud(title) {
+    if (!current) startStudySession();
+    const t = now();
+    // 手が止まっていたぶんは数えない（`noteActivity` と同じ作法）
+    if (t - current.lastAt > IDLE_MS) {
+        endStudySession();
+        startStudySession();
+    }
+    // **読んだ時刻まで数える。** 締め時刻は「最後に手を動かした時刻」なので、
+    // ここを動かさないと音読したぶんが長さ0になって落ちる
+    current.lastAt = t;
+    current.aloudCount = (Number(current.aloudCount) || 0) + 1;
+    const clean = String(title || '').trim();
+    if (clean) current.aloudTitle = clean.slice(0, 60);
     save();
 }
 

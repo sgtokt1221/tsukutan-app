@@ -18,6 +18,7 @@ import {
   startStudySession,
   endStudySession,
   noteActivity,
+  noteAloud,
   activeMsOf,
   toPayload,
   resumeAndFlush,
@@ -182,5 +183,60 @@ describe('測り方は1か所', () => {
     startStudySession();   // 締めずにもう一度始めた
     const pending = JSON.parse(localStorage.getItem('tsukutan.study.pending')) || [];
     expect(pending).toHaveLength(1);
+  });
+});
+
+/**
+ * **音読は「やったか」だけ送る**（2026-09-22「取り組む頻度だね」）。
+ * つくばホームは日数で見るので、読めた割合や速さは送らない。
+ */
+describe('音読', () => {
+  test('数と、最後に読んだ題名が乗る', () => {
+    startStudySession();
+    advance(120_000);
+    noteAloud('The Blue Bird');
+    noteAloud('A Letter');
+    const { payload } = endStudySession();
+    expect(payload.aloud).toEqual({ count: 2, title: 'A Letter' });
+  });
+
+  test('**測っていなくても数える。** 長文タブには「始める」ボタンが無い', () => {
+    noteAloud('The Blue Bird');
+    advance(120_000);
+    noteActivity('new');
+    const { payload } = endStudySession();
+    expect(payload.aloud.count).toBe(1);
+  });
+
+  test('**音読していなければ欄ごと出さない**（古い記録と混ざらない）', () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    const { payload } = endStudySession();
+    expect(payload.aloud).toBeUndefined();
+  });
+
+  test('**放置してから読んだら、別の記録にする**（間の放置を勉強時間にしない）', () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    advance(IDLE_MS + 1000);
+    noteAloud('A Letter');
+    advance(120_000);
+    noteActivity('new');
+    const { payload } = endStudySession();
+    // 放置の前後で2つに分かれ、**音読は後ろのほうに乗る**
+    const pending = JSON.parse(localStorage.getItem('tsukutan.study.pending'));
+    expect(pending).toHaveLength(2);
+    expect(pending[0].aloud).toBeUndefined();
+    expect(payload.aloud).toEqual({ count: 1, title: 'A Letter' });
+  });
+
+  test('題名は長すぎるものを切る（向こうの doc を膨らませない）', () => {
+    startStudySession();
+    advance(120_000);
+    noteAloud('あ'.repeat(200));
+    const { payload } = endStudySession();
+    expect(payload.aloud.title).toHaveLength(60);
   });
 });

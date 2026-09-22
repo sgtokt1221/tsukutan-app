@@ -10,6 +10,7 @@ import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
+import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
 import { buildWordIndex, buildPhraseIndex, findWord } from '../../logic/wordLookup';
 import { useBookmarks } from '../../logic/useBookmarks';
@@ -146,18 +147,35 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
 
     setAloud({ working: true });
     transcribeSpeaking(blob, { mode: 'scripted', referenceText: readingEnglish(reading) })
-      .then((result) => setAloud({ ...result, working: false }))
+      .then((result) => {
+        setAloud({ ...result, working: false });
+        /*
+          **聞き取れたときだけ1本と数える。** 押しただけ・無音で失敗したものまで
+          数えると、つくばホームの「音読した日」が実態より多く出る
+          （塾はそこを見て声をかけるので、多い方に外すと見落とす）。
+        */
+        noteAloud(reading.title);
+      })
       .catch((transcribeError) => {
         logger.warn('音読を聞き取れませんでした', transcribeError);
         setAloud({ working: false, failure: transcribeError.message });
       });
   }, [blob, reading]);
 
+  /*
+    **読みものを開いているあいだは測る**（2026-09-22）。単語カードと違って
+    長文タブには「始める」ボタンが無いので、開いた時点から数え始める。
+    これが無いと、音読1本ぶん（1分未満のこともある）が最低時間に届かず、
+    **音読した事実ごとつくばホームへ届かない**。
+  */
+  useEffect(() => () => { endStudySession(); }, []);
+
   const openReading = (entry) => {
     stop();
     setAloud(null);
     resetRecorder();
     handledBlobRef.current = null;
+    startStudySession();
     loadReading(grade, entry.id)
       .then(setReading)
       .catch((loadError) => {
@@ -228,7 +246,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     <div className="story-tab-content">
       <div className="section-card">
         <div className="reading-head">
-          <button type="button" className="free-study-back" onClick={() => { stop(); setReading(null); }} aria-label="一覧に戻る">
+          <button type="button" className="free-study-back" onClick={() => { stop(); endStudySession(); setReading(null); }} aria-label="一覧に戻る">
             <FaArrowLeft aria-hidden="true" />
           </button>
           <div>
