@@ -29,6 +29,7 @@ const path = require('path');
 
 const appCss = fs.readFileSync(path.join(__dirname, '../../App.css'), 'utf8');
 const shellCss = fs.readFileSync(path.join(__dirname, 'StudentShell.css'), 'utf8');
+const indexHtml = fs.readFileSync(path.join(__dirname, '../../../public/index.html'), 'utf8');
 
 /** 受験サポート側の実測値（向こうを変えたら、ここも一緒に直す） */
 const EXAM_SUPPORT = {
@@ -70,5 +71,28 @@ describe('下タブの寸法', () => {
 
   it('本文の下余白が、タブと安全領域のぶん空いている', () => {
     expect(appCss).toContain(`padding-bottom: ${EXAM_SUPPORT.contentBottom};`);
+  });
+
+  /*
+    **ここが本当の原因だった**（2026-09-22。CSS を直したのに「変わらない」と
+    2度言われた）。
+
+    `viewport-fit=cover` が無いと、iOS は `env(safe-area-inset-*)` を
+    **すべて 0 で返す**。CSS 側は15か所で安全領域を見ていたのに、1つも
+    効いていなかった。しかも **Safari のタブでは気づけない**——ブラウザの
+    下バーがちょうどその場所を埋めるので、PWA にしたときだけ低くなる。
+
+    エラーも警告も出ない（`env()` は既定値へ静かに落ちる）ので、機械で止める。
+  */
+  it('**`viewport-fit=cover` がある。** 無いと env(safe-area-*) が全部 0 になる', () => {
+    const meta = indexHtml.match(/<meta name="viewport"[^>]*>/);
+    expect(meta).not.toBeNull();
+    expect(meta[0]).toContain('viewport-fit=cover');
+  });
+
+  it('**上も安全領域を空ける。** cover にすると時計やノッチの下へ潜る', () => {
+    const at = appCss.indexOf('.student-header {');
+    expect(at).toBeGreaterThan(-1);
+    expect(appCss.slice(at, at + 700)).toContain('env(safe-area-inset-top, 0px)');
   });
 });
