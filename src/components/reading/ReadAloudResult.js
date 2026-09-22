@@ -12,7 +12,6 @@
  * 付ける**——飛ばしたところがその場で見える。
  */
 import React from 'react';
-import { markPassage } from '../../logic/readAloudMarks';
 import './ReadAloudResult.css';
 
 /** 点に応じた一言。**数字だけ出して黙らない** */
@@ -24,11 +23,15 @@ const commentFor = (score) => {
   return 'まずは読める語を増やしましょう。区切りごとに声に出すと読みやすくなります。';
 };
 
+/**
+ * @param parts 色を付けた本文（`logic/readAloudMarks.js` の `markPassage`）。
+ *   **ここで作り直さない**——点と色が別の計算から出ると、静かに食い違う
+ */
 export default function ReadAloudResult({
-  working = false, score, missing = [], referenceText = '', failure = '', onClose, onRetry,
+  working = false, score, parts = [], failure = '', onClose, onRetry,
 }) {
   const done = !working && failure === '' && score !== null;
-  const parts = done ? markPassage(referenceText, missing) : [];
+  const marked = done ? parts : [];
 
   return (
     <div className="aloud-result-backdrop" role="presentation" onClick={onClose}>
@@ -65,7 +68,7 @@ export default function ReadAloudResult({
               <span className="aloud-result__unit">% 読みました</span>
             </p>
             <p className="aloud-result__comment">{commentFor(score)}</p>
-            {parts.length > 0 && (
+            {marked.length > 0 && (
               <div className="aloud-result__passage" data-testid="aloud-passage">
                 {/*
                   **色だけに頼らない**（→ dads）。読み飛ばしには下線も引き、
@@ -76,7 +79,7 @@ export default function ReadAloudResult({
                   <span className="aloud-word is-missed">読み飛ばし</span>
                 </p>
                 <p className="aloud-result__text">
-                  {parts.map((part, i) => (part.word ? (
+                  {marked.map((part, i) => (part.word ? (
                     <span key={i} className={part.read ? 'aloud-word is-read' : 'aloud-word is-missed'}>
                       {part.text}
                     </span>

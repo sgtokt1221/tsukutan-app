@@ -8,8 +8,8 @@ import {
 import { readingGradeFor, EIKEN_LABELS } from '../../logic/readingLevel';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
-import { transcribeSpeaking, reviewAnswer } from '../../logic/transcribeApi';
-import { readAloudScore } from '../../logic/readAloudMarks';
+import { transcribeSpeaking } from '../../logic/transcribeApi';
+import { markPassage, readAloudScore } from '../../logic/readAloudMarks';
 import logger from '../../logic/logger';
 import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
@@ -141,15 +141,16 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
   }, []);
 
   /*
-    録り終えたら文字起こしへ送り、**続けて読み飛ばしを数えてもらう**。
+    録り終えたら文字起こしへ送り、**聞き取れた文を本文と突き合わせる**。
     押させるボタンは置かない。
 
-    **2回呼ぶ必要がある。** `transcribeSpeaking` が返すのは `{transcript}` だけで、
-    点の材料（`missing` / `total`）は `reviewAnswer` にしか無い。
-    ここを1回で済ませていたため、**どれだけ上手に読んでも `total` が
-    `undefined` → 点が null → 必ず「聞き取れませんでした」**で終わっていた
-    （2026-09-22 に指摘されるまで、成功しても失敗の顔をしていた）。
-    サーバは 200 を返しているので、ログを見ても気づけない。
+    **点はこちらで出す**（`logic/readAloudMarks.js`）。サーバの `reviewAnswer` は
+    「言った語の集合」で見ているので、`the` や `is` を前半で一度読んだだけで
+    **読んでいない後半の同じ語まで「読めた」**になる（2026-09-22 に指摘）。
+    読んだ順に対応させないと、途中でやめた生徒ほど実際より読めたように出る。
+
+    往復も1回で済む。`reviewAnswer` は英検二次（面接）がそのまま使っている
+    ——あちらは順番が関係ないので、集合で正しい。
   */
   const { blob, stop: stopRecorder, reset: resetRecorder } = recorder;
   useEffect(() => {
@@ -163,19 +164,16 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
         const heard = String(transcript || '').trim();
         if (heard === '') {
           // **本当に何も聞き取れなかった。** 点は出さず、数えもしない
-          setAloud({ working: false, transcript: '', missing: [], total: 0 });
+          setAloud({ working: false, transcript: '' });
           return;
         }
         /*
           **聞き取れたときだけ1本と数える。** 押しただけ・無音で失敗したものまで
           数えると、つくばホームの「音読した日」が実態より多く出る
           （塾はそこを見て声をかけるので、多い方に外すと見落とす）。
-
-          **読み飛ばしを数える前に数える。** 読んだ事実は、採点が通ったかどうかとは別。
         */
         noteAloud(reading.title);
-        const { missing, total } = await reviewAnswer({ mode: 'scripted', transcript: heard, referenceText });
-        setAloud({ working: false, transcript: heard, missing, total });
+        setAloud({ working: false, transcript: heard });
       })
       .catch((transcribeError) => {
         logger.warn('音読を聞き取れませんでした', transcribeError);
@@ -258,8 +256,11 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     );
   }
 
-  // 式は `logic/readAloudMarks.js` が正本。**ここで書き直さない**
-  const aloudScore = aloud && !aloud.working ? readAloudScore(aloud.total, aloud.missing) : null;
+  // 印も式も `logic/readAloudMarks.js` が正本。**ここで書き直さない**
+  const aloudParts = aloud && !aloud.working && aloud.transcript
+    ? markPassage(readingEnglish(reading), aloud.transcript)
+    : [];
+  const aloudScore = readAloudScore(aloudParts);
 
   // 本文
   return (
@@ -394,9 +395,8 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
         <ReadAloudResult
           working={Boolean(aloud.working)}
           score={aloudScore}
-          missing={aloud.missing || []}
-          // 本文を並べて色を付けるので、読むべき英文ごと渡す
-          referenceText={readingEnglish(reading)}
+          // 色を付けた本文。**画面側で作り直さない**
+          parts={aloudParts}
           failure={aloud.failure || ''}
           onClose={() => setAloud(null)}
           onRetry={canRecord() ? () => {

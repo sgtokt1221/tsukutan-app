@@ -41,10 +41,8 @@ jest.mock('../../logic/studySession', () => ({
 
 // 文字起こしと採点はサーバー（Cloud Function）。画面の動きを見たいので差し替える
 const mockTranscribe = jest.fn();
-const mockReview = jest.fn();
 jest.mock('../../logic/transcribeApi', () => ({
   transcribeSpeaking: (...args) => mockTranscribe(...args),
-  reviewAnswer: (...args) => mockReview(...args),
 }));
 
 // 録音。**録り終えた Blob を外から差し込めるように**する
@@ -72,15 +70,26 @@ jest.mock('../../logic/readingContent', () => ({
     grade: '5',
     title: 'My Morning',
     titleJa: 'わたしの朝',
-    sentences: [{
-      ja: '六時に起きます。',
-      chunks: [
-        { en: 'I get up', ja: '起きます', role: 'V' },
-        { en: 'at six.', ja: '六時に', role: 'M' },
-      ],
-    }],
+    // **2文にしてある。** 「前半だけ読んだ」を作れないと、
+    // 語の集合で見ていたときのバグ（後半の同じ語まで緑）を捕まえられない
+    sentences: [
+      {
+        ja: '六時に起きます。',
+        chunks: [
+          { en: 'I get up', ja: '起きます', role: 'V' },
+          { en: 'at six.', ja: '六時に', role: 'M' },
+        ],
+      },
+      {
+        ja: '八時に食べます。',
+        chunks: [
+          { en: 'We eat', ja: '食べます', role: 'V' },
+          { en: 'at eight.', ja: '八時に', role: 'M' },
+        ],
+      },
+    ],
   }),
-  readingEnglish: () => 'I get up at six.',
+  readingEnglish: () => 'I get up at six. We eat at eight.',
   sentenceEnglish: (s) => s.en,
   speechPlanFor: () => [],
 }));
@@ -139,9 +148,8 @@ describe('音読の結果', () => {
     **これが今回のバグ。** `reviewAnswer` を呼ばないと `total` が来ないので、
     点が出ず、必ず「聞き取れませんでした」になる。
   */
-  it('**読めたら点が出る。** 文字起こしだけで終わらせない', async () => {
-    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
-    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
+  it('**読めたら点が出る。** 聞き取れた文を本文と突き合わせる', async () => {
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six we eat at eight' });
 
     const view = await openReading();
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
@@ -157,28 +165,25 @@ describe('音読の結果', () => {
     本文のどこだったか分からず、読み直す場所を探せなかった。
     本文をそのまま並べて、読めた語は緑・飛ばした語は赤にする。
   */
-  it('点が下がり、**本文の飛ばした語だけ赤になる**', async () => {
-    mockTranscribe.mockResolvedValue({ transcript: 'I get up' });
-    mockReview.mockResolvedValue({ missing: ['at', 'six'], total: 5, content: null });
+  it('点が下がり、**途中で飛ばした語だけ赤になる**', async () => {
+    // 本文は9語。`get` だけ言えなかった
+    mockTranscribe.mockResolvedValue({ transcript: 'I up at six we eat at eight' });
 
     const view = await openReading();
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
     finishRecording(view);
 
-    expect(await screen.findByText('60')).toBeInTheDocument();
+    expect(await screen.findByText('89')).toBeInTheDocument();
 
     const passage = screen.getByTestId('aloud-passage');
-    const read = [...passage.querySelectorAll('.aloud-result__text .is-read')].map((n) => n.textContent);
     const missed = [...passage.querySelectorAll('.aloud-result__text .is-missed')].map((n) => n.textContent);
-    expect(read).toEqual(['I', 'get', 'up']);
-    expect(missed).toEqual(['at', 'six']);
+    expect(missed).toEqual(['get']);
     // 句読点ごと本文が残っている（語だけ抜き出して並べ替えない）
-    expect(passage.querySelector('.aloud-result__text').textContent).toBe('I get up at six.');
+    expect(passage.querySelector('.aloud-result__text').textContent).toBe('I get up at six. We eat at eight.');
   });
 
   it('全部読めたら赤は1つも出ない', async () => {
-    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
-    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six we eat at eight' });
 
     const view = await openReading();
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
@@ -207,32 +212,35 @@ describe('音読の結果', () => {
     // **割合を言わない**（分からないものを数字で出さない）
     expect(bar).not.toHaveAttribute('aria-valuenow');
 
-    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
-    settle({ transcript: 'I get up at six' });
+    settle({ transcript: 'I get up at six we eat at eight' });
     await screen.findByText('100');
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
-  it('**採点は、聞き取れた文と読むべき文の両方を送る**', async () => {
+  /*
+    **語の集合で見ると、読んでいないところまで緑になる**（2026-09-22 に指摘）。
+    `at` を前半で読んでいれば、後半の `at` も緑になってしまっていた。
+    読んだ順に対応させるので、途中でやめたらその先は赤のまま。
+  */
+  it('**途中でやめたら、その先は同じ語でも赤のまま**', async () => {
     mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
-    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
 
     const view = await openReading();
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
     finishRecording(view);
 
-    await waitFor(() => expect(mockReview).toHaveBeenCalledTimes(1));
-    expect(mockReview).toHaveBeenCalledWith({
-      mode: 'scripted',
-      transcript: 'I get up at six',
-      referenceText: 'I get up at six.',
-    });
+    // 9語のうち5語＝56%
+    await screen.findByText('56');
+    const passage = screen.getByTestId('aloud-passage');
+    const missed = [...passage.querySelectorAll('.aloud-result__text .is-missed')].map((n) => n.textContent);
+    // 後半（We eat at eight.）は読んでいないので、**前半に出た `at` も含めて**全部赤
+    expect(missed).toEqual(['We', 'eat', 'at', 'eight']);
   });
 
   /*
     **本当に聞き取れなかったときは、そう出す。** ここだけは元の文言が正しい。
   */
-  it('何も聞き取れなければ、点を出さず採点もしない', async () => {
+  it('何も聞き取れなければ、点を出さず本文も出さない', async () => {
     mockTranscribe.mockResolvedValue({ transcript: '   ' });
 
     const view = await openReading();
@@ -240,14 +248,13 @@ describe('音読の結果', () => {
     finishRecording(view);
 
     expect(await screen.findByText('聞き取れませんでした。もう一度どうぞ。')).toBeInTheDocument();
-    expect(mockReview).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('aloud-passage')).not.toBeInTheDocument();
   });
 });
 
 describe('つくばホームへ送る音読の数', () => {
   it('聞き取れたら1本と数える', async () => {
-    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
-    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six we eat at eight' });
 
     const view = await openReading();
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
