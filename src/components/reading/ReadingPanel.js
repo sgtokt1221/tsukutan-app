@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaArrowLeft, FaMicrophone, FaStop, FaPlay, FaStar } from 'react-icons/fa';
 import ReadingView, { READING_MODES } from './ReadingView';
+import ReadingShelf from './ReadingShelf';
 import ReadAloudResult from './ReadAloudResult';
 import {
   loadReading, loadReadingIndex, readingEnglish, speechPlanFor,
@@ -31,6 +32,13 @@ import './Reading.css';
 export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, userId }) {
   const [index, setIndex] = useState(null);
   const [grade, setGrade] = useState(null);
+  /**
+   * 開いている本の級。**`null` なら本棚。**
+   *
+   * `reading` に相乗りさせない——あちらは「一覧 / 本文」の分岐で、段が1つ増えた
+   * ぶんをそこへ押し込むと、本棚・目次・本文の3つが1つの値で表せなくなる。
+   */
+  const [openBook, setOpenBook] = useState(null);
   const [reading, setReading] = useState(null);
   const [mode, setMode] = useState('plain');
   const [error, setError] = useState(null);
@@ -224,7 +232,8 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     resetRecorder();
     handledBlobRef.current = null;
     startStudySession();
-    loadReading(grade, entry.id)
+    // **開いている本の級で読む。** `grade` はおすすめを覚えているだけ
+    loadReading(openBook || grade, entry.id)
       .then(setReading)
       .catch((loadError) => {
         logger.warn('長文を読めませんでした', loadError);
@@ -232,10 +241,6 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
       });
   };
 
-  const gradeEntry = useMemo(
-    () => index?.grades.find((entry) => entry.id === grade) || null,
-    [index, grade]
-  );
   const categoryLabel = useMemo(() => Object.fromEntries(
     (index?.categories || []).map((entry) => [entry.id, entry.label])
   ), [index]);
@@ -248,38 +253,16 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     return (
       <div className="story-tab-content">
         <div className="section-card">
-          <h2 className="section-title">読みもの</h2>
-          <p className="reading-note">
-            いまは <strong>{EIKEN_LABELS[grade]}</strong> の読みものを出しています。
-          </p>
-
-          <div className="reading-grades" role="tablist" aria-label="級">
-            {index.grades.map((entry) => (
-              <button
-                key={entry.id}
-                type="button"
-                role="tab"
-                aria-selected={entry.id === grade}
-                className={entry.id === grade ? 'reading-grade is-active' : 'reading-grade'}
-                onClick={() => setGrade(entry.id)}
-              >
-                {entry.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="reading-list">
-            {(gradeEntry?.readings || []).map((entry) => (
-              <button key={entry.id} type="button" className="reading-item" onClick={() => openReading(entry)}>
-                <span className="reading-item__category">{categoryLabel[entry.category] || entry.category}</span>
-                <span className="reading-item__title">{entry.title}</span>
-                <span className="reading-item__title-ja">{entry.titleJa}</span>
-              </button>
-            ))}
-            {(gradeEntry?.readings || []).length === 0 && (
-              <p className="reading-note">この級の読みものはまだありません。</p>
-            )}
-          </div>
+          <ReadingShelf
+            grades={index.grades}
+            recommended={grade}
+            openBook={openBook}
+            categoryLabel={categoryLabel}
+            /* **本を開くだけでは測り始めない。** 目次を眺めた時間を勉強時間にしない */
+            onOpenBook={setOpenBook}
+            onCloseBook={() => setOpenBook(null)}
+            onSelect={openReading}
+          />
         </div>
       </div>
     );
