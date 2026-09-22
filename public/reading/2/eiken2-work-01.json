@@ -408,17 +408,7 @@
     {
      "en": "and it is safer than before.",
      "ja": "そして以前よりは安全になりました",
-     "role": "M",
-     "slash": [
-      {
-       "en": "and it is safer",
-       "ja": "そしてより安全になった"
-      },
-      {
-       "en": "than before.",
-       "ja": "以前よりも"
-      }
-     ]
+     "role": "M"
     }
    ]
   },

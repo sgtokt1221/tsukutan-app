@@ -739,15 +739,15 @@
      "slash": [
       {
        "en": "in sharing the way",
-       "ja": "方法を共有することに"
+       "ja": "方法を共有したことに"
       },
       {
-       "en": "of deciding, rather",
-       "ja": "決めることの、むしろ"
+       "en": "of deciding, rather than",
+       "ja": "決めることの、〜よりむしろ"
       },
       {
-       "en": "than in the plan itself.",
-       "ja": "計画そのものよりも"
+       "en": "in the plan itself.",
+       "ja": "計画そのものの中に"
       }
      ]
     }

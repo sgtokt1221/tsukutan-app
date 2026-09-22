@@ -305,17 +305,7 @@
     {
      "en": "much more interesting than I thought.",
      "ja": "思っていたよりずっとおもしろい",
-     "role": "C",
-     "slash": [
-      {
-       "en": "much more interesting",
-       "ja": "ずっとおもしろい"
-      },
-      {
-       "en": "than I thought.",
-       "ja": "思っていたより"
-      }
-     ]
+     "role": "C"
     }
    ]
   }

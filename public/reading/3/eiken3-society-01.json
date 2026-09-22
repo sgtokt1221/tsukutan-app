@@ -153,12 +153,8 @@
      "role": "O",
      "slash": [
       {
-       "en": "that there are more",
-       "ja": "〜があること"
-      },
-      {
-       "en": "than thirty such houses",
-       "ja": "30以上のそのような家が"
+       "en": "that there are more than thirty such houses",
+       "ja": "30軒以上のそのような家があると"
       },
       {
        "en": "in this town.",
@@ -199,17 +195,7 @@
     {
      "en": "to be more than eight million.",
      "ja": "800万けんをこえていると",
-     "role": "C",
-     "slash": [
-      {
-       "en": "to be more",
-       "ja": "〜以上であること"
-      },
-      {
-       "en": "than eight million.",
-       "ja": "800万より"
-      }
-     ]
+     "role": "C"
     }
    ]
   },

@@ -276,17 +276,7 @@
     {
      "en": "had more than one thousand words.",
      "ja": "1000語をこえていました",
-     "role": "V",
-     "slash": [
-      {
-       "en": "had more",
-       "ja": "より多く持っていた"
-      },
-      {
-       "en": "than one thousand words.",
-       "ja": "1000語よりも"
-      }
-     ]
+     "role": "V"
     }
    ]
   },

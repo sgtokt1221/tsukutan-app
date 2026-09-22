@@ -444,17 +444,7 @@
     {
      "en": "who increase the number rather than the content.",
      "ja": "中身ではなく回数を増やす",
-     "role": "M",
-     "slash": [
-      {
-       "en": "who increase the number rather",
-       "ja": "数を増やす"
-      },
-      {
-       "en": "than the content.",
-       "ja": "中身ではなく"
-      }
-     ]
+     "role": "M"
     }
    ]
   },
