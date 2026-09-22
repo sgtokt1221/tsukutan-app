@@ -69,6 +69,17 @@ const DEGREE_AFTER_SO = new Set(['much', 'many', 'little', 'few', 'long', 'far',
  * 後ろの語だけ見て切ると「the house next / to number one」と割れる。
  */
 const COMPOUND_BEFORE = new Set(['next', 'close', 'due', 'according', 'thanks', 'prior', 'out', 'because', 'instead']);
+
+/**
+ * **この語の前では切らない。**
+ *
+ * `than` は比較級とひと続きで読む。前置詞の一覧に入っているせいで
+ * 「a history of more / than five hundred years.」「safer / than before.」の
+ * ように割れていた（2026-09-23 に実データで12か所）。
+ * **一覧から外さない**——`than` は前置詞であることに変わりなく、
+ * ここで「切らない」と決めているだけ。
+ */
+const NEVER_BEFORE = new Set(['than']);
 /**
  * まとまりの**中**も切る。
  *
@@ -95,7 +106,7 @@ const splitInside = (en) => {
     // next to / according to … は2語で1つの前置詞。**手前**で切り、間では切らない
     const insideCompound = COMPOUND_BEFORE.has(previous) && word === 'to';
     const startsCompound = COMPOUND_BEFORE.has(word) && next === 'to';
-    const cut = !insideCompound && (
+    const cut = !insideCompound && !NEVER_BEFORE.has(word) && (
       startsCompound
       || (CONJUNCTIONS.has(word) && !(word === 'so' && DEGREE_AFTER_SO.has(next)))
       || PREPOSITIONS.has(word)
@@ -143,7 +154,20 @@ export function slashUnits(chunks) {
     for (const part of inner) {
       const en = String(part.en || '').trim();
       if (en === '') continue;
-      units.push({ en, ja: String(part.ja || '').trim() });
+      const ja = String(part.ja || '').trim();
+      /*
+        **`than` の前だけは切らない**（SVOCM で必ず切ることへの唯一の例外）。
+        比較級とひと続きで読むもので、データ上は `than before.` が M として
+        独立していることがある。切ると「fewer books / than before.」と
+        比較が割れる（2026-09-23 に実データで8か所）。
+      */
+      const last = units[units.length - 1];
+      if (last && NEVER_BEFORE.has(bareWord(words(en)[0]))) {
+        last.en = `${last.en} ${en}`;
+        last.ja = [last.ja, ja].filter(Boolean).join(' ');
+        continue;
+      }
+      units.push({ en, ja });
     }
   }
   return units;

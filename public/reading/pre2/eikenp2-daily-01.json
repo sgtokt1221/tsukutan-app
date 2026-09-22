@@ -59,16 +59,12 @@
      "role": "C",
      "slash": [
       {
-       "en": "to be more",
-       "ja": "より多いと"
-      },
-      {
-       "en": "than three times",
-       "ja": "3倍以上"
+       "en": "to be more than three times",
+       "ja": "3倍以上だと"
       },
       {
        "en": "that of ten years ago.",
-       "ja": "10年前のそれより"
+       "ja": "10年前の"
       }
      ]
     }

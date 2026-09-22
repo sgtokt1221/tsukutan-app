@@ -138,13 +138,20 @@ let touchedFiles = 0;
 for (const file of files) {
   const data = JSON.parse(readFileSync(file.path, 'utf8'));
   const items = [];
+  /*
+    **消したことも「変わった」に数える。** 規則が変わって1つに戻ったチャンクは
+    `slash` を落とすが、作り直すものが1つも無いとそのまま抜けていたので
+    **ファイルに書かれず、消したはずの印が残っていた**（2026-09-23 に
+    `readingSlashData.test.js` が見つけた）。
+  */
+  let removed = 0;
 
   data.sentences.forEach((sentence, si) => {
     sentence.chunks.forEach((chunk, ci) => {
       const pieces = piecesOf(chunk);
       if (pieces.length < 2) {
         // 切れないチャンクは印も持たせない（chunk.ja をそのまま使う）
-        if (chunk.slash) delete chunk.slash;
+        if (chunk.slash) { delete chunk.slash; removed += 1; }
         return;
       }
       if (!FORCE && isFresh(chunk, pieces)) return;
@@ -159,7 +166,17 @@ for (const file of files) {
     });
   });
 
-  if (items.length === 0) continue;
+  if (items.length === 0) {
+    // 作り直すものは無いが、**消したぶんは書く**
+    if (removed > 0 && !DRY) {
+      writeFileSync(file.path, `${JSON.stringify(data, null, 1)}\n`);
+      touchedFiles += 1;
+      console.log(`${file.grade}/${file.name}: 印を外した ${removed} 件`);
+    } else if (removed > 0) {
+      console.log(`${file.grade}/${file.name}: 印を外す ${removed} 件`);
+    }
+    continue;
+  }
   totalChunks += items.length;
   totalPieces += items.reduce((a, x) => a + x.pieces.length, 0);
 
@@ -196,7 +213,8 @@ for (const file of files) {
 
   writeFileSync(file.path, `${JSON.stringify(data, null, 1)}\n`);
   touchedFiles += 1;
-  console.log(`${file.grade}/${file.name}: ${applied} 件${skipped ? ` / 見送り ${skipped} 件` : ''}`);
+  console.log(`${file.grade}/${file.name}: ${applied} 件`
+    + `${removed ? ` / 印を外した ${removed} 件` : ''}${skipped ? ` / 見送り ${skipped} 件` : ''}`);
 }
 
 console.log(`\n対象 ${totalChunks} チャンク（小片 ${totalPieces} 個）/ 書いたファイル ${touchedFiles} 本`);

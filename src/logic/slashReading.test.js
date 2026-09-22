@@ -51,6 +51,29 @@ describe('SVOCM の切れ目で切る', () => {
     ])).toBe('One of the causes / is / that the temperature has risen.');
   });
 
+  /*
+    **`than` の前だけは切らない**（SVOCM で必ず切ることへの唯一の例外）。
+    比較級とひと続きで読む。データ上は `than before.` が M として独立している
+    ことがあり、切ると比較が割れる（2026-09-23 に実データで8か所）。
+  */
+  it('**`than` の前では切らない**（比較級とひと続きで読む）', () => {
+    expect(line([
+      c('I', 'わたしは', 'S'),
+      c('was reading', '読んでいました', 'V'),
+      c('fewer books', '少ない本を', 'O'),
+      c('than before.', '以前より'),
+    ])).toBe('I / was reading / fewer books than before.');
+  });
+
+  it('`than` をくっつけるとき、訳もつなぐ', () => {
+    const [, second] = slashUnits([
+      c('It', 'それは', 'S'),
+      c('is safer', 'より安全です', 'V'),
+      c('than before.', '以前より'),
+    ]);
+    expect(second).toEqual({ en: 'is safer than before.', ja: 'より安全です 以前より' });
+  });
+
   it('チャンクが1つなら、まとまりも1つ', () => {
     expect(slashUnits([c('I run.', 'わたしは走ります', 'S')])).toHaveLength(1);
   });
@@ -101,6 +124,12 @@ describe('まとまりの中を切る位置（訳を作るときに使う）', (
   it('**チャンクの中の関係詞でも切る**', () => {
     expect(pieces('People who have experienced failure or illness'))
       .toEqual(['People who have experienced failure', 'or illness']);
+  });
+
+  it('**比較の `than` の前では切らない**（more than / safer than）', () => {
+    expect(pieces('and it has a history of more than five hundred years.'))
+      .toEqual(['and it has a history', 'of more than five hundred years.']);
+    expect(pieces('and it is safer than before.')).toEqual(['and it is safer than before.']);
   });
 
   it('**1語だけの小片を作らない。** 切ると読みにくくなる', () => {
