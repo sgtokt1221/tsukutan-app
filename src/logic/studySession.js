@@ -21,8 +21,41 @@
  * 「何時に勉強しているか」の集計には使える。
  */
 
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallableFromURL } from 'firebase/functions';
 import { auth } from '../firebaseConfig.js';
+
+/**
+ * 勉強の記録を受けるのは**つくばホーム側**（`tsukubamanager-4900b` / 東京）。
+ *
+ * **`httpsCallable(getFunctions(), ...)` では届かない。** あれは*自分の*
+ * プロジェクト（`tsukutan-58b3f` / us-central1）を指すので、そこに無い関数を
+ * 呼び続けることになる。2026-09-22 まで**一度も届いていなかった**
+ * （向こうの `tsukutan_usage` が0件だった）。
+ */
+const RECORD_URL = process.env.REACT_APP_RECORD_STUDY_URL
+    || 'https://asia-northeast1-tsukubamanager-4900b.cloudfunctions.net/recordTsukutanStudy';
+
+/**
+ * 向こうへ渡す入場券。
+ *
+ * 生徒は**つくつくのプロジェクト**にサインインしているので、この ID トークンの
+ * `aud` / `iss` はつくつくのもの。つくばホームの `onCall` はそれを認証として
+ * 通さない（`request.auth` が空になる）ので、**中身として渡して向こうで検証**する
+ * （`functions/shared/tsukutan-token.js`）。uid は共通なので同じ生徒を指す。
+ */
+async function entryToken() {
+    const user = auth.currentUser;
+    if (!user) return '';
+    try {
+        return await user.getIdToken();
+    } catch (e) {
+        console.warn('[つくつく] 入場券を取れませんでした', e);
+        return '';
+    }
+}
+
+/** つくばホームの受け口。**呼び先を書き写さない** */
+const recordCall = () => httpsCallableFromURL(getFunctions(), RECORD_URL);
 
 /** 測っている最中のもの。**閉じられても残るように localStorage に置く** */
 const CURRENT_KEY = 'tsukutan.study.current';
@@ -44,6 +77,9 @@ const RANK_KEY = 'tsukutan.study.rank';
  * つくばホームにいつまでも出なかった（2026-09-22）。
  */
 const RANK_SENT_KEY = 'tsukutan.study.rankSent';
+
+/** 送信中のランク。**同じものを二重に送らない**ための栓 */
+let rankSending = null;
 
 /**
  * 手が止まってから、勉強が終わったとみなすまで（ミリ秒）。
@@ -166,19 +202,29 @@ export function setStudyRank(rankId) {
  * @returns {Promise<{ sent: boolean }>}
  */
 export async function sendStudyRank() {
-    const rank = read(RANK_KEY);
-    if (!rank) return { sent: false };
-    if (read(RANK_SENT_KEY) === rank) return { sent: false };
-    if (!auth.currentUser) return { sent: false };
+    // **送っている最中なら、それに乗る。** 起動時（`resumeAndFlush`）と画面側
+    // （`setStudyRank`）が重なると、同じランクを2回送ってしまう
+    if (rankSending !== null) return rankSending;
+    rankSending = (async () => {
+        const rank = read(RANK_KEY);
+        if (!rank) return { sent: false };
+        if (read(RANK_SENT_KEY) === rank) return { sent: false };
+        if (!auth.currentUser) return { sent: false };
+        try {
+            const call = recordCall();
+            await call({ sessions: [], rank, idToken: await entryToken() });
+            write(RANK_SENT_KEY, rank);
+            return { sent: true };
+        } catch (e) {
+            // **印を付けない。** 次に呼ばれたときにもう一度試す
+            console.warn('[つくつく] ランクを送れませんでした（次回試します）', e);
+            return { sent: false };
+        }
+    })();
     try {
-        const call = httpsCallable(getFunctions(), 'recordTsukutanStudy');
-        await call({ sessions: [], rank });
-        write(RANK_SENT_KEY, rank);
-        return { sent: true };
-    } catch (e) {
-        // **印を付けない。** 次に呼ばれたときにもう一度試す
-        console.warn('[つくつく] ランクを送れませんでした（次回試します）', e);
-        return { sent: false };
+        return await rankSending;
+    } finally {
+        rankSending = null;
     }
 }
 
@@ -194,11 +240,12 @@ export async function flushStudySessions() {
     if (list.length === 0) return { sent: 0, kept: 0 };
     if (!auth.currentUser) return { sent: 0, kept: list.length };
     try {
-        const call = httpsCallable(getFunctions(), 'recordTsukutanStudy');
+        const call = recordCall();
+        const idToken = await entryToken();
         const rank = read(RANK_KEY);
         // **未測定なら欄ごと出さない。** 向こうは「届いたときだけ書く」作りなので、
         // 空を送ると測ってあるランクを消しに行くことになる
-        const { data } = await call(rank ? { sessions: list, rank } : { sessions: list });
+        const { data } = await call(rank ? { sessions: list, rank, idToken } : { sessions: list, idToken });
         write(PENDING_KEY, null);
 
         /*
