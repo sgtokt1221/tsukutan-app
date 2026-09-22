@@ -9,7 +9,7 @@ import { readingGradeFor, EIKEN_LABELS } from '../../logic/readingLevel';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking } from '../../logic/transcribeApi';
-import { markPassage, readAloudScore, countsAsAloud, ALOUD_PASS } from '../../logic/readAloudMarks';
+import { markPassage, readAloudReach, countsAsAloud, ALOUD_PASS } from '../../logic/readAloudMarks';
 import logger from '../../logic/logger';
 import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
@@ -174,11 +174,13 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           出しただけの日まで数えると、塾が見ている○の意味が薄まる。
           押しただけ・無音のものは、そもそもここまで来ない。
 
-          **点は画面と同じものを使う**（`markPassage` → `readAloudScore`）。
-          ここで別に数え直すと、生徒に見せた％と○が食い違う。
+          **数えるのは「どこまで読み進んだか」**（`readAloudReach`）。聞き取れた語の
+          割合で線を引くと、**発音が弱い子は最後まで読んでも届かない**——いちばん
+          声を出してほしい生徒が、いつまでも「やっていない」ままになる。
+          画面に出す数字と同じものを使う（別に数え直すと％と○が食い違う）。
         */
-        const score = readAloudScore(markPassage(referenceText, heard));
-        if (countsAsAloud(score)) noteAloud(reading.title);
+        const reach = readAloudReach(markPassage(referenceText, heard));
+        if (countsAsAloud(reach)) noteAloud(reading.title);
         setAloud({ working: false, transcript: heard });
       })
       .catch((transcribeError) => {
@@ -266,7 +268,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
   const aloudParts = aloud && !aloud.working && aloud.transcript
     ? markPassage(readingEnglish(reading), aloud.transcript)
     : [];
-  const aloudScore = readAloudScore(aloudParts);
+  const aloudReach = readAloudReach(aloudParts);
 
   // 本文
   return (
@@ -400,7 +402,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
       {aloud && (
         <ReadAloudResult
           working={Boolean(aloud.working)}
-          score={aloudScore}
+          reach={aloudReach}
           // 色を付けた本文。**画面側で作り直さない**
           parts={aloudParts}
           pass={ALOUD_PASS}
