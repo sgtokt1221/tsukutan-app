@@ -575,3 +575,40 @@ describe('送り方', () => {
     warn.mockRestore();
   });
 });
+
+/**
+ * **短い長文を落とさない**（2026-09-22）。英検5級の長文は30秒で読み終わる。
+ * 勉強時間の下限（1分）で丸ごと落とすと、短い長文ばかり読んでいる生徒が
+ * 「音読していない」ことになる。
+ */
+describe('1分に満たない音読', () => {
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = signedIn; mockReply = {}; });
+  afterEach(() => { auth.currentUser = null; });
+
+  test('**音読していれば、1分未満でも送る**', async () => {
+    startStudySession();
+    advance(35_000);            // 35秒で読み終わった
+    noteAloud('Short Story');
+    const { payload } = endStudySession();
+
+    expect(payload).not.toBeNull();
+    expect(payload.aloud).toEqual({ count: 1, title: 'Short Story' });
+  });
+
+  test('音読していなければ、これまでどおり送らない', () => {
+    startStudySession();
+    advance(35_000);
+    noteActivity('new');
+    expect(endStudySession().payload).toBeNull();
+  });
+
+  test('実際の長さのまま送る（時間を水増ししない）', () => {
+    startStudySession();
+    advance(35_000);
+    noteAloud('Short Story');
+    const { payload } = endStudySession();
+
+    const ms = Date.parse(payload.endedAt) - Date.parse(payload.startedAt);
+    expect(ms).toBe(35_000);
+  });
+});
