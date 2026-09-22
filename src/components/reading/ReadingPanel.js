@@ -8,7 +8,7 @@ import {
 import { readingGradeFor, EIKEN_LABELS } from '../../logic/readingLevel';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
-import { transcribeSpeaking } from '../../logic/transcribeApi';
+import { transcribeSpeaking, reviewAnswer } from '../../logic/transcribeApi';
 import logger from '../../logic/logger';
 import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
@@ -139,22 +139,42 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     setSpeakingIndex(null);
   }, []);
 
-  // 録り終えたら文字起こしへ送る。押させるボタンは置かない。
+  /*
+    録り終えたら文字起こしへ送り、**続けて読み飛ばしを数えてもらう**。
+    押させるボタンは置かない。
+
+    **2回呼ぶ必要がある。** `transcribeSpeaking` が返すのは `{transcript}` だけで、
+    点の材料（`missing` / `total`）は `reviewAnswer` にしか無い。
+    ここを1回で済ませていたため、**どれだけ上手に読んでも `total` が
+    `undefined` → 点が null → 必ず「聞き取れませんでした」**で終わっていた
+    （2026-09-22 に指摘されるまで、成功しても失敗の顔をしていた）。
+    サーバは 200 を返しているので、ログを見ても気づけない。
+  */
   const { blob, stop: stopRecorder, reset: resetRecorder } = recorder;
   useEffect(() => {
     if (!blob || blob === handledBlobRef.current || !reading) return;
     handledBlobRef.current = blob;
 
+    const referenceText = readingEnglish(reading);
     setAloud({ working: true });
-    transcribeSpeaking(blob, { mode: 'scripted', referenceText: readingEnglish(reading) })
-      .then((result) => {
-        setAloud({ ...result, working: false });
+    transcribeSpeaking(blob, { mode: 'scripted', referenceText })
+      .then(async ({ transcript }) => {
+        const heard = String(transcript || '').trim();
+        if (heard === '') {
+          // **本当に何も聞き取れなかった。** 点は出さず、数えもしない
+          setAloud({ working: false, transcript: '', missing: [], total: 0 });
+          return;
+        }
         /*
           **聞き取れたときだけ1本と数える。** 押しただけ・無音で失敗したものまで
           数えると、つくばホームの「音読した日」が実態より多く出る
           （塾はそこを見て声をかけるので、多い方に外すと見落とす）。
+
+          **読み飛ばしを数える前に数える。** 読んだ事実は、採点が通ったかどうかとは別。
         */
         noteAloud(reading.title);
+        const { missing, total } = await reviewAnswer({ mode: 'scripted', transcript: heard, referenceText });
+        setAloud({ working: false, transcript: heard, missing, total });
       })
       .catch((transcribeError) => {
         logger.warn('音読を聞き取れませんでした', transcribeError);
