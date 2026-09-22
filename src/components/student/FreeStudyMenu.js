@@ -1,6 +1,7 @@
 import React from 'react';
-import { FaBook, FaChevronRight, FaGraduationCap, FaMicrophone, FaStar } from 'react-icons/fa';
+import { FaBook, FaBookOpen, FaChevronRight, FaGraduationCap, FaMicrophone, FaStar } from 'react-icons/fa';
 import RecommendationBadge from './RecommendationBadge';
+import { rangesOf } from '../../logic/bookWords';
 import './FreeStudyMenu.css';
 
 /**
@@ -10,12 +11,17 @@ import './FreeStudyMenu.css';
  * ボタンが12個並んでいて、何を選ぶ画面なのか分からなかった。
  * 中学英語 / 高校英語 / 英検 の3枚に畳んで、英検だけ下へ辿る。
  *
- *   main            [中学英語] [高校英語] [英検]
+ *   main            [教材] [中学英語] [高校英語] [英検]
+ *    ├ books     塾が配っている単語帳4冊（表紙つき）
+ *    │    └ book-range  番号の帯（1〜100 …）→ onSelectRange → そのままカードへ
  *    ├ 中学英語  → onSelectTextbook（レベル・品詞・意味の絞り込みへ）
  *    ├ 高校英語  → onSelectTextbook
  *    └ eiken     [単語を覚える] [二次試験（面接）]
  *         ├ eiken-words     → 級を選ぶ → onSelectTextbook
  *         └ eiken-interview → 級を選ぶ → onSelectInterview
+ *
+ * **教材だけ絞り込み画面（filter）を通さない。** 単語帳はレベルでも品詞でもなく
+ * **通し番号**で進めるものなので、番号の帯から直接カードへ行く。
  *
  * どの段にいるかは親（StudentDashboard）が持つ。ここで持つと、絞り込み画面へ
  * 進んだときにこの部品が外れて、戻ったとき必ず main に落ちてしまう。
@@ -33,6 +39,8 @@ export const freeStudyBackTarget = (mode, textbookId) => ({
   eiken: 'main',
   'eiken-words': 'eiken',
   'eiken-interview': 'eiken',
+  books: 'main',
+  'book-range': 'books',
   filter: textbookId?.startsWith('eiken-') ? 'eiken-words' : 'main',
 }[mode] || 'main');
 
@@ -46,11 +54,24 @@ const TEXTBOOK_ENTRIES = [
 const withCount = (description, count) =>
   count === null ? description : `${description}・${count.toLocaleString()}語`;
 
-function MenuCard({ Icon, title, description, badge, onClick }) {
+/**
+ * @param thumbnail 表紙の画像URL。**あればアイコンの代わりに出す**
+ *   （本は絵で覚えているので、題名より先に表紙で見つかる）
+ */
+function MenuCard({ Icon, title, description, badge, thumbnail, onClick }) {
   return (
     <button type="button" className="free-study-card" onClick={onClick}>
-      <span className="free-study-card__icon">
-        <Icon aria-hidden="true" />
+      <span className={thumbnail ? 'free-study-card__cover' : 'free-study-card__icon'}>
+        {thumbnail
+          ? (
+            /*
+              **読めなくても崩さない。** 表紙はつくばホームから読むので、
+              電波が悪いと出ないことがある。alt を空にして枠だけ残す
+              （題名は隣に出ているので、読み上げが二重にならない）。
+            */
+            <img src={thumbnail} alt="" loading="lazy" draggable="false" />
+          )
+          : <Icon aria-hidden="true" />}
       </span>
       <span className="free-study-card__body">
         <span className="free-study-card__title">
@@ -71,11 +92,53 @@ export default function FreeStudyMenu({
   onNavigate,
   eikenOptions,
   interviewGrades,
+  books,
+  selectedBook,
   wordCountOf,
   recommendationOf,
   onSelectTextbook,
   onSelectInterview,
+  onSelectBook,
+  onSelectRange,
 }) {
+  // 教材の一覧。**表紙で選べるようにする**（題名より先に絵で見つかる）
+  if (mode === 'books') {
+    return (
+      <div className="free-study-cards">
+        {(books || []).map((book) => (
+          <MenuCard
+            key={book.id}
+            Icon={FaBook}
+            thumbnail={book.cover}
+            title={book.title}
+            description={`${book.publisher}・${book.count.toLocaleString()}語`}
+            onClick={() => onSelectBook(book)}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // 番号の帯。**本を開いて「今日は301〜400」と進むのと同じ区切り**
+  if (mode === 'book-range') {
+    if (!selectedBook) return null;
+    return (
+      <div className="list-group">
+        {rangesOf(selectedBook.count).map((range) => (
+          <button
+            key={range.label}
+            type="button"
+            className="tile-button"
+            onClick={() => onSelectRange(selectedBook, range)}
+          >
+            <span className="tile-button__label">{range.label}</span>
+            <span className="tile-button__count">{range.count}語</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   if (mode === 'eiken') {
     return (
       <div className="free-study-cards">
@@ -148,6 +211,16 @@ export default function FreeStudyMenu({
 
   return (
     <div className="free-study-cards">
+      {/*
+        **教材を一番上に置く**（2026-09-22 の指定）。塾が実際に配っている本なので、
+        生徒はまずここを探す。
+      */}
+      <MenuCard
+        Icon={FaBookOpen}
+        title="教材"
+        description="塾で使っている単語帳から選ぶ"
+        onClick={() => onNavigate('books')}
+      />
       {TEXTBOOK_ENTRIES.map(({ id, title, description, Icon }) => (
         <MenuCard
           key={id}

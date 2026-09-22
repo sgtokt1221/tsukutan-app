@@ -21,6 +21,8 @@ import LevelNudge from './components/assessment/LevelNudge';
 import ReadingPanel from './components/reading/ReadingPanel';
 import { isAheadOfAssessment } from './logic/estimatedLevel';
 import { setStudyRank } from './logic/studySession';
+import { BOOKS, isBookId, getBook, bookWordsUrl } from './config/books';
+import { wordsInRange, rangeKeyOf } from './logic/bookWords';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
@@ -250,7 +252,14 @@ const freeStudyOptions = [
   { id: 'eiken-3', group: 'eiken', label: '英検3級', textbooks: ['highschool-english'] },
   { id: 'eiken-pre2', group: 'eiken', label: '英検準2級', textbooks: ['highschool-english'] },
   { id: 'eiken-2', group: 'eiken', label: '英検2級', textbooks: ['highschool-english'] },
-  { id: 'eiken-pre1', group: 'eiken', label: '英検準1級', textbooks: ['highschool-english'] }
+  { id: 'eiken-pre1', group: 'eiken', label: '英検準1級', textbooks: ['highschool-english'] },
+  /*
+    塾が配っている市販の単語帳。**定義の正本は `src/config/books.js`**
+    （表紙・収録語数・単語ファイルの場所まで持っている）。ここに並べるのは、
+    タイトル表示（`freeStudyTitle` / `handleSaveLog`）が
+    `freeStudyOptions` を引くため。**中身を二重に書かない。**
+  */
+  ...BOOKS.map((book) => ({ id: book.id, group: 'book', label: book.title }))
   // 英検1級は置かない。実データに eikenLevels: 1 の単語が1語も無く、
   // 常に「0語」のカードになる（src/config/levels.json も準1級まで）。
 ];
@@ -766,10 +775,20 @@ export default function StudentDashboard() {
       // 学習ログを保存
       logStudySession(user.uid, logData);
       
-      // 自由学習の場合、進捗も保存
-      if (currentLearningMode === 'free' && currentSessionInfo?.filterType === 'level' && selectedTextbookId) {
+      /*
+        自由学習の場合、進捗も保存。
+
+        **教材（番号の帯）も保存する**（2026-09-22）。100語を2回に分けてやるのは
+        普通なので、ここを `level` だけにしておくと**毎回1番から**になる。
+        鍵に使う名前は `filterValue`（`1〜100`）ではなく `rangeKey`
+        （`1-100`）——`〜` を Firestore のドキュメントIDに入れない。
+      */
+      const isRange = currentSessionInfo?.filterType === 'range';
+      if (currentLearningMode === 'free' && (currentSessionInfo?.filterType === 'level' || isRange) && selectedTextbookId) {
         const lastIndex = logData.index || 0;
-        const level = currentSessionInfo.filterValue.replace('レベル', '');
+        const level = isRange
+          ? currentSessionInfo.rangeKey
+          : currentSessionInfo.filterValue.replace('レベル', '');
         
         logger.debug('進捗保存:', {
           userId: user.uid,
@@ -819,9 +838,11 @@ export default function StudentDashboard() {
     reloadBookmarks();
     setViewMode('select');
     
-    // 自由学習モードの場合は教材のレベル別ページに戻る
+    // 自由学習モードの場合は教材のレベル別ページに戻る。
+    // **教材は番号の帯へ戻す**——絞り込み画面は通っていないので、
+    // そこへ返すと行ったことのない画面に着地する（2026-09-22）
     if (currentLearningMode === 'free' && selectedTextbookId) {
-      setSelectionMode('filter');
+      setSelectionMode(isBookId(selectedTextbookId) ? 'book-range' : 'filter');
     } else {
       setSelectionMode('main');
     }
@@ -1222,6 +1243,57 @@ export default function StudentDashboard() {
     setCurrentLearningMode('extra');
     setLearningWords(dailyPlan.extraNewWords);
     setViewMode('learn');
+  };
+
+  /**
+   * 教材（市販の単語帳）を選んだ。**番号の帯の一覧へ進む。**
+   *
+   * 単語はここでは読まない。帯を押した時点で読む——4冊ぶんを先読みすると
+   * 選ばない本まで落ちてくる。
+   */
+  const handleSelectBook = (book) => {
+    setSelectedTextbookId(book.id);
+    setSelectionMode('book-range');
+  };
+
+  /**
+   * 番号の帯を押した。**その場で読んで、そのままカードへ。**
+   *
+   * 絞り込み画面（レベル・品詞・意味）は通さない。単語帳は通し番号で進めるもので、
+   * レベルで切り直すと本と別の並びになる。
+   */
+  const startBookRange = async (book, range) => {
+    try {
+      const response = await fetch(bookWordsUrl(book));
+      // SPA の書き換えで index.html が 200 で返ることがある（wordMaster.js と同じ用心）
+      if (!response.ok) throw new Error(`${response.status}`);
+      const all = await response.json();
+      const words = wordsInRange(all, range.from, range.to);
+      if (words.length === 0) {
+        alert('この範囲の単語が読み込めませんでした。電波の良いところで試してください。');
+        return;
+      }
+
+      const rangeKey = rangeKeyOf(range.from, range.to);
+      const uid = auth.currentUser?.uid;
+      // **前回の続きから。** 100語を2回に分けるのは普通の使い方
+      const startIndex = uid ? await getFreeStudyProgress(uid, book.id, rangeKey) : 0;
+
+      setCurrentSessionInfo({
+        textbookId: book.title,
+        filterType: 'range',
+        filterValue: range.label,
+        // 進捗の鍵。**`〜` を Firestore のドキュメントIDに入れない**
+        rangeKey,
+        startIndex: startIndex < words.length ? startIndex : 0,
+      });
+      setCurrentLearningMode('free');
+      setLearningWords(words);
+      setViewMode('learn');
+    } catch (error) {
+      logger.warn('教材の単語を読めませんでした', error);
+      alert('教材を読み込めませんでした。電波の良いところで試してください。');
+    }
   };
 
   const startBookmarkWords = () => {
@@ -1778,6 +1850,7 @@ export default function StudentDashboard() {
     eiken: '英検',
     'eiken-words': '英検の単語',
     'eiken-interview': '英検 二次試験（面接）',
+    books: '教材で選ぶ',
   }[selectionMode]
     || freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label
     || selectedTextbookId;
@@ -1816,10 +1889,14 @@ export default function StudentDashboard() {
                   onNavigate={setSelectionMode}
                   eikenOptions={freeStudyOptions.filter((option) => option.group === 'eiken')}
                   interviewGrades={INTERVIEW_GRADES}
+                  books={BOOKS}
+                  selectedBook={getBook(selectedTextbookId)}
                   wordCountOf={wordCountOf}
                   recommendationOf={recommendationOf}
                   onSelectTextbook={handleSelectTextbook}
                   onSelectInterview={setInterviewGrade}
+                  onSelectBook={handleSelectBook}
+                  onSelectRange={startBookRange}
                 />
               ) : (
                 <>
