@@ -21,7 +21,6 @@
  * 「何時に勉強しているか」の集計には使える。
  */
 
-import { getFunctions, httpsCallableFromURL } from 'firebase/functions';
 import { auth } from '../firebaseConfig.js';
 
 /**
@@ -54,8 +53,38 @@ async function entryToken() {
     }
 }
 
-/** つくばホームの受け口。**呼び先を書き写さない** */
-const recordCall = () => httpsCallableFromURL(getFunctions(), RECORD_URL);
+/**
+ * つくばホームの受け口を呼ぶ。**Firebase の callable SDK を使わない。**
+ *
+ * `httpsCallable` / `httpsCallableFromURL` は**こちらの ID トークンを
+ * `Authorization` ヘッダに自動で付ける**。向こうの `onCall` は自分の
+ * プロジェクトのトークンしか受け付けないので、
+ *
+ *   Firebase ID token has incorrect "aud" claim.
+ *     Expected "tsukubamanager-4900b" but got "tsukutan-58b3f"
+ *   Callable request verification failed → 401
+ *
+ * で、**こちらの処理に入る前に弾かれる**（2026-09-22 に本番のログで確認）。
+ * ヘッダを付けずに、callable と同じ形（`{ data: ... }`）で投げる。
+ * 本人の証明は中身の `idToken` に載せ、**向こうが自分で検証する**
+ * （`functions/shared/tsukutan-token.js`）。
+ *
+ * @param {object} payload
+ * @returns {Promise<object>} 向こうの返り値
+ */
+async function callRecord(payload) {
+    const res = await fetch(RECORD_URL, {
+        method: 'POST',
+        // **`Authorization` を付けない。** 付けると枠組みに 401 で弾かれる
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: payload }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || body.error) {
+        throw new Error((body.error && body.error.message) || `記録を送れませんでした (${res.status})`);
+    }
+    return body.result || {};
+}
 
 /** 測っている最中のもの。**閉じられても残るように localStorage に置く** */
 const CURRENT_KEY = 'tsukutan.study.current';
@@ -211,8 +240,7 @@ export async function sendStudyRank() {
         if (read(RANK_SENT_KEY) === rank) return { sent: false };
         if (!auth.currentUser) return { sent: false };
         try {
-            const call = recordCall();
-            await call({ sessions: [], rank, idToken: await entryToken() });
+            await callRecord({ sessions: [], rank, idToken: await entryToken() });
             write(RANK_SENT_KEY, rank);
             return { sent: true };
         } catch (e) {
@@ -240,12 +268,11 @@ export async function flushStudySessions() {
     if (list.length === 0) return { sent: 0, kept: 0 };
     if (!auth.currentUser) return { sent: 0, kept: list.length };
     try {
-        const call = recordCall();
         const idToken = await entryToken();
         const rank = read(RANK_KEY);
         // **未測定なら欄ごと出さない。** 向こうは「届いたときだけ書く」作りなので、
         // 空を送ると測ってあるランクを消しに行くことになる
-        const { data } = await call(rank ? { sessions: list, rank, idToken } : { sessions: list, idToken });
+        const data = await callRecord(rank ? { sessions: list, rank, idToken } : { sessions: list, idToken });
         write(PENDING_KEY, null);
 
         /*

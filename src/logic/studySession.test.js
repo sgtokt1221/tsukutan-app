@@ -11,15 +11,26 @@
 const sentCalls = [];
 /** 向こうの返事。テストごとに差し替える */
 let mockReply = {};
-/** 呼び先のURL。**つくばホーム側**でなければならない */
+/** 呼び先のURLと、付いたヘッダ。**つくばホーム側**でなければならない */
 let mockCalledUrl = '';
-jest.mock('firebase/functions', () => ({
-  getFunctions: () => ({}),
-  httpsCallableFromURL: (fns, url) => {
-    mockCalledUrl = url;
-    return jest.fn(async (payload) => { sentCalls.push(payload); return { data: mockReply }; });
-  },
-}));
+let mockHeaders = {};
+/*
+  **callable SDK を使わない**ので、`fetch` を差し替えて見る。
+  SDK は ID トークンを `Authorization` に自動で付けてしまい、
+  向こうの枠組みに 401 で弾かれる（2026-09-22 に本番のログで確認）。
+*/
+/**
+ * **毎回入れ直す。** CRA の Jest は `resetMocks: true` で、テストごとに
+ * モックの中身まで消える（module 直下で1度だけ入れると2件目から空になる）。
+ */
+const installFetch = () => {
+  global.fetch = jest.fn(async (url, init) => {
+    mockCalledUrl = String(url);
+    mockHeaders = (init && init.headers) || {};
+    sentCalls.push(JSON.parse(init.body).data);
+    return { ok: true, status: 200, json: async () => ({ result: mockReply }) };
+  });
+};
 jest.mock('firebase/auth', () => ({ signInWithCustomToken: jest.fn() }));
 jest.mock('../firebaseConfig.js', () => ({ auth: { currentUser: null }, db: {} }));
 
@@ -56,6 +67,7 @@ let nowMs;
 const advance = (ms) => { nowMs += ms; };
 
 beforeEach(() => {
+  installFetch();
   localStorage.clear();
   _reset();
   nowMs = Date.parse('2026-09-20T19:00:00+09:00');
@@ -507,5 +519,59 @@ describe('どこへ送るか', () => {
     await settle();
 
     expect(sentCalls[0]).toEqual({ sessions: [], rank: 'B', idToken: 'ID-TOKEN' });
+  });
+});
+
+/**
+ * **`Authorization` を付けない。**
+ *
+ * Firebase の callable SDK（`httpsCallable` / `httpsCallableFromURL`）は
+ * こちらの ID トークンを自動で付ける。向こうの `onCall` は自分のプロジェクトの
+ * トークンしか受け付けないので、**こちらの処理に入る前に 401 で弾かれる**
+ * （2026-09-22 に本番のログで確認：`incorrect "aud" claim`）。
+ */
+describe('送り方', () => {
+  beforeEach(() => { sentCalls.length = 0; mockHeaders = {}; auth.currentUser = signedIn; mockReply = {}; });
+  afterEach(() => { auth.currentUser = null; });
+
+  test('**Authorization ヘッダを付けない**（付けると 401 で弾かれる）', async () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+
+    expect(Object.keys(mockHeaders)).toEqual(['Content-Type']);
+  });
+
+  test('callable と同じ形（`{ data: ... }`）で投げる', async () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+
+    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(Object.keys(body)).toEqual(['data']);
+    expect(body.data.sessions).toHaveLength(1);
+  });
+
+  test('**断られたら積んだものを消さない**（理由も出す）', async () => {
+    // **`Once` にしない。** 締めた時点で1回送るので、そこで使い切ってしまう
+    global.fetch.mockImplementation(async () => ({
+      ok: false, status: 401, json: async () => ({ error: { message: 'ログインが必要です。' } }),
+    }));
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await settle();
+
+    expect(JSON.parse(localStorage.getItem('tsukutan.study.pending'))).toHaveLength(1);
+    expect(await flushStudySessions()).toMatchObject({ sent: 0, kept: 1 });
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
   });
 });
