@@ -5,7 +5,7 @@
  * `the` や `is` を前半で一度読んだだけで、後半の同じ語まで「読めた」になっていた
  * （2026-09-22 に指摘）。読んだ順に突き合わせることをここで固定する。
  */
-import { markPassage, normalizeWord, readAloudScore } from './readAloudMarks';
+import { markPassage, normalizeWord, readAloudScore, countsAsAloud, ALOUD_PASS } from './readAloudMarks';
 
 /** 読めた語／飛ばした語を取り出す */
 const readOf = (parts) => parts.filter((p) => p.word && p.read).map((p) => p.text);
@@ -110,5 +110,38 @@ describe('読めた割合', () => {
     expect(readAloudScore([])).toBeNull();
     expect(readAloudScore(markPassage('...', 'x'))).toBeNull();
     expect(readAloudScore(null)).toBeNull();
+  });
+});
+
+/**
+ * **つくばホームに出る「音読 ○」は習慣を見るもの**（2026-09-22 に決めた）。
+ * 開いて少し声を出しただけの日まで数えると、塾が見ている○の意味が薄まる。
+ */
+describe('「音読した日」に数える線', () => {
+  it('8割', () => {
+    expect(ALOUD_PASS).toBe(80);
+  });
+
+  it('**ちょうど8割は数える**（境目で落とさない）', () => {
+    expect(countsAsAloud(80)).toBe(true);
+    expect(countsAsAloud(79)).toBe(false);
+    expect(countsAsAloud(100)).toBe(true);
+  });
+
+  it('測れていないものは数えない', () => {
+    expect(countsAsAloud(null)).toBe(false);
+    expect(countsAsAloud(undefined)).toBe(false);
+    expect(countsAsAloud(NaN)).toBe(false);
+  });
+
+  it('本文の途中でやめた回は数えない', () => {
+    const parts = markPassage('The dog is big. The cat is small.', 'the dog is big');
+    expect(countsAsAloud(readAloudScore(parts))).toBe(false);
+  });
+
+  it('つかえながらでも最後まで読めば数える', () => {
+    const parts = markPassage('The dog is big. The cat is small.', 'the dog is big the cat is');
+    expect(readAloudScore(parts)).toBe(88);
+    expect(countsAsAloud(readAloudScore(parts))).toBe(true);
   });
 });

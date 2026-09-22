@@ -253,7 +253,7 @@ describe('音読の結果', () => {
 });
 
 describe('つくばホームへ送る音読の数', () => {
-  it('聞き取れたら1本と数える', async () => {
+  it('8割以上読めたら1本と数える', async () => {
     mockTranscribe.mockResolvedValue({ transcript: 'I get up at six we eat at eight' });
 
     const view = await openReading();
@@ -261,6 +261,26 @@ describe('つくばホームへ送る音読の数', () => {
     finishRecording(view);
 
     await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('My Morning'));
+    expect(await screen.findByText('80% 以上読めたので「音読した日」になりました')).toBeInTheDocument();
+  });
+
+  /*
+    **塾が見ているのは習慣**（2026-09-22 に決めた）。開いて少し声を出しただけの
+    日まで「音読した日」にすると、○の意味が薄まる。
+  */
+  it('**8割に届かなければ数えない。** ただし本人には理由を出す', async () => {
+    // 9語のうち5語＝56%
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
+
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('button', { name: '音読する' }));
+    finishRecording(view);
+
+    // 点と色分けはこれまでどおり出る
+    expect(await screen.findByText('56')).toBeInTheDocument();
+    // **黙って落とさない**——「やったのに数えられていない」になる
+    expect(screen.getByText('80% 以上読めると「音読した日」になります')).toBeInTheDocument();
+    expect(mockNoteAloud).not.toHaveBeenCalled();
   });
 
   /*

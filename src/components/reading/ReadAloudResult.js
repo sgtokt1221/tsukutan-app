@@ -26,12 +26,15 @@ const commentFor = (score) => {
 /**
  * @param parts 色を付けた本文（`logic/readAloudMarks.js` の `markPassage`）。
  *   **ここで作り直さない**——点と色が別の計算から出ると、静かに食い違う
+ * @param pass 「音読した日」に数える下限（`ALOUD_PASS`）。届いたかを本人に出す
  */
 export default function ReadAloudResult({
-  working = false, score, parts = [], failure = '', onClose, onRetry,
+  working = false, score, parts = [], pass = null, failure = '', onClose, onRetry,
 }) {
   const done = !working && failure === '' && score !== null;
   const marked = done ? parts : [];
+  // 届いたかどうか。**黙って落とさない**——「やったのに○が付かない」になる
+  const counted = done && pass !== null ? score >= pass : null;
 
   return (
     <div className="aloud-result-backdrop" role="presentation" onClick={onClose}>
@@ -68,6 +71,18 @@ export default function ReadAloudResult({
               <span className="aloud-result__unit">% 読みました</span>
             </p>
             <p className="aloud-result__comment">{commentFor(score)}</p>
+            {/*
+              **塾に「音読した日」として出る線を、本人にも見せる**（2026-09-22）。
+              黙って落とすと「やったのに数えられていない」になり、
+              こちらからは気づけない。
+            */}
+            {counted !== null && (
+              <p className={counted ? 'aloud-result__counted is-ok' : 'aloud-result__counted'}>
+                {counted
+                  ? `${pass}% 以上読めたので「音読した日」になりました`
+                  : `${pass}% 以上読めると「音読した日」になります`}
+              </p>
+            )}
             {marked.length > 0 && (
               <div className="aloud-result__passage" data-testid="aloud-passage">
                 {/*
