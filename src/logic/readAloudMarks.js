@@ -25,22 +25,26 @@
  */
 
 /**
- * 「音読した」と数える下限。**8割**（2026-09-22 に決めた）。
+ * 「音読した」と数える下限。**本文の8割まで読み進めたら**（2026-09-22）。
  *
- * つくばホームの管理画面に出る「音読 ○」は、**この線を越えた日**のこと。
- * 見ているのは**習慣**——毎日やっているか——なので、
+ * ## 聞き取れた割合では見ない
  *
- * - 低すぎると、開いて少し声を出しただけの日まで「やった」になる
- * - 高すぎると、つかえながらでも最後まで読んだ日が落ちる
+ * はじめは「聞き取れた語の割合」で線を引いていたが、**発音が弱い子は最後まで
+ * 読んでも届かない**。聞き取りは発音に引きずられるので、いちばん声を出して
+ * ほしい生徒がいつまでも「やっていない」ままになる。
+ *
+ * つくばホームの ○ は**習慣**——毎日やっているか——を見るものなので、
+ * **どこまで読み進んだか**（`readAloudReach`）で決める。うまく読めたかどうかは
+ * 本文の色分けで本人に返せばよく、○ の条件にしない。
  *
  * **画面の言葉と揃えること。** つくばホーム側の見出しは
- * 「8割以上読めた日」（`src/shared/tsukutan-usage-view.js`）。
+ * 「8割以上読み進めた日」（`src/shared/tsukutan-usage-view.js`）。
  * 片方だけ変えると、塾が見ている○の意味と生徒に出している基準が食い違う。
  */
 export const ALOUD_PASS = 80;
 
-/** つくばホームの「音読した日」に数えるか */
-export const countsAsAloud = (score) => Number.isFinite(score) && score >= ALOUD_PASS;
+/** つくばホームの「音読した日」に数えるか。渡すのは**読み進んだ割合** */
+export const countsAsAloud = (reach) => Number.isFinite(reach) && reach >= ALOUD_PASS;
 
 /** サーバの `normalize` と同じ形に直す（小文字・`a-z0-9'` 以外は落とす） */
 export const normalizeWord = (text) =>
@@ -134,15 +138,26 @@ export function markPassage(referenceText, transcript) {
 }
 
 /**
- * 読めた割合。**本文の語数を分母にする**（異なり語数ではない）。
+ * **どこまで読み進んだか。** 最後に聞き取れた語の位置で見る。
  *
- * 「本文のどれだけを声に出せたか」なので、同じ語が2回出てくるなら2回数える。
+ * 聞き取れた語の「数」で見ると、**発音が弱い子は最後まで読んでも割合が上がらない**
+ * （2026-09-22 の指摘）。聞き取りは発音に引きずられるので、いちばん声を出して
+ * ほしい生徒ほど低く出る。
+ *
+ * 最後まで読めば、途中がうまく拾えなくても**終わりのほうのどれかは拾える**。
+ * その位置までを「読み進んだ」とすれば、**読んだ量**で見られる。
+ *
+ * - 全部読んだが半分しか拾えなかった → 最後の語が拾えていれば 100%
+ * - 半分でやめた → 50% あたり
+ * - 何も拾えなかった → 0%
  *
  * @param {{word: boolean, read: boolean}[]} parts `markPassage` の結果
  * @returns {number|null} 数えられないときは null（0% と言わない）
  */
-export function readAloudScore(parts) {
+export function readAloudReach(parts) {
   const words = (Array.isArray(parts) ? parts : []).filter((p) => p && p.word);
   if (words.length === 0) return null;
-  return Math.round((words.filter((p) => p.read).length / words.length) * 100);
+  let last = -1;
+  words.forEach((p, i) => { if (p.read) last = i; });
+  return Math.round(((last + 1) / words.length) * 100);
 }

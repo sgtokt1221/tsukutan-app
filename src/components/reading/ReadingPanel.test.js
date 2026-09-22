@@ -156,7 +156,7 @@ describe('音読の結果', () => {
     finishRecording(view);
 
     expect(await screen.findByText('100')).toBeInTheDocument();
-    expect(screen.getByText('% 読みました')).toBeInTheDocument();
+    expect(screen.getByText('% 読み進めました')).toBeInTheDocument();
     expect(screen.queryByText('聞き取れませんでした。もう一度どうぞ。')).not.toBeInTheDocument();
   });
 
@@ -165,21 +165,41 @@ describe('音読の結果', () => {
     本文のどこだったか分からず、読み直す場所を探せなかった。
     本文をそのまま並べて、読めた語は緑・飛ばした語は赤にする。
   */
-  it('点が下がり、**途中で飛ばした語だけ赤になる**', async () => {
-    // 本文は9語。`get` だけ言えなかった
+  it('**拾えなかった語は赤。** ただし最後まで届いていれば 100%', async () => {
+    // 本文は9語。`get` だけ拾えなかったが、最後の `eight` まで届いている
     mockTranscribe.mockResolvedValue({ transcript: 'I up at six we eat at eight' });
 
     const view = await openReading();
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
     finishRecording(view);
 
-    expect(await screen.findByText('89')).toBeInTheDocument();
+    expect(await screen.findByText('100')).toBeInTheDocument();
 
     const passage = screen.getByTestId('aloud-passage');
     const missed = [...passage.querySelectorAll('.aloud-result__text .is-missed')].map((n) => n.textContent);
     expect(missed).toEqual(['get']);
     // 句読点ごと本文が残っている（語だけ抜き出して並べ替えない）
     expect(passage.querySelector('.aloud-result__text').textContent).toBe('I get up at six. We eat at eight.');
+  });
+
+  /*
+    **これが 2026-09-22 の指摘。** 聞き取れた語の割合で線を引くと、発音が弱い子は
+    最後まで読んでも届かず、いちばん声を出してほしい生徒がずっと「やっていない」
+    ままになる。読んだ量（どこまで進んだか）で見る。
+  */
+  it('**発音が弱くて半分も拾えなくても、最後まで読めば数える**', async () => {
+    // 9語のうち拾えたのは3語だけ。でも最後の `eight` まで届いている
+    mockTranscribe.mockResolvedValue({ transcript: 'get six eight' });
+
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('button', { name: '音読する' }));
+    finishRecording(view);
+
+    expect(await screen.findByText('100')).toBeInTheDocument();
+    await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('My Morning'));
+    // 拾えなかった語は赤のまま（本人にはそこが見える）
+    const passage = screen.getByTestId('aloud-passage');
+    expect(passage.querySelectorAll('.aloud-result__text .is-missed').length).toBe(6);
   });
 
   it('全部読めたら赤は1つも出ない', async () => {
@@ -229,7 +249,7 @@ describe('音読の結果', () => {
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
     finishRecording(view);
 
-    // 9語のうち5語＝56%
+    // 5語目（six）で止まっている＝56%
     await screen.findByText('56');
     const passage = screen.getByTestId('aloud-passage');
     const missed = [...passage.querySelectorAll('.aloud-result__text .is-missed')].map((n) => n.textContent);
@@ -261,15 +281,15 @@ describe('つくばホームへ送る音読の数', () => {
     finishRecording(view);
 
     await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('My Morning'));
-    expect(await screen.findByText('80% 以上読めたので「音読した日」になりました')).toBeInTheDocument();
+    expect(await screen.findByText('文章の 80% 以上を読んだので「音読した日」になりました')).toBeInTheDocument();
   });
 
   /*
     **塾が見ているのは習慣**（2026-09-22 に決めた）。開いて少し声を出しただけの
     日まで「音読した日」にすると、○の意味が薄まる。
   */
-  it('**8割に届かなければ数えない。** ただし本人には理由を出す', async () => {
-    // 9語のうち5語＝56%
+  it('**8割まで進んでいなければ数えない。** ただし本人には理由を出す', async () => {
+    // 5語目（six）で止まっている＝56%
     mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
 
     const view = await openReading();
@@ -279,7 +299,7 @@ describe('つくばホームへ送る音読の数', () => {
     // 点と色分けはこれまでどおり出る
     expect(await screen.findByText('56')).toBeInTheDocument();
     // **黙って落とさない**——「やったのに数えられていない」になる
-    expect(screen.getByText('80% 以上読めると「音読した日」になります')).toBeInTheDocument();
+    expect(screen.getByText('文章の 80% 以上まで読み進めると「音読した日」になります')).toBeInTheDocument();
     expect(mockNoteAloud).not.toHaveBeenCalled();
   });
 

@@ -5,7 +5,7 @@
  * `the` や `is` を前半で一度読んだだけで、後半の同じ語まで「読めた」になっていた
  * （2026-09-22 に指摘）。読んだ順に突き合わせることをここで固定する。
  */
-import { markPassage, normalizeWord, readAloudScore, countsAsAloud, ALOUD_PASS } from './readAloudMarks';
+import { markPassage, normalizeWord, readAloudReach, countsAsAloud, ALOUD_PASS } from './readAloudMarks';
 
 /** 読めた語／飛ばした語を取り出す */
 const readOf = (parts) => parts.filter((p) => p.word && p.read).map((p) => p.text);
@@ -91,25 +91,37 @@ describe('本文の形を崩さない', () => {
   });
 });
 
-describe('読めた割合', () => {
+describe('どこまで読み進んだか', () => {
   /*
-    **分母は本文の語数**（異なり語数ではない）。「本文のどれだけを声に出せたか」
-    なので、同じ語が2回出てくるなら2回数える。
+    **聞き取れた語の「数」で見ない**（2026-09-22 の指摘）。聞き取りは発音に
+    引きずられるので、発音が弱い子は最後まで読んでも割合が上がらず、
+    いちばん声を出してほしい生徒がいつまでも「やっていない」ままになる。
+    最後に聞き取れた語の**位置**で見れば、読んだ量で測れる。
   */
-  it('本文の語数を分母にする', () => {
-    expect(readAloudScore(markPassage('I get up at six.', 'I get up at six'))).toBe(100);
-    expect(readAloudScore(markPassage('I get up at six.', 'I get up'))).toBe(60);
+  it('**全部読めば、途中が拾えなくても 100%**（発音で落とさない）', () => {
+    // 9語のうち拾えたのは3語だけ。でも最後の語まで届いている
+    const parts = markPassage('The dog is big and the cat is small', 'dog big small');
+    expect(parts.filter((p) => p.word && p.read)).toHaveLength(3);
+    expect(readAloudReach(parts)).toBe(100);
   });
 
-  it('**後半を読んでいなければ、そのぶん下がる**（集合で見ると100%になっていた）', () => {
+  it('半分でやめたら半分あたり', () => {
     const parts = markPassage('The dog is big. The cat is small.', 'the dog is big');
-    expect(readAloudScore(parts)).toBe(50);
+    expect(readAloudReach(parts)).toBe(50);
+  });
+
+  it('最後まで読めば 100%', () => {
+    expect(readAloudReach(markPassage('I get up at six.', 'I get up at six'))).toBe(100);
+  });
+
+  it('何も拾えなければ 0%', () => {
+    expect(readAloudReach(markPassage('I get up at six.', ''))).toBe(0);
   });
 
   it('**数えられなければ null**（0% と言わない）', () => {
-    expect(readAloudScore([])).toBeNull();
-    expect(readAloudScore(markPassage('...', 'x'))).toBeNull();
-    expect(readAloudScore(null)).toBeNull();
+    expect(readAloudReach([])).toBeNull();
+    expect(readAloudReach(markPassage('...', 'x'))).toBeNull();
+    expect(readAloudReach(null)).toBeNull();
   });
 });
 
@@ -118,7 +130,7 @@ describe('読めた割合', () => {
  * 開いて少し声を出しただけの日まで数えると、塾が見ている○の意味が薄まる。
  */
 describe('「音読した日」に数える線', () => {
-  it('8割', () => {
+  it('本文の8割まで読み進めたら', () => {
     expect(ALOUD_PASS).toBe(80);
   });
 
@@ -136,12 +148,17 @@ describe('「音読した日」に数える線', () => {
 
   it('本文の途中でやめた回は数えない', () => {
     const parts = markPassage('The dog is big. The cat is small.', 'the dog is big');
-    expect(countsAsAloud(readAloudScore(parts))).toBe(false);
+    expect(countsAsAloud(readAloudReach(parts))).toBe(false);
   });
 
-  it('つかえながらでも最後まで読めば数える', () => {
-    const parts = markPassage('The dog is big. The cat is small.', 'the dog is big the cat is');
-    expect(readAloudScore(parts)).toBe(88);
-    expect(countsAsAloud(readAloudScore(parts))).toBe(true);
+  /*
+    **これが 2026-09-22 の指摘。** 発音が弱くて半分も拾えなくても、
+    最後まで声に出していれば「音読した日」にする。
+  */
+  it('**発音が弱くても、最後まで読めば数える**', () => {
+    const parts = markPassage('The dog is big and the cat is small', 'dog big small');
+    // 拾えたのは9語中3語だけ
+    expect(parts.filter((p) => p.word && p.read)).toHaveLength(3);
+    expect(countsAsAloud(readAloudReach(parts))).toBe(true);
   });
 });

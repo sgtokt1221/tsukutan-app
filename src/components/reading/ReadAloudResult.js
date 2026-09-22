@@ -4,7 +4,7 @@
  * **読み終わったら区切りを付ける。** 以前は本文の下に静かに出していたので、
  * スクロールして戻らないと気づけず、「音読しても何も起きない」に見えた。
  *
- * 出すのは「どれだけ読めたか」と「本文のどこを飛ばしたか」の2つだけ。
+ * 出すのは「どこまで読み進んだか」と「本文のどこが聞き取れたか」の2つだけ。
  * 発音の良し悪しは測っていない（→ `logic/transcribeApi.js`）ので言わない。
  *
  * **読み飛ばした語の一覧はやめた**（2026-09-22）。語だけ並べても本文のどこ
@@ -14,27 +14,33 @@
 import React from 'react';
 import './ReadAloudResult.css';
 
-/** 点に応じた一言。**数字だけ出して黙らない** */
-const commentFor = (score) => {
-  if (score === null) return '聞き取れませんでした。もう一度どうぞ。';
-  if (score >= 95) return 'ほとんど読めました。';
-  if (score >= 80) return 'よく読めました。飛ばした語を確かめましょう。';
-  if (score >= 50) return '半分より多く読めました。ゆっくりでいいので全部読んでみましょう。';
-  return 'まずは読める語を増やしましょう。区切りごとに声に出すと読みやすくなります。';
+/**
+ * 進み具合に応じた一言。**数字だけ出して黙らない**
+ *
+ * 言うのは「どこまで読んだか」だけ。**うまさには触れない**——
+ * 聞き取りは発音に引きずられるので、そこを責めると声を出さなくなる。
+ */
+const commentFor = (reach) => {
+  if (reach === null) return '聞き取れませんでした。もう一度どうぞ。';
+  if (reach >= 95) return '最後まで読み進めました。';
+  if (reach >= 80) return 'よく読み進めました。';
+  if (reach >= 50) return '半分より先まで進みました。最後まで声に出してみましょう。';
+  return 'まずは最後まで声に出してみましょう。つかえても大丈夫です。';
 };
 
 /**
  * @param parts 色を付けた本文（`logic/readAloudMarks.js` の `markPassage`）。
  *   **ここで作り直さない**——点と色が別の計算から出ると、静かに食い違う
+ * @param reach どこまで読み進んだか（`readAloudReach`）。**うまさではない**
  * @param pass 「音読した日」に数える下限（`ALOUD_PASS`）。届いたかを本人に出す
  */
 export default function ReadAloudResult({
-  working = false, score, parts = [], pass = null, failure = '', onClose, onRetry,
+  working = false, reach, parts = [], pass = null, failure = '', onClose, onRetry,
 }) {
-  const done = !working && failure === '' && score !== null;
+  const done = !working && failure === '' && reach !== null;
   const marked = done ? parts : [];
   // 届いたかどうか。**黙って落とさない**——「やったのに○が付かない」になる
-  const counted = done && pass !== null ? score >= pass : null;
+  const counted = done && pass !== null ? reach >= pass : null;
 
   return (
     <div className="aloud-result-backdrop" role="presentation" onClick={onClose}>
@@ -67,10 +73,10 @@ export default function ReadAloudResult({
         ) : (
           <>
             <p className="aloud-result__score">
-              <span className="aloud-result__value">{score === null ? '—' : score}</span>
-              <span className="aloud-result__unit">% 読みました</span>
+              <span className="aloud-result__value">{reach === null ? '—' : reach}</span>
+              <span className="aloud-result__unit">% 読み進めました</span>
             </p>
-            <p className="aloud-result__comment">{commentFor(score)}</p>
+            <p className="aloud-result__comment">{commentFor(reach)}</p>
             {/*
               **塾に「音読した日」として出る線を、本人にも見せる**（2026-09-22）。
               黙って落とすと「やったのに数えられていない」になり、
@@ -79,19 +85,23 @@ export default function ReadAloudResult({
             {counted !== null && (
               <p className={counted ? 'aloud-result__counted is-ok' : 'aloud-result__counted'}>
                 {counted
-                  ? `${pass}% 以上読めたので「音読した日」になりました`
-                  : `${pass}% 以上読めると「音読した日」になります`}
+                  ? `文章の ${pass}% 以上を読んだので「音読した日」になりました`
+                  : `文章の ${pass}% 以上まで読み進めると「音読した日」になります`}
               </p>
             )}
             {marked.length > 0 && (
               <div className="aloud-result__passage" data-testid="aloud-passage">
                 {/*
-                  **色だけに頼らない**（→ dads）。読み飛ばしには下線も引き、
+                  **「読み飛ばし」と言わない**（2026-09-22）。赤は飛ばしたところ
+                  とは限らない——声に出していても、発音のせいで聞き取れなかった
+                  だけのことがある。**読んでいないと決めつけない**。
+
+                  **色だけに頼らない**（→ dads）。赤には下線も引き、
                   上に何色が何を指すかを置く。
                 */}
                 <p className="aloud-result__legend">
-                  <span className="aloud-word is-read">読めた</span>
-                  <span className="aloud-word is-missed">読み飛ばし</span>
+                  <span className="aloud-word is-read">聞き取れた</span>
+                  <span className="aloud-word is-missed">聞き取れなかった</span>
                 </p>
                 <p className="aloud-result__text">
                   {marked.map((part, i) => (part.word ? (
