@@ -2201,8 +2201,10 @@ input[type="file"] { display: none; }
   align-items: center;
   justify-content: center;
   flex: 1;
+  /* **受験サポートと同じ 58px**（`exam-support/student/TabBar.tsx`）。
+     上下の余白はここで持つ——タブバー側で足すと安全領域と二重になる */
   min-height: 58px;
-  padding: var(--space-8) var(--space-4);
+  padding: 0 var(--space-4);
   border: none;
   background: transparent;
   cursor: pointer;
@@ -2226,7 +2228,8 @@ input[type="file"] { display: none; }
 }
 
 .tab-label {
-  font-size: 0.9rem;
+  /* **受験サポートと同じ 11px**（どの幅でも変えない） */
+  font-size: 11px;
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -2235,7 +2238,8 @@ input[type="file"] { display: none; }
 
 /* タブバーのためにメインコンテンツの下部に余白を追加 */
 .dashboard-container {
-  padding-bottom: 80px; /* タブバーの高さ分の余白 */
+  /* **受験サポートと同じ 96px**（58px のタブ＋安全領域＋少しの逃げ） */
+  padding-bottom: 96px;
 }
 
 /* タブコンテンツのスタイル */
@@ -2245,43 +2249,19 @@ input[type="file"] { display: none; }
   min-height: calc(100vh - 200px);
 }
 
-/* モバイル対応のタブバー */
-@media (max-width: 768px) {
-  .tab-bar {
-    padding: 6px 0;
-  }
-  
-  .tab-item {
-    padding: 10px 12px;
-    min-width: 70px;
-  }
-  
-  .tab-label {
-    font-size: 0.8rem;
-  }
-  
-  .dashboard-container {
-    padding-bottom: 70px;
-  }
-}
+/* モバイル対応のタブバー
+   **幅で寸法を変えない**（2026-09-22 に外した）。
 
-/* スマートフォン対応のタブバー */
-@media (max-width: 480px) {
-  .tab-bar {
-    padding: 4px 0;
-  }
-  
-  .tab-item {
-    padding: 8px 10px;
-    min-width: 60px;
-  }
-  
-  .tab-label {
-    font-size: 0.75rem;
-  }
-  
+   ここで `padding: 6px 0` / `4px 0` と上書きしていたため、土台に書いてある
+   `env(safe-area-inset-bottom)` が**スマホでだけ消えていた**。ホーム操作バーの
+   ある端末では、その34pxぶんタブが下に潜り込み、**低くて窮屈に見える**
+   （受験サポートは同じ58pxでも安全領域を空けているので、並べると差が出る）。
+
+   文字も 0.9rem → 0.8 → 0.75rem と幅ごとに縮めていた。受験サポートは
+   **どの幅でも 11px** なので、階段を作らず揃える。 */
+@media (max-width: 768px) {
   .dashboard-container {
-    padding-bottom: 65px;
+    padding-bottom: 96px;
   }
 }
 

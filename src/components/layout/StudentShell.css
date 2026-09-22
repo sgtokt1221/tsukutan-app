@@ -22,11 +22,13 @@
 /* 下部ナビのアイコンとラベルを縦に積む */
 .tab-item {
   flex-direction: column;
-  gap: var(--space-4);
+  /* **受験サポートと同じ 3px**（`gap-[3px]`）。4px だと1行ぶん高く見える */
+  gap: 3px;
 }
 
 .tab-icon {
-  font-size: var(--icon-20);
+  /* **受験サポートと同じ 21px**（lucide の `size={21}`） */
+  font-size: 21px;
 }
 
 @media (min-width: 768px) {
