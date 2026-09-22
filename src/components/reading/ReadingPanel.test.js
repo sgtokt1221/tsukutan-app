@@ -148,11 +148,16 @@ describe('音読の結果', () => {
     finishRecording(view);
 
     expect(await screen.findByText('100')).toBeInTheDocument();
-    expect(screen.getByText('% 読めました')).toBeInTheDocument();
+    expect(screen.getByText('% 読みました')).toBeInTheDocument();
     expect(screen.queryByText('聞き取れませんでした。もう一度どうぞ。')).not.toBeInTheDocument();
   });
 
-  it('読み飛ばした語が出て、点がそのぶん下がる', async () => {
+  /*
+    **読み飛ばした語を一覧で出すのはやめた**（2026-09-22）。語だけ並べても
+    本文のどこだったか分からず、読み直す場所を探せなかった。
+    本文をそのまま並べて、読めた語は緑・飛ばした語は赤にする。
+  */
+  it('点が下がり、**本文の飛ばした語だけ赤になる**', async () => {
     mockTranscribe.mockResolvedValue({ transcript: 'I get up' });
     mockReview.mockResolvedValue({ missing: ['at', 'six'], total: 5, content: null });
 
@@ -161,7 +166,51 @@ describe('音読の結果', () => {
     finishRecording(view);
 
     expect(await screen.findByText('60')).toBeInTheDocument();
-    expect(screen.getByText('at / six')).toBeInTheDocument();
+
+    const passage = screen.getByTestId('aloud-passage');
+    const read = [...passage.querySelectorAll('.aloud-result__text .is-read')].map((n) => n.textContent);
+    const missed = [...passage.querySelectorAll('.aloud-result__text .is-missed')].map((n) => n.textContent);
+    expect(read).toEqual(['I', 'get', 'up']);
+    expect(missed).toEqual(['at', 'six']);
+    // 句読点ごと本文が残っている（語だけ抜き出して並べ替えない）
+    expect(passage.querySelector('.aloud-result__text').textContent).toBe('I get up at six.');
+  });
+
+  it('全部読めたら赤は1つも出ない', async () => {
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
+    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
+
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('button', { name: '音読する' }));
+    finishRecording(view);
+
+    await screen.findByText('100');
+    const passage = screen.getByTestId('aloud-passage');
+    expect(passage.querySelectorAll('.aloud-result__text .is-missed')).toHaveLength(0);
+  });
+
+  /*
+    **どこまで進んだかは出せない**（送って返るまでの1往復）。作り物の数字を
+    出さないかわりに、動き続ける帯で「止まっていない」ことを見せる。
+  */
+  it('聞き取っているあいだは進行中の帯を出す', async () => {
+    let settle;
+    mockTranscribe.mockReturnValue(new Promise((resolve) => { settle = resolve; }));
+
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('button', { name: '音読する' }));
+    finishRecording(view);
+
+    expect(await screen.findByText('聞き取っています…')).toBeInTheDocument();
+    const bar = screen.getByRole('progressbar');
+    expect(bar).toBeInTheDocument();
+    // **割合を言わない**（分からないものを数字で出さない）
+    expect(bar).not.toHaveAttribute('aria-valuenow');
+
+    mockReview.mockResolvedValue({ missing: [], total: 5, content: null });
+    settle({ transcript: 'I get up at six' });
+    await screen.findByText('100');
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
   it('**採点は、聞き取れた文と読むべき文の両方を送る**', async () => {
