@@ -9,9 +9,11 @@
 // Firebase には触らない。測り方だけを見る
 // 送った中身を見たいので、呼び出しを覚えておく
 const sentCalls = [];
+/** 向こうの返事。テストごとに差し替える */
+let mockReply = {};
 jest.mock('firebase/functions', () => ({
   getFunctions: () => ({}),
-  httpsCallable: () => jest.fn(async (payload) => { sentCalls.push(payload); return { data: {} }; }),
+  httpsCallable: () => jest.fn(async (payload) => { sentCalls.push(payload); return { data: mockReply }; }),
 }));
 jest.mock('firebase/auth', () => ({ signInWithCustomToken: jest.fn() }));
 jest.mock('../firebaseConfig.js', () => ({ auth: { currentUser: null }, db: {} }));
@@ -283,5 +285,96 @@ describe('ランクを添えて送る', () => {
     endStudySession();
     await flushStudySessions();
     expect(sentCalls[0].rank).toBe('SS');
+  });
+});
+
+/**
+ * **起動時だけでは遅い**（2026-09-22）。勉強しても次にアプリを開き直すまで
+ * つくばホームに届かず、管理画面は「まだ使っていない」のままだった。
+ */
+describe('測り終えたら、その場で送る', () => {
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; });
+  afterEach(() => { auth.currentUser = null; });
+
+  test('**締めた時点で送る。** 次の起動を待たない', async () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+
+    // 返事は待たないので、積んだ処理が流れるのを待ってから見る
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(sentCalls).toHaveLength(1);
+    expect(sentCalls[0].sessions).toHaveLength(1);
+  });
+
+  test('**短すぎて積まれなかった回では通信しない**', async () => {
+    startStudySession();
+    advance(10_000);          // 1分に満たない
+    noteActivity('new');
+    endStudySession();
+
+    await Promise.resolve();
+    expect(sentCalls).toHaveLength(0);
+  });
+
+  /*
+    タブを閉じて終わったときは `endStudySession` を通らない。
+    **積んだものは消さない**ので、次に開いたときに送れる。
+  */
+  test('送れなくても積んだものは残る（次の起動で送る）', async () => {
+    auth.currentUser = null;   // ログインし直す前
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+
+    await Promise.resolve();
+    expect(sentCalls).toHaveLength(0);
+    expect(JSON.parse(localStorage.getItem('tsukutan.study.pending'))).toHaveLength(1);
+  });
+});
+
+/**
+ * **弾かれたぶんを黙って捨てない**（2026-09-22）。向こうは理由つきで返すのに
+ * 返事を見ずに全部消していたため、本番で「1件も記録が無い」になっても
+ * 手がかりが残らなかった。
+ */
+describe('通らなかった記録', () => {
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; mockReply = {}; });
+  afterEach(() => { auth.currentUser = null; mockReply = {}; });
+
+  test('理由を返してもらい、外へ出す', async () => {
+    mockReply = { recorded: 0, rejected: [{ startedAt: 'x', reason: '短すぎます' }] };
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    const got = await flushStudySessions();
+
+    expect(got.rejected).toEqual([{ startedAt: 'x', reason: '短すぎます' }]);
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  /*
+    **積み直さない。** 弾かれる理由（短すぎる・時刻が読めない）は何度送っても
+    変わらないので、残すと毎回同じものを送り続けることになる。
+  */
+  test('弾かれたものを積み直さない（同じものを送り続けない）', async () => {
+    mockReply = { recorded: 0, rejected: [{ startedAt: 'x', reason: '短すぎます' }] };
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+
+    expect(JSON.parse(localStorage.getItem('tsukutan.study.pending'))).toBeNull();
+    console.warn.mockRestore();
   });
 });

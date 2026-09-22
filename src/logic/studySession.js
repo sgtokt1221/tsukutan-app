@@ -151,7 +151,7 @@ export function setStudyRank(rankId) {
  *
  * 返事を待たずに消すと、電波が悪いときに勉強した事実が消える。
  *
- * @returns {Promise<{ sent: number, kept: number }>}
+ * @returns {Promise<{ sent: number, kept: number, recorded?: number, rejected?: object[] }>}
  */
 export async function flushStudySessions() {
     const list = Array.isArray(read(PENDING_KEY)) ? read(PENDING_KEY) : [];
@@ -162,9 +162,23 @@ export async function flushStudySessions() {
         const rank = read(RANK_KEY);
         // **未測定なら欄ごと出さない。** 向こうは「届いたときだけ書く」作りなので、
         // 空を送ると測ってあるランクを消しに行くことになる
-        await call(rank ? { sessions: list, rank } : { sessions: list });
+        const { data } = await call(rank ? { sessions: list, rank } : { sessions: list });
         write(PENDING_KEY, null);
-        return { sent: list.length, kept: 0 };
+
+        /*
+          **弾かれたぶんを黙って捨てない**（2026-09-22）。向こうは通らなかった
+          記録を理由つきで返してくれる（短すぎる・時刻が読めない など）のに、
+          こちらは返事を見ずに全部消していた。**送れたつもりで消える**ので、
+          本番で「1件も記録が無い」になっても手がかりが残らなかった。
+
+          積み直しはしない——弾かれる理由は何度送っても変わらないので、
+          残すと毎回同じものを送り続けることになる。**見えるようにするだけ。**
+        */
+        const rejected = (data && data.rejected) || [];
+        if (rejected.length > 0) {
+            console.warn('[つくつく] 通らなかった記録', rejected);
+        }
+        return { sent: list.length, kept: 0, recorded: (data && data.recorded) || 0, rejected };
     } catch (e) {
         // **消さない。** 次に開いたときに送る
         console.warn('[つくたん] 勉強時間を送れませんでした（次回まとめて送ります）', e);
@@ -241,10 +255,19 @@ export function noteAloud(title) {
 }
 
 /**
- * 測り終える。**送るのは次の `flushStudySessions()`。**
+ * 測り終える。**積んで、その場で送る。**
  *
- * ここで送らないのは、終わり方が「タブを閉じた」のこともあるため。
- * 積んでおけば、どの終わり方でも次に開いたときに送れる。
+ * **起動時だけでは遅い**（2026-09-22）。もとは `resumeAndFlush()` でしか
+ * 送っていなかったので、勉強しても**次にアプリを開き直すまで**つくばホームに
+ * 何も届かなかった。塾が管理画面を見ても「まだ使っていない」のまま
+ * （実際、テストで使っている生徒の記録が本番に1件も無かった）。
+ *
+ * **積むのをやめるわけではない。** 送れなくても localStorage に残り、
+ * 次に開いたときに `resumeAndFlush()` が送る。タブを閉じて終わったときは
+ * そもそもここを通らないので、その受け皿も要る。
+ *
+ * **返事は待たない。** 待つと、学習を終えて画面が切り替わるのが通信ぶん遅れる。
+ * 失敗しても積んだものは消えない（`flushStudySessions` は送れたものだけ消す）。
  *
  * **測った長さも返す。** つくたん自身のログ（`users/{uid}/logs`）にも同じ値を
  * 書くため。片方だけ別に測ると、つくばホームと数字が食い違う。
@@ -260,6 +283,8 @@ export function endStudySession() {
     enqueue(payload);
     current = null;
     write(CURRENT_KEY, null);
+    // **積めたときだけ送る。** 短すぎて積まれなかった回で通信しない
+    if (payload) void flushStudySessions();
     return { activeMs, payload };
 }
 
