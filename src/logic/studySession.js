@@ -36,6 +36,14 @@ const PENDING_KEY = 'tsukutan.study.pending';
  * ランクを知っている画面（ホーム）が別のタイミングで動くため。
  */
 const RANK_KEY = 'tsukutan.study.rank';
+/**
+ * 最後に**送れた**ランク。
+ *
+ * これが無いと、ランクを送れたかどうかが分からない。**勉強に相乗りさせると
+ * 届かない**——実力テストを受けただけでまだ勉強していない生徒の紋章が、
+ * つくばホームにいつまでも出なかった（2026-09-22）。
+ */
+const RANK_SENT_KEY = 'tsukutan.study.rankSent';
 
 /**
  * 手が止まってから、勉強が終わったとみなすまで（ミリ秒）。
@@ -144,6 +152,34 @@ function enqueue(payload) {
 export function setStudyRank(rankId) {
     const clean = String(rankId || '').trim().toUpperCase();
     write(RANK_KEY, clean === '' ? null : clean);
+    // **変わったらその場で送る。** 勉強の送信を待つと、まだ勉強していない生徒の
+    // 紋章が出ない。送れなければ `RANK_SENT_KEY` が古いままなので、次に試される
+    void sendStudyRank();
+}
+
+/**
+ * ランクだけを送る。**まだ送れていないときだけ。**
+ *
+ * 勉強の記録が1件も無くても呼べる（向こうがランクだけの呼び出しを受ける）。
+ * **返事は待たない使い方を想定**しているので、失敗しても投げない。
+ *
+ * @returns {Promise<{ sent: boolean }>}
+ */
+export async function sendStudyRank() {
+    const rank = read(RANK_KEY);
+    if (!rank) return { sent: false };
+    if (read(RANK_SENT_KEY) === rank) return { sent: false };
+    if (!auth.currentUser) return { sent: false };
+    try {
+        const call = httpsCallable(getFunctions(), 'recordTsukutanStudy');
+        await call({ sessions: [], rank });
+        write(RANK_SENT_KEY, rank);
+        return { sent: true };
+    } catch (e) {
+        // **印を付けない。** 次に呼ばれたときにもう一度試す
+        console.warn('[つくつく] ランクを送れませんでした（次回試します）', e);
+        return { sent: false };
+    }
 }
 
 /**
@@ -174,6 +210,9 @@ export async function flushStudySessions() {
           積み直しはしない——弾かれる理由は何度送っても変わらないので、
           残すと毎回同じものを送り続けることになる。**見えるようにするだけ。**
         */
+        // 一緒に送れたぶんは、ランクだけの送信をもう一度やらない
+        if (rank) write(RANK_SENT_KEY, rank);
+
         const rejected = (data && data.rejected) || [];
         if (rejected.length > 0) {
             console.warn('[つくつく] 通らなかった記録', rejected);
@@ -345,7 +384,10 @@ export async function resumeAndFlush() {
         enqueue(toPayload(closed));
         write(CURRENT_KEY, null);
     }
-    return flushStudySessions();
+    const result = await flushStudySessions();
+    // **送れていないランクを拾う。** 電波が無いときに変わったぶんがここで通る
+    await sendStudyRank();
+    return result;
 }
 
 /** テスト用。**覚えている状態を捨てる**（本番の経路では呼ばない） */
@@ -354,6 +396,7 @@ export function _reset() {
     write(CURRENT_KEY, null);
     write(PENDING_KEY, null);
     write(RANK_KEY, null);
+    write(RANK_SENT_KEY, null);
 }
 
 /** テスト用。いま測っているものを覗く */

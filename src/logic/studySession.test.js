@@ -25,6 +25,7 @@ import {
   noteActivity,
   noteAloud,
   setStudyRank,
+  sendStudyRank,
   flushStudySessions,
   activeMsOf,
   toPayload,
@@ -376,5 +377,83 @@ describe('通らなかった記録', () => {
 
     expect(JSON.parse(localStorage.getItem('tsukutan.study.pending'))).toBeNull();
     console.warn.mockRestore();
+  });
+});
+
+/**
+ * **ランクは勉強に相乗りさせない**（2026-09-22）。実力テストを受けただけで
+ * まだ勉強していない生徒の紋章が、つくばホームにいつまでも出なかった。
+ */
+describe('ランクだけを送る', () => {
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; mockReply = {}; });
+  afterEach(() => { auth.currentUser = null; mockReply = {}; });
+
+  test('**勉強が1件も無くても送る**（記録は空で、ランクだけ）', async () => {
+    setStudyRank('B');
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(sentCalls).toHaveLength(1);
+    expect(sentCalls[0]).toEqual({ sessions: [], rank: 'B' });
+  });
+
+  test('**同じランクを何度も送らない**（画面が描き直すたびに通信しない）', async () => {
+    setStudyRank('B');
+    await Promise.resolve();
+    await Promise.resolve();
+    await sendStudyRank();
+    setStudyRank('B');
+    await Promise.resolve();
+
+    expect(sentCalls).toHaveLength(1);
+  });
+
+  test('上がったら送り直す', async () => {
+    setStudyRank('B');
+    await Promise.resolve();
+    await Promise.resolve();
+    setStudyRank('A');
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(sentCalls.map((c) => c.rank)).toEqual(['B', 'A']);
+  });
+
+  test('未測定なら送らない', async () => {
+    setStudyRank(null);
+    await Promise.resolve();
+    expect(sentCalls).toHaveLength(0);
+  });
+
+  /*
+    送れなければ印を付けない。次に呼ばれたときにもう一度試す
+    （起動時の `resumeAndFlush` が拾う）。
+  */
+  test('送れなければ、次に呼ばれたときにもう一度試す', async () => {
+    auth.currentUser = null;
+    setStudyRank('B');
+    await Promise.resolve();
+    expect(sentCalls).toHaveLength(0);
+
+    auth.currentUser = { uid: 'u1' };
+    await sendStudyRank();
+    expect(sentCalls).toHaveLength(1);
+  });
+
+  test('勉強と一緒に送れたぶんは、あらためて送らない', async () => {
+    setStudyRank('B');
+    await Promise.resolve();
+    await Promise.resolve();
+    sentCalls.length = 0;
+
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+    const before = sentCalls.length;
+    await sendStudyRank();
+
+    expect(sentCalls).toHaveLength(before);
   });
 });
