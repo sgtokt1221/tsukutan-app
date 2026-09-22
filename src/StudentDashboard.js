@@ -20,6 +20,7 @@ import RankCard from './components/assessment/RankCard';
 import LevelNudge from './components/assessment/LevelNudge';
 import ReadingPanel from './components/reading/ReadingPanel';
 import { isAheadOfAssessment } from './logic/estimatedLevel';
+import { setStudyRank } from './logic/studySession';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
@@ -463,6 +464,17 @@ export default function StudentDashboard() {
   useEffect(() => {
     loadMasterWords().catch(() => {});
   }, [loadMasterWords]);
+
+  /*
+    **いまのランクを、勉強を送るときに添えられるようにしておく**（2026-09-22）。
+    つくばホームの一覧に紋章を出すため。
+
+    **自己ベスト（`bestRankId`）ではなく現在のランクを渡す。** 塾が見たいのは
+    「いま何が読めるか」で、いちばん良かったときの記録ではない。
+  */
+  useEffect(() => {
+    setStudyRank(currentRankId);
+  }, [currentRankId]);
 
   // 教材ごとの収録語数は manifest を正とする。画面に数値を書かない。
   useEffect(() => {

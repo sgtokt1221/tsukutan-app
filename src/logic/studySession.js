@@ -28,6 +28,14 @@ import { auth } from '../firebaseConfig.js';
 const CURRENT_KEY = 'tsukutan.study.current';
 /** 送れていないもの。**電波が無くても消さない** */
 const PENDING_KEY = 'tsukutan.study.pending';
+/**
+ * いまのランク。**つくばホームの一覧に出すために送る。**
+ *
+ * ランクは勉強の記録ではなく「いまの状態」なので、1件ずつの記録には乗せず
+ * **送るときに1つだけ添える**。localStorage に置くのは、送る処理（起動直後）と
+ * ランクを知っている画面（ホーム）が別のタイミングで動くため。
+ */
+const RANK_KEY = 'tsukutan.study.rank';
 
 /**
  * 手が止まってから、勉強が終わったとみなすまで（ミリ秒）。
@@ -126,6 +134,19 @@ function enqueue(payload) {
 }
 
 /**
+ * いまのランクを覚える。**送るときに添える。**
+ *
+ * **ランクそのものはつくつくが決める**（実力テストの点から `rankLogic` が出す）。
+ * つくばホームは受け取って見せるだけなので、判定の式を向こうへ持っていかない。
+ *
+ * @param {string|null} rankId `null` なら未測定として何も送らない
+ */
+export function setStudyRank(rankId) {
+    const clean = String(rankId || '').trim().toUpperCase();
+    write(RANK_KEY, clean === '' ? null : clean);
+}
+
+/**
  * 貯まっているぶんを送る。**送れたものだけ消す。**
  *
  * 返事を待たずに消すと、電波が悪いときに勉強した事実が消える。
@@ -138,7 +159,10 @@ export async function flushStudySessions() {
     if (!auth.currentUser) return { sent: 0, kept: list.length };
     try {
         const call = httpsCallable(getFunctions(), 'recordTsukutanStudy');
-        await call({ sessions: list });
+        const rank = read(RANK_KEY);
+        // **未測定なら欄ごと出さない。** 向こうは「届いたときだけ書く」作りなので、
+        // 空を送ると測ってあるランクを消しに行くことになる
+        await call(rank ? { sessions: list, rank } : { sessions: list });
         write(PENDING_KEY, null);
         return { sent: list.length, kept: 0 };
     } catch (e) {
@@ -304,6 +328,7 @@ export function _reset() {
     current = null;
     write(CURRENT_KEY, null);
     write(PENDING_KEY, null);
+    write(RANK_KEY, null);
 }
 
 /** テスト用。いま測っているものを覗く */

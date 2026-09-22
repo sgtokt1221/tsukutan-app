@@ -7,18 +7,23 @@
  */
 
 // Firebase には触らない。測り方だけを見る
+// 送った中身を見たいので、呼び出しを覚えておく
+const sentCalls = [];
 jest.mock('firebase/functions', () => ({
   getFunctions: () => ({}),
-  httpsCallable: () => jest.fn(async () => ({ data: {} })),
+  httpsCallable: () => jest.fn(async (payload) => { sentCalls.push(payload); return { data: {} }; }),
 }));
 jest.mock('firebase/auth', () => ({ signInWithCustomToken: jest.fn() }));
 jest.mock('../firebaseConfig.js', () => ({ auth: { currentUser: null }, db: {} }));
 
+import { auth } from '../firebaseConfig.js';
 import {
   startStudySession,
   endStudySession,
   noteActivity,
   noteAloud,
+  setStudyRank,
+  flushStudySessions,
   activeMsOf,
   toPayload,
   resumeAndFlush,
@@ -238,5 +243,45 @@ describe('音読', () => {
     noteAloud('あ'.repeat(200));
     const { payload } = endStudySession();
     expect(payload.aloud.title).toHaveLength(60);
+  });
+});
+
+/**
+ * **ランクはつくつくが決め、つくばホームは受け取って見せるだけ。**
+ * 1件ずつの記録ではなく「いまの状態」なので、送るときに1つだけ添える。
+ */
+describe('ランクを添えて送る', () => {
+  // **ログインしていないと送らない**（既定のモックは currentUser が null）
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; });
+  afterEach(() => { auth.currentUser = null; });
+
+  test('覚えたランクが呼び出しに乗る', async () => {
+    setStudyRank('B');
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+    expect(sentCalls[0].rank).toBe('B');
+  });
+
+  test('**未測定なら欄ごと出さない。** 空を送ると向こうの測定値を消しに行く', async () => {
+    setStudyRank(null);
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+    expect(sentCalls[0]).not.toHaveProperty('rank');
+  });
+
+  test('小文字で渡しても大文字で送る（向こうの許可値に合わせる）', async () => {
+    setStudyRank('ss');
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+    expect(sentCalls[0].rank).toBe('SS');
   });
 });
