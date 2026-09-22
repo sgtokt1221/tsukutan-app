@@ -11,12 +11,20 @@
 const sentCalls = [];
 /** 向こうの返事。テストごとに差し替える */
 let mockReply = {};
+/** 呼び先のURL。**つくばホーム側**でなければならない */
+let mockCalledUrl = '';
 jest.mock('firebase/functions', () => ({
   getFunctions: () => ({}),
-  httpsCallable: () => jest.fn(async (payload) => { sentCalls.push(payload); return { data: mockReply }; }),
+  httpsCallableFromURL: (fns, url) => {
+    mockCalledUrl = url;
+    return jest.fn(async (payload) => { sentCalls.push(payload); return { data: mockReply }; });
+  },
 }));
 jest.mock('firebase/auth', () => ({ signInWithCustomToken: jest.fn() }));
 jest.mock('../firebaseConfig.js', () => ({ auth: { currentUser: null }, db: {} }));
+
+/** ログイン中の生徒。`getIdToken` が入場券を返す */
+const signedIn = { uid: 'u1', getIdToken: async () => 'ID-TOKEN' };
 
 import { auth } from '../firebaseConfig.js';
 import {
@@ -35,6 +43,13 @@ import {
   _reset,
   _current,
 } from './studySession';
+
+/**
+ * 積まれた非同期処理を流し切る。
+ * **`await Promise.resolve()` を数えない**——await の数が変わるたびにテストが
+ * 壊れる（実際、入場券を取る await を足したときに落ちた）。
+ */
+const settle = async () => { for (let i = 0; i < 8; i += 1) await Promise.resolve(); };
 
 /** いまの時刻を操る。`visibilitychange` も手で起こす */
 let nowMs;
@@ -255,7 +270,7 @@ describe('音読', () => {
  */
 describe('ランクを添えて送る', () => {
   // **ログインしていないと送らない**（既定のモックは currentUser が null）
-  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; });
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = signedIn; });
   afterEach(() => { auth.currentUser = null; });
 
   test('覚えたランクが呼び出しに乗る', async () => {
@@ -294,7 +309,7 @@ describe('ランクを添えて送る', () => {
  * つくばホームに届かず、管理画面は「まだ使っていない」のままだった。
  */
 describe('測り終えたら、その場で送る', () => {
-  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; });
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = signedIn; });
   afterEach(() => { auth.currentUser = null; });
 
   test('**締めた時点で送る。** 次の起動を待たない', async () => {
@@ -304,8 +319,7 @@ describe('測り終えたら、その場で送る', () => {
     endStudySession();
 
     // 返事は待たないので、積んだ処理が流れるのを待ってから見る
-    await Promise.resolve();
-    await Promise.resolve();
+    await settle();
     expect(sentCalls).toHaveLength(1);
     expect(sentCalls[0].sessions).toHaveLength(1);
   });
@@ -316,7 +330,7 @@ describe('測り終えたら、その場で送る', () => {
     noteActivity('new');
     endStudySession();
 
-    await Promise.resolve();
+    await settle();
     expect(sentCalls).toHaveLength(0);
   });
 
@@ -331,7 +345,7 @@ describe('測り終えたら、その場で送る', () => {
     noteActivity('new');
     endStudySession();
 
-    await Promise.resolve();
+    await settle();
     expect(sentCalls).toHaveLength(0);
     expect(JSON.parse(localStorage.getItem('tsukutan.study.pending'))).toHaveLength(1);
   });
@@ -343,7 +357,7 @@ describe('測り終えたら、その場で送る', () => {
  * 手がかりが残らなかった。
  */
 describe('通らなかった記録', () => {
-  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; mockReply = {}; });
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = signedIn; mockReply = {}; });
   afterEach(() => { auth.currentUser = null; mockReply = {}; });
 
   test('理由を返してもらい、外へ出す', async () => {
@@ -385,22 +399,20 @@ describe('通らなかった記録', () => {
  * まだ勉強していない生徒の紋章が、つくばホームにいつまでも出なかった。
  */
 describe('ランクだけを送る', () => {
-  beforeEach(() => { sentCalls.length = 0; auth.currentUser = { uid: 'u1' }; mockReply = {}; });
+  beforeEach(() => { sentCalls.length = 0; auth.currentUser = signedIn; mockReply = {}; });
   afterEach(() => { auth.currentUser = null; mockReply = {}; });
 
   test('**勉強が1件も無くても送る**（記録は空で、ランクだけ）', async () => {
     setStudyRank('B');
-    await Promise.resolve();
-    await Promise.resolve();
+    await settle();
 
     expect(sentCalls).toHaveLength(1);
-    expect(sentCalls[0]).toEqual({ sessions: [], rank: 'B' });
+    expect(sentCalls[0]).toEqual({ sessions: [], rank: 'B', idToken: 'ID-TOKEN' });
   });
 
   test('**同じランクを何度も送らない**（画面が描き直すたびに通信しない）', async () => {
     setStudyRank('B');
-    await Promise.resolve();
-    await Promise.resolve();
+    await settle();
     await sendStudyRank();
     setStudyRank('B');
     await Promise.resolve();
@@ -410,18 +422,16 @@ describe('ランクだけを送る', () => {
 
   test('上がったら送り直す', async () => {
     setStudyRank('B');
-    await Promise.resolve();
-    await Promise.resolve();
+    await settle();
     setStudyRank('A');
-    await Promise.resolve();
-    await Promise.resolve();
+    await settle();
 
     expect(sentCalls.map((c) => c.rank)).toEqual(['B', 'A']);
   });
 
   test('未測定なら送らない', async () => {
     setStudyRank(null);
-    await Promise.resolve();
+    await settle();
     expect(sentCalls).toHaveLength(0);
   });
 
@@ -432,18 +442,17 @@ describe('ランクだけを送る', () => {
   test('送れなければ、次に呼ばれたときにもう一度試す', async () => {
     auth.currentUser = null;
     setStudyRank('B');
-    await Promise.resolve();
+    await settle();
     expect(sentCalls).toHaveLength(0);
 
-    auth.currentUser = { uid: 'u1' };
+    auth.currentUser = signedIn;
     await sendStudyRank();
     expect(sentCalls).toHaveLength(1);
   });
 
   test('勉強と一緒に送れたぶんは、あらためて送らない', async () => {
     setStudyRank('B');
-    await Promise.resolve();
-    await Promise.resolve();
+    await settle();
     sentCalls.length = 0;
 
     startStudySession();
@@ -455,5 +464,48 @@ describe('ランクだけを送る', () => {
     await sendStudyRank();
 
     expect(sentCalls).toHaveLength(before);
+  });
+});
+
+/**
+ * **呼び先はつくばホーム。** `httpsCallable(getFunctions(), ...)` だと自分の
+ * プロジェクトを指すので、そこに無い関数を呼び続けることになる。
+ * 2026-09-22 まで一度も届いていなかった（向こうの記録が0件だった）。
+ */
+describe('どこへ送るか', () => {
+  beforeEach(() => { sentCalls.length = 0; mockCalledUrl = ''; auth.currentUser = signedIn; mockReply = {}; });
+  afterEach(() => { auth.currentUser = null; });
+
+  test('**つくばホームの受け口を呼ぶ**（自分のプロジェクトではない）', async () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+
+    expect(mockCalledUrl).toContain('tsukubamanager-4900b');
+    expect(mockCalledUrl).toContain('asia-northeast1');
+    expect(mockCalledUrl).toMatch(/recordTsukutanStudy$/);
+  });
+
+  /*
+    生徒は**つくつくのプロジェクト**にサインインしているので、この ID トークンは
+    向こうの `onCall` では認証として通らない。**中身として渡して向こうで検証**する。
+  */
+  test('**入場券を中身に載せる**（向こうで検証してもらう）', async () => {
+    startStudySession();
+    advance(120_000);
+    noteActivity('new');
+    endStudySession();
+    await flushStudySessions();
+
+    expect(sentCalls[0].idToken).toBe('ID-TOKEN');
+  });
+
+  test('ランクだけの呼び出しにも入場券を載せる', async () => {
+    setStudyRank('B');
+    await settle();
+
+    expect(sentCalls[0]).toEqual({ sessions: [], rank: 'B', idToken: 'ID-TOKEN' });
   });
 });
