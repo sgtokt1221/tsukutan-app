@@ -144,3 +144,21 @@
   flex: 1;
   min-height: var(--tap-target);
 }
+
+/* 塾に「音読した日」として出る線に届いたか。**黙って落とさない** */
+.aloud-result__counted {
+  margin: 0;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--color-olive-divider);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  text-align: center;
+}
+
+.aloud-result__counted.is-ok {
+  /* 読めた語と同じ緑（白地に 6.46:1。文字に使える濃さ） */
+  color: var(--color-aloud-read, #0f6b53);
+  background: var(--color-canvas-lime);
+}

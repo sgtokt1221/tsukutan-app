@@ -9,7 +9,7 @@ import { readingGradeFor, EIKEN_LABELS } from '../../logic/readingLevel';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking } from '../../logic/transcribeApi';
-import { markPassage, readAloudScore } from '../../logic/readAloudMarks';
+import { markPassage, readAloudScore, countsAsAloud, ALOUD_PASS } from '../../logic/readAloudMarks';
 import logger from '../../logic/logger';
 import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
@@ -168,11 +168,17 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           return;
         }
         /*
-          **聞き取れたときだけ1本と数える。** 押しただけ・無音で失敗したものまで
-          数えると、つくばホームの「音読した日」が実態より多く出る
-          （塾はそこを見て声をかけるので、多い方に外すと見落とす）。
+          **8割以上読めたときだけ1本と数える**（2026-09-22 に決めた）。
+
+          つくばホームに出るのは「音読した日」＝**習慣**なので、開いて少し声を
+          出しただけの日まで数えると、塾が見ている○の意味が薄まる。
+          押しただけ・無音のものは、そもそもここまで来ない。
+
+          **点は画面と同じものを使う**（`markPassage` → `readAloudScore`）。
+          ここで別に数え直すと、生徒に見せた％と○が食い違う。
         */
-        noteAloud(reading.title);
+        const score = readAloudScore(markPassage(referenceText, heard));
+        if (countsAsAloud(score)) noteAloud(reading.title);
         setAloud({ working: false, transcript: heard });
       })
       .catch((transcribeError) => {
@@ -397,6 +403,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           score={aloudScore}
           // 色を付けた本文。**画面側で作り直さない**
           parts={aloudParts}
+          pass={ALOUD_PASS}
           failure={aloud.failure || ''}
           onClose={() => setAloud(null)}
           onRetry={canRecord() ? () => {
