@@ -170,11 +170,19 @@ export function activeMsOf(s) {
  *
  * @param {object} s
  * @returns {{ startedAt: string, endedAt: string, newWords: number, reviewWords: number,
- *   aloud?: { count: number, title: string|null } }|null} 短すぎるときは null
+ *   aloud?: { count: number, title: string|null } }|null}
+ *   短すぎるときは null（**音読していたぶんは残す**）
  */
 export function toPayload(s) {
     const ms = activeMsOf(s);
-    if (ms < MIN_MS) return null;
+    /*
+      **音読していたら、短くても送る**（2026-09-22）。英検5級の長文は30秒で
+      読み終わる。下限で落とすと、**短い長文ばかり読んでいる生徒が
+      「音読していない」ことになる**。向こうは勉強時間には入れず、
+      利用状況にだけ残す（`toUsageOnly`）。
+    */
+    // `s` が無い・壊れている場合もここを通る（`activeMsOf` は 0 を返す）
+    if (ms < MIN_MS && !(s && Number(s.aloudCount) > 0)) return null;
     const start = Number(s.startedAtMs);
     if (!Number.isFinite(start)) return null;
     return {
