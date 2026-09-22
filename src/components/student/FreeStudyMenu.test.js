@@ -29,17 +29,28 @@ const COUNTS = {
   'eiken-pre1': 6200,
 };
 
+/** 教材。**定義の正本は `src/config/books.js`**。ここは親から切り離すための写し */
+const BOOKS = [
+  { id: 'book-systan5', title: 'システム英単語', publisher: '駿台文庫', count: 2027, cover: 'https://example.test/a.jpg' },
+  { id: 'book-target1900', title: '英単語ターゲット1900', publisher: '旺文社', count: 1900, cover: 'https://example.test/b.jpg' },
+  { id: 'book-leap', title: '必携英単語LEAP', publisher: '数研出版', count: 1935, cover: 'https://example.test/c.jpg' },
+  { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', publisher: '旺文社', count: 1000, cover: 'https://example.test/d.jpg' },
+];
+
 const show = (props = {}) => {
   const handlers = {
     onNavigate: jest.fn(),
     onSelectTextbook: jest.fn(),
     onSelectInterview: jest.fn(),
+    onSelectBook: jest.fn(),
+    onSelectRange: jest.fn(),
   };
   render(
     <FreeStudyMenu
       mode="main"
       eikenOptions={EIKEN_OPTIONS}
       interviewGrades={INTERVIEW_GRADES}
+      books={BOOKS}
       wordCountOf={(id) => COUNTS[id] ?? null}
       recommendationOf={() => null}
       {...handlers}
@@ -49,16 +60,23 @@ const show = (props = {}) => {
   return handlers;
 };
 
-test('最初は 中学英語 / 高校英語 / 英検 の3枚だけ', () => {
+/*
+  **教材が先頭**（2026-09-22 の指定）。塾が実際に配っている本なので、
+  生徒はまずここを探す。並び順まで固定するのは、後から足した入口が
+  いつのまにか下へ埋もれるのを止めるため。
+*/
+test('最初は 教材 / 中学英語 / 高校英語 / 英検 の4枚だけ', () => {
   show();
 
   const titles = screen.getAllByRole('button')
     .map((card) => card.querySelector('.free-study-card__title').textContent);
-  expect(titles).toEqual(['中学英語', '高校英語', '英検']);
+  expect(titles).toEqual(['教材', '中学英語', '高校英語', '英検']);
 
   // 級や面接の入口は、英検を開くまで出さない
   expect(screen.queryByText('英検3級')).not.toBeInTheDocument();
   expect(screen.queryByText('二次試験（面接）')).not.toBeInTheDocument();
+  // 冊の名前も、教材を開くまで出さない
+  expect(screen.queryByText('システム英単語')).not.toBeInTheDocument();
 });
 
 test('中学英語・高校英語は語数を添えて、押すとそのまま教材へ入る', () => {
@@ -133,6 +151,93 @@ test('英検カードのおすすめは、どれか1級でも合っていれば�
   expect(screen.getByText('英検').closest('button')).toHaveTextContent('おすすめ');
 });
 
+/*
+  教材の段。**絞り込み画面（レベル・品詞・意味）は通さない。**
+  単語帳は通し番号で進めるものなので、番号の帯から直接カードへ行く。
+*/
+describe('教材で選ぶ', () => {
+  test('押すと教材の一覧へ進むだけ（教材を選んだことにしない）', () => {
+    const { onNavigate, onSelectTextbook, onSelectBook } = show();
+
+    fireEvent.click(screen.getByText('教材'));
+
+    expect(onNavigate).toHaveBeenCalledWith('books');
+    expect(onSelectTextbook).not.toHaveBeenCalled();
+    expect(onSelectBook).not.toHaveBeenCalled();
+  });
+
+  test('4冊が、出版社と語数を添えて並ぶ', () => {
+    show({ mode: 'books' });
+
+    const titles = screen.getAllByRole('button')
+      .map((card) => card.querySelector('.free-study-card__title').textContent);
+    expect(titles).toEqual([
+      'システム英単語', '英単語ターゲット1900', '必携英単語LEAP', '英熟語ターゲット1000',
+    ]);
+    expect(screen.getByText('駿台文庫・2,027語')).toBeInTheDocument();
+    expect(screen.getByText('旺文社・1,000語')).toBeInTheDocument();
+  });
+
+  /*
+    **表紙で選べるようにする**（2026-09-22 の指定）。生徒は題名より先に
+    絵で本を見つける。alt は空——題名が隣に出ているので読み上げが二重になる。
+  */
+  test('表紙のサムネイルが出る', () => {
+    const { container } = render(
+      <FreeStudyMenu
+        mode="books"
+        books={BOOKS}
+        eikenOptions={EIKEN_OPTIONS}
+        interviewGrades={INTERVIEW_GRADES}
+        wordCountOf={() => null}
+        recommendationOf={() => null}
+        onNavigate={jest.fn()}
+        onSelectTextbook={jest.fn()}
+        onSelectInterview={jest.fn()}
+        onSelectBook={jest.fn()}
+        onSelectRange={jest.fn()}
+      />
+    );
+    const covers = [...container.querySelectorAll('.free-study-card__cover img')];
+    expect(covers).toHaveLength(4);
+    expect(covers[0].getAttribute('src')).toBe('https://example.test/a.jpg');
+    expect(covers[0].getAttribute('alt')).toBe('');
+  });
+
+  test('冊を押すと、その冊が親へ渡る', () => {
+    const { onSelectBook } = show({ mode: 'books' });
+
+    fireEvent.click(screen.getByText('必携英単語LEAP'));
+
+    expect(onSelectBook).toHaveBeenCalledWith(BOOKS[2]);
+  });
+
+  test('**番号の帯が並び、端数は本当の語数で出る**（2,027語 → 最後は 2001〜2027）', () => {
+    show({ mode: 'book-range', selectedBook: BOOKS[0] });
+
+    const labels = screen.getAllByRole('button').map((b) => b.textContent);
+    expect(labels).toHaveLength(21);
+    expect(labels[0]).toBe('1〜100100語');
+    expect(labels[20]).toBe('2001〜202727語');
+  });
+
+  test('帯を押すと、冊と範囲が親へ渡る', () => {
+    const { onSelectRange } = show({ mode: 'book-range', selectedBook: BOOKS[3] });
+
+    fireEvent.click(screen.getByText('101〜200'));
+
+    expect(onSelectRange).toHaveBeenCalledWith(
+      BOOKS[3],
+      { from: 101, to: 200, label: '101〜200', count: 100 },
+    );
+  });
+
+  test('冊が決まっていなければ何も出さない（落ちない）', () => {
+    show({ mode: 'book-range', selectedBook: null });
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+  });
+});
+
 describe('戻る先', () => {
   test('英検の中は一段ずつ戻る', () => {
     expect(freeStudyBackTarget('eiken-words', null)).toBe('eiken');
@@ -145,5 +250,10 @@ describe('戻る先', () => {
     expect(freeStudyBackTarget('filter', 'osaka-koukou-nyuushi')).toBe('main');
     expect(freeStudyBackTarget('filter', 'highschool-english')).toBe('main');
     expect(freeStudyBackTarget('filter', null)).toBe('main');
+  });
+
+  test('教材も一段ずつ戻る', () => {
+    expect(freeStudyBackTarget('book-range', 'book-systan5')).toBe('books');
+    expect(freeStudyBackTarget('books', null)).toBe('main');
   });
 });

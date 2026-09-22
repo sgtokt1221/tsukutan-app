@@ -30,7 +30,8 @@
     "deploy": "npm run build && firebase deploy --only hosting",
     "test:scripts": "node --test scripts/lib/*.test.js",
     "build:words": "node scripts/build-word-master.js",
-    "build:pronunciations": "node scripts/build-pronunciations.js"
+    "build:pronunciations": "node scripts/build-pronunciations.js",
+    "build:books": "node scripts/import-exam-support-decks.js && node scripts/build-book-words.js"
   },
   "eslintConfig": {
     "extends": [
