@@ -33,9 +33,13 @@ jest.mock('../../logic/useBookmarks', () => ({
 
 // 勉強時間の計測は studySession.test.js が見ている。ここでは呼ばれたかだけ
 const mockNoteAloud = jest.fn();
+const mockNoteActivity = jest.fn();
+const mockEndSession = jest.fn();
+const mockStartSession = jest.fn();
 jest.mock('../../logic/studySession', () => ({
-  startStudySession: jest.fn(),
-  endStudySession: jest.fn(),
+  startStudySession: (...a) => mockStartSession(...a),
+  endStudySession: (...a) => mockEndSession(...a),
+  noteActivity: (...a) => mockNoteActivity(...a),
   noteAloud: (...args) => mockNoteAloud(...args),
 }));
 
@@ -327,5 +331,55 @@ describe('つくばホームへ送る音読の数', () => {
 
     expect(await screen.findByText('通信できませんでした。')).toBeInTheDocument();
     expect(mockNoteAloud).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * **長文タブは「手を動かした」印を自分で付けないといけない。**
+ *
+ * 単語カードのような操作が無いので、印が無いと `lastAt` が読みものを開いた時刻の
+ * まま動かない。締めるときは「最後に手を動かした時刻」までしか数えないので、
+ * **どれだけ読んでも活動時間が0**になり、記録が1件も積まれず、つくばホームへ
+ * 何も送られない（2026-09-22 に本番で確認。受け口の呼び出しが0件だった）。
+ */
+describe('勉強時間が積まれる', () => {
+  it('**聞き取りが終わったら印を付ける**（点に関わらず）', async () => {
+    // 56%。音読には数えないが、読んでいた時間は数える
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six' });
+
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('button', { name: '音読する' }));
+    finishRecording(view);
+
+    await screen.findByText('56');
+    expect(mockNoteActivity).toHaveBeenCalledWith('reading');
+    expect(mockNoteAloud).not.toHaveBeenCalled();
+  });
+
+  /*
+    **一覧に戻るまで待たない。** 読み終えてそのまま閉じた生徒のぶんが、
+    次の起動まで届かなくなる。
+  */
+  it('**その場で1回ぶんを締めて、続きを測り直す**', async () => {
+    mockTranscribe.mockResolvedValue({ transcript: 'I get up at six we eat at eight' });
+
+    const view = await openReading();
+    mockEndSession.mockClear();
+    mockStartSession.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: '音読する' }));
+    finishRecording(view);
+
+    await screen.findByText('100');
+    expect(mockEndSession).toHaveBeenCalled();
+    expect(mockStartSession).toHaveBeenCalled();
+  });
+
+  it('読み上げを押したときも印を付ける', async () => {
+    await openReading();
+    mockNoteActivity.mockClear();
+
+    fireEvent.click(screen.getAllByRole('button', { name: /読み上げ/ })[0]);
+
+    expect(mockNoteActivity).toHaveBeenCalledWith('reading');
   });
 });

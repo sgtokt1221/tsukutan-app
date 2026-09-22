@@ -11,7 +11,7 @@ import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking } from '../../logic/transcribeApi';
 import { markPassage, readAloudReach, countsAsAloud, ALOUD_PASS } from '../../logic/readAloudMarks';
 import logger from '../../logic/logger';
-import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
+import { startStudySession, endStudySession, noteActivity, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
 import { buildWordIndex, buildPhraseIndex, findWord } from '../../logic/wordLookup';
 import { useBookmarks } from '../../logic/useBookmarks';
@@ -112,6 +112,8 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     止めるのは `speakSequence` の中で、必要なときだけ。
   */
   const speak = useCallback((sentenceIndex, plan) => {
+    // **手を動かした印を付ける**（→ 下の「時間が0になっていた」）
+    noteActivity('reading');
     setSpeakingIndex(sentenceIndex);
     speakSequence(plan);
   }, []);
@@ -127,6 +129,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
   /** 通しで読み上げる。和訳モードなら日本語も混ぜる。 */
   const readAll = useCallback(() => {
     if (!reading) return;
+    noteActivity('reading');
     setSpeakingIndex(null);
     setReadingAll(true);
     const plan = reading.sentences.flatMap((sentence) => speechPlanFor(sentence, mode === 'ja'));
@@ -179,9 +182,27 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           声を出してほしい生徒が、いつまでも「やっていない」ままになる。
           画面に出す数字と同じものを使う（別に数え直すと％と○が食い違う）。
         */
+        /*
+          **まず「手を動かした」印を付ける**（点に関わらず）。
+
+          長文タブには単語カードのような操作が無いので、ここで印を付けないと
+          `lastAt` が読みもの を開いた時刻のまま動かない。締めるときは
+          「最後に手を動かした時刻」までしか数えないので、**どれだけ読んでも
+          活動時間が0**になり、記録が1件も積まれず、**つくばホームへ何も送られない**
+          （2026-09-22 に本番で確認。受け口の呼び出しが0件だった）。
+        */
+        noteActivity('reading');
         const reach = readAloudReach(markPassage(referenceText, heard));
         if (countsAsAloud(reach)) noteAloud(reading.title);
         setAloud({ working: false, transcript: heard });
+
+        /*
+          **ここで1回ぶんを締めて送る。** 一覧に戻るまで待つと、読み終えて
+          そのまま閉じた生徒のぶんが次の起動まで届かない。
+          締めたあとすぐ測り直すので、続けて読むぶんも数える。
+        */
+        endStudySession();
+        startStudySession();
       })
       .catch((transcribeError) => {
         logger.warn('音読を聞き取れませんでした', transcribeError);
@@ -387,6 +408,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
             onClick={() => {
               if (recorder.state === 'recording') { stopRecorder(); return; }
               stop();
+              noteActivity('reading');
               setAloud(null);
               handledBlobRef.current = null;
               recorder.start();
