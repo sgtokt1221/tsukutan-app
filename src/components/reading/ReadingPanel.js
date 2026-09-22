@@ -9,6 +9,7 @@ import { readingGradeFor, EIKEN_LABELS } from '../../logic/readingLevel';
 import { speakSequence, stopSpeaking } from '../../logic/speechUtils';
 import { canRecord, useRecorder } from '../../logic/useRecorder';
 import { transcribeSpeaking, reviewAnswer } from '../../logic/transcribeApi';
+import { readAloudScore } from '../../logic/readAloudMarks';
 import logger from '../../logic/logger';
 import { startStudySession, endStudySession, noteAloud } from '../../logic/studySession';
 import { loadWordMaster } from '../../logic/wordMaster';
@@ -257,9 +258,8 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     );
   }
 
-  const readAloudScore = aloud && !aloud.working && aloud.total
-    ? Math.round(((aloud.total - (aloud.missing?.length || 0)) / aloud.total) * 100)
-    : null;
+  // 式は `logic/readAloudMarks.js` が正本。**ここで書き直さない**
+  const aloudScore = aloud && !aloud.working ? readAloudScore(aloud.total, aloud.missing) : null;
 
   // 本文
   return (
@@ -393,8 +393,10 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
       {aloud && (
         <ReadAloudResult
           working={Boolean(aloud.working)}
-          score={readAloudScore}
+          score={aloudScore}
           missing={aloud.missing || []}
+          // 本文を並べて色を付けるので、読むべき英文ごと渡す
+          referenceText={readingEnglish(reading)}
           failure={aloud.failure || ''}
           onClose={() => setAloud(null)}
           onRetry={canRecord() ? () => {
