@@ -2449,7 +2449,10 @@ select:focus-visible,
   align-items: center;
   gap: var(--space-12);
   min-height: 60px;
-  padding: var(--space-8) var(--space-16);
+  /* **上は安全領域のぶん空ける**（2026-09-22）。`viewport-fit=cover` を入れた
+     ので、PWA では時計やノッチの下へ本文が潜る。受験サポートのヘッダーと同じ作法
+     （`exam-support/student/StudentShell.tsx` の `paddingTop`）。 */
+  padding: calc(var(--space-8) + env(safe-area-inset-top, 0px)) var(--space-16) var(--space-8);
   /* 学習画面のヘッダーと同じ白に揃える。ロゴPNGの地色も
      白へ焼き直してある（v3）ので、ロゴの周りに四角は出ない。 */
   background-color: var(--color-surface);

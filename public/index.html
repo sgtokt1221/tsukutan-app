@@ -2,7 +2,22 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      **`viewport-fit=cover` を外さない。**
+
+      これが無いと iOS は `env(safe-area-inset-*)` を**すべて 0 で返す**。
+      CSS 側は15か所で安全領域を見ているのに、**1つも効いていなかった**
+      （2026-09-22 に判明）。ホーム操作バーのある端末を PWA で開くと、
+      下タブがバーに潜り込んで**低く・窮屈に見える**。Safari のタブから開くと
+      ブラウザのバーがその場所を埋めるので、**ブラウザでは気づけない**。
+
+      受験サポート（`tsukuba-manager/src/exam-support-page/index.html`）は
+      最初からこれを付けている。並べたときの差はここから出ていた。
+
+      **付けると上も安全領域の下に潜る**ので、`.student-header` は
+      `env(safe-area-inset-top)` を必ず持つこと（App.css）。
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#183153" />
     <meta
       name="description"
