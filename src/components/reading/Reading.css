@@ -3,74 +3,159 @@
 
 .reading-note {
   margin: var(--space-8) 0 0;
-  font-size: var(--font-size-12);
+  /* **14px を下限にする**（12px は作らない）。2026-09-23 に本棚へ作り替えたとき */
+  font-size: var(--font-size-14);
   line-height: var(--line-normal);
   color: var(--color-olive-muted);
 }
 
-/* ---- 一覧 ---- */
+/* ---- 本棚と目次 ---- */
+/*
+  級ごとに本を並べ、開くと目次が出る（2026-09-23）。もとは級のピルが横に並び、
+  その下に読みものがフラットに積まれていた。
+*/
 
-.reading-grades {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-8);
-  margin: var(--space-12) 0;
+/* 表紙を2列に並べる。**スマホ幅（390px）で破綻しない大きさ** */
+.reading-shelf {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-16);
 }
 
-.reading-grade {
-  padding: var(--space-8) var(--space-12);
-  border: var(--border-default);
-  border-radius: var(--radius-pill);
+.reading-book {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-8);
+  border: var(--border-subtle);
+  border-radius: var(--radius-card);
   background-color: var(--color-surface);
-  color: var(--color-olive-muted);
+  box-shadow: var(--shadow-1);
+  color: var(--color-ink-olive);
   font-family: inherit;
-  font-size: var(--font-size-12);
+  /* **器にも大きさを持たせる。** 入れないとボタンの既定（13.3px）が残る */
+  font-size: var(--font-size-16);
   cursor: pointer;
+  /* 押せるものは 44px。表紙があるので実際はもっと高い */
+  min-height: var(--tap-target);
 }
 
-.reading-grade.is-active {
-  border-color: var(--color-lime-border);
-  background-color: var(--color-lime-soft);
-  color: var(--color-ink-olive);
+.reading-book:hover { background-color: var(--color-lime-soft); }
+
+/* **大きさはCSSが決める**（SVG は viewBox しか持たない） */
+.reading-book__art {
+  width: 84px;
+  height: 105px;
+  /* 表紙が開くときに奥行きが出るようにする */
+  perspective: 600px;
+}
+
+.reading-book__label {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-16);
   font-weight: 700;
 }
 
-.reading-list {
+.reading-book__count {
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+/* **いまの級の印。** 色だけに頼らず文字でも出す */
+.reading-book__mark {
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-lime-soft);
+  border: 1px solid var(--color-lime-border);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+/* 本を開いたときの見出し（戻る＋級）は、本文側の `.reading-head` をそのまま使う */
+
+/* ---- 目次 ---- */
+.reading-contents {
   display: grid;
   gap: var(--space-8);
+  /* 開いた紙面の上に置く */
+  padding: var(--space-12);
+  border-radius: var(--radius-card);
+  background-color: var(--color-canvas-lime);
+  /* 綴じ目。左に一本線を入れて「開いた本」に見せる */
+  border-left: 3px solid var(--color-olive-divider);
+  animation: reading-book-open var(--motion-card) var(--ease-standard) both;
+}
+
+/*
+  **本が開く動き。** 左綴じなので、左端を軸に奥から手前へ倒れてくる。
+  長さは `--motion-card`（「カード」用に用意された唯一の中尺）。
+*/
+@keyframes reading-book-open {
+  from { opacity: 0; transform: perspective(900px) rotateY(-24deg); transform-origin: left center; }
+  to   { opacity: 1; transform: perspective(900px) rotateY(0deg); transform-origin: left center; }
 }
 
 .reading-item {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+  width: 100%;
   padding: var(--space-12);
-  border: var(--border-default);
-  border-radius: var(--radius-card);
+  border: var(--border-subtle);
+  border-radius: var(--radius-control);
   background-color: var(--color-surface);
-  text-align: left;
+  color: var(--color-ink-olive);
   font-family: inherit;
+  font-size: var(--font-size-16);
+  text-align: left;
   cursor: pointer;
+  min-height: var(--tap-target);
 }
 
 .reading-item:hover { background-color: var(--color-lime-soft); }
 
-.reading-item__category {
-  font-size: 0.625rem;
+/* 目次の番号。本を開いたときの「何本目」 */
+.reading-item__no {
+  flex: none;
+  width: 24px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-16);
   font-weight: 700;
-  letter-spacing: 0.12em;
   color: var(--color-olive-subtle);
+  text-align: right;
+}
+
+.reading-item__body {
+  display: grid;
+  gap: var(--space-2);
+  /* **題名は最長37文字。** 折り返す前提で幅を渡す */
+  min-width: 0;
 }
 
 .reading-item__title {
   font-family: var(--font-family-heading);
   font-size: var(--font-size-16);
   font-weight: 700;
-  color: var(--color-ink-olive);
+  line-height: var(--line-tight);
 }
 
 .reading-item__title-ja {
-  font-size: var(--font-size-12);
+  font-size: var(--font-size-14);
   color: var(--color-olive-muted);
+}
+
+.reading-item__category {
+  font-size: var(--font-size-14);
+  color: var(--color-olive-subtle);
+}
+
+/*
+  **動きを減らす設定では開かない。** `tokens.css` の全体抑止に任せず、
+  このファイルにも書くのがこのリポジトリの作法（下の `.reading-picked` と同じ）。
+*/
+@media (prefers-reduced-motion: reduce) {
+  .reading-contents { animation: none; }
 }
 
 /* ---- 本文 ---- */

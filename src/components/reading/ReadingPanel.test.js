@@ -131,8 +131,10 @@ const finishRecording = (view) => {
 /** 一覧 → 本文を開く */
 const openReading = async () => {
   const view = show();
-  await screen.findByText('My Morning');
-  fireEvent.click(screen.getByText('My Morning'));
+  // **本棚 → 目次 → 本文 の3段になった**（2026-09-23）。本を1つ開いてから選ぶ
+  await screen.findByText('英検5級');
+  fireEvent.click(screen.getByText('英検5級'));
+  fireEvent.click(await screen.findByText('My Morning'));
   /*
     **本文の文字では待てない。** 語ごとに `<span>` へ割られている（長押しで
     単語カードを引くため）ので、まとまった文字列として掴めない。
@@ -381,5 +383,65 @@ describe('勉強時間が積まれる', () => {
     fireEvent.click(screen.getAllByRole('button', { name: /読み上げ/ })[0]);
 
     expect(mockNoteActivity).toHaveBeenCalledWith('reading');
+  });
+});
+
+/**
+ * **本を開いても勉強時間を測り始めない**（2026-09-23 に本棚＋目次にしたとき）。
+ *
+ * 測り始めるのは読みものを選んだ瞬間だけ。目次を眺めただけの時間を勉強時間に
+ * すると、`noteActivity` が一度も来ないまま締められ、実態と合わない記録になる。
+ * さらに `startStudySession` は走っているセッションを問答無用で締めるので、
+ * 本文を読んでいる最中に本棚へ戻って開き直すと、読書中のぶんが切れる。
+ */
+describe('本棚では測り始めない', () => {
+  it('**本を開いただけでは測り始めない**', async () => {
+    show();
+    await screen.findByText('英検5級');
+    mockStartSession.mockClear();
+
+    fireEvent.click(screen.getByText('英検5級'));
+
+    expect(await screen.findByText('My Morning')).toBeInTheDocument();
+    expect(mockStartSession).not.toHaveBeenCalled();
+  });
+
+  it('読みものを選んだときだけ測り始める', async () => {
+    show();
+    await screen.findByText('英検5級');
+    fireEvent.click(screen.getByText('英検5級'));
+    mockStartSession.mockClear();
+
+    fireEvent.click(await screen.findByText('My Morning'));
+
+    await screen.findByRole('button', { name: '音読する' });
+    expect(mockStartSession).toHaveBeenCalledTimes(1);
+  });
+
+  it('**目次から本棚へ戻るときは、測りに触らない**', async () => {
+    show();
+    await screen.findByText('英検5級');
+    fireEvent.click(screen.getByText('英検5級'));
+    await screen.findByText('My Morning');
+    mockStartSession.mockClear();
+    mockEndSession.mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: '本棚に戻る' }));
+
+    expect(await screen.findByText('英検5級')).toBeInTheDocument();
+    expect(mockStartSession).not.toHaveBeenCalled();
+    expect(mockEndSession).not.toHaveBeenCalled();
+  });
+
+  it('**本文から戻ると、本棚ではなく目次へ**（級を選び直させない）', async () => {
+    const view = await openReading();
+    mockEndSession.mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: '一覧に戻る' }));
+
+    // 目次が出ている（本棚なら「英検4級」など他の級も並ぶ）
+    expect(await screen.findByText('My Morning')).toBeInTheDocument();
+    expect(mockEndSession).toHaveBeenCalled();
+    expect(view.container.querySelectorAll('.reading-book')).toHaveLength(0);
   });
 });
