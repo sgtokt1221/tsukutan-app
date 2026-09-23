@@ -1489,7 +1489,7 @@ export default function StudentDashboard() {
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
-                  title={currentLearningMode === 'bookmark' ? '毎日みる単語' : undefined}
+                  learningMode={currentLearningMode}
                   onWordAnswered={
                     (currentLearningMode === 'daily' || currentLearningMode === 'extra') && dailyPlan.dateKey
                       ? (wordId) => markNewWordAnswered(auth.currentUser?.uid, dailyPlan.dateKey, wordId)
