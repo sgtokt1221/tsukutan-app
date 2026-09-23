@@ -17,7 +17,7 @@ import { speakSequence, stopSpeaking } from './speechUtils';
  * @param {number}   params.currentIndex 開始位置
  * @param {string}   params.direction 出題の向き（'en-ja' | 'ja-en'）
  * @param {number}   params.gapMs 1語読み終えてから次へ進むまでの間（ミリ秒）
- * @param {boolean}  params.enabled 使える画面か（単語帳モードでは false）
+ * @param {boolean}  params.enabled 使える画面か（フラッシュカードと単語帳で1つずつ持ち、見えていない方は false）
  * @param {Function} params.onRevealMeaning 答えを読み始めるときに呼ぶ（カードをめくる）
  * @param {Function} params.onAdvance 次の単語へ進むときに呼ぶ (nextIndex)
  */
@@ -52,7 +52,12 @@ export const useAutoPlay = ({
     stopSpeaking();
   }, []);
 
-  const start = useCallback(() => {
+  /**
+   * 読み上げを始める。**`fromIndex` を渡すとそこから**（単語帳は、画面に見えている
+   * 一番上のカードから始める）。ボタンの onClick にそのまま渡すとイベントが来るので、
+   * 整数のときだけ使い、それ以外は `currentIndex` から。
+   */
+  const start = useCallback((fromIndex) => {
     if (!enabled || !Array.isArray(words) || words.length === 0) return;
 
     activeRef.current = true;
@@ -98,7 +103,7 @@ export const useAutoPlay = ({
       );
     };
 
-    playAt(currentIndex);
+    playAt(Number.isInteger(fromIndex) ? fromIndex : currentIndex);
   }, [enabled, words, currentIndex, direction]);
 
   // 画面を離れるときは必ず止める

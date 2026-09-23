@@ -443,6 +443,10 @@
 .mode-tabs__controls {
   display: flex;
   align-items: center;
+  /* 自動再生中は速さの切り替えが増える。入りきらないときは次の行へ回す
+     （1行に押し込むと、スマホ幅で文字サイズのつまみが画面の外へはみ出した） */
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: var(--space-8);
   min-width: 0;
   /* 折り返したときも右寄せのまま */
@@ -503,4 +507,11 @@
 .wordbook-graduate:hover {
   background-color: var(--color-lime-soft);
   color: var(--color-ink-olive);
+}
+
+/* 単語帳の自動再生で、いま読んでいるカード。枠で示す（濃いライム #169B78 は白地に 3.5:1。
+   枠＝非テキストの 3:1 を満たす）。採点の色（背景）とは重ならない */
+.wordbook-card.is-playing {
+  outline: 3px solid #169b78;
+  outline-offset: 2px;
 }

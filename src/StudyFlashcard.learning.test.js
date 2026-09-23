@@ -27,6 +27,8 @@ jest.mock('./logic/studySession.js', () => ({
   noteActivity: (...args) => mockActivity(...args),
 }));
 const mockFlipSpeak = jest.fn();
+// 自動再生の読み上げ。呼ばれた並びと、終わったときの知らせ（onDone）を覚える
+const mockSequence = jest.fn();
 jest.mock('./logic/speechUtils', () => ({
   ...jest.requireActual('./logic/speechUtils'),
   initialize: () => Promise.resolve(),
@@ -35,6 +37,7 @@ jest.mock('./logic/speechUtils', () => ({
   // めくると英語→意味を読み上げる。**めくれたかどうかはこれで見る**
   //（framer-motion の回転は jsdom では style に出ない）
   speakWordThenMeaning: (...args) => mockFlipSpeak(...args),
+  speakSequence: (...args) => mockSequence(...args),
 }));
 jest.mock('./logic/audioLibrary', () => ({ prefetchClips: () => {} }));
 jest.mock('./logic/useBookmarks', () => ({
@@ -262,5 +265,50 @@ describe('見直しで直したこと', () => {
     await act(async () => {});
     expect(onBack).toHaveBeenCalledTimes(1);
     expect(onSaveLog).toHaveBeenCalledTimes(1);
+  });
+});
+
+/*
+  **単語帳にも自動再生**（2026-09-23 に足した）。見えている一番上のカードから読み、
+  答えを読み始めたところで赤シートがめくれ、読み終えたら次のカードへ進む。
+*/
+describe('単語帳の自動再生', () => {
+  const card = (i) => document.querySelector(`[data-card-index="${i}"]`);
+  const answerOf = (i) => card(i).querySelector('.wordbook-answer');
+
+  it('**押すと1枚目から読み、答えを読むところで赤シートがめくれる**', () => {
+    show('free');
+    act(() => { fireEvent.click(screen.getByRole('tab', { name: '単語帳' })); });
+    expect(answerOf(0).className).toContain('wordbook-answer--hidden');
+    act(() => { fireEvent.click(screen.getByRole('button', { name: '自動読み上げを始める' })); });
+
+    expect(mockSequence).toHaveBeenCalledTimes(1);
+    const [items] = mockSequence.mock.calls[0];
+    expect(items.map((i) => i.text)).toEqual(['apple', 'りんご']); // 英→和：問題 → 答え
+    expect(card(0).className).toContain('is-playing');
+    // 答えを読み始めた
+    act(() => { items[1].onStart(); });
+    expect(answerOf(0).className).not.toContain('wordbook-answer--hidden');
+    // ほかのカードはめくれていない
+    expect(answerOf(1).className).toContain('wordbook-answer--hidden');
+  });
+
+  it('**読み終えたら次のカードへ進む。止めると枠が外れる**', () => {
+    jest.useFakeTimers();
+    try {
+      show('free');
+      act(() => { fireEvent.click(screen.getByRole('tab', { name: '単語帳' })); });
+      act(() => { fireEvent.click(screen.getByRole('button', { name: '自動読み上げを始める' })); });
+      const [, opts] = mockSequence.mock.calls[0];
+      act(() => { opts.onDone(); });
+      act(() => { jest.runOnlyPendingTimers(); });
+      expect(card(1).className).toContain('is-playing');
+      expect(mockSequence.mock.calls[1][0][0].text).toBe('banana');
+
+      act(() => { fireEvent.click(screen.getByRole('button', { name: '自動読み上げを止める' })); });
+      expect(document.querySelector('.is-playing')).toBeNull();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

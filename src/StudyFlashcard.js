@@ -154,6 +154,45 @@ export default function StudyFlashcard({
     },
   });
 
+  /*
+    **単語帳の自動再生**（2026-09-23 に足した）。画面に見えている一番上のカードから順に読み、
+    答えを読み始めたところでそのカードの赤シートをめくり、次のカードへスクロールする。
+    フラッシュカードと同じ部品（useAutoPlay）を、見せ方ごとに1つずつ持つ。
+  */
+  const [wordbookPlayIndex, setWordbookPlayIndex] = useState(-1);
+  const wordbookPlayRef = useRef(-1);
+  const scrollToCard = useCallback((index) => {
+    const el = wordbookShellRef.current?.querySelector(`[data-card-index="${index}"]`);
+    el?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+  }, []);
+  const playWordbookAt = useCallback((index) => {
+    wordbookPlayRef.current = index;
+    setWordbookPlayIndex(index);
+    scrollToCard(index);
+  }, [scrollToCard]);
+  const {
+    autoPlay: wordbookAutoPlay, start: startWordbookAuto, stop: stopWordbookAutoPlay,
+  } = useAutoPlay({
+    words: cards,
+    currentIndex: 0,
+    direction,
+    gapMs: autoPlayGapMs,
+    enabled: viewMode === 'wordbook',
+    // 答えを読み始めたら、そのカードの赤シートをめくる（読み上げは useAutoPlay がしている）
+    onRevealMeaning: () => {
+      const word = cards[wordbookPlayRef.current];
+      if (word) setRevealed((prev) => new Set([...prev, keyOf(word)]));
+    },
+    onAdvance: (nextIndex) => playWordbookAt(nextIndex),
+  });
+  // 止まったら（最後まで読んだ・止めた・見せ方を替えた）枠を外す
+  useEffect(() => {
+    if (!wordbookAutoPlay) {
+      wordbookPlayRef.current = -1;
+      setWordbookPlayIndex(-1);
+    }
+  }, [wordbookAutoPlay]);
+
   useEffect(() => {
     initialize().catch((error) => console.error('Speech initialization failed:', error));
   }, []);
@@ -389,6 +428,17 @@ export default function StudyFlashcard({
     setJudgements((prev) => ({ ...prev, [key]: mark }));
   }, [judgements, uid, trackWrite, recordAnswer, revealed]);
 
+  /** 単語帳の自動再生を始める。**画面に見えている一番上のカードから** */
+  const startWordbookAutoPlay = useCallback(() => {
+    const shell = wordbookShellRef.current;
+    const cardsEls = shell ? [...shell.querySelectorAll('[data-card-index]')] : [];
+    const headerBottom = shell?.querySelector('.wordbook-header')?.getBoundingClientRect().bottom ?? 0;
+    const firstVisible = cardsEls.find((el) => el.getBoundingClientRect().bottom > headerBottom + 8);
+    const from = firstVisible ? Number(firstVisible.dataset.cardIndex) : wordbookProgress;
+    playWordbookAt(from);
+    startWordbookAuto(from);
+  }, [wordbookProgress, playWordbookAt, startWordbookAuto]);
+
   const speakWordbookWord = useCallback((word) => (
     isJaToEn ? speak(word.meaning, 'ja-JP') : speak(word.word, 'en-US')
   ), [isJaToEn]);
@@ -587,9 +637,22 @@ export default function StudyFlashcard({
             total={cards.length}
             onBack={handleLeave}
             backLabel="終了"
+            actions={(
+              <button
+                type="button"
+                className={wordbookAutoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
+                onClick={wordbookAutoPlay ? stopWordbookAutoPlay : startWordbookAutoPlay}
+                aria-pressed={wordbookAutoPlay}
+                aria-label={wordbookAutoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
+              >
+                {wordbookAutoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+              </button>
+            )}
           />
           <ModeTabs value="wordbook" onChange={setViewMode}>
             <div className="mode-tabs__controls">
+              {/* 速さは自動再生中だけ出す（フラッシュカードと同じ） */}
+              {wordbookAutoPlay && <AutoPlaySpeed value={autoPlaySpeed} onChange={setAutoPlaySpeed} />}
               <DirectionToggle value={direction} onChange={setDirection} />
               <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
             </div>
@@ -610,6 +673,7 @@ export default function StudyFlashcard({
           onSpeak={speakWordbookWord}
           isBookmarked={isBookmarked}
           onToggleBookmark={toggleBookmark}
+          playingIndex={wordbookPlayIndex}
           gestureHandlers={{
             onMouseDown: handleMouseDown,
             onMouseMove: handleMouseMove,
