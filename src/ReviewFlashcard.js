@@ -8,6 +8,7 @@ import { startStudySession, endStudySession, noteActivity } from './logic/studyS
 import { FaUndo, FaArrowUp, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
 import AnswerControls from './components/learning/AnswerControls';
 import PeekNudge from './components/learning/PeekNudge';
+import { studyModePolicy } from './logic/studyMode';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
@@ -35,6 +36,9 @@ const findCardAtPoint = (x, y) => {
   }
   return null;
 };
+
+/** これより動かなければタップ（めくる）とみなす。px */
+const TAP_SLOP = 10;
 
 function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -85,7 +89,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   // 座標から引き直すと、ついてきたぶん指が外へ出て途中で見失う。
   const grabbedCardRef = useRef(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
+  // 復習の決まり（上スワイプが効く・外す＝もう覚えた）。正本は logic/studyMode.js
+  const policy = studyModePolicy('review');
 
   const auth = getAuth();
   // 毎日みたい単語の登録状態
@@ -232,10 +237,10 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
   }, [onBack, onSaveLog, sessionInfo, currentIndex, graduatedCount]);
 
 
-  const handleDoubleClick = useCallback((e) => {
-    logger.debug('🔥 Double click detected!', { viewMode, isFlipped, currentIndex });
-    e.preventDefault();
-    e.stopPropagation();
+  /** めくる。1回のタップで呼ばれる（以前は2回タップでしかめくれなかった） */
+  const handleFlip = useCallback((e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
     
     setIsFlipped(prev => {
       logger.debug('🔥 Setting isFlipped to:', !prev);
@@ -246,7 +251,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       const word = sessionWords[currentIndex];
       speakWordThenMeaning(word.word, word.meaning || word.japanese || word.translation, direction);
     }
-  }, [isFlipped, currentIndex, sessionWords, viewMode, direction]);
+  }, [isFlipped, currentIndex, sessionWords, direction]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex === 0) return;
@@ -538,12 +543,15 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           // 左スワイプ（不正解）
           handleIncorrect();
         }
+      } else if (Math.abs(deltaX) < TAP_SLOP && Math.abs(deltaY) < TAP_SLOP) {
+        // ほとんど動いていなければタップ。1回でめくる
+        handleFlip();
       }
     }
     
     grabbedCardRef.current = null;
     setDragStart({ x: 0, y: 0 });
-  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, judgeWordAt]);
+  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleFlip]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -585,18 +593,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       return;
     }
     
-    // ダブルタップ検出（スマホ用）。カードをめくる操作なので
-    // フラッシュカードだけ。単語帳では1タップで答えを出したい。
-    const currentTime = new Date().getTime();
-    const tapLength = currentTime - lastTap;
-    if (viewMode !== 'wordbook' && tapLength < 500 && tapLength > 0) {
-      logger.debug('🔥 Double tap detected on mobile!');
-      handleDoubleClick(e);
-      setLastTap(0);
-      return;
-    }
-    setLastTap(currentTime);
-    
+    // めくるのは指を離したとき（handleTouchEnd）。ほとんど動かなければタップとみなす。
     setIsDragging(true);
     const touch = e.touches[0];
     // 触れたカードをここで押さえる。document 側のリスナー経由でも
@@ -610,7 +607,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       target: e.target.tagName,
       viewMode 
     });
-  }, [lastTap, handleDoubleClick, viewMode]);
+  }, [viewMode]);
 
   const handleTouchMove = useCallback((e) => {
     if (!isDragging) return;
@@ -718,6 +715,9 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
       } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold && deltaY < -15) {
         // 上スワイプ（復習リストから卒業）。次のカードへも進む。
         handleGraduateCurrent();
+      } else if (Math.abs(deltaX) < TAP_SLOP && Math.abs(deltaY) < TAP_SLOP) {
+        // ほとんど動いていなければタップ。1回でめくる
+        handleFlip();
       }
     } else if (viewMode === 'wordbook') {
       // 単語帳モードでのスワイプ判定。
@@ -743,7 +743,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
     grabbedCardRef.current = null;
     setDragStart({ x: 0, y: 0 });
     
-  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleGraduateCurrent, judgeWordAt]);
+  }, [isDragging, dragStart, viewMode, handleCorrect, handleIncorrect, handleGraduateCurrent, judgeWordAt, handleFlip]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
@@ -804,7 +804,7 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           独自の色・独自のボタンだった。 */}
       <div className="wordbook-header">
         <SessionHeader
-          title={`復習単語帳（${sessionWords.length}語）`}
+          title={`復習（${sessionWords.length}語）`}
           current={wordbookProgress}
           total={sessionWords.length}
           onBack={handleBackButtonClick}
@@ -851,8 +851,8 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
                       type="button"
                       className="wordbook-graduate"
                       onClick={(e) => { e.stopPropagation(); graduateWordAt(actualIndex); }}
-                      aria-label={`${word.word} はもう覚えた。復習から外す`}
-                      title="もう覚えた（復習から外す）"
+                      aria-label={`${word.word}：${policy.removeLabel}。${policy.removeHint}`}
+                      title={`${policy.removeLabel}（${policy.removeHint}）`}
                     >
                       <FaCheck aria-hidden="true" />
                     </button>
@@ -1018,7 +1018,6 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onDoubleClick={handleDoubleClick}
         >
           <CardFace className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
@@ -1067,9 +1066,9 @@ function ReviewFlashcard({ words, onBack, onSaveLog, sessionInfo }) {
           type="button"
           className="ghost-button"
           onClick={handleGraduateCurrent}
-          title="上スワイプと同じ。もう出題されなくなります"
+          title={policy.removeHint}
         >
-          <FaArrowUp aria-hidden="true" /> リストから削除
+          <FaCheck aria-hidden="true" /> {policy.removeLabel}
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AnswerControls from './components/learning/AnswerControls';
 import PeekNudge from './components/learning/PeekNudge';
+import { studyModePolicy, sessionTitle } from './logic/studyMode';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
@@ -39,6 +40,9 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
+/** これより動かなければタップ（めくる）とみなす。px */
+const TAP_SLOP = 10;
+
 /** その座標にある単語帳カードを返す。掴んだカードを特定するのに使う。 */
 const findCardAtPoint = (x, y) => {
   for (const card of document.querySelectorAll('[data-card-index]')) {
@@ -49,10 +53,18 @@ const findCardAtPoint = (x, y) => {
 };
 
 export default function LearningFlashcard({
-  words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion, title,
+  words, onBack, initialIndex = 0, sessionInfo, onSaveLog, onFirstCompletion,
+  // どの入口から来たか（'daily' | 'extra' | 'free' | 'bookmark'）。
+  // 上スワイプが効くか・「外す」が何をするか・見出しはここから決まる（→ logic/studyMode.js）
+  learningMode,
   // 日次学習のときだけ渡る。1語ずつ記録して、途中で閉じても再開できるようにする。
   onWordAnswered,
 }) {
+  const policy = studyModePolicy(learningMode);
+  const allowSwipeUp = policy.swipeUp;
+  const title = sessionTitle(learningMode, sessionInfo);
+  // めくる処理は下で定義する。マウスの離しはそれより上にあるので、ここ経由で呼ぶ
+  const flipRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState([]);
@@ -81,7 +93,6 @@ export default function LearningFlashcard({
   // 座標から引き直すと、ついてきたぶん指が外へ出て途中で見失う。
   const grabbedCardRef = useRef(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [lastTap, setLastTap] = useState(0); // スマホでのダブルタップ検出用
   
   const auth = getAuth();
 
@@ -388,17 +399,32 @@ export default function LearningFlashcard({
     }
   }, [currentIndex, shuffledWords, x, y, hasCompletedOnce, onFirstCompletion, sessionInfo, onSaveLog, incorrectWords, onBack, trackWrite, flushWrites, auth.currentUser, isFlipped]);
 
-  /** フラッシュカードでの上スワイプ。卒業させて次のカードへ進む。 */
-  const handleGraduateCurrent = useCallback(() => {
+  /**
+   * 「外す」。モードで中身が違う（→ logic/studyMode.js）。
+   * 毎日みる単語では★を外すだけで、覚えた記録にはしない。
+   */
+  const removeWordAt = useCallback((actualIndex) => {
+    if (policy.remove !== 'unbookmark') {
+      graduateWordAt(actualIndex);
+      return;
+    }
+    const word = shuffledWords[actualIndex];
+    if (!word) return;
+    if (isBookmarked(word)) toggleBookmark(word);
+    setShuffledWords(prev => prev.filter((entry) => entry !== word));
+  }, [policy.remove, graduateWordAt, shuffledWords, isBookmarked, toggleBookmark]);
+
+  /** フラッシュカードで外す（ボタン、または上スワイプが効くモードの上スワイプ）。次のカードへ進む。 */
+  const handleRemoveCurrent = useCallback(() => {
     if (!shuffledWords[currentIndex]) return;
 
-    graduateWordAt(currentIndex);
+    removeWordAt(currentIndex);
     setIsFlipped(false);
     x.set(0);
     y.set(0);
     // 取り除いたぶん後ろが繰り上がるので、最後の1枚だけ位置を戻す
     setCurrentIndex(prev => Math.min(prev, shuffledWords.length - 2));
-  }, [currentIndex, shuffledWords, graduateWordAt, x, y]);
+  }, [currentIndex, shuffledWords, removeWordAt, x, y]);
 
   const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
   const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
@@ -488,7 +514,7 @@ export default function LearningFlashcard({
       // フラッシュカードの背景色を変更
       paintSwipeFeedback(
         document.getElementById('flashcard'),
-        swipeFeedbackFor(deltaX, deltaY),
+        swipeFeedbackFor(deltaX, deltaY, allowSwipeUp),
       );
     } else if (viewMode === 'wordbook') {
       // 単語帳モードの場合、直接DOM操作でカードの位置を更新
@@ -520,7 +546,7 @@ export default function LearningFlashcard({
         paintSwipeFeedback(activeCard, feedback);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode]);
+  }, [isDragging, dragStart, x, y, viewMode, allowSwipeUp]);
 
   const handleMouseUp = useCallback((e) => {
     if (!isDragging) return;
@@ -552,9 +578,12 @@ export default function LearningFlashcard({
           // 左スワイプ（不正解）
           handleIncorrect();
         }
-      } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold && deltaY < 0) {
-        // 上スワイプ（もう覚えた）。復習カードと同じ扱い。
-        handleGraduateCurrent();
+      } else if (allowSwipeUp && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold && deltaY < 0) {
+        // 上スワイプ（外す）。**効くのは復習と自由学習だけ**（→ logic/studyMode.js）
+        handleRemoveCurrent();
+      } else if (Math.abs(deltaX) < TAP_SLOP && Math.abs(deltaY) < TAP_SLOP) {
+        // ほとんど動いていなければタップ。**1回でめくる**（2回タップは知られていなかった）
+        flipRef.current?.();
       }
     }
     
@@ -594,7 +623,7 @@ export default function LearningFlashcard({
         clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleGraduateCurrent]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleRemoveCurrent, allowSwipeUp]);
 
   // グローバルマウスイベントリスナーを設定
   useEffect(() => {
@@ -621,7 +650,7 @@ export default function LearningFlashcard({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const handleDoubleClick = useCallback(() => {
+  const handleFlip = useCallback(() => {
     setIsFlipped(prev => !prev);
     if (!isFlipped && shuffledWords.length > 0 && shuffledWords[currentIndex]) {
       const word = shuffledWords[currentIndex];
@@ -629,6 +658,8 @@ export default function LearningFlashcard({
       speakWordThenMeaning(word?.word, word?.japanese || word?.meaning, direction);
     }
   }, [isFlipped, currentIndex, shuffledWords, direction]);
+
+  flipRef.current = handleFlip;
 
   const handleTouchStart = useCallback((e) => {
     swipeHandledRef.current = false;
@@ -645,18 +676,8 @@ export default function LearningFlashcard({
       return;
     }
     
-    // ダブルタップ検出（スマホ用）。カードをめくる操作なので
-    // フラッシュカードだけ。単語帳では1タップで答えを出したい。
-    const currentTime = new Date().getTime();
-    const tapLength = currentTime - lastTap;
-    if (viewMode !== 'wordbook' && tapLength < 500 && tapLength > 0) {
-      logger.debug('🔥 Double tap detected on mobile!');
-      handleDoubleClick(e);
-      setLastTap(0);
-      return;
-    }
-    setLastTap(currentTime);
-    
+    // めくるのは指を離したとき（handleTouchEnd）。ほとんど動かなければタップとみなす。
+    // 以前は2回タップでめくる作りで、1回では何も起きなかった。
     setIsDragging(true);
     const touch = e.touches[0];
     // 触れたカードをここで押さえる。document 側のリスナー経由でも
@@ -670,7 +691,7 @@ export default function LearningFlashcard({
       target: e.target.tagName,
       viewMode 
     });
-  }, [lastTap, handleDoubleClick, viewMode]);
+  }, [viewMode]);
 
   const handleTouchMove = useCallback((e) => {
     if (!isDragging) return;
@@ -713,10 +734,10 @@ export default function LearningFlashcard({
       // フラッシュカードの背景色を変更
       paintSwipeFeedback(
         document.getElementById('flashcard'),
-        swipeFeedbackFor(deltaX, deltaY),
+        swipeFeedbackFor(deltaX, deltaY, allowSwipeUp),
       );
     }
-  }, [isDragging, dragStart, viewMode, x, y]);
+  }, [isDragging, dragStart, viewMode, x, y, allowSwipeUp]);
 
   const handleTouchEnd = useCallback((e) => {
     if (!isDragging) return;
@@ -755,9 +776,12 @@ export default function LearningFlashcard({
           // 左スワイプ（不正解）
           handleIncorrect();
         }
-      } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold && deltaY < 0) {
-        // 上スワイプ（もう覚えた）。復習カードと同じ扱い。
-        handleGraduateCurrent();
+      } else if (allowSwipeUp && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > threshold && deltaY < 0) {
+        // 上スワイプ（外す）。**効くのは復習と自由学習だけ**（→ logic/studyMode.js）
+        handleRemoveCurrent();
+      } else if (Math.abs(deltaX) < TAP_SLOP && Math.abs(deltaY) < TAP_SLOP) {
+        // ほとんど動いていなければタップ。**1回でめくる**（2回タップは知られていなかった）
+        flipRef.current?.();
       }
     }
     
@@ -795,7 +819,7 @@ export default function LearningFlashcard({
         clearSwipeFeedback(activeCard);
       }
     }
-  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleGraduateCurrent]);
+  }, [isDragging, dragStart, x, y, viewMode, handleCorrect, handleIncorrect, judgeWordAt, handleRemoveCurrent, allowSwipeUp]);
 
   // スマホでのタッチイベント処理を改善（単語帳モードのみ）
   useEffect(() => {
@@ -838,7 +862,7 @@ export default function LearningFlashcard({
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
         <div className="test-header">
-          <h3>新規学習</h3>
+          <h3>{title}</h3>
         </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <p>学習する単語がありません。</p>
@@ -871,7 +895,7 @@ export default function LearningFlashcard({
           以前はここだけ独自のヘッダー・独自の色・独自のボタンだった。 */}
       <div className="wordbook-header">
         <SessionHeader
-          title={title ? `${title}（${shuffledWords.length}語）` : `単語帳モード（${shuffledWords.length}語）`}
+          title={`${title}（${shuffledWords.length}語）`}
           current={wordbookProgress}
           total={shuffledWords.length}
           onBack={handleBackButtonClick}
@@ -912,14 +936,14 @@ export default function LearningFlashcard({
                       onToggle={() => toggleBookmark(word)}
                       label={word.word}
                     />
-                    {/* 卒業。上スワイプだと一覧のスクロールと取り合いになるので
-                        ボタンにしている。 */}
+                    {/* 外す。上スワイプだと一覧のスクロールと取り合いになるので
+                        ボタンにしている。何をするかはモードで決まる（→ logic/studyMode.js） */}
                     <button
                       type="button"
                       className="wordbook-graduate"
-                      onClick={(e) => { e.stopPropagation(); graduateWordAt(actualIndex); }}
-                      aria-label={`${word.word} はもう覚えた。復習から外す`}
-                      title="もう覚えた（復習から外す）"
+                      onClick={(e) => { e.stopPropagation(); removeWordAt(actualIndex); }}
+                      aria-label={`${word.word}：${policy.removeLabel}。${policy.removeHint}`}
+                      title={`${policy.removeLabel}（${policy.removeHint}）`}
                     >
                       <FaCheck aria-hidden="true" />
                     </button>
@@ -1037,7 +1061,7 @@ export default function LearningFlashcard({
       {/* 戻る・セッション名・現在数・進捗をヘッダーにまとめる（計画書7.3 / 7.7）。
           モード切替はヘッダー直下のアンダータブに置く。 */}
       <SessionHeader
-        title={title || '新規学習'}
+        title={title}
         current={currentIndex + 1}
         total={shuffledWords.length}
         onBack={() => onBack(incorrectWords, newlyLearnedIdsRef.current.size)}
@@ -1091,7 +1115,6 @@ export default function LearningFlashcard({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onDoubleClick={handleDoubleClick}
         >
           <CardFace className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
             {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
@@ -1136,17 +1159,16 @@ export default function LearningFlashcard({
         >
           <FaUndo aria-hidden="true" /> 前の単語
         </button>
-        {/* 上スワイプと同じ処理。復習カードと同じものを置く。新規学習でも
-            上スワイプは「もう覚えた」として同じ扱いになっている。
+        {/* 外す。何をするか・上スワイプが効くかはモードで決まる（→ logic/studyMode.js）。
             「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
             同じ画面に戻る道が2つあると、どちらが本当か迷う。 */}
         <button
           type="button"
           className="ghost-button"
-          onClick={handleGraduateCurrent}
-          title="上スワイプと同じ。もう出題されなくなります"
+          onClick={handleRemoveCurrent}
+          title={policy.removeHint}
         >
-          <FaArrowUp aria-hidden="true" /> リストから削除
+          <FaCheck aria-hidden="true" /> {policy.removeLabel}
         </button>
       </div>
     </div>
