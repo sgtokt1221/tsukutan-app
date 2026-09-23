@@ -8,7 +8,7 @@
  * 区切りは2か所で決まる。**ここが見るのはチャンクとチャンクの間**で、
  * チャンクの中の区切りはデータ（`chunk.slash`）に焼き込んである。
  */
-import { slashUnits, slashPiecesFor } from './slashReading';
+import { slashUnits, slashGroups, slashPiecesFor } from './slashReading';
 
 /** 読みもののデータと同じ形。role は S / V / O / C / M */
 const c = (en, ja, role = 'M') => ({ en, ja, role });
@@ -180,5 +180,59 @@ describe('区切りには必ず訳が付く', () => {
     for (const unit of slashUnits([c('I', 'わたしは', 'S'), split])) {
       expect(unit.ja).not.toBe('');
     }
+  });
+});
+
+/*
+  **スラッシュと SVOC を1画面にした**（2026-09-23）。組（SVOCM の1要素）ごとに
+  札を1つ載せ、組の中の小片ごとに訳を出す。
+*/
+describe('札つきの組（slashGroups）', () => {
+  it('**SVOCM の1要素が1組。札はその役割**', () => {
+    const groups = slashGroups([
+      c('I', 'わたしは', 'S'),
+      c('get up', '起きます', 'V'),
+      c('at six', '6時に'),
+    ]);
+    expect(groups.map((g) => g.role)).toEqual(['S', 'V', 'M']);
+    expect(groups.map((g) => g.pieces.map((p) => p.en))).toEqual([['I'], ['get up'], ['at six']]);
+  });
+
+  it('**中の区切りは組を割らない。** 札は組に1つだけ', () => {
+    const subject = {
+      ...c('The names of plants that become medicine,', '薬になる植物の名前', 'S'),
+      slash: [
+        { en: 'The names', ja: '名前' },
+        { en: 'of plants', ja: '植物の' },
+        { en: 'that become medicine,', ja: '薬になる' },
+      ],
+    };
+    const groups = slashGroups([subject, c('are', '〜だ', 'V')]);
+    expect(groups).toHaveLength(2);
+    expect(groups[0].role).toBe('S');
+    expect(groups[0].pieces.map((p) => p.ja)).toEqual(['名前', '植物の', '薬になる']);
+  });
+
+  /*
+    **`than` には札を立てない**（2026-09-23 に決めた）。前の組の最後の小片に足す。
+    独立した M 札があると「ひと続きで読む」と見た目が食い違う。
+  */
+  it('**`than` は前の組に入り、独自の札を持たない**', () => {
+    const groups = slashGroups([
+      c('It', 'それは', 'S'),
+      c('is safer', 'より安全です', 'V'),
+      c('than before.', '以前より'),
+    ]);
+    expect(groups.map((g) => g.role)).toEqual(['S', 'V']);
+    expect(groups[1].pieces).toEqual([{ en: 'is safer than before.', ja: 'より安全です 以前より' }]);
+  });
+
+  it('知らない役割は M に沈める（札が空にならない）', () => {
+    expect(slashGroups([{ en: 'Well,', ja: 'さて', role: '' }])[0].role).toBe('M');
+  });
+
+  it('**平たく並べたもの（slashUnits）と中身が同じ**（切り方を2か所に書かない）', () => {
+    const chunks = [c('I', 'わたしは', 'S'), c('was reading', '読んでいました', 'V'), c('than before.', '以前より')];
+    expect(slashGroups(chunks).flatMap((g) => g.pieces)).toEqual(slashUnits(chunks));
   });
 });

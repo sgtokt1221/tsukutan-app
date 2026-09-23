@@ -131,46 +131,72 @@ const splitInside = (en) => {
   return pieces;
 };
 
+/** 札の許可値。データに無い役割が来たら M として沈める（札が空になるよりまし） */
+const ROLES = new Set(['S', 'V', 'O', 'C', 'M']);
+
 /**
- * チャンクをスラッシュ読みのまとまりへ組み直す。
+ * チャンクを「札1つ＋中の小片」の組へ組み直す。**スラッシュ画面はこれを描く。**
  *
- * **SVOCM の切れ目で必ず切る。** チャンク1つが1まとまり。
- * さらに、チャンクの中に区切り（`chunk.slash`）があればそこでも切る。
+ * ## スラッシュと SVOC を1画面にした（2026-09-23）
+ *
+ * SVOCM の切れ目で必ず切るようにしたので、スラッシュと SVOC は同じ区切りを
+ * 見るようになった。違いは (1) チャンクの中の区切りと (2) `than` だけ。
+ * そこで**組（= SVOCM の1要素）の上に札を1つ**載せ、組の中の小片ごとに訳を出す。
+ *
+ *   組と組の間   … 太い `/`（SVOCM の切れ目。塾で教えている切り方）
+ *   組の中の小片 … 細い `/`（長い主語・修飾語を読みやすく割っただけ）
  *
  * **中の区切りをここで計算し直さない。** 訳はチャンク単位でしか無く、
  * 小片の訳は `scripts/slash-translate.mjs` が作って `chunk.slash` に入れてある。
  * 計算し直すと「区切りはあるのに訳が無い」まとまりができる。
  *
  * @param {Array<{en: string, ja: string, role: string, slash?: Array<{en: string, ja: string}>}>} chunks
- * @returns {Array<{en: string, ja: string}>} 前から読む順に並んだまとまり
+ * @returns {Array<{role: string, pieces: Array<{en: string, ja: string}>}>} 前から読む順
  */
-export function slashUnits(chunks) {
-  const units = [];
+export function slashGroups(chunks) {
+  const groups = [];
   for (const chunk of (chunks || [])) {
     if (!chunk || !String(chunk.en || '').trim()) continue;
     const inner = Array.isArray(chunk.slash) && chunk.slash.length > 0
       ? chunk.slash
       : [{ en: chunk.en, ja: chunk.ja }];
-    for (const part of inner) {
-      const en = String(part.en || '').trim();
-      if (en === '') continue;
-      const ja = String(part.ja || '').trim();
-      /*
-        **`than` の前だけは切らない**（SVOCM で必ず切ることへの唯一の例外）。
-        比較級とひと続きで読むもので、データ上は `than before.` が M として
-        独立していることがある。切ると「fewer books / than before.」と
-        比較が割れる（2026-09-23 に実データで8か所）。
-      */
-      const last = units[units.length - 1];
-      if (last && NEVER_BEFORE.has(bareWord(words(en)[0]))) {
-        last.en = `${last.en} ${en}`;
-        last.ja = [last.ja, ja].filter(Boolean).join(' ');
-        continue;
-      }
-      units.push({ en, ja });
+    const pieces = inner
+      .map((part) => ({ en: String(part?.en || '').trim(), ja: String(part?.ja || '').trim() }))
+      .filter((part) => part.en !== '');
+    if (pieces.length === 0) continue;
+
+    /*
+      **`than` の前だけは切らない**（SVOCM で必ず切ることへの唯一の例外）。
+      比較級とひと続きで読むもので、データ上は `than before.` が M として
+      独立していることがある。切ると「fewer books / than before.」と
+      比較が割れる（2026-09-23 に実データで8か所）。
+      **札も付けない**——前の組の最後の小片に足す。独立した M 札を立てると、
+      「ひと続きで読む」と画面の見た目が食い違う（2026-09-23 に決めた）。
+    */
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && NEVER_BEFORE.has(bareWord(words(pieces[0].en)[0]))) {
+      const tail = lastGroup.pieces[lastGroup.pieces.length - 1];
+      const head = pieces.shift();
+      tail.en = `${tail.en} ${head.en}`;
+      tail.ja = [tail.ja, head.ja].filter(Boolean).join(' ');
+      lastGroup.pieces.push(...pieces);
+      continue;
     }
+
+    const role = String(chunk.role || '').toUpperCase();
+    groups.push({ role: ROLES.has(role) ? role : 'M', pieces });
   }
-  return units;
+  return groups;
+}
+
+/**
+ * スラッシュのまとまりを平たく並べたもの。**正本は `slashGroups`**
+ * （同じ切り方を2か所に書かない）。訳の検査（`readingSlashData.test.js`）が使う。
+ *
+ * @returns {Array<{en: string, ja: string}>} 前から読む順に並んだまとまり
+ */
+export function slashUnits(chunks) {
+  return slashGroups(chunks).flatMap((group) => group.pieces);
 }
 
 /**
