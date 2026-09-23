@@ -28,6 +28,8 @@ export default function WordbookList({
   isBookmarked,
   onToggleBookmark,
   gestureHandlers,
+  // 自動再生で読んでいるカードの番号（読んでいなければ -1）
+  playingIndex = -1,
 }) {
   return (
     <div className="wordbook-list">
@@ -38,11 +40,13 @@ export default function WordbookList({
           const revealed = isRevealed(word);
           const pronunciation = word.pronunciation || getPronunciation(word.word);
           const showPronunciation = inlinePronunciation(word.word, pronunciation);
+          const playing = index === playingIndex;
           return (
             <motion.div
               key={word.id || index}
               data-card-index={index}
-              className={`wordbook-card${judgement ? ` wordbook-card--${judgement}` : ''}`}
+              className={`wordbook-card${judgement ? ` wordbook-card--${judgement}` : ''}${playing ? ' is-playing' : ''}`}
+              aria-current={playing ? 'true' : undefined}
               {...gestureHandlers}
             >
               <div className="wordbook-card__grid">
