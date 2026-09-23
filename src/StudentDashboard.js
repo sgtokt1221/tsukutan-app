@@ -9,13 +9,13 @@ import { logStudySession } from './logic/studyLogger';
 import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress } from './logic/freeStudyProgress';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
-import LearningFlashcard from './LearningFlashcard';
+// 新規も復習も同じ単語カード。違いは learningMode（→ logic/studyMode.js）
+import StudyFlashcard from './StudyFlashcard';
 import { buildThemeGroups, themeLabels, themeDescriptions } from './logic/themeMatcher';
 import AnalyticsPanel from './components/student/AnalyticsPanel';
 import StoryPanel from './components/student/StoryPanel';
 import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
-import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
 import LevelNudge from './components/assessment/LevelNudge';
 import ReadingPanel from './components/reading/ReadingPanel';
@@ -852,6 +852,8 @@ export default function StudentDashboard() {
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
     }
+    // 復習中に★を付け外ししても、ホームの「毎日みる単語」の数に出るように
+    reloadBookmarks();
     setViewMode('select');
   };
 
@@ -1482,7 +1484,7 @@ export default function StudentDashboard() {
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
-        return <LearningFlashcard
+        return <StudyFlashcard
                   words={learningWords}
                   onBack={handleLearningBack}
                   initialIndex={currentSessionInfo?.startIndex || 0}
@@ -1497,11 +1499,12 @@ export default function StudentDashboard() {
                   }
                 />;
       case 'review':
-        return <ReviewFlashcard 
-                  words={dailyPlan.reviewWords} 
-                  onBack={handleReviewComplete} 
+        return <StudyFlashcard
+                  words={dailyPlan.reviewWords}
+                  onBack={handleReviewComplete}
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
+                  learningMode="review"
                 />;
       case 'test':
         return (
