@@ -260,17 +260,37 @@
   color: var(--color-olive-muted);
 }
 
-/* ---- スラッシュ読み ---- */
+/* ---- スラッシュ読み（SVOC の札つき） ----
+   2026-09-23 にスラッシュと SVOC を1画面にした。組（SVOCM の1要素）ごとに
+   札を1つ載せ、組の中の小片ごとに訳を添える。 */
 
+/* 組と組の間の / は太く、英語の行にそろえる（札の高さぶん下げる）。訳の行まで伸ばさない。 */
 .reading-slash {
-  /* 区切りの / は英語の行にそろえる。訳の行まで伸ばさない。 */
   align-self: flex-start;
   margin: 0 2px;
+  padding-top: calc(0.625rem * 1.5 + 4px);
   color: var(--color-brand-lime);
   font-weight: 700;
+  line-height: 1.5;
 }
 
-/* まとまりごとに、英語の下へ訳を置く。目が上下に往復できる。 */
+/* 組の中の / は細く、沈める。SVOCM の切れ目と見分けられるように。
+   組の中には札が無いので、上に下げる必要も無い。 */
+.reading-slash--inner {
+  padding-top: 0;
+  margin: 0 1px;
+  font-weight: 400;
+  color: var(--color-olive-subtle);
+}
+
+/* まとまりと、その後ろの / をひと組にする。/ だけが次の行の頭に落ちないように。 */
+.reading-slash-unit {
+  display: inline-flex;
+  align-items: flex-start;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .reading-sentence--slash {
   display: flex;
   flex-wrap: wrap;
@@ -278,6 +298,7 @@
   gap: var(--space-8) 2px;
 }
 
+/* まとまりごとに、英語の下へ訳を置く。目が上下に往復できる。 */
 .reading-chunk {
   display: inline-flex;
   flex-direction: column;
@@ -286,31 +307,32 @@
   padding: 0 2px;
 }
 
+.reading-chunk__en { line-height: 1.5; }
+
 .reading-chunk__ja {
   font-size: 0.7em;
   line-height: 1.5;
   color: var(--color-olive-muted);
 }
 
-/* ---- SVOC ---- */
-
-.reading-sentence--svoc {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--space-8) 6px;
-}
-
-/* まとまりごとに薄い枠を持たせる。札だけ並べても、どこからどこまでが
-   その要素なのか目で追えない。 */
+/* 組ごとに薄い面を持たせる。札だけ並べても、どこからどこまでが
+   その要素なのか目で追えない。長い組は面の中で折り返す。 */
 .reading-svoc {
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  max-width: 100%;
   padding: 2px 6px 3px;
   border-radius: 8px;
   background-color: rgba(54, 66, 30, 0.04);
+}
+
+.reading-svoc__pieces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  row-gap: var(--space-4);
 }
 
 .reading-svoc__role {
@@ -329,14 +351,6 @@
 .reading-svoc.is-o .reading-svoc__role { background-color: #16a34a; }
 .reading-svoc.is-c .reading-svoc__role { background-color: #d97706; }
 .reading-svoc.is-m .reading-svoc__role { background-color: rgba(54, 66, 30, 0.35); }
-
-.reading-svoc__en { font-size: 1em; line-height: 1.5; }
-
-.reading-svoc__ja {
-  font-size: 0.7em;
-  line-height: 1.5;
-  color: var(--color-olive-muted);
-}
 
 /* ---- 音読 ---- */
 
@@ -432,8 +446,7 @@
   font-size: calc(1rem * var(--reading-zoom, 1));
 }
 
-.reading-scale .reading-sentence,
-.reading-scale .reading-svoc__en {
+.reading-scale .reading-sentence {
   font-size: 1em;
 }
 

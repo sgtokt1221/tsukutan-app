@@ -1,36 +1,29 @@
 import React from 'react';
 import { FaVolumeUp, FaStop } from 'react-icons/fa';
 import { speechPlanFor } from '../../logic/readingContent';
-import { slashUnits } from '../../logic/slashReading';
+import { slashGroups } from '../../logic/slashReading';
 import { useLongPress } from '../../logic/useLongPress';
 import { splitIntoUnits } from '../../logic/wordLookup';
 
 /**
- * 読みもの本文。同じ素材を4通りに見せる。
+ * 読みもの本文。同じ素材を3通りに見せる。
  *
  *   plain   英語だけ。まずは英語のまま読ませる
  *   ja      1文ずつ和訳を添える
- *   slash   意味のまとまりで / を入れる。押すとそのまとまりの訳が出る
- *   svoc    同じまとまりに S/V/O/C/M の札を付ける
+ *   slash   SVOCM の切れ目で / を入れ、要素ごとに S/V/O/C/M の札を載せる。
+ *           まとまりごとに訳を下へ添える
  *
- * スラッシュとSVOCは同じ chunks を見ている。区切りを2つ持つと、片方だけ
- * 直したときにズレても画面は普通に動いてしまう（docs/reading-format.md）。
- *
- * **ただし slash は chunks をそのまま割らない。** SVOC の単位で `/` を入れると
- * 「I / get up / …」と主語と動詞まで割れる。塾で教えている区切りの目印
- * （前置詞・接続詞・関係詞・準動詞の前、カンマの後ろ、長い主語の後ろ）で
- * まとめ直し、チャンクの中は `chunk.slash`（訳つき）があるところだけ切る。
- * 規則の正本は `logic/slashReading.js`。
+ * **スラッシュと SVOC は1画面にした**（2026-09-23）。スラッシュを SVOCM の切れ目で
+ * 必ず切るようにしたので、2つは同じ区切りを見ていた。別々のタブにしておくと、
+ * 同じものを2回読ませることになる。区切り方の正本は `logic/slashReading.js` の
+ * `slashGroups`。
  */
 
 export const READING_MODES = [
   { id: 'plain', label: '英語' },
   { id: 'ja', label: '和訳' },
   { id: 'slash', label: 'スラッシュ' },
-  { id: 'svoc', label: 'SVOC' },
 ];
-
-const ROLE_LABELS = { S: 'S', V: 'V', O: 'O', C: 'C', M: 'M' };
 
 /**
  * 本文の1語。長押しで「毎日みる」に登録する。
@@ -69,40 +62,44 @@ function Words({ text, phrases, isMarked, onHold }) {
 }
 
 /**
- * スラッシュ読み。まとまりごとに訳を下へ添える。
+ * スラッシュ読み。**SVOCM の要素（組）ごとに札を1つ載せ、小片ごとに訳を添える。**
+ *
+ *   組と組の間   … 太い `/`（SVOCM の切れ目。塾で教えている切り方）
+ *   組の中の小片 … 細い `/`（長い主語・修飾語を読みやすく割っただけ）
+ *
+ * 太さを分けないと、どこが SVOCM の切れ目なのかを札の位置からしか読めない。
  *
  * 押して初めて訳が出る作りだと、どこが分からなかったのかを自分で決めてから
  * でないと読めない。最初から並べておけば、目が英語と日本語を往復できる。
  */
 function SlashSentence({ sentence, phrases, isMarked, onHold }) {
+  const groups = slashGroups(sentence.chunks);
+  /*
+    **スラッシュは直前のまとまりにくっつける。** 独立した部品にすると、折り返した
+    ときにスラッシュだけが次の行の頭に落ちる（「／ you」）。紙に引くときと同じく
+    行末に残す。（このコメントに「*」と「/」を続けて書かない。コメントが閉じる）
+  */
   return (
     <p className="reading-sentence reading-sentence--slash">
-      {slashUnits(sentence.chunks).map((unit, index) => (
-        <React.Fragment key={index}>
-          {index > 0 && <span className="reading-slash" aria-hidden="true">/</span>}
-          <span className="reading-chunk">
-            <span className="reading-chunk__en">
-              <Words text={unit.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+      {groups.map((group, index) => (
+        <span key={index} className="reading-slash-unit">
+          <span className={`reading-svoc is-${group.role.toLowerCase()}`}>
+            <span className="reading-svoc__role">{group.role}</span>
+            <span className="reading-svoc__pieces">
+              {group.pieces.map((piece, pi) => (
+                <span key={pi} className="reading-slash-unit">
+                  <span className="reading-chunk">
+                    <span className="reading-chunk__en">
+                      <Words text={piece.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+                    </span>
+                    <span className="reading-chunk__ja">{piece.ja}</span>
+                  </span>
+                  {pi < group.pieces.length - 1 && <span className="reading-slash reading-slash--inner" aria-hidden="true">/</span>}
+                </span>
+              ))}
             </span>
-            <span className="reading-chunk__ja">{unit.ja}</span>
           </span>
-        </React.Fragment>
-      ))}
-    </p>
-  );
-}
-
-/** SVOC。まとまりの上に札を付ける。修飾語（M）は控えめに。 */
-function SvocSentence({ sentence, phrases, isMarked, onHold }) {
-  return (
-    <p className="reading-sentence reading-sentence--svoc">
-      {sentence.chunks.map((chunk, index) => (
-        <span key={index} className={`reading-svoc is-${chunk.role.toLowerCase()}`}>
-          <span className="reading-svoc__role">{ROLE_LABELS[chunk.role]}</span>
-          <span className="reading-svoc__en">
-            <Words text={chunk.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
-          </span>
-          <span className="reading-svoc__ja">{chunk.ja}</span>
+          {index < groups.length - 1 && <span className="reading-slash" aria-hidden="true">/</span>}
         </span>
       ))}
     </p>
@@ -127,7 +124,6 @@ export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onS
 
             <div className="reading-line__text">
               {mode === 'slash' && <SlashSentence sentence={sentence} phrases={phrases} isMarked={isMarked} onHold={onHold} />}
-              {mode === 'svoc' && <SvocSentence sentence={sentence} phrases={phrases} isMarked={isMarked} onHold={onHold} />}
               {(mode === 'plain' || mode === 'ja') && (
                 <p className="reading-sentence">
                   {sentence.chunks.map((chunk, i) => (

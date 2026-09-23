@@ -445,3 +445,25 @@ describe('本棚では測り始めない', () => {
     expect(view.container.querySelectorAll('.reading-book')).toHaveLength(0);
   });
 });
+
+/*
+  **スラッシュと SVOC は1画面**（2026-09-23）。タブは3つで、
+  スラッシュの画面に S/V/O/C/M の札が載る。
+*/
+describe('スラッシュに SVOC の札が載る', () => {
+  it('**SVOC のタブは無い**', async () => {
+    await openReading();
+    const tabs = screen.getAllByRole('tab').map((t) => t.textContent);
+    expect(tabs).toEqual(['英語', '和訳', 'スラッシュ']);
+  });
+
+  it('**スラッシュを開くと、組ごとに札が出る**', async () => {
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('tab', { name: 'スラッシュ' }));
+    const roles = [...view.container.querySelectorAll('.reading-svoc__role')].map((el) => el.textContent);
+    expect(roles).toEqual(['V', 'M', 'V', 'M']);
+    // 組と組の間の / は太いほう。組の中の区切りが無いので細いほうは出ない
+    expect(view.container.querySelectorAll('.reading-slash:not(.reading-slash--inner)')).toHaveLength(2);
+    expect(view.container.querySelectorAll('.reading-slash--inner')).toHaveLength(0);
+  });
+});
