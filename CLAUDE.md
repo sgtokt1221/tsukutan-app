@@ -8,7 +8,7 @@
 
 - **目標設定** — 英検5級〜1級 / 高校入試（偏差値45・50・60・最難関） / 大学入試（偏差値50・60・最難関）を複数選択可。達成日とやる気レベル（そこそこ / 普通 / やる気満々）を設定
 - **語彙力チェックテスト** — レベル推定（`VocabularyCheckTest.js` → `TestResult.js`）
-- **日次学習** — 新規単語 + 復習単語のフラッシュカード（`LearningFlashcard.js` / `ReviewFlashcard.js`）
+- **日次学習** — 新規単語 + 復習単語のフラッシュカード（`StudyFlashcard.js` 1つ。モードの違いは `logic/studyMode.js` の表だけ）
 - **自由学習** — 教材別・レベル別に自分のペースで進める（進捗は別管理）
 - **AIストーリー生成** — 学習した単語を使った短編を Gemini (Vertex AI) が生成し、Cloud Translation で和訳を付与。**月1回まで**
 - **分析・予測** — 正答率推移・弱点分野・学習パターン・レベル予測・推薦（`src/logic/` 配下）
@@ -39,8 +39,8 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `src/LoginPage.js` | ログイン |
 | `src/StudentDashboard.js` | **3,365行**。生徒側のほぼ全機能（ホーム / ストーリー / 自由学習タブ、分析セクション） |
 | `src/AdminDashboard.js` | **1,332行**。管理者。`view` state で `analytics` / `studentDetails` / `import` を切替 |
-| `src/LearningFlashcard.js` | 新規学習フラッシュカード（1,318行） |
-| `src/ReviewFlashcard.js` | 復習フラッシュカード（1,367行） |
+| `src/StudyFlashcard.js` | 単語カード（新規・復習とも。2026-09-23 に2本を1つにまとめた）。部品は `components/learning/`、指の判定は `logic/cardGestures.js`、記録の形は `logic/studyLog.js` |
+| `src/logic/studyMode.js` | モードごとの決まり（上スワイプ・外す・見出し・新規/復習の数え方）。**「復習なら」を部品に書かず、ここに足す** |
 | `src/VocabularyCheckTest.js` | 語彙力チェックテスト（975行） |
 | `src/GoalSetter.js` | 目標設定コンポーネント。**未使用（デッドコード）** — 実体は `App.js` 内の `/set-goal` ルート |
 | `src/PrintableQuiz.js` / `PrintableStory.js` | 印刷用ビュー |

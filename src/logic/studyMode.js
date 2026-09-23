@@ -19,16 +19,41 @@
  *   書いてあるのに、実際は語そのものを卒業させていた）
  */
 
+/*
+ * ## 新規と復習の違い（2026-09-23 に部品を1つにまとめたときに表へ寄せた）
+ * - `activity`   … つくばホームへ送る数の分かれ目（新規語数／復習語数）。`noteActivity` に渡す
+ * - `shuffle`    … 並びを混ぜるか。新規は教材の順（前回の続きから再開するため）、復習は毎回混ぜる
+ * - `logSchema`  … 途中で終了したときの記録の形。**2種類あるのは今の管理画面に合わせたまま**
+ *                  （→ `studyLog.js`。直すと管理画面の数字が変わるので別の判断）
+ * - `storageKey` … 単語帳の続き位置を読む localStorage キーの頭
+ * - `emptyText`  … 出す語が無いときの文
+ */
+const NEW_WORDS = {
+  activity: 'new',
+  shuffle: false,
+  logSchema: 'learning',
+  storageKey: 'wordbook_progress',
+  emptyText: '学習する単語がありません。',
+};
+
 const MODES = {
-  daily: { swipeUp: false, remove: 'graduate' },
-  extra: { swipeUp: false, remove: 'graduate' },
-  free: { swipeUp: true, remove: 'graduate' },
-  bookmark: { swipeUp: false, remove: 'unbookmark' },
-  review: { swipeUp: true, remove: 'graduate' },
+  daily: { ...NEW_WORDS, swipeUp: false, remove: 'graduate' },
+  extra: { ...NEW_WORDS, swipeUp: false, remove: 'graduate' },
+  free: { ...NEW_WORDS, swipeUp: true, remove: 'graduate' },
+  bookmark: { ...NEW_WORDS, swipeUp: false, remove: 'unbookmark' },
+  review: {
+    activity: 'review',
+    shuffle: true,
+    logSchema: 'review',
+    storageKey: 'wordbook_progress_review',
+    emptyText: '復習する単語がありません。',
+    swipeUp: true,
+    remove: 'graduate',
+  },
 };
 
 /** 知らないモードは上スワイプを切る（消える方に倒さない） */
-const FALLBACK = { swipeUp: false, remove: 'graduate' };
+const FALLBACK = { ...NEW_WORDS, swipeUp: false, remove: 'graduate' };
 
 const REMOVE_TEXT = {
   graduate: {
@@ -43,7 +68,8 @@ const REMOVE_TEXT = {
 
 /**
  * @param {string} mode 'daily' | 'extra' | 'free' | 'bookmark' | 'review'
- * @returns {{ swipeUp: boolean, remove: 'graduate'|'unbookmark', removeLabel: string, removeHint: string }}
+ * @returns {{ swipeUp: boolean, remove: 'graduate'|'unbookmark', removeLabel: string, removeHint: string,
+ *   activity: 'new'|'review', shuffle: boolean, logSchema: 'learning'|'review', storageKey: string, emptyText: string }}
  */
 export function studyModePolicy(mode) {
   const policy = MODES[mode] || FALLBACK;

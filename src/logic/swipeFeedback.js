@@ -59,3 +59,29 @@ export const clearSwipeFeedback = (element) => {
   element.style.removeProperty('background-color');
   element.style.removeProperty('box-shadow');
 };
+
+/** '#rrggbb' 2つのあいだを t（0〜1）で混ぜる */
+const mixHex = (from, to, t) => {
+  const channel = (hex, at) => parseInt(hex.slice(at, at + 2), 16);
+  const mix = (at) => Math.round(channel(from, at) * (1 - t) + channel(to, at) * t);
+  return `rgb(${mix(1)}, ${mix(3)}, ${mix(5)})`;
+};
+
+/**
+ * フラッシュカードを動かしている最中の地の色。
+ *
+ * 横は「もう一度（赤）← 白 → わかった（ライム）」をなめらかに混ぜる。
+ * 上に40px以上引いたら黄（外す）。**上スワイプが効かないモードでは黄にしない**——
+ * 色が出ると効くと思ってしまう（2026-09-23 に新規と復習で食い違っていたのをそろえた）。
+ *
+ * @param {number} x 横の移動量
+ * @param {number} y 縦の移動量
+ * @param {boolean} allowGraduate 上スワイプで外すモードか
+ */
+export const cardColorAt = (x, y, allowGraduate) => {
+  if (allowGraduate && y < -40) return SWIPE_FEEDBACK.graduate.color;
+  const dx = Math.max(-100, Math.min(100, typeof x === 'number' ? x : 0));
+  if (dx === 0) return SWIPE_FEEDBACK.neutral.color;
+  const target = dx < 0 ? SWIPE_FEEDBACK.incorrect.color : SWIPE_FEEDBACK.correct.color;
+  return mixHex(SWIPE_FEEDBACK.neutral.color, target, Math.abs(dx) / 100);
+};

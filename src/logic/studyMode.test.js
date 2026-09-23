@@ -55,3 +55,20 @@ describe('見出し', () => {
     expect(sessionTitle('free', {})).toBe('自由学習');
   });
 });
+
+/*
+  **新規と復習の違いはこの表だけに置く**（2026-09-23 に部品を1つにまとめた）。
+  部品の中に「復習なら」を散らさない。
+*/
+describe('新規と復習の違い', () => {
+  it('復習：復習として数え、毎回混ぜ、復習の記録の形', () => {
+    const p = studyModePolicy('review');
+    expect(p).toMatchObject({ activity: 'review', shuffle: true, logSchema: 'review', storageKey: 'wordbook_progress_review' });
+  });
+
+  it('新規の4つ：新規として数え、教材の順のまま、学習の記録の形', () => {
+    for (const mode of ['daily', 'extra', 'free', 'bookmark']) {
+      expect(studyModePolicy(mode)).toMatchObject({ activity: 'new', shuffle: false, logSchema: 'learning', storageKey: 'wordbook_progress' });
+    }
+  });
+});
