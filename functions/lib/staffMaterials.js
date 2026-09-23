@@ -1,22 +1,30 @@
 /**
- * つくばホームの職員に、生徒の教材（復習リスト・AI長文）を渡すときの決まり。
+ * つくばホームの管理者に、生徒の「苦手な単語」を渡すときの決まり。
  *
  * ## なぜここにあるか（2026-09-23）
- * 生徒を見る場所をつくばホームの管理者ポータル（「つくつく」タブ）に一本化した。
- * つくつく独自の管理画面にしか無かった「復習の小テスト印刷」と「長文の印刷」を
- * あちらへ移すため、あちらの職員のIDトークンで読める口（`staffStudentMaterials`）を作った。
- * ここはその中身の判定だけを持つ（Firestore を触らないのでテストできる）。
+ * 生徒を見る場所をつくばホームの管理画面（`/tsukutsuku/`）に一本化した。
+ * 塾がそこで出したいのは「その生徒の苦手な単語の小テスト」だけ（AI長文は使わない）。
+ * あちらの管理者のIDトークンで読める口（`staffStudentMaterials`）の中身の判定をここに置く
+ * （Firestore を触らないのでテストできる）。
  *
  * ## 誰に渡すか
- * つくばホームのカスタムクレーム `role` で決める（→ `tsukubaToken.js`）。
- * - `admin`   … どの校舎の生徒でも
- * - `teacher` … **自分の校舎（クレームの `school`）の生徒だけ**。生徒の校舎が分からなければ渡さない
- * - それ以外（`learner` ＝生徒本人、`student` ＝保護者）には渡さない
+ * つくばホームのカスタムクレーム `role === 'admin'` だけ（→ `tsukubaToken.js`）。
+ * 講師・生徒本人（`learner`）・保護者（`student`）には渡さない（2026-09-23 に「管理者だけ」と決めた）。
+ *
+ * ## 苦手な単語の決め方
+ * 採点のたびに `reviewScheduling.js` が `repetitions` と `easeFactor` を書き換える。
+ * 「もう一度」で `repetitions` は0に戻り、`easeFactor` は下がる（初期2.5・下限1.3・上限3.0）。
+ * - 覚えた語（`status: 'mastered'`）と、移した古い文書（`migratedTo`）は除く
+ * - 苦手 ＝ **直近で間違えた**（`repetitions === 0` で一度は答えている）か、
+ *   **`easeFactor` が初期値より下がった**（間違い・迷いが正解より多い）
+ * - 並び：直近で間違えた語が先、次に `easeFactor` の低い順
  */
 
-/** つくばホームの職員の役割。生徒は `LEARNER_ROLE`（→ tsukubaToken.js） */
+/** つくばホームの管理者の役割 */
 const ADMIN_ROLE = 'admin';
-const TEACHER_ROLE = 'teacher';
+
+/** 覚えやすさの初期値。これより下がっていれば、間違い・迷いが正解より多い */
+const INITIAL_EASE = 2.5;
 
 class StaffAccessError extends Error {
   constructor(message) {
@@ -26,90 +34,45 @@ class StaffAccessError extends Error {
 }
 
 /**
- * 職員として読んでよいか。だめなら StaffAccessError を投げる。
- *
- * @param {{ role?: string, school?: string }} decoded つくばホームのIDトークンを検証した中身
- * @param {string} studentSchool つくつくの users/{uid}.school（初回ログインで入る）
+ * 管理者として読んでよいか。だめなら StaffAccessError を投げる。
+ * @param {{ role?: string }} decoded つくばホームのIDトークンを検証した中身
  */
-function assertStaffClaims(decoded, studentSchool) {
-  const role = decoded && decoded.role;
-  if (role === ADMIN_ROLE) return;
-  if (role === TEACHER_ROLE) {
-    const own = typeof decoded.school === 'string' ? decoded.school : '';
-    if (own !== '' && own === studentSchool) return;
-    throw new StaffAccessError('ほかの校舎の生徒の教材は開けません');
-  }
-  throw new StaffAccessError('職員のアカウントで開いてください');
+function assertStaffClaims(decoded) {
+  if (decoded && decoded.role === ADMIN_ROLE) return;
+  throw new StaffAccessError('管理者のアカウントで開いてください');
 }
 
+/** 一度でも答えているか（初めて出た語の記録には答えた時刻がある） */
+const hasAnswered = (data) => Boolean(data.lastReviewed);
+
 /**
- * 小テストに出す復習語。
+ * 苦手な単語。苦手な順。
  *
- * 永続IDへ移したときの古い文書（`migratedTo`）と、もう覚えた語（`status: 'mastered'`）は除く。
- * 生徒側の日次プランと、これまでの管理画面が数えていたのと同じ条件。
- *
- * @param {Array<{id: string, data: object}>} docs
- * @returns {Array<{id: string, word: string, meaning: string}>}
+ * @param {Array<{id: string, data: object}>} docs users/{uid}/reviewWords
+ * @returns {Array<{id: string, word: string, meaning: string, lastWrong: boolean}>}
  */
-function reviewWordsForQuiz(docs) {
+function weakWordsForQuiz(docs) {
   return (docs || [])
     .filter(({ data }) => data && !data.migratedTo && data.status !== 'mastered')
-    .map(({ id, data }) => ({
-      id,
-      word: String(data.word || ''),
-      meaning: String(data.meaning || data.japanese || data.translation || ''),
-    }))
-    .filter((entry) => entry.word !== '');
-}
-
-/** Firestore の時刻・ISO文字列・Date を ISO 文字列にそろえる。読めなければ null */
-function toIso(value) {
-  if (!value) return null;
-  if (typeof value.toDate === 'function') return value.toDate().toISOString();
-  if (typeof value.seconds === 'number') return new Date(value.seconds * 1000).toISOString();
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
-}
-
-/** 語の並びを文字列の配列にそろえる（古い長文は語オブジェクトを持っていることがある） */
-function wordList(value) {
-  if (!Array.isArray(value)) return [];
-  return value
-    .map((entry) => (typeof entry === 'string' ? entry : (entry && entry.word) || ''))
-    .map((entry) => String(entry).trim())
-    .filter(Boolean);
-}
-
-/**
- * 印刷する長文。生成に失敗したものと生成中のものは除く。新しい順。
- *
- * **本文は `sentences`**（`{ english, japanese }` の配列）。これまでの印刷は
- * 存在しない `english` / `japanese` を読んでいて、本文以外の欄が出ていなかった。
- *
- * @param {Array<{id: string, data: object}>} docs
- */
-function storiesForPrint(docs) {
-  return (docs || [])
-    .filter(({ data }) => data && data.status !== 'failed' && data.status !== 'generating')
-    .map(({ id, data }) => ({
-      id,
-      title: String(data.title || '長文'),
-      createdAt: toIso(data.createdAt),
-      sentences: (Array.isArray(data.sentences) ? data.sentences : [])
-        .map((s) => ({ english: String((s && s.english) || ''), japanese: String((s && s.japanese) || '') }))
-        .filter((s) => s.english !== ''),
-      usedWords: wordList(data.usedWords),
-      unusedWords: wordList(data.unusedWords),
-    }))
-    .filter((story) => story.sentences.length > 0)
-    .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+    .map(({ id, data }) => {
+      const ease = Number.isFinite(data.easeFactor) ? data.easeFactor : INITIAL_EASE;
+      const lastWrong = hasAnswered(data) && data.repetitions === 0;
+      return {
+        id,
+        word: String(data.word || ''),
+        meaning: String(data.meaning || data.japanese || data.translation || ''),
+        lastWrong,
+        ease,
+      };
+    })
+    .filter((w) => w.word !== '' && (w.lastWrong || w.ease < INITIAL_EASE))
+    .sort((a, b) => (Number(b.lastWrong) - Number(a.lastWrong)) || (a.ease - b.ease))
+    .map(({ id, word, meaning, lastWrong }) => ({ id, word, meaning, lastWrong }));
 }
 
 module.exports = {
   ADMIN_ROLE,
-  TEACHER_ROLE,
   StaffAccessError,
   assertStaffClaims,
-  reviewWordsForQuiz,
-  storiesForPrint,
+  weakWordsForQuiz,
 };

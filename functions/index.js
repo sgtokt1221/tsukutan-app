@@ -41,11 +41,10 @@ const {
   ensureStudentProfile,
 } = require('./lib/tsukubaToken');
 const { judgeAnswer } = require('./lib/answerJudge');
-// つくばホームの職員に教材（復習リスト・長文）を渡すときの決まり
+// つくばホームの管理者に、生徒の苦手な単語を渡すときの決まり
 const {
   assertStaffClaims,
-  reviewWordsForQuiz,
-  storiesForPrint,
+  weakWordsForQuiz,
   StaffAccessError,
 } = require('./lib/staffMaterials');
 
@@ -956,12 +955,12 @@ exports.exchangeTsukubaToken = onCall({ region: 'us-central1' }, async (request)
 
 
 //==============================================================================
-// つくばホームの職員に、生徒の教材（復習リスト・AI長文）を渡す（2026-09-23）
+// つくばホームの管理者に、生徒の苦手な単語を渡す（2026-09-23）
 //==============================================================================
 /*
- * 生徒を見る場所をつくばホームの管理者ポータル「つくつく」タブに一本化した。
- * つくつく独自の管理画面にしか無かった「復習の小テスト印刷」「長文の印刷」を
- * あちらで出すための、**読み取りだけ**の口。判定の中身は `lib/staffMaterials.js`。
+ * 生徒を見る場所をつくばホームの管理画面（`/tsukutsuku/`）に一本化した。
+ * あちらで「苦手な単語の小テスト」を出すための、**読み取りだけ**の口。
+ * 判定の中身（管理者だけ・苦手の決め方）は `lib/staffMaterials.js`。AI長文は渡さない（使わない）。
  *
  * - 呼べるのはつくばホームの画面だけ（CORS）。つくばホームのIDトークンを Bearer で受ける
  * - `checkRevoked` は使えない（つくばホームの Auth を読む権限が無い。`exchangeTsukubaToken` と同じ）
@@ -993,19 +992,13 @@ staffMaterialsApp.post('/', async (req, res) => {
   if (uid === '' || uid.includes('/')) return res.status(400).json({ error: '生徒が指定されていません' });
 
   try {
-    const userSnap = await db.collection('users').doc(uid).get();
-    const studentSchool = userSnap.exists && typeof userSnap.data().school === 'string' ? userSnap.data().school : '';
-    assertStaffClaims(decoded, studentSchool);
-
-    const [wordsSnap, storiesSnap] = await Promise.all([
-      db.collection('users').doc(uid).collection('reviewWords').get(),
-      db.collection('users').doc(uid).collection('generatedStories').get(),
-    ]);
+    assertStaffClaims(decoded);
+    const userRef = db.collection('users').doc(uid);
+    const [userSnap, wordsSnap] = await Promise.all([userRef.get(), userRef.collection('reviewWords').get()]);
     const toDocs = (snap) => snap.docs.map((d) => ({ id: d.id, data: d.data() }));
     return res.status(200).json({
       found: userSnap.exists,
-      reviewWords: reviewWordsForQuiz(toDocs(wordsSnap)),
-      stories: storiesForPrint(toDocs(storiesSnap)),
+      weakWords: weakWordsForQuiz(toDocs(wordsSnap)),
     });
   } catch (e) {
     if (e instanceof StaffAccessError) {
