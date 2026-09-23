@@ -6,8 +6,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Component Imports
-// ダッシュボードは遅延読み込みにする。Chart.js は AdminDashboard からしか
-// 使わないので、管理者がその画面を開くまで取りに行かない（計画書13.5）。
+// ダッシュボードは遅延読み込みにする（計画書13.5）。
+// 管理者向けは案内だけ。生徒を見る場所はつくばホームの管理者ポータルに一本化した（2026-09-23）
 import LoginPage from './LoginPage.js';
 import BrandLoader from './components/brand/BrandLoader';
 // つくばホームから `#token=` で渡ってきたときの入場。**アカウントを2つ作らない**
@@ -16,7 +16,7 @@ import { enterFromTsukubaHome } from './logic/tsukubaEntry.js';
 import { resumeAndFlush } from './logic/studySession.js';
 const loadStudentDashboard = () => import('./StudentDashboard.js');
 const StudentDashboard = lazy(loadStudentDashboard);
-const AdminDashboard = lazy(() => import('./AdminDashboard.js'));
+const AdminMoved = lazy(() => import('./AdminMoved.js'));
 const GoalSetter = lazy(() => import('./GoalSetter.js'));
 
 const RouteFallback = () => (
@@ -172,7 +172,7 @@ function AppContent() {
           )
         } />
         <Route path="/login" element={!currentUser ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/admin-dashboard" element={userRole === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
+        <Route path="/admin-dashboard" element={userRole === 'admin' ? <AdminMoved /> : <Navigate to="/" />} />
         <Route path="/student-dashboard" element={userRole === 'student' ? <StudentDashboard /> : <Navigate to="/" />} />
         <Route path="/set-goal" element={
           userRole === 'student' ? (

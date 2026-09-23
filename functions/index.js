@@ -41,6 +41,13 @@ const {
   ensureStudentProfile,
 } = require('./lib/tsukubaToken');
 const { judgeAnswer } = require('./lib/answerJudge');
+// つくばホームの職員に教材（復習リスト・長文）を渡すときの決まり
+const {
+  assertStaffClaims,
+  reviewWordsForQuiz,
+  storiesForPrint,
+  StaffAccessError,
+} = require('./lib/staffMaterials');
 
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
@@ -946,3 +953,77 @@ exports.exchangeTsukubaToken = onCall({ region: 'us-central1' }, async (request)
   await ensureStudentProfile(db, decoded);
   return { customToken };
 });
+
+
+//==============================================================================
+// つくばホームの職員に、生徒の教材（復習リスト・AI長文）を渡す（2026-09-23）
+//==============================================================================
+/*
+ * 生徒を見る場所をつくばホームの管理者ポータル「つくつく」タブに一本化した。
+ * つくつく独自の管理画面にしか無かった「復習の小テスト印刷」「長文の印刷」を
+ * あちらで出すための、**読み取りだけ**の口。判定の中身は `lib/staffMaterials.js`。
+ *
+ * - 呼べるのはつくばホームの画面だけ（CORS）。つくばホームのIDトークンを Bearer で受ける
+ * - `checkRevoked` は使えない（つくばホームの Auth を読む権限が無い。`exchangeTsukubaToken` と同じ）
+ * - **トークンはログに出さない**
+ */
+const STAFF_ORIGINS = [
+  'https://tsukubamanager-4900b.web.app',
+  'https://tsukubamanager-4900b.firebaseapp.com',
+  'http://localhost:5173',
+];
+const staffMaterialsApp = express();
+staffMaterialsApp.use(cors({ origin: STAFF_ORIGINS }));
+staffMaterialsApp.use(express.json({ limit: '10kb' }));
+
+staffMaterialsApp.post('/', async (req, res) => {
+  const header = req.headers.authorization || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+  if (idToken === '') return res.status(401).json({ error: 'つくばホームのログインが必要です' });
+
+  let decoded;
+  try {
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    logger.warn('職員のトークンを検証できなかった', { message: e && e.message });
+    return res.status(401).json({ error: 'つくばホームのログインを確かめられませんでした' });
+  }
+
+  const uid = req.body && typeof req.body.uid === 'string' ? req.body.uid : '';
+  if (uid === '' || uid.includes('/')) return res.status(400).json({ error: '生徒が指定されていません' });
+
+  try {
+    const userSnap = await db.collection('users').doc(uid).get();
+    const studentSchool = userSnap.exists && typeof userSnap.data().school === 'string' ? userSnap.data().school : '';
+    assertStaffClaims(decoded, studentSchool);
+
+    const [wordsSnap, storiesSnap] = await Promise.all([
+      db.collection('users').doc(uid).collection('reviewWords').get(),
+      db.collection('users').doc(uid).collection('generatedStories').get(),
+    ]);
+    const toDocs = (snap) => snap.docs.map((d) => ({ id: d.id, data: d.data() }));
+    return res.status(200).json({
+      found: userSnap.exists,
+      reviewWords: reviewWordsForQuiz(toDocs(wordsSnap)),
+      stories: storiesForPrint(toDocs(storiesSnap)),
+    });
+  } catch (e) {
+    if (e instanceof StaffAccessError) {
+      logger.warn('職員の教材読み取りを拒否した', { staff: decoded.uid, role: decoded.role, uid, message: e.message });
+      return res.status(403).json({ error: e.message });
+    }
+    logger.error('職員の教材読み取りに失敗した', { uid, message: e && e.message });
+    return res.status(500).json({ error: '読み込めませんでした' });
+  }
+});
+
+exports.staffStudentMaterials = onRequest(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    maxInstances: 10,
+    serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
+  },
+  staffMaterialsApp
+);

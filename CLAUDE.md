@@ -20,7 +20,7 @@
 |------|------|
 | フロント | React 19 + Create React App (`react-scripts` 5.0.1) |
 | ルーティング | react-router-dom v7（`basename="/tsukutan-app"`） |
-| UI | 素の CSS（`App.css` / `AdminDashboard.css` / `Analytics.css`）+ framer-motion + react-icons |
+| UI | 素の CSS（`App.css` / `Analytics.css`）+ framer-motion + react-icons |
 | グラフ | Chart.js + react-chartjs-2 |
 | 認証 / DB | Firebase Auth + Cloud Firestore |
 | サーバー | Cloud Functions for Firebase v2（Node 18, us-central1） |
@@ -38,7 +38,7 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `src/App.js` | ルーティング + 認証状態監視 + 目標設定画面（UI がここに直書き） |
 | `src/LoginPage.js` | ログイン |
 | `src/StudentDashboard.js` | **3,365行**。生徒側のほぼ全機能（ホーム / ストーリー / 自由学習タブ、分析セクション） |
-| `src/AdminDashboard.js` | **1,332行**。管理者。`view` state で `analytics` / `studentDetails` / `import` を切替 |
+| `src/AdminMoved.js` | 管理者が入ったときの案内だけ。**生徒を見る場所・小テストと長文の印刷はつくばホームの管理者ポータル「つくつく」タブに一本化した**（2026-09-23。旧 AdminDashboard は削除）。あちらは `staffStudentMaterials`（`functions/lib/staffMaterials.js`：管理者＝全校舎／講師＝自校舎）で教材を読む。`importUsers` / `manageStudents` は画面から呼ばれないが、旧アカウントの片付け用に残してある |
 | `src/StudyFlashcard.js` | 単語カード（新規・復習とも。2026-09-23 に2本を1つにまとめた）。部品は `components/learning/`、指の判定は `logic/cardGestures.js`、記録の形は `logic/studyLog.js` |
 | `src/logic/studyMode.js` | モードごとの決まり（上スワイプ・外す・見出し・新規/復習の数え方）。**「復習なら」を部品に書かず、ここに足す** |
 | `src/VocabularyCheckTest.js` | 語彙力チェックテスト（975行） |
