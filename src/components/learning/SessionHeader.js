@@ -21,23 +21,26 @@ export default function SessionHeader({ title, current, total, onBack, backLabel
           </button>
         )}
         <span className="session-header__title">{title}</span>
-        <span className="session-header__count">
-          {safeTotal > 0 ? `${current} / ${safeTotal}` : ''}
-        </span>
-        {/* 補助操作は行を増やさずヘッダー内に収める */}
-        {actions}
+        {/* 補助操作は行を増やさずヘッダー内に収める。**枠の幅は固定**（ボタンの数が
+            フラッシュカードと単語帳で違っても、見出しの幅が変わらないように） */}
+        {actions && <span className="session-header__actions">{actions}</span>}
       </div>
 
+      {/* 何枚目かは進み具合の棒の右に置く（2026-09-24。見出しの行に置くと、
+          スマホで見出しが「ターゲッ…」まで詰まっていた） */}
       {safeTotal > 0 && (
-        <div
-          className="session-header__track"
-          role="progressbar"
-          aria-valuenow={current}
-          aria-valuemin={0}
-          aria-valuemax={safeTotal}
-          aria-label={`${title}の進捗`}
-        >
-          <div className="session-header__fill" style={{ width: `${percent}%` }} />
+        <div className="session-header__progress">
+          <div
+            className="session-header__track"
+            role="progressbar"
+            aria-valuenow={current}
+            aria-valuemin={0}
+            aria-valuemax={safeTotal}
+            aria-label={`${title}の進捗`}
+          >
+            <div className="session-header__fill" style={{ width: `${percent}%` }} />
+          </div>
+          <span className="session-header__count">{`${current} / ${safeTotal}`}</span>
         </div>
       )}
     </header>

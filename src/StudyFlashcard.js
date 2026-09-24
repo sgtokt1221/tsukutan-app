@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop, FaCheck } from 'react-icons/fa';
+import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop } from 'react-icons/fa';
 
 import AnswerControls from './components/learning/AnswerControls';
 import PeekNudge from './components/learning/PeekNudge';
@@ -97,7 +97,7 @@ export default function StudyFlashcard({
   // 描画に使わない数は ref で持つ。state だと最後の1語を答えた瞬間の値が古い
   const hasCompletedRef = useRef(false);
   const incorrectRef = useRef([]);
-  // 復習の記録に載せる数（「わかった」「迷った」と「もう覚えた」）。→ logic/studyLog.js
+  // 復習の記録に載せる数（「わかった」と「もう覚えた」）。→ logic/studyLog.js
   const graduatedRef = useRef(0);
   // このセッションで初めて記録した単語のID。習得語数はここから数える。
   // 画面のインデックス数だと、戻る・再回答で二重に数えてしまう
@@ -291,7 +291,7 @@ export default function StudyFlashcard({
     );
   }, [uid, trackWrite]);
 
-  /** フラッシュカードで答えた（わかった / 迷った / もう一度） */
+  /** フラッシュカードで答えた（わかった / もう一度） */
   const handleAnswer = useCallback(async (quality) => {
     // **手を動かした印。** 放置の判定と、つくばホームへ送る新規語数／復習語数の分かれ目
     noteActivity(policy.activity);
@@ -315,7 +315,6 @@ export default function StudyFlashcard({
   }, [policy.activity, cards, currentIndex, isFlipped, recordAnswer, uid, resetCard, finishSession]);
 
   const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
-  const handleHard = useCallback(() => handleAnswer('hard'), [handleAnswer]);
   const handleIncorrect = useCallback(() => handleAnswer('again'), [handleAnswer]);
 
   // ---- 外す ----
@@ -632,7 +631,7 @@ export default function StudyFlashcard({
       >
         <div className="wordbook-header">
           <SessionHeader
-            title={`${title}（${cards.length}語）`}
+            title={title}
             current={wordbookProgress}
             total={cards.length}
             onBack={handleLeave}
@@ -785,10 +784,17 @@ export default function StudyFlashcard({
 
       {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
       <PeekNudge trigger={peekCount} />
+      {/* もう一度｜もう覚えた｜わかった（2026-09-24）。「迷った」は外した（使われていない）。
+          もう覚えたは上スワイプと同じ処理で、同じ黄色（→ AnswerControls.css） */}
       <AnswerControls
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
-        onHard={handleHard}
+        middle={{
+          label: policy.removeShort,
+          fullLabel: policy.removeLabel,
+          hint: policy.removeHint,
+          onClick: handleRemoveCurrent,
+        }}
       />
 
       {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く。
@@ -802,15 +808,6 @@ export default function StudyFlashcard({
           disabled={currentIndex === 0}
         >
           <FaUndo aria-hidden="true" /> 前の単語
-        </button>
-        {/* 外す。何をするか・上スワイプが効くかはモードで決まる（→ logic/studyMode.js） */}
-        <button
-          type="button"
-          className="ghost-button"
-          onClick={handleRemoveCurrent}
-          title={policy.removeHint}
-        >
-          <FaCheck aria-hidden="true" /> {policy.removeLabel}
         </button>
       </div>
     </div>

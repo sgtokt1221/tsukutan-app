@@ -14,6 +14,8 @@ export default function AnswerControls({
   onCorrect,
   onIncorrect,
   onHard,
+  // 中央に置く「もう覚えた」（上スワイプと同じ）。`{ label, fullLabel, hint, onClick }`
+  middle,
   disabled = false,
   correctLabel = 'わかった',
   incorrectLabel = 'もう一度',
@@ -23,7 +25,7 @@ export default function AnswerControls({
   return (
     <div className="answer-controls">
       {hint && <p className="answer-controls__hint">{hint}</p>}
-      <div className={onHard ? 'answer-controls__buttons answer-controls__buttons--three' : 'answer-controls__buttons'}>
+      <div className={(onHard || middle) ? 'answer-controls__buttons answer-controls__buttons--three' : 'answer-controls__buttons'}>
         <button
           type="button"
           className="answer-btn answer-btn--again"
@@ -40,6 +42,18 @@ export default function AnswerControls({
             disabled={disabled}
           >
             {hardLabel}
+          </button>
+        )}
+        {middle && (
+          <button
+            type="button"
+            className="answer-btn answer-btn--graduate"
+            onClick={middle.onClick}
+            disabled={disabled}
+            aria-label={middle.fullLabel || middle.label}
+            title={middle.hint}
+          >
+            {middle.label}
           </button>
         )}
         <button

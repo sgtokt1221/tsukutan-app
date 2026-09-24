@@ -58,10 +58,13 @@ const FALLBACK = { ...NEW_WORDS, swipeUp: false, remove: 'graduate' };
 const REMOVE_TEXT = {
   graduate: {
     label: 'もう覚えた',
+    short: 'もう覚えた',
     hint: 'もう出題されなくなります',
   },
   unbookmark: {
     label: '覚えた（毎日みるから外す）',
+    // 中央のボタンは3つ並ぶので短く（読み上げと長押しの説明には label と hint を使う）
+    short: '覚えた',
     hint: '毎日みる単語から外します',
   },
 };
@@ -77,6 +80,7 @@ export function studyModePolicy(mode) {
   return {
     ...policy,
     removeLabel: text.label,
+    removeShort: text.short,
     // 上スワイプが効くモードでは、ボタンと同じだと書き添える
     removeHint: policy.swipeUp ? `${text.hint}（上にスワイプしても同じ）` : text.hint,
   };

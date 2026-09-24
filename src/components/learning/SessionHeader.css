@@ -23,6 +23,12 @@
 
 .session-header__title {
   flex: 1;
+  /* **見出しは1行に固定**。長いときは折り返さず「…」で切る（2026-09-24。
+     単語帳で見出しが詰まって2行に割れ、上帯の高さが変わっていた） */
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--font-family-heading);
   font-size: var(--font-size-16);
   font-weight: 700;
@@ -32,12 +38,31 @@
 
 .session-header__count {
   flex-shrink: 0;
+  /* 桁が変わっても（0 / 4 → 12 / 26）見出しの幅が動かないように */
+  min-width: 4.5em;
+  text-align: right;
   font-size: var(--font-size-14);
   color: var(--color-olive-muted);
   font-variant-numeric: tabular-nums;
 }
 
+/* 右のボタンの枠。**ボタン2つぶんの幅を常に取る**（単語帳は1つ、フラッシュカードは2つ） */
+.session-header__actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-8);
+  min-width: calc(var(--tap-target) * 2 + var(--space-8));
+}
+
+.session-header__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
 .session-header__track {
+  flex: 1;
   height: 6px;
   background-color: var(--color-olive-divider);
   border-radius: var(--radius-pill);
@@ -496,17 +521,18 @@
   min-width: 20px;
   min-height: 20px;
   padding: 0;
-  border: 1px solid var(--color-olive-border);
+  /* 「もう覚えた」は黄色にそろえる（上スワイプの色・フラッシュカードの中央のボタンと同じ） */
+  border: 1px solid #a16207;
   border-radius: var(--radius-pill);
-  background-color: var(--color-surface);
-  color: var(--color-olive-muted);
+  background-color: #fef08a;
+  color: #713f12;
   font-size: calc(11px * var(--wordbook-zoom, 1) + 3px);
   cursor: pointer;
 }
 
 .wordbook-graduate:hover {
-  background-color: var(--color-lime-soft);
-  color: var(--color-ink-olive);
+  background-color: #fde047;
+  color: #713f12;
 }
 
 /* 単語帳の自動再生で、いま読んでいるカード。枠で示す（濃いライム #169B78 は白地に 3.5:1。

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaArrowLeft, FaArrowRight, FaBook, FaBullseye, FaCheck, FaLayerGroup,
-  FaPlay, FaRedo, FaStar, FaSyncAlt,
+  FaPlay, FaRedo, FaStar,
 } from 'react-icons/fa';
 import './Onboarding.css';
 
@@ -57,9 +57,9 @@ const STEPS = [
         text: '次に出るまでの間隔が伸びる。覚えるほど出番が減る（最長1年）',
       },
       {
-        icon: <FaSyncAlt />,
-        label: '迷った',
-        text: '伸ばし方を半分に抑える。あやふやな語は早めに戻す',
+        icon: <FaCheck />,
+        label: 'もう覚えた（黄色）',
+        text: 'もう出題しない。復習と自由学習では上にスワイプしても同じ',
       },
       {
         icon: <FaRedo />,

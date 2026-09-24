@@ -66,6 +66,13 @@
   gap: var(--space-8);
 }
 
+/* 3つ並ぶと1つ約110px。左右の余白を詰めないと「もう覚えた」が2行に割れる（2026-09-24） */
+.answer-controls__buttons--three .answer-btn {
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+  white-space: nowrap;
+}
+
 /* 迷った: わかった と もう一度 の中間。基準色の範囲で表す（計画書5.1）。 */
 .answer-btn--hard {
   background-color: var(--color-lime-soft);
@@ -75,4 +82,16 @@
 
 .answer-btn--hard:hover:not(:disabled) {
   background-color: var(--color-lime-muted);
+}
+
+/* もう覚えた（上スワイプと同じ）。上スワイプのときの黄（#fef08a）にそろえる。
+   枠 #a16207 は白地に 4.9:1、文字 #713f12 は黄地に 8:1 以上（→ dads） */
+.answer-btn--graduate {
+  background-color: #fef08a;
+  border-color: #a16207;
+  color: #713f12;
+}
+
+.answer-btn--graduate:hover:not(:disabled) {
+  background-color: #fde047;
 }
