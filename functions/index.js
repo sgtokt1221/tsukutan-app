@@ -47,11 +47,14 @@ const {
   weakWordsForQuiz,
   StaffAccessError,
 } = require('./lib/staffMaterials');
+// 生徒詳細の「定着度」（教材ごと）
+const { masteryByTextbook } = require('./lib/textbookMastery');
 // 管理者が出す教科書の小テスト
 const {
   QuizInputError,
   validateCreate: validateQuizCreate,
   pickQuizWords,
+  pickWeakWords,
   titleOf: quizTitleOf,
   summarize: summarizeQuiz,
 } = require('./lib/quizAssignments');
@@ -1004,9 +1007,18 @@ staffMaterialsApp.post('/', async (req, res) => {
     const userRef = db.collection('users').doc(uid);
     const [userSnap, wordsSnap] = await Promise.all([userRef.get(), userRef.collection('reviewWords').get()]);
     const toDocs = (snap) => snap.docs.map((d) => ({ id: d.id, data: d.data() }));
+    const docs = toDocs(wordsSnap);
+    // 定着度は教材ファイルが読めなくても、苦手な単語だけは返す（片方の失敗で両方を消さない）
+    let mastery = null;
+    try {
+      mastery = masteryByTextbook(docs, await loadMasteryTextbooks());
+    } catch (e) {
+      logger.warn('定着度の教材を読めなかった', { message: e && e.message });
+    }
     return res.status(200).json({
       found: userSnap.exists,
-      weakWords: weakWordsForQuiz(toDocs(wordsSnap)),
+      weakWords: weakWordsForQuiz(docs),
+      mastery,
     });
   } catch (e) {
     if (e instanceof StaffAccessError) {
@@ -1045,18 +1057,40 @@ exports.staffStudentMaterials = onRequest(
  * 生徒は `quiz_assignments` を自分が対象のものだけ読める（firestore.rules）。結果は本人が
  * `users/{uid}/quizResults/{id}` に書く。
  */
-const TEXTBOOK_CARDS_URL = 'https://tsukutan-58b3f.web.app/data/words-textbook-sunshine.json';
-let textbookCardsCache = { at: 0, cards: null };
-/** 教科書の語。**配信しているファイルを読む**（関数に写しを持たない）。10分だけ覚えておく */
-const loadTextbookCards = async () => {
-  if (textbookCardsCache.cards && Date.now() - textbookCardsCache.at < 10 * 60 * 1000) return textbookCardsCache.cards;
-  const response = await fetch(TEXTBOOK_CARDS_URL);
-  if (!response.ok) throw new Error(`教科書の単語を読めませんでした (${response.status})`);
-  const cards = await response.json();
-  if (!Array.isArray(cards) || cards.length === 0) throw new Error('教科書の単語が空です');
-  textbookCardsCache = { at: Date.now(), cards };
-  return cards;
+const DATA_BASE_URL = 'https://tsukutan-58b3f.web.app/data/';
+const dataFileCache = new Map();
+/** 単語のファイル。**配信しているものを読む**（関数に写しを持たない）。10分だけ覚えておく */
+const loadDataFile = async (name) => {
+  const hit = dataFileCache.get(name);
+  if (hit && Date.now() - hit.at < 10 * 60 * 1000) return hit.data;
+  const response = await fetch(`${DATA_BASE_URL}${name}`);
+  if (!response.ok) throw new Error(`${name} を読めませんでした (${response.status})`);
+  const data = await response.json();
+  if (!Array.isArray(data) || data.length === 0) throw new Error(`${name} が空です`);
+  dataFileCache.set(name, { at: Date.now(), data });
+  return data;
 };
+const loadTextbookCards = () => loadDataFile('words-textbook-sunshine.json');
+
+/**
+ * 定着度を出す教材（生徒の「えらぶ」と同じ並び）。題名は画面に出すもの。
+ * 単語帳の題名の正本はつくつくの src/config/books.js（関数からは読めないので、足したらここにも足す）
+ */
+const MASTERY_TEXTBOOKS = [
+  { id: 'sunshine-1', title: 'Sunshine 1年（学校の教科書）', file: 'words-textbook-sunshine.json', grade: 1 },
+  { id: 'sunshine-2', title: 'Sunshine 2年（学校の教科書）', file: 'words-textbook-sunshine.json', grade: 2 },
+  { id: 'sunshine-3', title: 'Sunshine 3年（学校の教科書）', file: 'words-textbook-sunshine.json', grade: 3 },
+  { id: 'osaka-koukou-nyuushi', title: '中学英語（大阪府公立入試）', file: 'words-osaka.json' },
+  { id: 'highschool-english', title: '高校英語', file: 'words-highschool.json' },
+  { id: 'book-systan5', title: 'システム英単語', file: 'words-book-systan5.json' },
+  { id: 'book-target1900', title: '英単語ターゲット1900', file: 'words-book-target1900.json' },
+  { id: 'book-leap', title: '必携英単語LEAP', file: 'words-book-leap.json' },
+  { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', file: 'words-book-idiom-target1000.json' },
+];
+const loadMasteryTextbooks = async () => Promise.all(MASTERY_TEXTBOOKS.map(async ({ id, title, file, grade }) => {
+  const words = await loadDataFile(file);
+  return { id, title, words: grade ? words.filter((w) => w.grade === grade) : words };
+}));
 
 const quizAssignmentsApp = express();
 quizAssignmentsApp.use(cors({ origin: STAFF_ORIGINS }));
@@ -1083,10 +1117,17 @@ quizAssignmentsApp.post('/', async (req, res) => {
 
     if (body.action === 'create') {
       const input = validateQuizCreate(body);
-      const words = pickQuizWords(await loadTextbookCards(), input);
+      let words;
+      if (input.source === 'weak') {
+        // その生徒の苦手な単語（staffStudentMaterials と同じ決め方）
+        const snap = await db.collection('users').doc(input.targetUids[0]).collection('reviewWords').get();
+        words = pickWeakWords(weakWordsForQuiz(snap.docs.map((d) => ({ id: d.id, data: d.data() }))), input.count);
+      } else {
+        words = pickQuizWords(await loadTextbookCards(), input);
+      }
       const ref = db.collection('quiz_assignments').doc();
       await ref.set({
-        textbook: 'sunshine',
+        textbook: input.source === 'weak' ? null : 'sunshine',
         title: quizTitleOf(input),
         ...input,
         count: words.length,
@@ -1114,7 +1155,8 @@ quizAssignmentsApp.post('/', async (req, res) => {
         return {
           id: d.id,
           title: a.title,
-          grade: a.grade,
+          source: a.source || 'textbook',
+          grade: a.grade ?? null,
           pageFrom: a.pageFrom,
           pageTo: a.pageTo,
           direction: a.direction,

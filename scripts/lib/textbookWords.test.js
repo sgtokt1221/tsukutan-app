@@ -47,3 +47,9 @@ test('同じ学年で同じ語は先のページだけ。別の学年なら両�
   const { cards } = buildTextbookCards([row('apple', 10, 1), row('apple', 20, 1), row('apple', 5, 2)], master, []);
   assert.deepEqual(cards.map((c) => [c.grade, c.page]), [[1, 10], [2, 5]]);
 });
+
+test('**人名は、同じつづりの普通の語に当てない**（Bob を bob「上下に動く」にしない）', () => {
+  const { cards, skipped } = buildTextbookCards([row('Bob'), row('I')], [m('w_bob', 'bob', 5, '動', '上下に動く'), m('w_i', 'I', 1, '代', '私は')], []);
+  assert.deepEqual(cards.map((c) => c.id), ['w_i']);
+  assert.equal(skipped[0].reason, 'proper-noun');
+});

@@ -7,7 +7,7 @@ const base = { grade: 1, pageFrom: 10, pageTo: 12, count: 5, direction: 'en-ja',
 describe('出すときの入力', () => {
   test('そろえた形で返す（ページは小さい方から・対象の重複を除く）', () => {
     expect(validateCreate({ ...base, pageFrom: 12, pageTo: 10, targetUids: ['u1', 'u1', 'u2'] }))
-      .toEqual({ grade: 1, pageFrom: 10, pageTo: 12, count: 5, direction: 'en-ja', targetUids: ['u1', 'u2'] });
+      .toEqual({ source: 'textbook', grade: 1, pageFrom: 10, pageTo: 12, count: 5, direction: 'en-ja', targetUids: ['u1', 'u2'] });
   });
 
   test('**学年・ページ・向き・対象がおかしければ出さない**', () => {
@@ -55,4 +55,25 @@ test('集計：済みの人数と平均の正答率', () => {
 test('見出し', () => {
   expect(titleOf({ grade: 2, pageFrom: 30, pageTo: 45 })).toBe('Sunshine 2年 p.30〜45');
   expect(titleOf({ grade: 1, pageFrom: 8, pageTo: 8 })).toBe('Sunshine 1年 p.8');
+});
+
+describe('苦手な単語から出す', () => {
+  const { pickWeakWords } = require('./quizAssignments');
+
+  test('**対象は1人だけ**。学年やページは要らない', () => {
+    expect(validateCreate({ source: 'weak', count: 10, direction: 'ja-en', targetUids: ['u1'] }))
+      .toEqual({ source: 'weak', count: 10, direction: 'ja-en', targetUids: ['u1'] });
+    expect(() => validateCreate({ source: 'weak', count: 10, direction: 'en-ja', targetUids: ['u1', 'u2'] })).toThrow(QuizInputError);
+  });
+
+  test('苦手な順に上から。0 は全部（上限つき）。無ければ出さない', () => {
+    const weak = [{ id: 'a', word: 'a', meaning: 'あ', lastWrong: true }, { id: 'b', word: 'b', meaning: 'い' }, { id: 'c', word: 'c', meaning: '' }];
+    expect(pickWeakWords(weak, 1)).toEqual([{ id: 'a', word: 'a', meaning: 'あ' }]);
+    expect(pickWeakWords(weak, 0).map((w) => w.id)).toEqual(['a', 'b']);
+    expect(() => pickWeakWords([], 10)).toThrow(QuizInputError);
+  });
+
+  test('見出し', () => {
+    expect(titleOf({ source: 'weak' })).toBe('苦手な単語');
+  });
 });
