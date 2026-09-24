@@ -1,0 +1,10433 @@
+{
+ "source": "開隆堂出版「令和７年度版Sunshine使用語彙一覧」",
+ "url": "https://krdkrk.jp/kwp_2025/wp-content/uploads/2025/06/R7Sunshine_goidata-1.xlsx",
+ "page": "https://krdkrk.jp/english/",
+ "retrieved": "2026-09-24",
+ "note": "grade は初出の学年（1〜3）。「小学校で学んだ単語」に印がある語は 0。同じ語が複数回出るときは一番早い学年。語は表の表記のまま（行頭の全角空白だけ除いた）",
+ "words": [
+  {
+   "word": "a",
+   "grade": 0
+  },
+  {
+   "word": "a.m.",
+   "grade": 0
+  },
+  {
+   "word": "about",
+   "grade": 0
+  },
+  {
+   "word": "active",
+   "grade": 0
+  },
+  {
+   "word": "afternoon",
+   "grade": 0
+  },
+  {
+   "word": "again",
+   "grade": 0
+  },
+  {
+   "word": "air",
+   "grade": 0
+  },
+  {
+   "word": "always",
+   "grade": 0
+  },
+  {
+   "word": "am",
+   "grade": 0
+  },
+  {
+   "word": "amusement park",
+   "grade": 0
+  },
+  {
+   "word": "an",
+   "grade": 0
+  },
+  {
+   "word": "and",
+   "grade": 0
+  },
+  {
+   "word": "animal",
+   "grade": 0
+  },
+  {
+   "word": "ant",
+   "grade": 0
+  },
+  {
+   "word": "apple",
+   "grade": 0
+  },
+  {
+   "word": "April",
+   "grade": 0
+  },
+  {
+   "word": "aquarium",
+   "grade": 0
+  },
+  {
+   "word": "are",
+   "grade": 0
+  },
+  {
+   "word": "art",
+   "grade": 0
+  },
+  {
+   "word": "artist",
+   "grade": 0
+  },
+  {
+   "word": "astronaut",
+   "grade": 0
+  },
+  {
+   "word": "at",
+   "grade": 0
+  },
+  {
+   "word": "ate",
+   "grade": 0
+  },
+  {
+   "word": "August",
+   "grade": 0
+  },
+  {
+   "word": "Australia",
+   "grade": 0
+  },
+  {
+   "word": "autumn",
+   "grade": 0
+  },
+  {
+   "word": "badminton",
+   "grade": 0
+  },
+  {
+   "word": "bag",
+   "grade": 0
+  },
+  {
+   "word": "ball",
+   "grade": 0
+  },
+  {
+   "word": "banana",
+   "grade": 0
+  },
+  {
+   "word": "baseball",
+   "grade": 0
+  },
+  {
+   "word": "basket",
+   "grade": 0
+  },
+  {
+   "word": "basketball",
+   "grade": 0
+  },
+  {
+   "word": "bat",
+   "grade": 0
+  },
+  {
+   "word": "bath",
+   "grade": 0
+  },
+  {
+   "word": "be",
+   "grade": 0
+  },
+  {
+   "word": "beach",
+   "grade": 0
+  },
+  {
+   "word": "bean",
+   "grade": 0
+  },
+  {
+   "word": "bear",
+   "grade": 0
+  },
+  {
+   "word": "beautiful",
+   "grade": 0
+  },
+  {
+   "word": "bed",
+   "grade": 0
+  },
+  {
+   "word": "beef",
+   "grade": 0
+  },
+  {
+   "word": "best",
+   "grade": 0
+  },
+  {
+   "word": "bicycle",
+   "grade": 0
+  },
+  {
+   "word": "big",
+   "grade": 0
+  },
+  {
+   "word": "bird",
+   "grade": 0
+  },
+  {
+   "word": "birthday",
+   "grade": 0
+  },
+  {
+   "word": "bitter",
+   "grade": 0
+  },
+  {
+   "word": "black",
+   "grade": 0
+  },
+  {
+   "word": "blue",
+   "grade": 0
+  },
+  {
+   "word": "boat",
+   "grade": 0
+  },
+  {
+   "word": "body",
+   "grade": 0
+  },
+  {
+   "word": "book",
+   "grade": 0
+  },
+  {
+   "word": "bookstore",
+   "grade": 0
+  },
+  {
+   "word": "box",
+   "grade": 0
+  },
+  {
+   "word": "brass band",
+   "grade": 0
+  },
+  {
+   "word": "brave",
+   "grade": 0
+  },
+  {
+   "word": "Brazil",
+   "grade": 0
+  },
+  {
+   "word": "bread",
+   "grade": 0
+  },
+  {
+   "word": "breakfast",
+   "grade": 0
+  },
+  {
+   "word": "bridge",
+   "grade": 0
+  },
+  {
+   "word": "brother",
+   "grade": 0
+  },
+  {
+   "word": "brown",
+   "grade": 0
+  },
+  {
+   "word": "bus",
+   "grade": 0
+  },
+  {
+   "word": "busy",
+   "grade": 0
+  },
+  {
+   "word": "buy",
+   "grade": 0
+  },
+  {
+   "word": "by",
+   "grade": 0
+  },
+  {
+   "word": "cabbage",
+   "grade": 0
+  },
+  {
+   "word": "cake",
+   "grade": 0
+  },
+  {
+   "word": "camp",
+   "grade": 0
+  },
+  {
+   "word": "can",
+   "grade": 0
+  },
+  {
+   "word": "Canada",
+   "grade": 0
+  },
+  {
+   "word": "candy",
+   "grade": 0
+  },
+  {
+   "word": "cap",
+   "grade": 0
+  },
+  {
+   "word": "car",
+   "grade": 0
+  },
+  {
+   "word": "card",
+   "grade": 0
+  },
+  {
+   "word": "carrot",
+   "grade": 0
+  },
+  {
+   "word": "case",
+   "grade": 0
+  },
+  {
+   "word": "castle",
+   "grade": 0
+  },
+  {
+   "word": "cat",
+   "grade": 0
+  },
+  {
+   "word": "catch",
+   "grade": 0
+  },
+  {
+   "word": "chair",
+   "grade": 0
+  },
+  {
+   "word": "change",
+   "grade": 0
+  },
+  {
+   "word": "character",
+   "grade": 0
+  },
+  {
+   "word": "check",
+   "grade": 0
+  },
+  {
+   "word": "cheese",
+   "grade": 0
+  },
+  {
+   "word": "chef",
+   "grade": 0
+  },
+  {
+   "word": "cherry",
+   "grade": 0
+  },
+  {
+   "word": "chicken",
+   "grade": 0
+  },
+  {
+   "word": "children",
+   "grade": 0
+  },
+  {
+   "word": "China",
+   "grade": 0
+  },
+  {
+   "word": "Chinese",
+   "grade": 0
+  },
+  {
+   "word": "chocolate",
+   "grade": 0
+  },
+  {
+   "word": "chorus",
+   "grade": 0
+  },
+  {
+   "word": "class",
+   "grade": 0
+  },
+  {
+   "word": "classroom",
+   "grade": 0
+  },
+  {
+   "word": "classroom activities",
+   "grade": 0
+  },
+  {
+   "word": "clean",
+   "grade": 0
+  },
+  {
+   "word": "climb",
+   "grade": 0
+  },
+  {
+   "word": "cloudy",
+   "grade": 0
+  },
+  {
+   "word": "club",
+   "grade": 0
+  },
+  {
+   "word": "coffee",
+   "grade": 0
+  },
+  {
+   "word": "cold",
+   "grade": 0
+  },
+  {
+   "word": "color",
+   "grade": 0
+  },
+  {
+   "word": "come",
+   "grade": 0
+  },
+  {
+   "word": "comedian",
+   "grade": 0
+  },
+  {
+   "word": "comic",
+   "grade": 0
+  },
+  {
+   "word": "computer",
+   "grade": 0
+  },
+  {
+   "word": "cook",
+   "grade": 0
+  },
+  {
+   "word": "cooking",
+   "grade": 0
+  },
+  {
+   "word": "cool",
+   "grade": 0
+  },
+  {
+   "word": "corn",
+   "grade": 0
+  },
+  {
+   "word": "corner",
+   "grade": 0
+  },
+  {
+   "word": "country",
+   "grade": 0
+  },
+  {
+   "word": "cow",
+   "grade": 0
+  },
+  {
+   "word": "crane",
+   "grade": 0
+  },
+  {
+   "word": "cup",
+   "grade": 0
+  },
+  {
+   "word": "curry",
+   "grade": 0
+  },
+  {
+   "word": "cute",
+   "grade": 0
+  },
+  {
+   "word": "dance",
+   "grade": 0
+  },
+  {
+   "word": "dancer",
+   "grade": 0
+  },
+  {
+   "word": "date",
+   "grade": 0
+  },
+  {
+   "word": "day",
+   "grade": 0
+  },
+  {
+   "word": "December",
+   "grade": 0
+  },
+  {
+   "word": "delicious",
+   "grade": 0
+  },
+  {
+   "word": "desk",
+   "grade": 0
+  },
+  {
+   "word": "dessert",
+   "grade": 0
+  },
+  {
+   "word": "different",
+   "grade": 0
+  },
+  {
+   "word": "dinner",
+   "grade": 0
+  },
+  {
+   "word": "dish",
+   "grade": 0
+  },
+  {
+   "word": "do",
+   "grade": 0
+  },
+  {
+   "word": "doctor",
+   "grade": 0
+  },
+  {
+   "word": "dog",
+   "grade": 0
+  },
+  {
+   "word": "doll",
+   "grade": 0
+  },
+  {
+   "word": "dolphin",
+   "grade": 0
+  },
+  {
+   "word": "door",
+   "grade": 0
+  },
+  {
+   "word": "down",
+   "grade": 0
+  },
+  {
+   "word": "drama",
+   "grade": 0
+  },
+  {
+   "word": "draw",
+   "grade": 0
+  },
+  {
+   "word": "dream",
+   "grade": 0
+  },
+  {
+   "word": "drink",
+   "grade": 0
+  },
+  {
+   "word": "drum",
+   "grade": 0
+  },
+  {
+   "word": "ear",
+   "grade": 0
+  },
+  {
+   "word": "eat",
+   "grade": 0
+  },
+  {
+   "word": "egg",
+   "grade": 0
+  },
+  {
+   "word": "eight",
+   "grade": 0
+  },
+  {
+   "word": "eighteen",
+   "grade": 0
+  },
+  {
+   "word": "eighth",
+   "grade": 0
+  },
+  {
+   "word": "eighty",
+   "grade": 0
+  },
+  {
+   "word": "elementary school",
+   "grade": 0
+  },
+  {
+   "word": "elephant",
+   "grade": 0
+  },
+  {
+   "word": "eleven",
+   "grade": 0
+  },
+  {
+   "word": "eleventh",
+   "grade": 0
+  },
+  {
+   "word": "English",
+   "grade": 0
+  },
+  {
+   "word": "enjoy",
+   "grade": 0
+  },
+  {
+   "word": "entrance",
+   "grade": 0
+  },
+  {
+   "word": "eraser",
+   "grade": 0
+  },
+  {
+   "word": "evening",
+   "grade": 0
+  },
+  {
+   "word": "event",
+   "grade": 0
+  },
+  {
+   "word": "everyone",
+   "grade": 0
+  },
+  {
+   "word": "excellent",
+   "grade": 0
+  },
+  {
+   "word": "excuse",
+   "grade": 0
+  },
+  {
+   "word": "eye",
+   "grade": 0
+  },
+  {
+   "word": "face",
+   "grade": 0
+  },
+  {
+   "word": "fall",
+   "grade": 0
+  },
+  {
+   "word": "family",
+   "grade": 0
+  },
+  {
+   "word": "famous",
+   "grade": 0
+  },
+  {
+   "word": "fan",
+   "grade": 0
+  },
+  {
+   "word": "fantastic",
+   "grade": 0
+  },
+  {
+   "word": "farmer",
+   "grade": 0
+  },
+  {
+   "word": "fast",
+   "grade": 0
+  },
+  {
+   "word": "father",
+   "grade": 0
+  },
+  {
+   "word": "favorite",
+   "grade": 0
+  },
+  {
+   "word": "February",
+   "grade": 0
+  },
+  {
+   "word": "festival",
+   "grade": 0
+  },
+  {
+   "word": "field trip",
+   "grade": 0
+  },
+  {
+   "word": "fifteen",
+   "grade": 0
+  },
+  {
+   "word": "fifth",
+   "grade": 0
+  },
+  {
+   "word": "fifty",
+   "grade": 0
+  },
+  {
+   "word": "fine",
+   "grade": 0
+  },
+  {
+   "word": "firefighter",
+   "grade": 0
+  },
+  {
+   "word": "firework",
+   "grade": 0
+  },
+  {
+   "word": "first",
+   "grade": 0
+  },
+  {
+   "word": "fish",
+   "grade": 0
+  },
+  {
+   "word": "five",
+   "grade": 0
+  },
+  {
+   "word": "flower",
+   "grade": 0
+  },
+  {
+   "word": "fly",
+   "grade": 0
+  },
+  {
+   "word": "food",
+   "grade": 0
+  },
+  {
+   "word": "for",
+   "grade": 0
+  },
+  {
+   "word": "forty",
+   "grade": 0
+  },
+  {
+   "word": "four",
+   "grade": 0
+  },
+  {
+   "word": "fourteen",
+   "grade": 0
+  },
+  {
+   "word": "fourth",
+   "grade": 0
+  },
+  {
+   "word": "fox",
+   "grade": 0
+  },
+  {
+   "word": "France",
+   "grade": 0
+  },
+  {
+   "word": "fresh",
+   "grade": 0
+  },
+  {
+   "word": "Friday",
+   "grade": 0
+  },
+  {
+   "word": "friend",
+   "grade": 0
+  },
+  {
+   "word": "friendly",
+   "grade": 0
+  },
+  {
+   "word": "frog",
+   "grade": 0
+  },
+  {
+   "word": "from",
+   "grade": 0
+  },
+  {
+   "word": "fruit",
+   "grade": 0
+  },
+  {
+   "word": "fun",
+   "grade": 0
+  },
+  {
+   "word": "funny",
+   "grade": 0
+  },
+  {
+   "word": "game",
+   "grade": 0
+  },
+  {
+   "word": "garbage",
+   "grade": 0
+  },
+  {
+   "word": "garden",
+   "grade": 0
+  },
+  {
+   "word": "get",
+   "grade": 0
+  },
+  {
+   "word": "giraffe",
+   "grade": 0
+  },
+  {
+   "word": "glass",
+   "grade": 0
+  },
+  {
+   "word": "go",
+   "grade": 0
+  },
+  {
+   "word": "good",
+   "grade": 0
+  },
+  {
+   "word": "goodbye",
+   "grade": 0
+  },
+  {
+   "word": "gorilla",
+   "grade": 0
+  },
+  {
+   "word": "grandfather",
+   "grade": 0
+  },
+  {
+   "word": "grandmother",
+   "grade": 0
+  },
+  {
+   "word": "great",
+   "grade": 0
+  },
+  {
+   "word": "green",
+   "grade": 0
+  },
+  {
+   "word": "group",
+   "grade": 0
+  },
+  {
+   "word": "guitar",
+   "grade": 0
+  },
+  {
+   "word": "gym",
+   "grade": 0
+  },
+  {
+   "word": "had",
+   "grade": 0
+  },
+  {
+   "word": "hall",
+   "grade": 0
+  },
+  {
+   "word": "hamburger",
+   "grade": 0
+  },
+  {
+   "word": "hand",
+   "grade": 0
+  },
+  {
+   "word": "happy",
+   "grade": 0
+  },
+  {
+   "word": "hard",
+   "grade": 0
+  },
+  {
+   "word": "hat",
+   "grade": 0
+  },
+  {
+   "word": "have",
+   "grade": 0
+  },
+  {
+   "word": "he",
+   "grade": 0
+  },
+  {
+   "word": "head",
+   "grade": 0
+  },
+  {
+   "word": "healthy",
+   "grade": 0
+  },
+  {
+   "word": "heart",
+   "grade": 0
+  },
+  {
+   "word": "hello",
+   "grade": 0
+  },
+  {
+   "word": "help",
+   "grade": 0
+  },
+  {
+   "word": "here",
+   "grade": 0
+  },
+  {
+   "word": "hero",
+   "grade": 0
+  },
+  {
+   "word": "hi",
+   "grade": 0
+  },
+  {
+   "word": "high",
+   "grade": 0
+  },
+  {
+   "word": "hint",
+   "grade": 0
+  },
+  {
+   "word": "home",
+   "grade": 0
+  },
+  {
+   "word": "homework",
+   "grade": 0
+  },
+  {
+   "word": "horse",
+   "grade": 0
+  },
+  {
+   "word": "hospital",
+   "grade": 0
+  },
+  {
+   "word": "hot",
+   "grade": 0
+  },
+  {
+   "word": "house",
+   "grade": 0
+  },
+  {
+   "word": "how",
+   "grade": 0
+  },
+  {
+   "word": "hundred",
+   "grade": 0
+  },
+  {
+   "word": "hungry",
+   "grade": 0
+  },
+  {
+   "word": "I",
+   "grade": 0
+  },
+  {
+   "word": "ice cream",
+   "grade": 0
+  },
+  {
+   "word": "idea",
+   "grade": 0
+  },
+  {
+   "word": "in",
+   "grade": 0
+  },
+  {
+   "word": "India",
+   "grade": 0
+  },
+  {
+   "word": "ink",
+   "grade": 0
+  },
+  {
+   "word": "interesting",
+   "grade": 0
+  },
+  {
+   "word": "is",
+   "grade": 0
+  },
+  {
+   "word": "island",
+   "grade": 0
+  },
+  {
+   "word": "it",
+   "grade": 0
+  },
+  {
+   "word": "Italy",
+   "grade": 0
+  },
+  {
+   "word": "jam",
+   "grade": 0
+  },
+  {
+   "word": "January",
+   "grade": 0
+  },
+  {
+   "word": "Japan",
+   "grade": 0
+  },
+  {
+   "word": "Japanese",
+   "grade": 0
+  },
+  {
+   "word": "join",
+   "grade": 0
+  },
+  {
+   "word": "juice",
+   "grade": 0
+  },
+  {
+   "word": "July",
+   "grade": 0
+  },
+  {
+   "word": "jump",
+   "grade": 0
+  },
+  {
+   "word": "June",
+   "grade": 0
+  },
+  {
+   "word": "junior",
+   "grade": 0
+  },
+  {
+   "word": "key",
+   "grade": 0
+  },
+  {
+   "word": "kind",
+   "grade": 0
+  },
+  {
+   "word": "koala",
+   "grade": 0
+  },
+  {
+   "word": "lake",
+   "grade": 0
+  },
+  {
+   "word": "leave",
+   "grade": 0
+  },
+  {
+   "word": "left",
+   "grade": 0
+  },
+  {
+   "word": "leg",
+   "grade": 0
+  },
+  {
+   "word": "lemon",
+   "grade": 0
+  },
+  {
+   "word": "letter",
+   "grade": 0
+  },
+  {
+   "word": "let’s",
+   "grade": 0
+  },
+  {
+   "word": "library",
+   "grade": 0
+  },
+  {
+   "word": "life",
+   "grade": 0
+  },
+  {
+   "word": "like",
+   "grade": 0
+  },
+  {
+   "word": "lion",
+   "grade": 0
+  },
+  {
+   "word": "listen",
+   "grade": 0
+  },
+  {
+   "word": "live",
+   "grade": 0
+  },
+  {
+   "word": "long",
+   "grade": 0
+  },
+  {
+   "word": "look",
+   "grade": 0
+  },
+  {
+   "word": "love",
+   "grade": 0
+  },
+  {
+   "word": "low",
+   "grade": 0
+  },
+  {
+   "word": "luck",
+   "grade": 0
+  },
+  {
+   "word": "lunch",
+   "grade": 0
+  },
+  {
+   "word": "make",
+   "grade": 0
+  },
+  {
+   "word": "many",
+   "grade": 0
+  },
+  {
+   "word": "map",
+   "grade": 0
+  },
+  {
+   "word": "March",
+   "grade": 0
+  },
+  {
+   "word": "marker pen",
+   "grade": 0
+  },
+  {
+   "word": "math",
+   "grade": 0
+  },
+  {
+   "word": "May",
+   "grade": 0
+  },
+  {
+   "word": "me",
+   "grade": 0
+  },
+  {
+   "word": "meet",
+   "grade": 0
+  },
+  {
+   "word": "melon",
+   "grade": 0
+  },
+  {
+   "word": "memory",
+   "grade": 0
+  },
+  {
+   "word": "menu",
+   "grade": 0
+  },
+  {
+   "word": "milk",
+   "grade": 0
+  },
+  {
+   "word": "Monday",
+   "grade": 0
+  },
+  {
+   "word": "monkey",
+   "grade": 0
+  },
+  {
+   "word": "month",
+   "grade": 0
+  },
+  {
+   "word": "moon",
+   "grade": 0
+  },
+  {
+   "word": "morning",
+   "grade": 0
+  },
+  {
+   "word": "mother",
+   "grade": 0
+  },
+  {
+   "word": "mountain",
+   "grade": 0
+  },
+  {
+   "word": "mouse",
+   "grade": 0
+  },
+  {
+   "word": "mouth",
+   "grade": 0
+  },
+  {
+   "word": "movie",
+   "grade": 0
+  },
+  {
+   "word": "Mr.",
+   "grade": 0
+  },
+  {
+   "word": "Ms.",
+   "grade": 0
+  },
+  {
+   "word": "much",
+   "grade": 0
+  },
+  {
+   "word": "museum",
+   "grade": 0
+  },
+  {
+   "word": "mushroom",
+   "grade": 0
+  },
+  {
+   "word": "music",
+   "grade": 0
+  },
+  {
+   "word": "musician",
+   "grade": 0
+  },
+  {
+   "word": "my",
+   "grade": 0
+  },
+  {
+   "word": "name",
+   "grade": 0
+  },
+  {
+   "word": "nature",
+   "grade": 0
+  },
+  {
+   "word": "never",
+   "grade": 0
+  },
+  {
+   "word": "new",
+   "grade": 0
+  },
+  {
+   "word": "newspaper",
+   "grade": 0
+  },
+  {
+   "word": "nice",
+   "grade": 0
+  },
+  {
+   "word": "night",
+   "grade": 0
+  },
+  {
+   "word": "nine",
+   "grade": 0
+  },
+  {
+   "word": "nineteen",
+   "grade": 0
+  },
+  {
+   "word": "ninety",
+   "grade": 0
+  },
+  {
+   "word": "ninth",
+   "grade": 0
+  },
+  {
+   "word": "no",
+   "grade": 0
+  },
+  {
+   "word": "noodle",
+   "grade": 0
+  },
+  {
+   "word": "not",
+   "grade": 0
+  },
+  {
+   "word": "notebook",
+   "grade": 0
+  },
+  {
+   "word": "November",
+   "grade": 0
+  },
+  {
+   "word": "number",
+   "grade": 0
+  },
+  {
+   "word": "nurse",
+   "grade": 0
+  },
+  {
+   "word": "ocean",
+   "grade": 0
+  },
+  {
+   "word": "October",
+   "grade": 0
+  },
+  {
+   "word": "octopus",
+   "grade": 0
+  },
+  {
+   "word": "off",
+   "grade": 0
+  },
+  {
+   "word": "office",
+   "grade": 0
+  },
+  {
+   "word": "oh",
+   "grade": 0
+  },
+  {
+   "word": "old",
+   "grade": 0
+  },
+  {
+   "word": "omelet",
+   "grade": 0
+  },
+  {
+   "word": "on",
+   "grade": 0
+  },
+  {
+   "word": "one",
+   "grade": 0
+  },
+  {
+   "word": "onion",
+   "grade": 0
+  },
+  {
+   "word": "open",
+   "grade": 0
+  },
+  {
+   "word": "orange",
+   "grade": 0
+  },
+  {
+   "word": "out",
+   "grade": 0
+  },
+  {
+   "word": "P.E.",
+   "grade": 0
+  },
+  {
+   "word": "p.m.",
+   "grade": 0
+  },
+  {
+   "word": "pancake",
+   "grade": 0
+  },
+  {
+   "word": "panda",
+   "grade": 0
+  },
+  {
+   "word": "paper",
+   "grade": 0
+  },
+  {
+   "word": "park",
+   "grade": 0
+  },
+  {
+   "word": "peach",
+   "grade": 0
+  },
+  {
+   "word": "pen",
+   "grade": 0
+  },
+  {
+   "word": "pencil",
+   "grade": 0
+  },
+  {
+   "word": "people",
+   "grade": 0
+  },
+  {
+   "word": "photo",
+   "grade": 0
+  },
+  {
+   "word": "piano",
+   "grade": 0
+  },
+  {
+   "word": "picture",
+   "grade": 0
+  },
+  {
+   "word": "pie",
+   "grade": 0
+  },
+  {
+   "word": "pig",
+   "grade": 0
+  },
+  {
+   "word": "pilot",
+   "grade": 0
+  },
+  {
+   "word": "pineapple",
+   "grade": 0
+  },
+  {
+   "word": "pink",
+   "grade": 0
+  },
+  {
+   "word": "pizza",
+   "grade": 0
+  },
+  {
+   "word": "place",
+   "grade": 0
+  },
+  {
+   "word": "plastic",
+   "grade": 0
+  },
+  {
+   "word": "play",
+   "grade": 0
+  },
+  {
+   "word": "player",
+   "grade": 0
+  },
+  {
+   "word": "please",
+   "grade": 0
+  },
+  {
+   "word": "pond",
+   "grade": 0
+  },
+  {
+   "word": "pork",
+   "grade": 0
+  },
+  {
+   "word": "potato",
+   "grade": 0
+  },
+  {
+   "word": "practice",
+   "grade": 0
+  },
+  {
+   "word": "present",
+   "grade": 0
+  },
+  {
+   "word": "pudding",
+   "grade": 0
+  },
+  {
+   "word": "purple",
+   "grade": 0
+  },
+  {
+   "word": "put",
+   "grade": 0
+  },
+  {
+   "word": "queen",
+   "grade": 0
+  },
+  {
+   "word": "rabbit",
+   "grade": 0
+  },
+  {
+   "word": "racket",
+   "grade": 0
+  },
+  {
+   "word": "rainbow",
+   "grade": 0
+  },
+  {
+   "word": "rainy",
+   "grade": 0
+  },
+  {
+   "word": "read",
+   "grade": 0
+  },
+  {
+   "word": "really",
+   "grade": 0
+  },
+  {
+   "word": "recorder",
+   "grade": 0
+  },
+  {
+   "word": "red",
+   "grade": 0
+  },
+  {
+   "word": "restaurant",
+   "grade": 0
+  },
+  {
+   "word": "restroom",
+   "grade": 0
+  },
+  {
+   "word": "rice",
+   "grade": 0
+  },
+  {
+   "word": "ride",
+   "grade": 0
+  },
+  {
+   "word": "right",
+   "grade": 0
+  },
+  {
+   "word": "river",
+   "grade": 0
+  },
+  {
+   "word": "room",
+   "grade": 0
+  },
+  {
+   "word": "rugby",
+   "grade": 0
+  },
+  {
+   "word": "ruler",
+   "grade": 0
+  },
+  {
+   "word": "run",
+   "grade": 0
+  },
+  {
+   "word": "sad",
+   "grade": 0
+  },
+  {
+   "word": "salad",
+   "grade": 0
+  },
+  {
+   "word": "salty",
+   "grade": 0
+  },
+  {
+   "word": "same",
+   "grade": 0
+  },
+  {
+   "word": "sandwich",
+   "grade": 0
+  },
+  {
+   "word": "Saturday",
+   "grade": 0
+  },
+  {
+   "word": "saw",
+   "grade": 0
+  },
+  {
+   "word": "say",
+   "grade": 0
+  },
+  {
+   "word": "school",
+   "grade": 0
+  },
+  {
+   "word": "science",
+   "grade": 0
+  },
+  {
+   "word": "scientist",
+   "grade": 0
+  },
+  {
+   "word": "scissor",
+   "grade": 0
+  },
+  {
+   "word": "sea",
+   "grade": 0
+  },
+  {
+   "word": "seafood",
+   "grade": 0
+  },
+  {
+   "word": "season",
+   "grade": 0
+  },
+  {
+   "word": "second",
+   "grade": 0
+  },
+  {
+   "word": "see",
+   "grade": 0
+  },
+  {
+   "word": "September",
+   "grade": 0
+  },
+  {
+   "word": "seven",
+   "grade": 0
+  },
+  {
+   "word": "seventeen",
+   "grade": 0
+  },
+  {
+   "word": "seventh",
+   "grade": 0
+  },
+  {
+   "word": "seventy",
+   "grade": 0
+  },
+  {
+   "word": "she",
+   "grade": 0
+  },
+  {
+   "word": "sheep",
+   "grade": 0
+  },
+  {
+   "word": "ship",
+   "grade": 0
+  },
+  {
+   "word": "shirt",
+   "grade": 0
+  },
+  {
+   "word": "shoe",
+   "grade": 0
+  },
+  {
+   "word": "shop",
+   "grade": 0
+  },
+  {
+   "word": "shopping mall",
+   "grade": 0
+  },
+  {
+   "word": "short",
+   "grade": 0
+  },
+  {
+   "word": "shrine",
+   "grade": 0
+  },
+  {
+   "word": "sick",
+   "grade": 0
+  },
+  {
+   "word": "sing",
+   "grade": 0
+  },
+  {
+   "word": "singer",
+   "grade": 0
+  },
+  {
+   "word": "sister",
+   "grade": 0
+  },
+  {
+   "word": "sit",
+   "grade": 0
+  },
+  {
+   "word": "site",
+   "grade": 0
+  },
+  {
+   "word": "six",
+   "grade": 0
+  },
+  {
+   "word": "sixteen",
+   "grade": 0
+  },
+  {
+   "word": "sixth",
+   "grade": 0
+  },
+  {
+   "word": "sixty",
+   "grade": 0
+  },
+  {
+   "word": "skate",
+   "grade": 0
+  },
+  {
+   "word": "sky",
+   "grade": 0
+  },
+  {
+   "word": "sleepy",
+   "grade": 0
+  },
+  {
+   "word": "slow",
+   "grade": 0
+  },
+  {
+   "word": "small",
+   "grade": 0
+  },
+  {
+   "word": "smartphone",
+   "grade": 0
+  },
+  {
+   "word": "smile",
+   "grade": 0
+  },
+  {
+   "word": "snack",
+   "grade": 0
+  },
+  {
+   "word": "snake",
+   "grade": 0
+  },
+  {
+   "word": "snowy",
+   "grade": 0
+  },
+  {
+   "word": "so",
+   "grade": 0
+  },
+  {
+   "word": "soccer",
+   "grade": 0
+  },
+  {
+   "word": "soft",
+   "grade": 0
+  },
+  {
+   "word": "sometimes",
+   "grade": 0
+  },
+  {
+   "word": "sorry",
+   "grade": 0
+  },
+  {
+   "word": "soup",
+   "grade": 0
+  },
+  {
+   "word": "sour",
+   "grade": 0
+  },
+  {
+   "word": "spaghetti",
+   "grade": 0
+  },
+  {
+   "word": "Spain",
+   "grade": 0
+  },
+  {
+   "word": "speak",
+   "grade": 0
+  },
+  {
+   "word": "special",
+   "grade": 0
+  },
+  {
+   "word": "sport",
+   "grade": 0
+  },
+  {
+   "word": "spring",
+   "grade": 0
+  },
+  {
+   "word": "stadium",
+   "grade": 0
+  },
+  {
+   "word": "stand",
+   "grade": 0
+  },
+  {
+   "word": "stapler",
+   "grade": 0
+  },
+  {
+   "word": "star",
+   "grade": 0
+  },
+  {
+   "word": "start",
+   "grade": 0
+  },
+  {
+   "word": "station",
+   "grade": 0
+  },
+  {
+   "word": "stay",
+   "grade": 0
+  },
+  {
+   "word": "steak",
+   "grade": 0
+  },
+  {
+   "word": "stop",
+   "grade": 0
+  },
+  {
+   "word": "straight",
+   "grade": 0
+  },
+  {
+   "word": "strawberry",
+   "grade": 0
+  },
+  {
+   "word": "street",
+   "grade": 0
+  },
+  {
+   "word": "strong",
+   "grade": 0
+  },
+  {
+   "word": "student",
+   "grade": 0
+  },
+  {
+   "word": "study",
+   "grade": 0
+  },
+  {
+   "word": "subject",
+   "grade": 0
+  },
+  {
+   "word": "summer",
+   "grade": 0
+  },
+  {
+   "word": "sun",
+   "grade": 0
+  },
+  {
+   "word": "Sunday",
+   "grade": 0
+  },
+  {
+   "word": "sunny",
+   "grade": 0
+  },
+  {
+   "word": "supermarket",
+   "grade": 0
+  },
+  {
+   "word": "sweater",
+   "grade": 0
+  },
+  {
+   "word": "sweet",
+   "grade": 0
+  },
+  {
+   "word": "swim",
+   "grade": 0
+  },
+  {
+   "word": "table",
+   "grade": 0
+  },
+  {
+   "word": "take",
+   "grade": 0
+  },
+  {
+   "word": "talk",
+   "grade": 0
+  },
+  {
+   "word": "tall",
+   "grade": 0
+  },
+  {
+   "word": "tea",
+   "grade": 0
+  },
+  {
+   "word": "teach",
+   "grade": 0
+  },
+  {
+   "word": "teacher",
+   "grade": 0
+  },
+  {
+   "word": "team",
+   "grade": 0
+  },
+  {
+   "word": "teeth",
+   "grade": 0
+  },
+  {
+   "word": "temple",
+   "grade": 0
+  },
+  {
+   "word": "ten",
+   "grade": 0
+  },
+  {
+   "word": "tennis",
+   "grade": 0
+  },
+  {
+   "word": "tenth",
+   "grade": 0
+  },
+  {
+   "word": "textbook",
+   "grade": 0
+  },
+  {
+   "word": "Thailand",
+   "grade": 0
+  },
+  {
+   "word": "thank",
+   "grade": 0
+  },
+  {
+   "word": "that",
+   "grade": 0
+  },
+  {
+   "word": "the",
+   "grade": 0
+  },
+  {
+   "word": "theater",
+   "grade": 0
+  },
+  {
+   "word": "think",
+   "grade": 0
+  },
+  {
+   "word": "third",
+   "grade": 0
+  },
+  {
+   "word": "thirsty",
+   "grade": 0
+  },
+  {
+   "word": "thirteen",
+   "grade": 0
+  },
+  {
+   "word": "thirteenth",
+   "grade": 0
+  },
+  {
+   "word": "thirtieth",
+   "grade": 0
+  },
+  {
+   "word": "thirty",
+   "grade": 0
+  },
+  {
+   "word": "this",
+   "grade": 0
+  },
+  {
+   "word": "three",
+   "grade": 0
+  },
+  {
+   "word": "Thursday",
+   "grade": 0
+  },
+  {
+   "word": "tiger",
+   "grade": 0
+  },
+  {
+   "word": "time",
+   "grade": 0
+  },
+  {
+   "word": "tired",
+   "grade": 0
+  },
+  {
+   "word": "to",
+   "grade": 0
+  },
+  {
+   "word": "today",
+   "grade": 0
+  },
+  {
+   "word": "tomato",
+   "grade": 0
+  },
+  {
+   "word": "too",
+   "grade": 0
+  },
+  {
+   "word": "top",
+   "grade": 0
+  },
+  {
+   "word": "total",
+   "grade": 0
+  },
+  {
+   "word": "touch",
+   "grade": 0
+  },
+  {
+   "word": "town",
+   "grade": 0
+  },
+  {
+   "word": "train",
+   "grade": 0
+  },
+  {
+   "word": "travel",
+   "grade": 0
+  },
+  {
+   "word": "tree",
+   "grade": 0
+  },
+  {
+   "word": "trip",
+   "grade": 0
+  },
+  {
+   "word": "try",
+   "grade": 0
+  },
+  {
+   "word": "Tuesday",
+   "grade": 0
+  },
+  {
+   "word": "turn",
+   "grade": 0
+  },
+  {
+   "word": "TV",
+   "grade": 0
+  },
+  {
+   "word": "twelfth",
+   "grade": 0
+  },
+  {
+   "word": "twelve",
+   "grade": 0
+  },
+  {
+   "word": "twentieth",
+   "grade": 0
+  },
+  {
+   "word": "twenty",
+   "grade": 0
+  },
+  {
+   "word": "two",
+   "grade": 0
+  },
+  {
+   "word": "U.K.",
+   "grade": 0
+  },
+  {
+   "word": "umbrella",
+   "grade": 0
+  },
+  {
+   "word": "under",
+   "grade": 0
+  },
+  {
+   "word": "unicycle",
+   "grade": 0
+  },
+  {
+   "word": "uniform",
+   "grade": 0
+  },
+  {
+   "word": "up",
+   "grade": 0
+  },
+  {
+   "word": "usually",
+   "grade": 0
+  },
+  {
+   "word": "vacation",
+   "grade": 0
+  },
+  {
+   "word": "vegetable",
+   "grade": 0
+  },
+  {
+   "word": "vet",
+   "grade": 0
+  },
+  {
+   "word": "video game",
+   "grade": 0
+  },
+  {
+   "word": "violin",
+   "grade": 0
+  },
+  {
+   "word": "visit",
+   "grade": 0
+  },
+  {
+   "word": "volleyball",
+   "grade": 0
+  },
+  {
+   "word": "volunteer work",
+   "grade": 0
+  },
+  {
+   "word": "walk",
+   "grade": 0
+  },
+  {
+   "word": "wall",
+   "grade": 0
+  },
+  {
+   "word": "want",
+   "grade": 0
+  },
+  {
+   "word": "was",
+   "grade": 0
+  },
+  {
+   "word": "wash",
+   "grade": 0
+  },
+  {
+   "word": "watch",
+   "grade": 0
+  },
+  {
+   "word": "water",
+   "grade": 0
+  },
+  {
+   "word": "we",
+   "grade": 0
+  },
+  {
+   "word": "weather",
+   "grade": 0
+  },
+  {
+   "word": "Wednesday",
+   "grade": 0
+  },
+  {
+   "word": "week",
+   "grade": 0
+  },
+  {
+   "word": "welcome",
+   "grade": 0
+  },
+  {
+   "word": "well",
+   "grade": 0
+  },
+  {
+   "word": "went",
+   "grade": 0
+  },
+  {
+   "word": "what",
+   "grade": 0
+  },
+  {
+   "word": "wheelchair",
+   "grade": 0
+  },
+  {
+   "word": "when",
+   "grade": 0
+  },
+  {
+   "word": "where",
+   "grade": 0
+  },
+  {
+   "word": "white",
+   "grade": 0
+  },
+  {
+   "word": "who",
+   "grade": 0
+  },
+  {
+   "word": "why",
+   "grade": 0
+  },
+  {
+   "word": "window",
+   "grade": 0
+  },
+  {
+   "word": "winter",
+   "grade": 0
+  },
+  {
+   "word": "with",
+   "grade": 0
+  },
+  {
+   "word": "wonderful",
+   "grade": 0
+  },
+  {
+   "word": "world",
+   "grade": 0
+  },
+  {
+   "word": "would",
+   "grade": 0
+  },
+  {
+   "word": "write",
+   "grade": 0
+  },
+  {
+   "word": "yacht",
+   "grade": 0
+  },
+  {
+   "word": "year",
+   "grade": 0
+  },
+  {
+   "word": "yellow",
+   "grade": 0
+  },
+  {
+   "word": "yen",
+   "grade": 0
+  },
+  {
+   "word": "yes",
+   "grade": 0
+  },
+  {
+   "word": "yogurt",
+   "grade": 0
+  },
+  {
+   "word": "you",
+   "grade": 0
+  },
+  {
+   "word": "your",
+   "grade": 0
+  },
+  {
+   "word": "zero",
+   "grade": 0
+  },
+  {
+   "word": "zoo",
+   "grade": 0
+  },
+  {
+   "word": "a little",
+   "grade": 1
+  },
+  {
+   "word": "a lot",
+   "grade": 1
+  },
+  {
+   "word": "a lot of ～",
+   "grade": 1
+  },
+  {
+   "word": "accordion",
+   "grade": 1
+  },
+  {
+   "word": "across",
+   "grade": 1
+  },
+  {
+   "word": "after",
+   "grade": 1
+  },
+  {
+   "word": "after school",
+   "grade": 1
+  },
+  {
+   "word": "ago",
+   "grade": 1
+  },
+  {
+   "word": "ah",
+   "grade": 1
+  },
+  {
+   "word": "airplane",
+   "grade": 1
+  },
+  {
+   "word": "all",
+   "grade": 1
+  },
+  {
+   "word": "all day",
+   "grade": 1
+  },
+  {
+   "word": "alligator",
+   "grade": 1
+  },
+  {
+   "word": "almost",
+   "grade": 1
+  },
+  {
+   "word": "also",
+   "grade": 1
+  },
+  {
+   "word": "amazing",
+   "grade": 1
+  },
+  {
+   "word": "ambitious",
+   "grade": 1
+  },
+  {
+   "word": "angel",
+   "grade": 1
+  },
+  {
+   "word": "Ann",
+   "grade": 1
+  },
+  {
+   "word": "answer",
+   "grade": 1
+  },
+  {
+   "word": "any",
+   "grade": 1
+  },
+  {
+   "word": "Anya",
+   "grade": 1
+  },
+  {
+   "word": "anything",
+   "grade": 1
+  },
+  {
+   "word": "anywhere",
+   "grade": 1
+  },
+  {
+   "word": "apricot",
+   "grade": 1
+  },
+  {
+   "word": "aren’t",
+   "grade": 1
+  },
+  {
+   "word": "around",
+   "grade": 1
+  },
+  {
+   "word": "around the world",
+   "grade": 1
+  },
+  {
+   "word": "at home",
+   "grade": 1
+  },
+  {
+   "word": "at one time",
+   "grade": 1
+  },
+  {
+   "word": "attack",
+   "grade": 1
+  },
+  {
+   "word": "aunt",
+   "grade": 1
+  },
+  {
+   "word": "aurora",
+   "grade": 1
+  },
+  {
+   "word": "avocado",
+   "grade": 1
+  },
+  {
+   "word": "awesome",
+   "grade": 1
+  },
+  {
+   "word": "baby",
+   "grade": 1
+  },
+  {
+   "word": "back",
+   "grade": 1
+  },
+  {
+   "word": "bad",
+   "grade": 1
+  },
+  {
+   "word": "bamboo",
+   "grade": 1
+  },
+  {
+   "word": "bang",
+   "grade": 1
+  },
+  {
+   "word": "bathroom",
+   "grade": 1
+  },
+  {
+   "word": "be famous for ～",
+   "grade": 1
+  },
+  {
+   "word": "be from ～",
+   "grade": 1
+  },
+  {
+   "word": "be good at ～",
+   "grade": 1
+  },
+  {
+   "word": "be proud of ～",
+   "grade": 1
+  },
+  {
+   "word": "beat",
+   "grade": 1
+  },
+  {
+   "word": "because",
+   "grade": 1
+  },
+  {
+   "word": "Becky",
+   "grade": 1
+  },
+  {
+   "word": "bedroom",
+   "grade": 1
+  },
+  {
+   "word": "beetle",
+   "grade": 1
+  },
+  {
+   "word": "before",
+   "grade": 1
+  },
+  {
+   "word": "Ben",
+   "grade": 1
+  },
+  {
+   "word": "Best wishes,",
+   "grade": 1
+  },
+  {
+   "word": "bike",
+   "grade": 1
+  },
+  {
+   "word": "Blue Mountains",
+   "grade": 1
+  },
+  {
+   "word": "Bob",
+   "grade": 1
+  },
+  {
+   "word": "bought",
+   "grade": 1
+  },
+  {
+   "word": "boy",
+   "grade": 1
+  },
+  {
+   "word": "brand",
+   "grade": 1
+  },
+  {
+   "word": "break",
+   "grade": 1
+  },
+  {
+   "word": "broke",
+   "grade": 1
+  },
+  {
+   "word": "Brooklyn",
+   "grade": 1
+  },
+  {
+   "word": "brrr",
+   "grade": 1
+  },
+  {
+   "word": "but",
+   "grade": 1
+  },
+  {
+   "word": "butterfly",
+   "grade": 1
+  },
+  {
+   "word": "call",
+   "grade": 1
+  },
+  {
+   "word": "came",
+   "grade": 1
+  },
+  {
+   "word": "Can I help you?",
+   "grade": 1
+  },
+  {
+   "word": "Can I ～?",
+   "grade": 1
+  },
+  {
+   "word": "Can you ～?",
+   "grade": 1
+  },
+  {
+   "word": "cannot",
+   "grade": 1
+  },
+  {
+   "word": "can’t",
+   "grade": 1
+  },
+  {
+   "word": "careful",
+   "grade": 1
+  },
+  {
+   "word": "careless",
+   "grade": 1
+  },
+  {
+   "word": "Carol",
+   "grade": 1
+  },
+  {
+   "word": "carp",
+   "grade": 1
+  },
+  {
+   "word": "carry",
+   "grade": 1
+  },
+  {
+   "word": "castanet",
+   "grade": 1
+  },
+  {
+   "word": "cent",
+   "grade": 1
+  },
+  {
+   "word": "charity",
+   "grade": 1
+  },
+  {
+   "word": "checkup",
+   "grade": 1
+  },
+  {
+   "word": "cheerful",
+   "grade": 1
+  },
+  {
+   "word": "cheeseburger",
+   "grade": 1
+  },
+  {
+   "word": "chilly",
+   "grade": 1
+  },
+  {
+   "word": "choose",
+   "grade": 1
+  },
+  {
+   "word": "cider",
+   "grade": 1
+  },
+  {
+   "word": "city",
+   "grade": 1
+  },
+  {
+   "word": "city hall",
+   "grade": 1
+  },
+  {
+   "word": "classmate",
+   "grade": 1
+  },
+  {
+   "word": "clerk",
+   "grade": 1
+  },
+  {
+   "word": "clever",
+   "grade": 1
+  },
+  {
+   "word": "close",
+   "grade": 1
+  },
+  {
+   "word": "closet",
+   "grade": 1
+  },
+  {
+   "word": "clothes",
+   "grade": 1
+  },
+  {
+   "word": "club activities",
+   "grade": 1
+  },
+  {
+   "word": "cola",
+   "grade": 1
+  },
+  {
+   "word": "college",
+   "grade": 1
+  },
+  {
+   "word": "come back",
+   "grade": 1
+  },
+  {
+   "word": "common",
+   "grade": 1
+  },
+  {
+   "word": "communicate",
+   "grade": 1
+  },
+  {
+   "word": "communication",
+   "grade": 1
+  },
+  {
+   "word": "company",
+   "grade": 1
+  },
+  {
+   "word": "concert",
+   "grade": 1
+  },
+  {
+   "word": "convenience store",
+   "grade": 1
+  },
+  {
+   "word": "cookie",
+   "grade": 1
+  },
+  {
+   "word": "coral reef",
+   "grade": 1
+  },
+  {
+   "word": "cost",
+   "grade": 1
+  },
+  {
+   "word": "countdown",
+   "grade": 1
+  },
+  {
+   "word": "courageous",
+   "grade": 1
+  },
+  {
+   "word": "course",
+   "grade": 1
+  },
+  {
+   "word": "court",
+   "grade": 1
+  },
+  {
+   "word": "cousin",
+   "grade": 1
+  },
+  {
+   "word": "crab",
+   "grade": 1
+  },
+  {
+   "word": "creative",
+   "grade": 1
+  },
+  {
+   "word": "crispy",
+   "grade": 1
+  },
+  {
+   "word": "crocodile",
+   "grade": 1
+  },
+  {
+   "word": "curry and rice",
+   "grade": 1
+  },
+  {
+   "word": "custard pudding",
+   "grade": 1
+  },
+  {
+   "word": "cut",
+   "grade": 1
+  },
+  {
+   "word": "cut ～ off",
+   "grade": 1
+  },
+  {
+   "word": "dad",
+   "grade": 1
+  },
+  {
+   "word": "dangerous",
+   "grade": 1
+  },
+  {
+   "word": "Daniel",
+   "grade": 1
+  },
+  {
+   "word": "dear",
+   "grade": 1
+  },
+  {
+   "word": "deep-fried",
+   "grade": 1
+  },
+  {
+   "word": "design",
+   "grade": 1
+  },
+  {
+   "word": "detective",
+   "grade": 1
+  },
+  {
+   "word": "did",
+   "grade": 1
+  },
+  {
+   "word": "didn’t",
+   "grade": 1
+  },
+  {
+   "word": "does",
+   "grade": 1
+  },
+  {
+   "word": "doesn’t",
+   "grade": 1
+  },
+  {
+   "word": "dollar",
+   "grade": 1
+  },
+  {
+   "word": "donkey",
+   "grade": 1
+  },
+  {
+   "word": "don’t",
+   "grade": 1
+  },
+  {
+   "word": "dragon fruit",
+   "grade": 1
+  },
+  {
+   "word": "drawing",
+   "grade": 1
+  },
+  {
+   "word": "dribble",
+   "grade": 1
+  },
+  {
+   "word": "drone",
+   "grade": 1
+  },
+  {
+   "word": "during",
+   "grade": 1
+  },
+  {
+   "word": "early",
+   "grade": 1
+  },
+  {
+   "word": "easygoing",
+   "grade": 1
+  },
+  {
+   "word": "eighteenth",
+   "grade": 1
+  },
+  {
+   "word": "else",
+   "grade": 1
+  },
+  {
+   "word": "Emily",
+   "grade": 1
+  },
+  {
+   "word": "end",
+   "grade": 1
+  },
+  {
+   "word": "enough",
+   "grade": 1
+  },
+  {
+   "word": "every",
+   "grade": 1
+  },
+  {
+   "word": "every day",
+   "grade": 1
+  },
+  {
+   "word": "exactly",
+   "grade": 1
+  },
+  {
+   "word": "example",
+   "grade": 1
+  },
+  {
+   "word": "excited",
+   "grade": 1
+  },
+  {
+   "word": "exciting",
+   "grade": 1
+  },
+  {
+   "word": "Excuse me, but ～.",
+   "grade": 1
+  },
+  {
+   "word": "expensive",
+   "grade": 1
+  },
+  {
+   "word": "experience",
+   "grade": 1
+  },
+  {
+   "word": "faithful",
+   "grade": 1
+  },
+  {
+   "word": "far",
+   "grade": 1
+  },
+  {
+   "word": "feed",
+   "grade": 1
+  },
+  {
+   "word": "feel",
+   "grade": 1
+  },
+  {
+   "word": "Felipe",
+   "grade": 1
+  },
+  {
+   "word": "fifteenth",
+   "grade": 1
+  },
+  {
+   "word": "figure",
+   "grade": 1
+  },
+  {
+   "word": "finally",
+   "grade": 1
+  },
+  {
+   "word": "find",
+   "grade": 1
+  },
+  {
+   "word": "find out",
+   "grade": 1
+  },
+  {
+   "word": "finish",
+   "grade": 1
+  },
+  {
+   "word": "Finland",
+   "grade": 1
+  },
+  {
+   "word": "Finnish",
+   "grade": 1
+  },
+  {
+   "word": "fire station",
+   "grade": 1
+  },
+  {
+   "word": "flamingo",
+   "grade": 1
+  },
+  {
+   "word": "flip",
+   "grade": 1
+  },
+  {
+   "word": "floor",
+   "grade": 1
+  },
+  {
+   "word": "fluffy",
+   "grade": 1
+  },
+  {
+   "word": "flute",
+   "grade": 1
+  },
+  {
+   "word": "foggy",
+   "grade": 1
+  },
+  {
+   "word": "follow",
+   "grade": 1
+  },
+  {
+   "word": "for example",
+   "grade": 1
+  },
+  {
+   "word": "For here or to go?",
+   "grade": 1
+  },
+  {
+   "word": "foreign",
+   "grade": 1
+  },
+  {
+   "word": "found",
+   "grade": 1
+  },
+  {
+   "word": "fourteenth",
+   "grade": 1
+  },
+  {
+   "word": "frank",
+   "grade": 1
+  },
+  {
+   "word": "freezing",
+   "grade": 1
+  },
+  {
+   "word": "French",
+   "grade": 1
+  },
+  {
+   "word": "French fries",
+   "grade": 1
+  },
+  {
+   "word": "fried noodles",
+   "grade": 1
+  },
+  {
+   "word": "fried rice",
+   "grade": 1
+  },
+  {
+   "word": "front",
+   "grade": 1
+  },
+  {
+   "word": "full",
+   "grade": 1
+  },
+  {
+   "word": "gate",
+   "grade": 1
+  },
+  {
+   "word": "gentle",
+   "grade": 1
+  },
+  {
+   "word": "get up",
+   "grade": 1
+  },
+  {
+   "word": "giant",
+   "grade": 1
+  },
+  {
+   "word": "ginger ale",
+   "grade": 1
+  },
+  {
+   "word": "girl",
+   "grade": 1
+  },
+  {
+   "word": "give",
+   "grade": 1
+  },
+  {
+   "word": "go down",
+   "grade": 1
+  },
+  {
+   "word": "go fishing",
+   "grade": 1
+  },
+  {
+   "word": "go for a walk",
+   "grade": 1
+  },
+  {
+   "word": "go on a trip",
+   "grade": 1
+  },
+  {
+   "word": "go shopping",
+   "grade": 1
+  },
+  {
+   "word": "Good luck!",
+   "grade": 1
+  },
+  {
+   "word": "gorgeous",
+   "grade": 1
+  },
+  {
+   "word": "gosh",
+   "grade": 1
+  },
+  {
+   "word": "got",
+   "grade": 1
+  },
+  {
+   "word": "grandma",
+   "grade": 1
+  },
+  {
+   "word": "grandparent",
+   "grade": 1
+  },
+  {
+   "word": "grape",
+   "grade": 1
+  },
+  {
+   "word": "grapefruit",
+   "grade": 1
+  },
+  {
+   "word": "Great Barrier Reef",
+   "grade": 1
+  },
+  {
+   "word": "grove",
+   "grade": 1
+  },
+  {
+   "word": "grow",
+   "grade": 1
+  },
+  {
+   "word": "guest",
+   "grade": 1
+  },
+  {
+   "word": "gymnastics",
+   "grade": 1
+  },
+  {
+   "word": "ha-ha",
+   "grade": 1
+  },
+  {
+   "word": "handkerchief",
+   "grade": 1
+  },
+  {
+   "word": "Happy New Year!",
+   "grade": 1
+  },
+  {
+   "word": "harmonica",
+   "grade": 1
+  },
+  {
+   "word": "has",
+   "grade": 1
+  },
+  {
+   "word": "have a good time",
+   "grade": 1
+  },
+  {
+   "word": "hawk",
+   "grade": 1
+  },
+  {
+   "word": "heave ho",
+   "grade": 1
+  },
+  {
+   "word": "heavy",
+   "grade": 1
+  },
+  {
+   "word": "helicopter",
+   "grade": 1
+  },
+  {
+   "word": "her",
+   "grade": 1
+  },
+  {
+   "word": "Here it is.",
+   "grade": 1
+  },
+  {
+   "word": "Here you are.",
+   "grade": 1
+  },
+  {
+   "word": "hers",
+   "grade": 1
+  },
+  {
+   "word": "hey",
+   "grade": 1
+  },
+  {
+   "word": "he’s",
+   "grade": 1
+  },
+  {
+   "word": "high school",
+   "grade": 1
+  },
+  {
+   "word": "hill",
+   "grade": 1
+  },
+  {
+   "word": "him",
+   "grade": 1
+  },
+  {
+   "word": "hippo",
+   "grade": 1
+  },
+  {
+   "word": "his",
+   "grade": 1
+  },
+  {
+   "word": "hobby",
+   "grade": 1
+  },
+  {
+   "word": "hockey",
+   "grade": 1
+  },
+  {
+   "word": "hold",
+   "grade": 1
+  },
+  {
+   "word": "hold on to ～",
+   "grade": 1
+  },
+  {
+   "word": "holiday",
+   "grade": 1
+  },
+  {
+   "word": "home economics",
+   "grade": 1
+  },
+  {
+   "word": "honest",
+   "grade": 1
+  },
+  {
+   "word": "hour",
+   "grade": 1
+  },
+  {
+   "word": "How about ～?",
+   "grade": 1
+  },
+  {
+   "word": "How many ～?",
+   "grade": 1
+  },
+  {
+   "word": "How much ～?",
+   "grade": 1
+  },
+  {
+   "word": "how’s",
+   "grade": 1
+  },
+  {
+   "word": "How’s it going?",
+   "grade": 1
+  },
+  {
+   "word": "humid",
+   "grade": 1
+  },
+  {
+   "word": "I got it!",
+   "grade": 1
+  },
+  {
+   "word": "I see.",
+   "grade": 1
+  },
+  {
+   "word": "ice hockey",
+   "grade": 1
+  },
+  {
+   "word": "idol",
+   "grade": 1
+  },
+  {
+   "word": "important",
+   "grade": 1
+  },
+  {
+   "word": "in front of ～",
+   "grade": 1
+  },
+  {
+   "word": "in total",
+   "grade": 1
+  },
+  {
+   "word": "increase",
+   "grade": 1
+  },
+  {
+   "word": "incredible",
+   "grade": 1
+  },
+  {
+   "word": "industrial arts",
+   "grade": 1
+  },
+  {
+   "word": "internet",
+   "grade": 1
+  },
+  {
+   "word": "into",
+   "grade": 1
+  },
+  {
+   "word": "invent",
+   "grade": 1
+  },
+  {
+   "word": "isn’t",
+   "grade": 1
+  },
+  {
+   "word": "its",
+   "grade": 1
+  },
+  {
+   "word": "it’s",
+   "grade": 1
+  },
+  {
+   "word": "I’d",
+   "grade": 1
+  },
+  {
+   "word": "I’m",
+   "grade": 1
+  },
+  {
+   "word": "I’m sorry.",
+   "grade": 1
+  },
+  {
+   "word": "J-pop",
+   "grade": 1
+  },
+  {
+   "word": "Jackson",
+   "grade": 1
+  },
+  {
+   "word": "Japanese apricot",
+   "grade": 1
+  },
+  {
+   "word": "jealous",
+   "grade": 1
+  },
+  {
+   "word": "jelly",
+   "grade": 1
+  },
+  {
+   "word": "jellyfish",
+   "grade": 1
+  },
+  {
+   "word": "Jenny",
+   "grade": 1
+  },
+  {
+   "word": "jet lag",
+   "grade": 1
+  },
+  {
+   "word": "John",
+   "grade": 1
+  },
+  {
+   "word": "Jones",
+   "grade": 1
+  },
+  {
+   "word": "juicy",
+   "grade": 1
+  },
+  {
+   "word": "junior high school",
+   "grade": 1
+  },
+  {
+   "word": "just",
+   "grade": 1
+  },
+  {
+   "word": "Just kidding.",
+   "grade": 1
+  },
+  {
+   "word": "kangaroo",
+   "grade": 1
+  },
+  {
+   "word": "Kate",
+   "grade": 1
+  },
+  {
+   "word": "Kent",
+   "grade": 1
+  },
+  {
+   "word": "Kenya",
+   "grade": 1
+  },
+  {
+   "word": "Kevin",
+   "grade": 1
+  },
+  {
+   "word": "kid",
+   "grade": 1
+  },
+  {
+   "word": "kilometer",
+   "grade": 1
+  },
+  {
+   "word": "kiwi fruit",
+   "grade": 1
+  },
+  {
+   "word": "know",
+   "grade": 1
+  },
+  {
+   "word": "Korean",
+   "grade": 1
+  },
+  {
+   "word": "lady",
+   "grade": 1
+  },
+  {
+   "word": "land",
+   "grade": 1
+  },
+  {
+   "word": "language",
+   "grade": 1
+  },
+  {
+   "word": "large",
+   "grade": 1
+  },
+  {
+   "word": "last",
+   "grade": 1
+  },
+  {
+   "word": "last night",
+   "grade": 1
+  },
+  {
+   "word": "lazy",
+   "grade": 1
+  },
+  {
+   "word": "legend",
+   "grade": 1
+  },
+  {
+   "word": "Lin",
+   "grade": 1
+  },
+  {
+   "word": "Lion Queen",
+   "grade": 1
+  },
+  {
+   "word": "Lisa White",
+   "grade": 1
+  },
+  {
+   "word": "listen to ～",
+   "grade": 1
+  },
+  {
+   "word": "little",
+   "grade": 1
+  },
+  {
+   "word": "look at ～",
+   "grade": 1
+  },
+  {
+   "word": "look like ～",
+   "grade": 1
+  },
+  {
+   "word": "lot",
+   "grade": 1
+  },
+  {
+   "word": "lucky",
+   "grade": 1
+  },
+  {
+   "word": "Lucy",
+   "grade": 1
+  },
+  {
+   "word": "Luffy",
+   "grade": 1
+  },
+  {
+   "word": "magic",
+   "grade": 1
+  },
+  {
+   "word": "man",
+   "grade": 1
+  },
+  {
+   "word": "mandarin orange",
+   "grade": 1
+  },
+  {
+   "word": "mango",
+   "grade": 1
+  },
+  {
+   "word": "many kinds of ～",
+   "grade": 1
+  },
+  {
+   "word": "Mark",
+   "grade": 1
+  },
+  {
+   "word": "market",
+   "grade": 1
+  },
+  {
+   "word": "matter",
+   "grade": 1
+  },
+  {
+   "word": "meal",
+   "grade": 1
+  },
+  {
+   "word": "mean",
+   "grade": 1
+  },
+  {
+   "word": "meat",
+   "grade": 1
+  },
+  {
+   "word": "medical",
+   "grade": 1
+  },
+  {
+   "word": "medium",
+   "grade": 1
+  },
+  {
+   "word": "Meg",
+   "grade": 1
+  },
+  {
+   "word": "member",
+   "grade": 1
+  },
+  {
+   "word": "Mia",
+   "grade": 1
+  },
+  {
+   "word": "midfielder",
+   "grade": 1
+  },
+  {
+   "word": "midnight",
+   "grade": 1
+  },
+  {
+   "word": "Mike",
+   "grade": 1
+  },
+  {
+   "word": "mild",
+   "grade": 1
+  },
+  {
+   "word": "Miller",
+   "grade": 1
+  },
+  {
+   "word": "mine",
+   "grade": 1
+  },
+  {
+   "word": "Mirai Fish Market",
+   "grade": 1
+  },
+  {
+   "word": "miss",
+   "grade": 1
+  },
+  {
+   "word": "mmm",
+   "grade": 1
+  },
+  {
+   "word": "model",
+   "grade": 1
+  },
+  {
+   "word": "mom",
+   "grade": 1
+  },
+  {
+   "word": "monster",
+   "grade": 1
+  },
+  {
+   "word": "moral education",
+   "grade": 1
+  },
+  {
+   "word": "muggy",
+   "grade": 1
+  },
+  {
+   "word": "naughty",
+   "grade": 1
+  },
+  {
+   "word": "near",
+   "grade": 1
+  },
+  {
+   "word": "need",
+   "grade": 1
+  },
+  {
+   "word": "nervous",
+   "grade": 1
+  },
+  {
+   "word": "New York",
+   "grade": 1
+  },
+  {
+   "word": "next",
+   "grade": 1
+  },
+  {
+   "word": "next to ～",
+   "grade": 1
+  },
+  {
+   "word": "Nice to meet you.",
+   "grade": 1
+  },
+  {
+   "word": "nineteenth",
+   "grade": 1
+  },
+  {
+   "word": "No problem.",
+   "grade": 1
+  },
+  {
+   "word": "No way!",
+   "grade": 1
+  },
+  {
+   "word": "now",
+   "grade": 1
+  },
+  {
+   "word": "NSW",
+   "grade": 1
+  },
+  {
+   "word": "NY",
+   "grade": 1
+  },
+  {
+   "word": "of",
+   "grade": 1
+  },
+  {
+   "word": "of course",
+   "grade": 1
+  },
+  {
+   "word": "often",
+   "grade": 1
+  },
+  {
+   "word": "OK",
+   "grade": 1
+  },
+  {
+   "word": "on top of ～",
+   "grade": 1
+  },
+  {
+   "word": "once",
+   "grade": 1
+  },
+  {
+   "word": "ONE PIECE",
+   "grade": 1
+  },
+  {
+   "word": "only",
+   "grade": 1
+  },
+  {
+   "word": "oops",
+   "grade": 1
+  },
+  {
+   "word": "Opera House",
+   "grade": 1
+  },
+  {
+   "word": "or",
+   "grade": 1
+  },
+  {
+   "word": "organ",
+   "grade": 1
+  },
+  {
+   "word": "other",
+   "grade": 1
+  },
+  {
+   "word": "our",
+   "grade": 1
+  },
+  {
+   "word": "ours",
+   "grade": 1
+  },
+  {
+   "word": "outside",
+   "grade": 1
+  },
+  {
+   "word": "over",
+   "grade": 1
+  },
+  {
+   "word": "over there",
+   "grade": 1
+  },
+  {
+   "word": "oyster",
+   "grade": 1
+  },
+  {
+   "word": "o’clock",
+   "grade": 1
+  },
+  {
+   "word": "pajama",
+   "grade": 1
+  },
+  {
+   "word": "papaya",
+   "grade": 1
+  },
+  {
+   "word": "pardon",
+   "grade": 1
+  },
+  {
+   "word": "Pardon me?",
+   "grade": 1
+  },
+  {
+   "word": "parent",
+   "grade": 1
+  },
+  {
+   "word": "pastry chef",
+   "grade": 1
+  },
+  {
+   "word": "pear",
+   "grade": 1
+  },
+  {
+   "word": "perform",
+   "grade": 1
+  },
+  {
+   "word": "performance",
+   "grade": 1
+  },
+  {
+   "word": "period for integrated studies",
+   "grade": 1
+  },
+  {
+   "word": "persimmon",
+   "grade": 1
+  },
+  {
+   "word": "photographer",
+   "grade": 1
+  },
+  {
+   "word": "pirate",
+   "grade": 1
+  },
+  {
+   "word": "plane",
+   "grade": 1
+  },
+  {
+   "word": "point",
+   "grade": 1
+  },
+  {
+   "word": "police box",
+   "grade": 1
+  },
+  {
+   "word": "police station",
+   "grade": 1
+  },
+  {
+   "word": "polite",
+   "grade": 1
+  },
+  {
+   "word": "pool",
+   "grade": 1
+  },
+  {
+   "word": "popular",
+   "grade": 1
+  },
+  {
+   "word": "port",
+   "grade": 1
+  },
+  {
+   "word": "positive",
+   "grade": 1
+  },
+  {
+   "word": "practice game",
+   "grade": 1
+  },
+  {
+   "word": "pray",
+   "grade": 1
+  },
+  {
+   "word": "prepare",
+   "grade": 1
+  },
+  {
+   "word": "pretty",
+   "grade": 1
+  },
+  {
+   "word": "Pretty good.",
+   "grade": 1
+  },
+  {
+   "word": "problem",
+   "grade": 1
+  },
+  {
+   "word": "programmer",
+   "grade": 1
+  },
+  {
+   "word": "proud",
+   "grade": 1
+  },
+  {
+   "word": "pull",
+   "grade": 1
+  },
+  {
+   "word": "question",
+   "grade": 1
+  },
+  {
+   "word": "quiet",
+   "grade": 1
+  },
+  {
+   "word": "quilt",
+   "grade": 1
+  },
+  {
+   "word": "quokka",
+   "grade": 1
+  },
+  {
+   "word": "raccoon dog",
+   "grade": 1
+  },
+  {
+   "word": "ran",
+   "grade": 1
+  },
+  {
+   "word": "reach",
+   "grade": 1
+  },
+  {
+   "word": "ready",
+   "grade": 1
+  },
+  {
+   "word": "Red Street",
+   "grade": 1
+  },
+  {
+   "word": "reindeer",
+   "grade": 1
+  },
+  {
+   "word": "relax",
+   "grade": 1
+  },
+  {
+   "word": "reliable",
+   "grade": 1
+  },
+  {
+   "word": "rescue",
+   "grade": 1
+  },
+  {
+   "word": "research",
+   "grade": 1
+  },
+  {
+   "word": "respect",
+   "grade": 1
+  },
+  {
+   "word": "responsible",
+   "grade": 1
+  },
+  {
+   "word": "rhino",
+   "grade": 1
+  },
+  {
+   "word": "rich",
+   "grade": 1
+  },
+  {
+   "word": "rise",
+   "grade": 1
+  },
+  {
+   "word": "road",
+   "grade": 1
+  },
+  {
+   "word": "robot",
+   "grade": 1
+  },
+  {
+   "word": "roll",
+   "grade": 1
+  },
+  {
+   "word": "romantic",
+   "grade": 1
+  },
+  {
+   "word": "round",
+   "grade": 1
+  },
+  {
+   "word": "rude",
+   "grade": 1
+  },
+  {
+   "word": "runner",
+   "grade": 1
+  },
+  {
+   "word": "safe",
+   "grade": 1
+  },
+  {
+   "word": "safety",
+   "grade": 1
+  },
+  {
+   "word": "salmiakki",
+   "grade": 1
+  },
+  {
+   "word": "Sammy",
+   "grade": 1
+  },
+  {
+   "word": "sauna",
+   "grade": 1
+  },
+  {
+   "word": "savanna",
+   "grade": 1
+  },
+  {
+   "word": "scenery",
+   "grade": 1
+  },
+  {
+   "word": "schoolchild",
+   "grade": 1
+  },
+  {
+   "word": "schoolchildren",
+   "grade": 1
+  },
+  {
+   "word": "seagull",
+   "grade": 1
+  },
+  {
+   "word": "seal",
+   "grade": 1
+  },
+  {
+   "word": "seaplane",
+   "grade": 1
+  },
+  {
+   "word": "selfish",
+   "grade": 1
+  },
+  {
+   "word": "sensitive",
+   "grade": 1
+  },
+  {
+   "word": "set",
+   "grade": 1
+  },
+  {
+   "word": "seventeenth",
+   "grade": 1
+  },
+  {
+   "word": "sew",
+   "grade": 1
+  },
+  {
+   "word": "she’s",
+   "grade": 1
+  },
+  {
+   "word": "shoot",
+   "grade": 1
+  },
+  {
+   "word": "shot",
+   "grade": 1
+  },
+  {
+   "word": "show",
+   "grade": 1
+  },
+  {
+   "word": "show ～ around",
+   "grade": 1
+  },
+  {
+   "word": "shower",
+   "grade": 1
+  },
+  {
+   "word": "shrimp",
+   "grade": 1
+  },
+  {
+   "word": "shy",
+   "grade": 1
+  },
+  {
+   "word": "sixteenth",
+   "grade": 1
+  },
+  {
+   "word": "size",
+   "grade": 1
+  },
+  {
+   "word": "ski",
+   "grade": 1
+  },
+  {
+   "word": "skill",
+   "grade": 1
+  },
+  {
+   "word": "skillful",
+   "grade": 1
+  },
+  {
+   "word": "sleep",
+   "grade": 1
+  },
+  {
+   "word": "sleigh",
+   "grade": 1
+  },
+  {
+   "word": "slept",
+   "grade": 1
+  },
+  {
+   "word": "slope",
+   "grade": 1
+  },
+  {
+   "word": "Smith",
+   "grade": 1
+  },
+  {
+   "word": "smoothly",
+   "grade": 1
+  },
+  {
+   "word": "snow",
+   "grade": 1
+  },
+  {
+   "word": "sociable",
+   "grade": 1
+  },
+  {
+   "word": "social studies",
+   "grade": 1
+  },
+  {
+   "word": "soft tennis",
+   "grade": 1
+  },
+  {
+   "word": "softball",
+   "grade": 1
+  },
+  {
+   "word": "some",
+   "grade": 1
+  },
+  {
+   "word": "someday",
+   "grade": 1
+  },
+  {
+   "word": "something",
+   "grade": 1
+  },
+  {
+   "word": "song",
+   "grade": 1
+  },
+  {
+   "word": "sound",
+   "grade": 1
+  },
+  {
+   "word": "special activities",
+   "grade": 1
+  },
+  {
+   "word": "speed",
+   "grade": 1
+  },
+  {
+   "word": "spend",
+   "grade": 1
+  },
+  {
+   "word": "spider",
+   "grade": 1
+  },
+  {
+   "word": "squirrel",
+   "grade": 1
+  },
+  {
+   "word": "St.",
+   "grade": 1
+  },
+  {
+   "word": "staff",
+   "grade": 1
+  },
+  {
+   "word": "stair",
+   "grade": 1
+  },
+  {
+   "word": "STAR WARS",
+   "grade": 1
+  },
+  {
+   "word": "steam",
+   "grade": 1
+  },
+  {
+   "word": "still",
+   "grade": 1
+  },
+  {
+   "word": "story",
+   "grade": 1
+  },
+  {
+   "word": "streaming",
+   "grade": 1
+  },
+  {
+   "word": "street singer",
+   "grade": 1
+  },
+  {
+   "word": "strict",
+   "grade": 1
+  },
+  {
+   "word": "Sunshine Shopping Mall",
+   "grade": 1
+  },
+  {
+   "word": "support",
+   "grade": 1
+  },
+  {
+   "word": "sure",
+   "grade": 1
+  },
+  {
+   "word": "surf",
+   "grade": 1
+  },
+  {
+   "word": "surprised",
+   "grade": 1
+  },
+  {
+   "word": "swimming pool",
+   "grade": 1
+  },
+  {
+   "word": "Sydney",
+   "grade": 1
+  },
+  {
+   "word": "T-shirt",
+   "grade": 1
+  },
+  {
+   "word": "table tennis",
+   "grade": 1
+  },
+  {
+   "word": "take a bath",
+   "grade": 1
+  },
+  {
+   "word": "take a picture",
+   "grade": 1
+  },
+  {
+   "word": "take a walk",
+   "grade": 1
+  },
+  {
+   "word": "talent",
+   "grade": 1
+  },
+  {
+   "word": "talented",
+   "grade": 1
+  },
+  {
+   "word": "talkative",
+   "grade": 1
+  },
+  {
+   "word": "tambourine",
+   "grade": 1
+  },
+  {
+   "word": "tasty",
+   "grade": 1
+  },
+  {
+   "word": "teammate",
+   "grade": 1
+  },
+  {
+   "word": "tell",
+   "grade": 1
+  },
+  {
+   "word": "terrible",
+   "grade": 1
+  },
+  {
+   "word": "Texas",
+   "grade": 1
+  },
+  {
+   "word": "Thank you.",
+   "grade": 1
+  },
+  {
+   "word": "that’s",
+   "grade": 1
+  },
+  {
+   "word": "That’s right.",
+   "grade": 1
+  },
+  {
+   "word": "their",
+   "grade": 1
+  },
+  {
+   "word": "theirs",
+   "grade": 1
+  },
+  {
+   "word": "them",
+   "grade": 1
+  },
+  {
+   "word": "then",
+   "grade": 1
+  },
+  {
+   "word": "there",
+   "grade": 1
+  },
+  {
+   "word": "these",
+   "grade": 1
+  },
+  {
+   "word": "they",
+   "grade": 1
+  },
+  {
+   "word": "thing",
+   "grade": 1
+  },
+  {
+   "word": "Thomas Edison",
+   "grade": 1
+  },
+  {
+   "word": "those",
+   "grade": 1
+  },
+  {
+   "word": "thousand",
+   "grade": 1
+  },
+  {
+   "word": "tiny",
+   "grade": 1
+  },
+  {
+   "word": "together",
+   "grade": 1
+  },
+  {
+   "word": "Tom",
+   "grade": 1
+  },
+  {
+   "word": "tomorrow",
+   "grade": 1
+  },
+  {
+   "word": "took",
+   "grade": 1
+  },
+  {
+   "word": "tough",
+   "grade": 1
+  },
+  {
+   "word": "towel",
+   "grade": 1
+  },
+  {
+   "word": "track and field",
+   "grade": 1
+  },
+  {
+   "word": "traditional",
+   "grade": 1
+  },
+  {
+   "word": "trampoline",
+   "grade": 1
+  },
+  {
+   "word": "trick",
+   "grade": 1
+  },
+  {
+   "word": "trumpet",
+   "grade": 1
+  },
+  {
+   "word": "tuna",
+   "grade": 1
+  },
+  {
+   "word": "turtle",
+   "grade": 1
+  },
+  {
+   "word": "U.S.",
+   "grade": 1
+  },
+  {
+   "word": "uncle",
+   "grade": 1
+  },
+  {
+   "word": "unique",
+   "grade": 1
+  },
+  {
+   "word": "unkind",
+   "grade": 1
+  },
+  {
+   "word": "until",
+   "grade": 1
+  },
+  {
+   "word": "us",
+   "grade": 1
+  },
+  {
+   "word": "use",
+   "grade": 1
+  },
+  {
+   "word": "very",
+   "grade": 1
+  },
+  {
+   "word": "very much",
+   "grade": 1
+  },
+  {
+   "word": "video",
+   "grade": 1
+  },
+  {
+   "word": "view",
+   "grade": 1
+  },
+  {
+   "word": "wallet",
+   "grade": 1
+  },
+  {
+   "word": "want to ～",
+   "grade": 1
+  },
+  {
+   "word": "warm",
+   "grade": 1
+  },
+  {
+   "word": "warm-hearted",
+   "grade": 1
+  },
+  {
+   "word": "warming",
+   "grade": 1
+  },
+  {
+   "word": "wasn’t",
+   "grade": 1
+  },
+  {
+   "word": "watermelon",
+   "grade": 1
+  },
+  {
+   "word": "way",
+   "grade": 1
+  },
+  {
+   "word": "weekend",
+   "grade": 1
+  },
+  {
+   "word": "were",
+   "grade": 1
+  },
+  {
+   "word": "weren’t",
+   "grade": 1
+  },
+  {
+   "word": "we’re",
+   "grade": 1
+  },
+  {
+   "word": "whale",
+   "grade": 1
+  },
+  {
+   "word": "what’s",
+   "grade": 1
+  },
+  {
+   "word": "What’s the matter?",
+   "grade": 1
+  },
+  {
+   "word": "whee",
+   "grade": 1
+  },
+  {
+   "word": "which",
+   "grade": 1
+  },
+  {
+   "word": "whose",
+   "grade": 1
+  },
+  {
+   "word": "who’s",
+   "grade": 1
+  },
+  {
+   "word": "Why don’t we ～?",
+   "grade": 1
+  },
+  {
+   "word": "win",
+   "grade": 1
+  },
+  {
+   "word": "wind",
+   "grade": 1
+  },
+  {
+   "word": "wise",
+   "grade": 1
+  },
+  {
+   "word": "wish",
+   "grade": 1
+  },
+  {
+   "word": "wolf",
+   "grade": 1
+  },
+  {
+   "word": "woman",
+   "grade": 1
+  },
+  {
+   "word": "won",
+   "grade": 1
+  },
+  {
+   "word": "work",
+   "grade": 1
+  },
+  {
+   "word": "worry",
+   "grade": 1
+  },
+  {
+   "word": "would like to ～",
+   "grade": 1
+  },
+  {
+   "word": "Would you like ～?",
+   "grade": 1
+  },
+  {
+   "word": "wow",
+   "grade": 1
+  },
+  {
+   "word": "xylophone",
+   "grade": 1
+  },
+  {
+   "word": "yeah",
+   "grade": 1
+  },
+  {
+   "word": "yesterday",
+   "grade": 1
+  },
+  {
+   "word": "young",
+   "grade": 1
+  },
+  {
+   "word": "yours",
+   "grade": 1
+  },
+  {
+   "word": "yourself",
+   "grade": 1
+  },
+  {
+   "word": "yourselves",
+   "grade": 1
+  },
+  {
+   "word": "you’re",
+   "grade": 1
+  },
+  {
+   "word": "You’re welcome.",
+   "grade": 1
+  },
+  {
+   "word": "zebra",
+   "grade": 1
+  },
+  {
+   "word": "～ year(s) old",
+   "grade": 1
+  },
+  {
+   "word": "～, right?",
+   "grade": 1
+  },
+  {
+   "word": "～, you know.",
+   "grade": 1
+  },
+  {
+   "word": "a bit",
+   "grade": 2
+  },
+  {
+   "word": "a long time ago",
+   "grade": 2
+  },
+  {
+   "word": "a piece of ～",
+   "grade": 2
+  },
+  {
+   "word": "able",
+   "grade": 2
+  },
+  {
+   "word": "above",
+   "grade": 2
+  },
+  {
+   "word": "absolutely",
+   "grade": 2
+  },
+  {
+   "word": "accident",
+   "grade": 2
+  },
+  {
+   "word": "achievement test",
+   "grade": 2
+  },
+  {
+   "word": "acoustic guitar",
+   "grade": 2
+  },
+  {
+   "word": "action",
+   "grade": 2
+  },
+  {
+   "word": "actually",
+   "grade": 2
+  },
+  {
+   "word": "add",
+   "grade": 2
+  },
+  {
+   "word": "admire",
+   "grade": 2
+  },
+  {
+   "word": "adorable",
+   "grade": 2
+  },
+  {
+   "word": "Africa",
+   "grade": 2
+  },
+  {
+   "word": "African Lion Safari",
+   "grade": 2
+  },
+  {
+   "word": "after a while",
+   "grade": 2
+  },
+  {
+   "word": "agree",
+   "grade": 2
+  },
+  {
+   "word": "agricultural chemical",
+   "grade": 2
+  },
+  {
+   "word": "agriculture",
+   "grade": 2
+  },
+  {
+   "word": "air circulator",
+   "grade": 2
+  },
+  {
+   "word": "air conditioner",
+   "grade": 2
+  },
+  {
+   "word": "airport",
+   "grade": 2
+  },
+  {
+   "word": "Alice",
+   "grade": 2
+  },
+  {
+   "word": "all over ～",
+   "grade": 2
+  },
+  {
+   "word": "ambassador",
+   "grade": 2
+  },
+  {
+   "word": "American",
+   "grade": 2
+  },
+  {
+   "word": "American football",
+   "grade": 2
+  },
+  {
+   "word": "amount",
+   "grade": 2
+  },
+  {
+   "word": "annoyed",
+   "grade": 2
+  },
+  {
+   "word": "another",
+   "grade": 2
+  },
+  {
+   "word": "anxious",
+   "grade": 2
+  },
+  {
+   "word": "Apollo 13",
+   "grade": 2
+  },
+  {
+   "word": "apologize",
+   "grade": 2
+  },
+  {
+   "word": "appear",
+   "grade": 2
+  },
+  {
+   "word": "approach",
+   "grade": 2
+  },
+  {
+   "word": "apron",
+   "grade": 2
+  },
+  {
+   "word": "arrive",
+   "grade": 2
+  },
+  {
+   "word": "art museum",
+   "grade": 2
+  },
+  {
+   "word": "as",
+   "grade": 2
+  },
+  {
+   "word": "ashamed",
+   "grade": 2
+  },
+  {
+   "word": "ask",
+   "grade": 2
+  },
+  {
+   "word": "asleep",
+   "grade": 2
+  },
+  {
+   "word": "astonished",
+   "grade": 2
+  },
+  {
+   "word": "at last",
+   "grade": 2
+  },
+  {
+   "word": "at war",
+   "grade": 2
+  },
+  {
+   "word": "athlete",
+   "grade": 2
+  },
+  {
+   "word": "atomic",
+   "grade": 2
+  },
+  {
+   "word": "attention",
+   "grade": 2
+  },
+  {
+   "word": "awake",
+   "grade": 2
+  },
+  {
+   "word": "away",
+   "grade": 2
+  },
+  {
+   "word": "badge",
+   "grade": 2
+  },
+  {
+   "word": "bakery",
+   "grade": 2
+  },
+  {
+   "word": "balance",
+   "grade": 2
+  },
+  {
+   "word": "ballpoint pen",
+   "grade": 2
+  },
+  {
+   "word": "barbershop",
+   "grade": 2
+  },
+  {
+   "word": "be able to ～",
+   "grade": 2
+  },
+  {
+   "word": "be interested in ～",
+   "grade": 2
+  },
+  {
+   "word": "be ready to ～",
+   "grade": 2
+  },
+  {
+   "word": "bean sprout",
+   "grade": 2
+  },
+  {
+   "word": "beaver",
+   "grade": 2
+  },
+  {
+   "word": "became",
+   "grade": 2
+  },
+  {
+   "word": "because of ～",
+   "grade": 2
+  },
+  {
+   "word": "become",
+   "grade": 2
+  },
+  {
+   "word": "bee",
+   "grade": 2
+  },
+  {
+   "word": "beige",
+   "grade": 2
+  },
+  {
+   "word": "believe",
+   "grade": 2
+  },
+  {
+   "word": "believe in ～",
+   "grade": 2
+  },
+  {
+   "word": "beside",
+   "grade": 2
+  },
+  {
+   "word": "better",
+   "grade": 2
+  },
+  {
+   "word": "between",
+   "grade": 2
+  },
+  {
+   "word": "beyond",
+   "grade": 2
+  },
+  {
+   "word": "Bill",
+   "grade": 2
+  },
+  {
+   "word": "bit",
+   "grade": 2
+  },
+  {
+   "word": "blame",
+   "grade": 2
+  },
+  {
+   "word": "blossom",
+   "grade": 2
+  },
+  {
+   "word": "boarding",
+   "grade": 2
+  },
+  {
+   "word": "boat shoe",
+   "grade": 2
+  },
+  {
+   "word": "boiled",
+   "grade": 2
+  },
+  {
+   "word": "bomb",
+   "grade": 2
+  },
+  {
+   "word": "bone",
+   "grade": 2
+  },
+  {
+   "word": "border",
+   "grade": 2
+  },
+  {
+   "word": "bored",
+   "grade": 2
+  },
+  {
+   "word": "boring",
+   "grade": 2
+  },
+  {
+   "word": "born",
+   "grade": 2
+  },
+  {
+   "word": "both",
+   "grade": 2
+  },
+  {
+   "word": "bottom",
+   "grade": 2
+  },
+  {
+   "word": "bowl",
+   "grade": 2
+  },
+  {
+   "word": "brain",
+   "grade": 2
+  },
+  {
+   "word": "breathe",
+   "grade": 2
+  },
+  {
+   "word": "breathtaking",
+   "grade": 2
+  },
+  {
+   "word": "bring",
+   "grade": 2
+  },
+  {
+   "word": "broken",
+   "grade": 2
+  },
+  {
+   "word": "build",
+   "grade": 2
+  },
+  {
+   "word": "building",
+   "grade": 2
+  },
+  {
+   "word": "built",
+   "grade": 2
+  },
+  {
+   "word": "burger",
+   "grade": 2
+  },
+  {
+   "word": "bury",
+   "grade": 2
+  },
+  {
+   "word": "butcher shop",
+   "grade": 2
+  },
+  {
+   "word": "butter",
+   "grade": 2
+  },
+  {
+   "word": "by mistake",
+   "grade": 2
+  },
+  {
+   "word": "by oneself",
+   "grade": 2
+  },
+  {
+   "word": "by the way",
+   "grade": 2
+  },
+  {
+   "word": "bye",
+   "grade": 2
+  },
+  {
+   "word": "Caesar salad",
+   "grade": 2
+  },
+  {
+   "word": "cafe",
+   "grade": 2
+  },
+  {
+   "word": "calm",
+   "grade": 2
+  },
+  {
+   "word": "camera",
+   "grade": 2
+  },
+  {
+   "word": "candy store",
+   "grade": 2
+  },
+  {
+   "word": "captain",
+   "grade": 2
+  },
+  {
+   "word": "care",
+   "grade": 2
+  },
+  {
+   "word": "carefully",
+   "grade": 2
+  },
+  {
+   "word": "casual",
+   "grade": 2
+  },
+  {
+   "word": "caught",
+   "grade": 2
+  },
+  {
+   "word": "cave",
+   "grade": 2
+  },
+  {
+   "word": "CBC",
+   "grade": 2
+  },
+  {
+   "word": "cello",
+   "grade": 2
+  },
+  {
+   "word": "centimeter",
+   "grade": 2
+  },
+  {
+   "word": "championship",
+   "grade": 2
+  },
+  {
+   "word": "chat",
+   "grade": 2
+  },
+  {
+   "word": "cheap",
+   "grade": 2
+  },
+  {
+   "word": "cheek",
+   "grade": 2
+  },
+  {
+   "word": "cheering",
+   "grade": 2
+  },
+  {
+   "word": "chess",
+   "grade": 2
+  },
+  {
+   "word": "chewy",
+   "grade": 2
+  },
+  {
+   "word": "child",
+   "grade": 2
+  },
+  {
+   "word": "clarinet",
+   "grade": 2
+  },
+  {
+   "word": "clay",
+   "grade": 2
+  },
+  {
+   "word": "clear",
+   "grade": 2
+  },
+  {
+   "word": "closing ceremony",
+   "grade": 2
+  },
+  {
+   "word": "cloth",
+   "grade": 2
+  },
+  {
+   "word": "clothing store",
+   "grade": 2
+  },
+  {
+   "word": "coach",
+   "grade": 2
+  },
+  {
+   "word": "coast",
+   "grade": 2
+  },
+  {
+   "word": "coat",
+   "grade": 2
+  },
+  {
+   "word": "coffee shop",
+   "grade": 2
+  },
+  {
+   "word": "coin",
+   "grade": 2
+  },
+  {
+   "word": "comfortable",
+   "grade": 2
+  },
+  {
+   "word": "completely",
+   "grade": 2
+  },
+  {
+   "word": "confused",
+   "grade": 2
+  },
+  {
+   "word": "confusing",
+   "grade": 2
+  },
+  {
+   "word": "contact",
+   "grade": 2
+  },
+  {
+   "word": "contest",
+   "grade": 2
+  },
+  {
+   "word": "continue",
+   "grade": 2
+  },
+  {
+   "word": "convenient",
+   "grade": 2
+  },
+  {
+   "word": "corn dog",
+   "grade": 2
+  },
+  {
+   "word": "cotton candy",
+   "grade": 2
+  },
+  {
+   "word": "could",
+   "grade": 2
+  },
+  {
+   "word": "couldn’t",
+   "grade": 2
+  },
+  {
+   "word": "cover",
+   "grade": 2
+  },
+  {
+   "word": "creamy",
+   "grade": 2
+  },
+  {
+   "word": "create",
+   "grade": 2
+  },
+  {
+   "word": "creature",
+   "grade": 2
+  },
+  {
+   "word": "crew",
+   "grade": 2
+  },
+  {
+   "word": "cry",
+   "grade": 2
+  },
+  {
+   "word": "culture",
+   "grade": 2
+  },
+  {
+   "word": "curtain",
+   "grade": 2
+  },
+  {
+   "word": "customize",
+   "grade": 2
+  },
+  {
+   "word": "cut down ～",
+   "grade": 2
+  },
+  {
+   "word": "cycle",
+   "grade": 2
+  },
+  {
+   "word": "dam",
+   "grade": 2
+  },
+  {
+   "word": "damage",
+   "grade": 2
+  },
+  {
+   "word": "danger",
+   "grade": 2
+  },
+  {
+   "word": "daytime",
+   "grade": 2
+  },
+  {
+   "word": "dead",
+   "grade": 2
+  },
+  {
+   "word": "decide",
+   "grade": 2
+  },
+  {
+   "word": "deck",
+   "grade": 2
+  },
+  {
+   "word": "deep",
+   "grade": 2
+  },
+  {
+   "word": "deeply",
+   "grade": 2
+  },
+  {
+   "word": "deer",
+   "grade": 2
+  },
+  {
+   "word": "degree",
+   "grade": 2
+  },
+  {
+   "word": "department store",
+   "grade": 2
+  },
+  {
+   "word": "depressed",
+   "grade": 2
+  },
+  {
+   "word": "develop",
+   "grade": 2
+  },
+  {
+   "word": "die",
+   "grade": 2
+  },
+  {
+   "word": "difficult",
+   "grade": 2
+  },
+  {
+   "word": "dirty",
+   "grade": 2
+  },
+  {
+   "word": "disappointed",
+   "grade": 2
+  },
+  {
+   "word": "discouraged",
+   "grade": 2
+  },
+  {
+   "word": "display",
+   "grade": 2
+  },
+  {
+   "word": "do one’s best",
+   "grade": 2
+  },
+  {
+   "word": "do the dishes",
+   "grade": 2
+  },
+  {
+   "word": "documentary",
+   "grade": 2
+  },
+  {
+   "word": "donate",
+   "grade": 2
+  },
+  {
+   "word": "donut",
+   "grade": 2
+  },
+  {
+   "word": "don’t have to ～",
+   "grade": 2
+  },
+  {
+   "word": "drawn",
+   "grade": 2
+  },
+  {
+   "word": "drew",
+   "grade": 2
+  },
+  {
+   "word": "drop",
+   "grade": 2
+  },
+  {
+   "word": "drugstore",
+   "grade": 2
+  },
+  {
+   "word": "Dutch",
+   "grade": 2
+  },
+  {
+   "word": "each",
+   "grade": 2
+  },
+  {
+   "word": "each other",
+   "grade": 2
+  },
+  {
+   "word": "earn",
+   "grade": 2
+  },
+  {
+   "word": "earth",
+   "grade": 2
+  },
+  {
+   "word": "earthquake",
+   "grade": 2
+  },
+  {
+   "word": "easily",
+   "grade": 2
+  },
+  {
+   "word": "eastern",
+   "grade": 2
+  },
+  {
+   "word": "easy",
+   "grade": 2
+  },
+  {
+   "word": "eater",
+   "grade": 2
+  },
+  {
+   "word": "eco-friendly",
+   "grade": 2
+  },
+  {
+   "word": "education",
+   "grade": 2
+  },
+  {
+   "word": "effect",
+   "grade": 2
+  },
+  {
+   "word": "effort",
+   "grade": 2
+  },
+  {
+   "word": "either",
+   "grade": 2
+  },
+  {
+   "word": "electric guitar",
+   "grade": 2
+  },
+  {
+   "word": "electricity",
+   "grade": 2
+  },
+  {
+   "word": "email",
+   "grade": 2
+  },
+  {
+   "word": "embarrassed",
+   "grade": 2
+  },
+  {
+   "word": "emergency",
+   "grade": 2
+  },
+  {
+   "word": "emotional",
+   "grade": 2
+  },
+  {
+   "word": "empty",
+   "grade": 2
+  },
+  {
+   "word": "enemy",
+   "grade": 2
+  },
+  {
+   "word": "energy",
+   "grade": 2
+  },
+  {
+   "word": "engineer",
+   "grade": 2
+  },
+  {
+   "word": "entrance ceremony",
+   "grade": 2
+  },
+  {
+   "word": "environmental",
+   "grade": 2
+  },
+  {
+   "word": "Eric",
+   "grade": 2
+  },
+  {
+   "word": "escape",
+   "grade": 2
+  },
+  {
+   "word": "even",
+   "grade": 2
+  },
+  {
+   "word": "everything",
+   "grade": 2
+  },
+  {
+   "word": "examination",
+   "grade": 2
+  },
+  {
+   "word": "exercise",
+   "grade": 2
+  },
+  {
+   "word": "explode",
+   "grade": 2
+  },
+  {
+   "word": "explosion",
+   "grade": 2
+  },
+  {
+   "word": "extremely",
+   "grade": 2
+  },
+  {
+   "word": "fact",
+   "grade": 2
+  },
+  {
+   "word": "failure",
+   "grade": 2
+  },
+  {
+   "word": "fall asleep",
+   "grade": 2
+  },
+  {
+   "word": "fall into ～",
+   "grade": 2
+  },
+  {
+   "word": "farewell",
+   "grade": 2
+  },
+  {
+   "word": "fashionable",
+   "grade": 2
+  },
+  {
+   "word": "fell",
+   "grade": 2
+  },
+  {
+   "word": "field day",
+   "grade": 2
+  },
+  {
+   "word": "fill",
+   "grade": 2
+  },
+  {
+   "word": "film",
+   "grade": 2
+  },
+  {
+   "word": "Finnish-style",
+   "grade": 2
+  },
+  {
+   "word": "fire",
+   "grade": 2
+  },
+  {
+   "word": "first of all",
+   "grade": 2
+  },
+  {
+   "word": "fish shop",
+   "grade": 2
+  },
+  {
+   "word": "fishing",
+   "grade": 2
+  },
+  {
+   "word": "flag",
+   "grade": 2
+  },
+  {
+   "word": "flash",
+   "grade": 2
+  },
+  {
+   "word": "flew",
+   "grade": 2
+  },
+  {
+   "word": "flight",
+   "grade": 2
+  },
+  {
+   "word": "flight attendant",
+   "grade": 2
+  },
+  {
+   "word": "flour",
+   "grade": 2
+  },
+  {
+   "word": "flower shop",
+   "grade": 2
+  },
+  {
+   "word": "flying fish",
+   "grade": 2
+  },
+  {
+   "word": "fold",
+   "grade": 2
+  },
+  {
+   "word": "footprint",
+   "grade": 2
+  },
+  {
+   "word": "for a while",
+   "grade": 2
+  },
+  {
+   "word": "for free",
+   "grade": 2
+  },
+  {
+   "word": "for the first time",
+   "grade": 2
+  },
+  {
+   "word": "forecast",
+   "grade": 2
+  },
+  {
+   "word": "forest",
+   "grade": 2
+  },
+  {
+   "word": "forget",
+   "grade": 2
+  },
+  {
+   "word": "former",
+   "grade": 2
+  },
+  {
+   "word": "forward",
+   "grade": 2
+  },
+  {
+   "word": "foster",
+   "grade": 2
+  },
+  {
+   "word": "free",
+   "grade": 2
+  },
+  {
+   "word": "fridge",
+   "grade": 2
+  },
+  {
+   "word": "fried",
+   "grade": 2
+  },
+  {
+   "word": "friendship",
+   "grade": 2
+  },
+  {
+   "word": "frightened",
+   "grade": 2
+  },
+  {
+   "word": "fry",
+   "grade": 2
+  },
+  {
+   "word": "fur",
+   "grade": 2
+  },
+  {
+   "word": "future",
+   "grade": 2
+  },
+  {
+   "word": "gardening",
+   "grade": 2
+  },
+  {
+   "word": "gas station",
+   "grade": 2
+  },
+  {
+   "word": "gave",
+   "grade": 2
+  },
+  {
+   "word": "Germany",
+   "grade": 2
+  },
+  {
+   "word": "get well",
+   "grade": 2
+  },
+  {
+   "word": "get ～ place",
+   "grade": 2
+  },
+  {
+   "word": "Ghana",
+   "grade": 2
+  },
+  {
+   "word": "gift",
+   "grade": 2
+  },
+  {
+   "word": "Give it a try.",
+   "grade": 2
+  },
+  {
+   "word": "give up 〜",
+   "grade": 2
+  },
+  {
+   "word": "glad",
+   "grade": 2
+  },
+  {
+   "word": "glove",
+   "grade": 2
+  },
+  {
+   "word": "go bowling",
+   "grade": 2
+  },
+  {
+   "word": "go cycling",
+   "grade": 2
+  },
+  {
+   "word": "go hiking",
+   "grade": 2
+  },
+  {
+   "word": "go jogging",
+   "grade": 2
+  },
+  {
+   "word": "go to bed",
+   "grade": 2
+  },
+  {
+   "word": "goal",
+   "grade": 2
+  },
+  {
+   "word": "gold",
+   "grade": 2
+  },
+  {
+   "word": "golf",
+   "grade": 2
+  },
+  {
+   "word": "Good for you.",
+   "grade": 2
+  },
+  {
+   "word": "Good job.",
+   "grade": 2
+  },
+  {
+   "word": "goods",
+   "grade": 2
+  },
+  {
+   "word": "goodwill",
+   "grade": 2
+  },
+  {
+   "word": "gossip",
+   "grade": 2
+  },
+  {
+   "word": "graduation ceremony",
+   "grade": 2
+  },
+  {
+   "word": "gram",
+   "grade": 2
+  },
+  {
+   "word": "grass",
+   "grade": 2
+  },
+  {
+   "word": "gray",
+   "grade": 2
+  },
+  {
+   "word": "greasy",
+   "grade": 2
+  },
+  {
+   "word": "grocery store",
+   "grade": 2
+  },
+  {
+   "word": "groove",
+   "grade": 2
+  },
+  {
+   "word": "guide",
+   "grade": 2
+  },
+  {
+   "word": "guinea pig",
+   "grade": 2
+  },
+  {
+   "word": "guitarist",
+   "grade": 2
+  },
+  {
+   "word": "half",
+   "grade": 2
+  },
+  {
+   "word": "Halloween",
+   "grade": 2
+  },
+  {
+   "word": "hallway",
+   "grade": 2
+  },
+  {
+   "word": "hamster",
+   "grade": 2
+  },
+  {
+   "word": "handball",
+   "grade": 2
+  },
+  {
+   "word": "handicraft",
+   "grade": 2
+  },
+  {
+   "word": "handmade",
+   "grade": 2
+  },
+  {
+   "word": "happen",
+   "grade": 2
+  },
+  {
+   "word": "harp",
+   "grade": 2
+  },
+  {
+   "word": "have no idea",
+   "grade": 2
+  },
+  {
+   "word": "have to ～",
+   "grade": 2
+  },
+  {
+   "word": "hear",
+   "grade": 2
+  },
+  {
+   "word": "hear from ～",
+   "grade": 2
+  },
+  {
+   "word": "heat",
+   "grade": 2
+  },
+  {
+   "word": "help ～ with ...",
+   "grade": 2
+  },
+  {
+   "word": "helpful",
+   "grade": 2
+  },
+  {
+   "word": "Here is ～.",
+   "grade": 2
+  },
+  {
+   "word": "here’s",
+   "grade": 2
+  },
+  {
+   "word": "he’ll",
+   "grade": 2
+  },
+  {
+   "word": "high-tech",
+   "grade": 2
+  },
+  {
+   "word": "highlighter",
+   "grade": 2
+  },
+  {
+   "word": "hike",
+   "grade": 2
+  },
+  {
+   "word": "hiking",
+   "grade": 2
+  },
+  {
+   "word": "himself",
+   "grade": 2
+  },
+  {
+   "word": "Hiroshima Peace Memorial Park",
+   "grade": 2
+  },
+  {
+   "word": "history",
+   "grade": 2
+  },
+  {
+   "word": "hit",
+   "grade": 2
+  },
+  {
+   "word": "Hold on.",
+   "grade": 2
+  },
+  {
+   "word": "home run",
+   "grade": 2
+  },
+  {
+   "word": "honey",
+   "grade": 2
+  },
+  {
+   "word": "hood",
+   "grade": 2
+  },
+  {
+   "word": "hope",
+   "grade": 2
+  },
+  {
+   "word": "hotel",
+   "grade": 2
+  },
+  {
+   "word": "Houston",
+   "grade": 2
+  },
+  {
+   "word": "however",
+   "grade": 2
+  },
+  {
+   "word": "icy",
+   "grade": 2
+  },
+  {
+   "word": "if",
+   "grade": 2
+  },
+  {
+   "word": "importance",
+   "grade": 2
+  },
+  {
+   "word": "in fact",
+   "grade": 2
+  },
+  {
+   "word": "in order to ～",
+   "grade": 2
+  },
+  {
+   "word": "in particular",
+   "grade": 2
+  },
+  {
+   "word": "in those days",
+   "grade": 2
+  },
+  {
+   "word": "inconvenience",
+   "grade": 2
+  },
+  {
+   "word": "information",
+   "grade": 2
+  },
+  {
+   "word": "ingredient",
+   "grade": 2
+  },
+  {
+   "word": "inside",
+   "grade": 2
+  },
+  {
+   "word": "inspiration",
+   "grade": 2
+  },
+  {
+   "word": "interested",
+   "grade": 2
+  },
+  {
+   "word": "invention",
+   "grade": 2
+  },
+  {
+   "word": "Iran",
+   "grade": 2
+  },
+  {
+   "word": "Iraq",
+   "grade": 2
+  },
+  {
+   "word": "irritated",
+   "grade": 2
+  },
+  {
+   "word": "it’ll",
+   "grade": 2
+  },
+  {
+   "word": "I’ll",
+   "grade": 2
+  },
+  {
+   "word": "J. C. Smith",
+   "grade": 2
+  },
+  {
+   "word": "Jane",
+   "grade": 2
+  },
+  {
+   "word": "Jim Lovell",
+   "grade": 2
+  },
+  {
+   "word": "job",
+   "grade": 2
+  },
+  {
+   "word": "jog",
+   "grade": 2
+  },
+  {
+   "word": "Just a moment.",
+   "grade": 2
+  },
+  {
+   "word": "keep",
+   "grade": 2
+  },
+  {
+   "word": "keep in touch",
+   "grade": 2
+  },
+  {
+   "word": "keyboard",
+   "grade": 2
+  },
+  {
+   "word": "kindly",
+   "grade": 2
+  },
+  {
+   "word": "king",
+   "grade": 2
+  },
+  {
+   "word": "kitchen",
+   "grade": 2
+  },
+  {
+   "word": "knew",
+   "grade": 2
+  },
+  {
+   "word": "known",
+   "grade": 2
+  },
+  {
+   "word": "lasting",
+   "grade": 2
+  },
+  {
+   "word": "late",
+   "grade": 2
+  },
+  {
+   "word": "later",
+   "grade": 2
+  },
+  {
+   "word": "launch",
+   "grade": 2
+  },
+  {
+   "word": "laundry",
+   "grade": 2
+  },
+  {
+   "word": "leaf",
+   "grade": 2
+  },
+  {
+   "word": "learn",
+   "grade": 2
+  },
+  {
+   "word": "leaves",
+   "grade": 2
+  },
+  {
+   "word": "lemonade",
+   "grade": 2
+  },
+  {
+   "word": "lend",
+   "grade": 2
+  },
+  {
+   "word": "less",
+   "grade": 2
+  },
+  {
+   "word": "lesson",
+   "grade": 2
+  },
+  {
+   "word": "lid",
+   "grade": 2
+  },
+  {
+   "word": "light",
+   "grade": 2
+  },
+  {
+   "word": "line",
+   "grade": 2
+  },
+  {
+   "word": "list",
+   "grade": 2
+  },
+  {
+   "word": "listener",
+   "grade": 2
+  },
+  {
+   "word": "living",
+   "grade": 2
+  },
+  {
+   "word": "local",
+   "grade": 2
+  },
+  {
+   "word": "lodge",
+   "grade": 2
+  },
+  {
+   "word": "London",
+   "grade": 2
+  },
+  {
+   "word": "lonely",
+   "grade": 2
+  },
+  {
+   "word": "look forward to 〜",
+   "grade": 2
+  },
+  {
+   "word": "lose",
+   "grade": 2
+  },
+  {
+   "word": "lost",
+   "grade": 2
+  },
+  {
+   "word": "lotus",
+   "grade": 2
+  },
+  {
+   "word": "loud",
+   "grade": 2
+  },
+  {
+   "word": "lovely",
+   "grade": 2
+  },
+  {
+   "word": "machine",
+   "grade": 2
+  },
+  {
+   "word": "made",
+   "grade": 2
+  },
+  {
+   "word": "magical",
+   "grade": 2
+  },
+  {
+   "word": "make the most of ～",
+   "grade": 2
+  },
+  {
+   "word": "make use of ～",
+   "grade": 2
+  },
+  {
+   "word": "mammal",
+   "grade": 2
+  },
+  {
+   "word": "manner",
+   "grade": 2
+  },
+  {
+   "word": "marine biologist",
+   "grade": 2
+  },
+  {
+   "word": "mascot",
+   "grade": 2
+  },
+  {
+   "word": "material",
+   "grade": 2
+  },
+  {
+   "word": "may",
+   "grade": 2
+  },
+  {
+   "word": "May I ～?",
+   "grade": 2
+  },
+  {
+   "word": "maybe",
+   "grade": 2
+  },
+  {
+   "word": "mayonnaise",
+   "grade": 2
+  },
+  {
+   "word": "mechanical pencil",
+   "grade": 2
+  },
+  {
+   "word": "men",
+   "grade": 2
+  },
+  {
+   "word": "message",
+   "grade": 2
+  },
+  {
+   "word": "met",
+   "grade": 2
+  },
+  {
+   "word": "meter",
+   "grade": 2
+  },
+  {
+   "word": "mice",
+   "grade": 2
+  },
+  {
+   "word": "midterm exam",
+   "grade": 2
+  },
+  {
+   "word": "might",
+   "grade": 2
+  },
+  {
+   "word": "million",
+   "grade": 2
+  },
+  {
+   "word": "mind",
+   "grade": 2
+  },
+  {
+   "word": "mineral water",
+   "grade": 2
+  },
+  {
+   "word": "minus",
+   "grade": 2
+  },
+  {
+   "word": "minute",
+   "grade": 2
+  },
+  {
+   "word": "miso-flavored",
+   "grade": 2
+  },
+  {
+   "word": "mission",
+   "grade": 2
+  },
+  {
+   "word": "mistake",
+   "grade": 2
+  },
+  {
+   "word": "moment",
+   "grade": 2
+  },
+  {
+   "word": "money",
+   "grade": 2
+  },
+  {
+   "word": "Montreal",
+   "grade": 2
+  },
+  {
+   "word": "monument",
+   "grade": 2
+  },
+  {
+   "word": "more",
+   "grade": 2
+  },
+  {
+   "word": "more than ～",
+   "grade": 2
+  },
+  {
+   "word": "most",
+   "grade": 2
+  },
+  {
+   "word": "move",
+   "grade": 2
+  },
+  {
+   "word": "Mt.",
+   "grade": 2
+  },
+  {
+   "word": "must",
+   "grade": 2
+  },
+  {
+   "word": "mustn’t",
+   "grade": 2
+  },
+  {
+   "word": "nap",
+   "grade": 2
+  },
+  {
+   "word": "narrow",
+   "grade": 2
+  },
+  {
+   "word": "NASA",
+   "grade": 2
+  },
+  {
+   "word": "national",
+   "grade": 2
+  },
+  {
+   "word": "navy blue",
+   "grade": 2
+  },
+  {
+   "word": "nearby",
+   "grade": 2
+  },
+  {
+   "word": "neither",
+   "grade": 2
+  },
+  {
+   "word": "Netherlands",
+   "grade": 2
+  },
+  {
+   "word": "news",
+   "grade": 2
+  },
+  {
+   "word": "Niagara Falls",
+   "grade": 2
+  },
+  {
+   "word": "nighttime",
+   "grade": 2
+  },
+  {
+   "word": "no-fly zone",
+   "grade": 2
+  },
+  {
+   "word": "noise",
+   "grade": 2
+  },
+  {
+   "word": "noisy",
+   "grade": 2
+  },
+  {
+   "word": "non-slip",
+   "grade": 2
+  },
+  {
+   "word": "not always ～",
+   "grade": 2
+  },
+  {
+   "word": "nothing",
+   "grade": 2
+  },
+  {
+   "word": "nursery school",
+   "grade": 2
+  },
+  {
+   "word": "Oliver",
+   "grade": 2
+  },
+  {
+   "word": "on the way (back) to ～",
+   "grade": 2
+  },
+  {
+   "word": "on time",
+   "grade": 2
+  },
+  {
+   "word": "one after another",
+   "grade": 2
+  },
+  {
+   "word": "one day",
+   "grade": 2
+  },
+  {
+   "word": "one of ～",
+   "grade": 2
+  },
+  {
+   "word": "opening ceremony",
+   "grade": 2
+  },
+  {
+   "word": "option",
+   "grade": 2
+  },
+  {
+   "word": "order",
+   "grade": 2
+  },
+  {
+   "word": "organic",
+   "grade": 2
+  },
+  {
+   "word": "out of ～",
+   "grade": 2
+  },
+  {
+   "word": "outing",
+   "grade": 2
+  },
+  {
+   "word": "overseas",
+   "grade": 2
+  },
+  {
+   "word": "own",
+   "grade": 2
+  },
+  {
+   "word": "oxygen",
+   "grade": 2
+  },
+  {
+   "word": "pack",
+   "grade": 2
+  },
+  {
+   "word": "paint",
+   "grade": 2
+  },
+  {
+   "word": "palm",
+   "grade": 2
+  },
+  {
+   "word": "paper clip",
+   "grade": 2
+  },
+  {
+   "word": "paper crane",
+   "grade": 2
+  },
+  {
+   "word": "parachute",
+   "grade": 2
+  },
+  {
+   "word": "parfait",
+   "grade": 2
+  },
+  {
+   "word": "particular",
+   "grade": 2
+  },
+  {
+   "word": "party",
+   "grade": 2
+  },
+  {
+   "word": "pass",
+   "grade": 2
+  },
+  {
+   "word": "pass away",
+   "grade": 2
+  },
+  {
+   "word": "passenger",
+   "grade": 2
+  },
+  {
+   "word": "passionate",
+   "grade": 2
+  },
+  {
+   "word": "paw",
+   "grade": 2
+  },
+  {
+   "word": "peace",
+   "grade": 2
+  },
+  {
+   "word": "penguin",
+   "grade": 2
+  },
+  {
+   "word": "person",
+   "grade": 2
+  },
+  {
+   "word": "pet",
+   "grade": 2
+  },
+  {
+   "word": "picnic",
+   "grade": 2
+  },
+  {
+   "word": "piece",
+   "grade": 2
+  },
+  {
+   "word": "pilaf",
+   "grade": 2
+  },
+  {
+   "word": "pioneer",
+   "grade": 2
+  },
+  {
+   "word": "plain",
+   "grade": 2
+  },
+  {
+   "word": "plan",
+   "grade": 2
+  },
+  {
+   "word": "planet",
+   "grade": 2
+  },
+  {
+   "word": "plant",
+   "grade": 2
+  },
+  {
+   "word": "plastic bag",
+   "grade": 2
+  },
+  {
+   "word": "pleased",
+   "grade": 2
+  },
+  {
+   "word": "pocket",
+   "grade": 2
+  },
+  {
+   "word": "pollen",
+   "grade": 2
+  },
+  {
+   "word": "poor",
+   "grade": 2
+  },
+  {
+   "word": "post office",
+   "grade": 2
+  },
+  {
+   "word": "postcard",
+   "grade": 2
+  },
+  {
+   "word": "potato chip",
+   "grade": 2
+  },
+  {
+   "word": "potential",
+   "grade": 2
+  },
+  {
+   "word": "power",
+   "grade": 2
+  },
+  {
+   "word": "prefecture",
+   "grade": 2
+  },
+  {
+   "word": "president",
+   "grade": 2
+  },
+  {
+   "word": "professionally",
+   "grade": 2
+  },
+  {
+   "word": "program",
+   "grade": 2
+  },
+  {
+   "word": "project",
+   "grade": 2
+  },
+  {
+   "word": "promote",
+   "grade": 2
+  },
+  {
+   "word": "protect",
+   "grade": 2
+  },
+  {
+   "word": "protection",
+   "grade": 2
+  },
+  {
+   "word": "push",
+   "grade": 2
+  },
+  {
+   "word": "puzzle",
+   "grade": 2
+  },
+  {
+   "word": "quarter",
+   "grade": 2
+  },
+  {
+   "word": "quickly",
+   "grade": 2
+  },
+  {
+   "word": "quietly",
+   "grade": 2
+  },
+  {
+   "word": "quite",
+   "grade": 2
+  },
+  {
+   "word": "quiz",
+   "grade": 2
+  },
+  {
+   "word": "Rachel Carson",
+   "grade": 2
+  },
+  {
+   "word": "radio",
+   "grade": 2
+  },
+  {
+   "word": "rain",
+   "grade": 2
+  },
+  {
+   "word": "raincoat",
+   "grade": 2
+  },
+  {
+   "word": "raindrop",
+   "grade": 2
+  },
+  {
+   "word": "rare",
+   "grade": 2
+  },
+  {
+   "word": "re-entry",
+   "grade": 2
+  },
+  {
+   "word": "reason",
+   "grade": 2
+  },
+  {
+   "word": "receive",
+   "grade": 2
+  },
+  {
+   "word": "recommend",
+   "grade": 2
+  },
+  {
+   "word": "recycle",
+   "grade": 2
+  },
+  {
+   "word": "recycled",
+   "grade": 2
+  },
+  {
+   "word": "relaxing",
+   "grade": 2
+  },
+  {
+   "word": "relay",
+   "grade": 2
+  },
+  {
+   "word": "relieved",
+   "grade": 2
+  },
+  {
+   "word": "remember",
+   "grade": 2
+  },
+  {
+   "word": "renew",
+   "grade": 2
+  },
+  {
+   "word": "rent",
+   "grade": 2
+  },
+  {
+   "word": "respectfully",
+   "grade": 2
+  },
+  {
+   "word": "return",
+   "grade": 2
+  },
+  {
+   "word": "revolution",
+   "grade": 2
+  },
+  {
+   "word": "rice ball",
+   "grade": 2
+  },
+  {
+   "word": "roast",
+   "grade": 2
+  },
+  {
+   "word": "root",
+   "grade": 2
+  },
+  {
+   "word": "root for ～",
+   "grade": 2
+  },
+  {
+   "word": "rule",
+   "grade": 2
+  },
+  {
+   "word": "run short",
+   "grade": 2
+  },
+  {
+   "word": "safely",
+   "grade": 2
+  },
+  {
+   "word": "said",
+   "grade": 2
+  },
+  {
+   "word": "sail",
+   "grade": 2
+  },
+  {
+   "word": "Sam",
+   "grade": 2
+  },
+  {
+   "word": "Same here.",
+   "grade": 2
+  },
+  {
+   "word": "sank",
+   "grade": 2
+  },
+  {
+   "word": "satisfied",
+   "grade": 2
+  },
+  {
+   "word": "sauce",
+   "grade": 2
+  },
+  {
+   "word": "save",
+   "grade": 2
+  },
+  {
+   "word": "scared",
+   "grade": 2
+  },
+  {
+   "word": "scarf",
+   "grade": 2
+  },
+  {
+   "word": "school trip",
+   "grade": 2
+  },
+  {
+   "word": "scoop",
+   "grade": 2
+  },
+  {
+   "word": "scoop up ～",
+   "grade": 2
+  },
+  {
+   "word": "sea otter",
+   "grade": 2
+  },
+  {
+   "word": "seabird",
+   "grade": 2
+  },
+  {
+   "word": "search",
+   "grade": 2
+  },
+  {
+   "word": "secret",
+   "grade": 2
+  },
+  {
+   "word": "seed",
+   "grade": 2
+  },
+  {
+   "word": "seen",
+   "grade": 2
+  },
+  {
+   "word": "sell",
+   "grade": 2
+  },
+  {
+   "word": "send",
+   "grade": 2
+  },
+  {
+   "word": "sent",
+   "grade": 2
+  },
+  {
+   "word": "shallow",
+   "grade": 2
+  },
+  {
+   "word": "shampoo",
+   "grade": 2
+  },
+  {
+   "word": "share",
+   "grade": 2
+  },
+  {
+   "word": "shelf",
+   "grade": 2
+  },
+  {
+   "word": "shellfish",
+   "grade": 2
+  },
+  {
+   "word": "shelves",
+   "grade": 2
+  },
+  {
+   "word": "shoe store",
+   "grade": 2
+  },
+  {
+   "word": "shoot down ～",
+   "grade": 2
+  },
+  {
+   "word": "should",
+   "grade": 2
+  },
+  {
+   "word": "sign",
+   "grade": 2
+  },
+  {
+   "word": "Silent Spring",
+   "grade": 2
+  },
+  {
+   "word": "silver",
+   "grade": 2
+  },
+  {
+   "word": "sink",
+   "grade": 2
+  },
+  {
+   "word": "sit up late at night",
+   "grade": 2
+  },
+  {
+   "word": "situation",
+   "grade": 2
+  },
+  {
+   "word": "skateboarding",
+   "grade": 2
+  },
+  {
+   "word": "slice",
+   "grade": 2
+  },
+  {
+   "word": "slip",
+   "grade": 2
+  },
+  {
+   "word": "slowly",
+   "grade": 2
+  },
+  {
+   "word": "smart",
+   "grade": 2
+  },
+  {
+   "word": "smell",
+   "grade": 2
+  },
+  {
+   "word": "sneaker",
+   "grade": 2
+  },
+  {
+   "word": "snowboarding",
+   "grade": 2
+  },
+  {
+   "word": "so ～ that ...",
+   "grade": 2
+  },
+  {
+   "word": "soap",
+   "grade": 2
+  },
+  {
+   "word": "sold",
+   "grade": 2
+  },
+  {
+   "word": "sole",
+   "grade": 2
+  },
+  {
+   "word": "solution",
+   "grade": 2
+  },
+  {
+   "word": "Some ～. Others ....",
+   "grade": 2
+  },
+  {
+   "word": "sometime",
+   "grade": 2
+  },
+  {
+   "word": "sometime soon",
+   "grade": 2
+  },
+  {
+   "word": "somewhere",
+   "grade": 2
+  },
+  {
+   "word": "soon",
+   "grade": 2
+  },
+  {
+   "word": "Sounds nice.",
+   "grade": 2
+  },
+  {
+   "word": "South Sudan",
+   "grade": 2
+  },
+  {
+   "word": "souvenir",
+   "grade": 2
+  },
+  {
+   "word": "soy sauce",
+   "grade": 2
+  },
+  {
+   "word": "soy sauce-flavored",
+   "grade": 2
+  },
+  {
+   "word": "space",
+   "grade": 2
+  },
+  {
+   "word": "spaceship",
+   "grade": 2
+  },
+  {
+   "word": "sparkling water",
+   "grade": 2
+  },
+  {
+   "word": "spicy",
+   "grade": 2
+  },
+  {
+   "word": "spinach",
+   "grade": 2
+  },
+  {
+   "word": "spoke",
+   "grade": 2
+  },
+  {
+   "word": "sports day",
+   "grade": 2
+  },
+  {
+   "word": "sportsmanship",
+   "grade": 2
+  },
+  {
+   "word": "square",
+   "grade": 2
+  },
+  {
+   "word": "stationery",
+   "grade": 2
+  },
+  {
+   "word": "stationery store",
+   "grade": 2
+  },
+  {
+   "word": "stick",
+   "grade": 2
+  },
+  {
+   "word": "stick to ～",
+   "grade": 2
+  },
+  {
+   "word": "stock",
+   "grade": 2
+  },
+  {
+   "word": "stone",
+   "grade": 2
+  },
+  {
+   "word": "store",
+   "grade": 2
+  },
+  {
+   "word": "straw",
+   "grade": 2
+  },
+  {
+   "word": "stylish",
+   "grade": 2
+  },
+  {
+   "word": "successful",
+   "grade": 2
+  },
+  {
+   "word": "successfully",
+   "grade": 2
+  },
+  {
+   "word": "such",
+   "grade": 2
+  },
+  {
+   "word": "such as ～",
+   "grade": 2
+  },
+  {
+   "word": "suddenly",
+   "grade": 2
+  },
+  {
+   "word": "sugar",
+   "grade": 2
+  },
+  {
+   "word": "sunflower",
+   "grade": 2
+  },
+  {
+   "word": "sung",
+   "grade": 2
+  },
+  {
+   "word": "Sunshine Airlines",
+   "grade": 2
+  },
+  {
+   "word": "surprising",
+   "grade": 2
+  },
+  {
+   "word": "survive",
+   "grade": 2
+  },
+  {
+   "word": "survivor",
+   "grade": 2
+  },
+  {
+   "word": "swimming",
+   "grade": 2
+  },
+  {
+   "word": "tablet",
+   "grade": 2
+  },
+  {
+   "word": "take a look",
+   "grade": 2
+  },
+  {
+   "word": "take a nap",
+   "grade": 2
+  },
+  {
+   "word": "take action",
+   "grade": 2
+  },
+  {
+   "word": "take care",
+   "grade": 2
+  },
+  {
+   "word": "take place",
+   "grade": 2
+  },
+  {
+   "word": "take ～ for a walk",
+   "grade": 2
+  },
+  {
+   "word": "taken",
+   "grade": 2
+  },
+  {
+   "word": "tank",
+   "grade": 2
+  },
+  {
+   "word": "Tanzania",
+   "grade": 2
+  },
+  {
+   "word": "taste",
+   "grade": 2
+  },
+  {
+   "word": "taught",
+   "grade": 2
+  },
+  {
+   "word": "teamwork",
+   "grade": 2
+  },
+  {
+   "word": "temperature",
+   "grade": 2
+  },
+  {
+   "word": "Tenali Rama",
+   "grade": 2
+  },
+  {
+   "word": "tender",
+   "grade": 2
+  },
+  {
+   "word": "term-end exam",
+   "grade": 2
+  },
+  {
+   "word": "text",
+   "grade": 2
+  },
+  {
+   "word": "than",
+   "grade": 2
+  },
+  {
+   "word": "thank-you",
+   "grade": 2
+  },
+  {
+   "word": "Thanks for ～.",
+   "grade": 2
+  },
+  {
+   "word": "the dead",
+   "grade": 2
+  },
+  {
+   "word": "themselves",
+   "grade": 2
+  },
+  {
+   "word": "therefore",
+   "grade": 2
+  },
+  {
+   "word": "they’re",
+   "grade": 2
+  },
+  {
+   "word": "thick",
+   "grade": 2
+  },
+  {
+   "word": "thin",
+   "grade": 2
+  },
+  {
+   "word": "though",
+   "grade": 2
+  },
+  {
+   "word": "thought",
+   "grade": 2
+  },
+  {
+   "word": "through",
+   "grade": 2
+  },
+  {
+   "word": "ticket",
+   "grade": 2
+  },
+  {
+   "word": "tidy",
+   "grade": 2
+  },
+  {
+   "word": "Tigers",
+   "grade": 2
+  },
+  {
+   "word": "tin",
+   "grade": 2
+  },
+  {
+   "word": "Tokyo International Airport",
+   "grade": 2
+  },
+  {
+   "word": "told",
+   "grade": 2
+  },
+  {
+   "word": "tool",
+   "grade": 2
+  },
+  {
+   "word": "toothpick",
+   "grade": 2
+  },
+  {
+   "word": "topping",
+   "grade": 2
+  },
+  {
+   "word": "tourist",
+   "grade": 2
+  },
+  {
+   "word": "toy store",
+   "grade": 2
+  },
+  {
+   "word": "treat",
+   "grade": 2
+  },
+  {
+   "word": "trombone",
+   "grade": 2
+  },
+  {
+   "word": "trouble",
+   "grade": 2
+  },
+  {
+   "word": "true",
+   "grade": 2
+  },
+  {
+   "word": "Turkey",
+   "grade": 2
+  },
+  {
+   "word": "Turkish",
+   "grade": 2
+  },
+  {
+   "word": "turn down ～",
+   "grade": 2
+  },
+  {
+   "word": "turn off ～",
+   "grade": 2
+  },
+  {
+   "word": "twenty-four seven",
+   "grade": 2
+  },
+  {
+   "word": "typhoon",
+   "grade": 2
+  },
+  {
+   "word": "uh-oh",
+   "grade": 2
+  },
+  {
+   "word": "under water",
+   "grade": 2
+  },
+  {
+   "word": "understand",
+   "grade": 2
+  },
+  {
+   "word": "uneasy",
+   "grade": 2
+  },
+  {
+   "word": "unhappy",
+   "grade": 2
+  },
+  {
+   "word": "university",
+   "grade": 2
+  },
+  {
+   "word": "upset",
+   "grade": 2
+  },
+  {
+   "word": "useful",
+   "grade": 2
+  },
+  {
+   "word": "Vancouver",
+   "grade": 2
+  },
+  {
+   "word": "vegetable shop",
+   "grade": 2
+  },
+  {
+   "word": "victim",
+   "grade": 2
+  },
+  {
+   "word": "village",
+   "grade": 2
+  },
+  {
+   "word": "voice",
+   "grade": 2
+  },
+  {
+   "word": "volume",
+   "grade": 2
+  },
+  {
+   "word": "wait",
+   "grade": 2
+  },
+  {
+   "word": "waiting room",
+   "grade": 2
+  },
+  {
+   "word": "war",
+   "grade": 2
+  },
+  {
+   "word": "warm up ～",
+   "grade": 2
+  },
+  {
+   "word": "water bottle",
+   "grade": 2
+  },
+  {
+   "word": "wear",
+   "grade": 2
+  },
+  {
+   "word": "well-done",
+   "grade": 2
+  },
+  {
+   "word": "wet",
+   "grade": 2
+  },
+  {
+   "word": "we’ll",
+   "grade": 2
+  },
+  {
+   "word": "What’s up?",
+   "grade": 2
+  },
+  {
+   "word": "while",
+   "grade": 2
+  },
+  {
+   "word": "Why don’t you ～?",
+   "grade": 2
+  },
+  {
+   "word": "will",
+   "grade": 2
+  },
+  {
+   "word": "windy",
+   "grade": 2
+  },
+  {
+   "word": "wine",
+   "grade": 2
+  },
+  {
+   "word": "Winnipeg",
+   "grade": 2
+  },
+  {
+   "word": "wire",
+   "grade": 2
+  },
+  {
+   "word": "wisdom",
+   "grade": 2
+  },
+  {
+   "word": "without",
+   "grade": 2
+  },
+  {
+   "word": "won’t",
+   "grade": 2
+  },
+  {
+   "word": "wood",
+   "grade": 2
+  },
+  {
+   "word": "worker",
+   "grade": 2
+  },
+  {
+   "word": "worried",
+   "grade": 2
+  },
+  {
+   "word": "wrap",
+   "grade": 2
+  },
+  {
+   "word": "writer",
+   "grade": 2
+  },
+  {
+   "word": "written",
+   "grade": 2
+  },
+  {
+   "word": "wrong",
+   "grade": 2
+  },
+  {
+   "word": "wrote",
+   "grade": 2
+  },
+  {
+   "word": "Yellowknife",
+   "grade": 2
+  },
+  {
+   "word": "you’ll",
+   "grade": 2
+  },
+  {
+   "word": "You’re kidding.",
+   "grade": 2
+  },
+  {
+   "word": "～ times a day",
+   "grade": 2
+  },
+  {
+   "word": "～, don’t you?",
+   "grade": 2
+  },
+  {
+   "word": "a few ～",
+   "grade": 3
+  },
+  {
+   "word": "abroad",
+   "grade": 3
+  },
+  {
+   "word": "access",
+   "grade": 3
+  },
+  {
+   "word": "according",
+   "grade": 3
+  },
+  {
+   "word": "according to ～",
+   "grade": 3
+  },
+  {
+   "word": "achieve",
+   "grade": 3
+  },
+  {
+   "word": "activity",
+   "grade": 3
+  },
+  {
+   "word": "actor",
+   "grade": 3
+  },
+  {
+   "word": "actress",
+   "grade": 3
+  },
+  {
+   "word": "addition",
+   "grade": 3
+  },
+  {
+   "word": "additional",
+   "grade": 3
+  },
+  {
+   "word": "address",
+   "grade": 3
+  },
+  {
+   "word": "adult",
+   "grade": 3
+  },
+  {
+   "word": "affect",
+   "grade": 3
+  },
+  {
+   "word": "affection",
+   "grade": 3
+  },
+  {
+   "word": "Afghan",
+   "grade": 3
+  },
+  {
+   "word": "Afghanistan",
+   "grade": 3
+  },
+  {
+   "word": "afraid",
+   "grade": 3
+  },
+  {
+   "word": "afterwards",
+   "grade": 3
+  },
+  {
+   "word": "against",
+   "grade": 3
+  },
+  {
+   "word": "age",
+   "grade": 3
+  },
+  {
+   "word": "aged",
+   "grade": 3
+  },
+  {
+   "word": "agree with ～",
+   "grade": 3
+  },
+  {
+   "word": "AI",
+   "grade": 3
+  },
+  {
+   "word": "aim",
+   "grade": 3
+  },
+  {
+   "word": "Alex",
+   "grade": 3
+  },
+  {
+   "word": "all right",
+   "grade": 3
+  },
+  {
+   "word": "all the time",
+   "grade": 3
+  },
+  {
+   "word": "alone",
+   "grade": 3
+  },
+  {
+   "word": "along",
+   "grade": 3
+  },
+  {
+   "word": "already",
+   "grade": 3
+  },
+  {
+   "word": "ALS",
+   "grade": 3
+  },
+  {
+   "word": "among",
+   "grade": 3
+  },
+  {
+   "word": "angry",
+   "grade": 3
+  },
+  {
+   "word": "animator",
+   "grade": 3
+  },
+  {
+   "word": "announce",
+   "grade": 3
+  },
+  {
+   "word": "announcement",
+   "grade": 3
+  },
+  {
+   "word": "announcer",
+   "grade": 3
+  },
+  {
+   "word": "anyone",
+   "grade": 3
+  },
+  {
+   "word": "Anywhere Door",
+   "grade": 3
+  },
+  {
+   "word": "architect",
+   "grade": 3
+  },
+  {
+   "word": "as a result",
+   "grade": 3
+  },
+  {
+   "word": "as a result of ～",
+   "grade": 3
+  },
+  {
+   "word": "Asia",
+   "grade": 3
+  },
+  {
+   "word": "ASL",
+   "grade": 3
+  },
+  {
+   "word": "assign",
+   "grade": 3
+  },
+  {
+   "word": "assign ～ to ...",
+   "grade": 3
+  },
+  {
+   "word": "at first",
+   "grade": 3
+  },
+  {
+   "word": "at least",
+   "grade": 3
+  },
+  {
+   "word": "at the age of ～",
+   "grade": 3
+  },
+  {
+   "word": "audience",
+   "grade": 3
+  },
+  {
+   "word": "automatically",
+   "grade": 3
+  },
+  {
+   "word": "award",
+   "grade": 3
+  },
+  {
+   "word": "ax",
+   "grade": 3
+  },
+  {
+   "word": "bake",
+   "grade": 3
+  },
+  {
+   "word": "baker",
+   "grade": 3
+  },
+  {
+   "word": "ball game tournament",
+   "grade": 3
+  },
+  {
+   "word": "balloon",
+   "grade": 3
+  },
+  {
+   "word": "ban",
+   "grade": 3
+  },
+  {
+   "word": "band",
+   "grade": 3
+  },
+  {
+   "word": "bank",
+   "grade": 3
+  },
+  {
+   "word": "barber",
+   "grade": 3
+  },
+  {
+   "word": "barrier-free",
+   "grade": 3
+  },
+  {
+   "word": "base",
+   "grade": 3
+  },
+  {
+   "word": "be based on ～",
+   "grade": 3
+  },
+  {
+   "word": "be full of ～",
+   "grade": 3
+  },
+  {
+   "word": "beautician",
+   "grade": 3
+  },
+  {
+   "word": "been",
+   "grade": 3
+  },
+  {
+   "word": "began",
+   "grade": 3
+  },
+  {
+   "word": "begin",
+   "grade": 3
+  },
+  {
+   "word": "behind",
+   "grade": 3
+  },
+  {
+   "word": "belong",
+   "grade": 3
+  },
+  {
+   "word": "belong to ～",
+   "grade": 3
+  },
+  {
+   "word": "below",
+   "grade": 3
+  },
+  {
+   "word": "Ben Hillman",
+   "grade": 3
+  },
+  {
+   "word": "bench",
+   "grade": 3
+  },
+  {
+   "word": "bend",
+   "grade": 3
+  },
+  {
+   "word": "bend over",
+   "grade": 3
+  },
+  {
+   "word": "bill",
+   "grade": 3
+  },
+  {
+   "word": "Black Jack",
+   "grade": 3
+  },
+  {
+   "word": "blanket",
+   "grade": 3
+  },
+  {
+   "word": "blind",
+   "grade": 3
+  },
+  {
+   "word": "blog",
+   "grade": 3
+  },
+  {
+   "word": "borrow",
+   "grade": 3
+  },
+  {
+   "word": "bottle",
+   "grade": 3
+  },
+  {
+   "word": "Boyan Slat",
+   "grade": 3
+  },
+  {
+   "word": "bright",
+   "grade": 3
+  },
+  {
+   "word": "British",
+   "grade": 3
+  },
+  {
+   "word": "brooch",
+   "grade": 3
+  },
+  {
+   "word": "brought",
+   "grade": 3
+  },
+  {
+   "word": "bullet",
+   "grade": 3
+  },
+  {
+   "word": "business",
+   "grade": 3
+  },
+  {
+   "word": "cacao",
+   "grade": 3
+  },
+  {
+   "word": "cage",
+   "grade": 3
+  },
+  {
+   "word": "calligraphy",
+   "grade": 3
+  },
+  {
+   "word": "Canadian",
+   "grade": 3
+  },
+  {
+   "word": "canal",
+   "grade": 3
+  },
+  {
+   "word": "care worker",
+   "grade": 3
+  },
+  {
+   "word": "carpenter",
+   "grade": 3
+  },
+  {
+   "word": "cartoonist",
+   "grade": 3
+  },
+  {
+   "word": "cause",
+   "grade": 3
+  },
+  {
+   "word": "ceiling",
+   "grade": 3
+  },
+  {
+   "word": "celebrate",
+   "grade": 3
+  },
+  {
+   "word": "century",
+   "grade": 3
+  },
+  {
+   "word": "ceremony",
+   "grade": 3
+  },
+  {
+   "word": "certainly",
+   "grade": 3
+  },
+  {
+   "word": "chain",
+   "grade": 3
+  },
+  {
+   "word": "challenge",
+   "grade": 3
+  },
+  {
+   "word": "chance",
+   "grade": 3
+  },
+  {
+   "word": "change trains",
+   "grade": 3
+  },
+  {
+   "word": "cheerfully",
+   "grade": 3
+  },
+  {
+   "word": "cherry blossom",
+   "grade": 3
+  },
+  {
+   "word": "chilled",
+   "grade": 3
+  },
+  {
+   "word": "choice",
+   "grade": 3
+  },
+  {
+   "word": "chose",
+   "grade": 3
+  },
+  {
+   "word": "classification",
+   "grade": 3
+  },
+  {
+   "word": "cleanup",
+   "grade": 3
+  },
+  {
+   "word": "clearly",
+   "grade": 3
+  },
+  {
+   "word": "clinic",
+   "grade": 3
+  },
+  {
+   "word": "clock",
+   "grade": 3
+  },
+  {
+   "word": "collect",
+   "grade": 3
+  },
+  {
+   "word": "collide",
+   "grade": 3
+  },
+  {
+   "word": "colorful",
+   "grade": 3
+  },
+  {
+   "word": "combination",
+   "grade": 3
+  },
+  {
+   "word": "come true",
+   "grade": 3
+  },
+  {
+   "word": "come up to ～",
+   "grade": 3
+  },
+  {
+   "word": "comment",
+   "grade": 3
+  },
+  {
+   "word": "community center",
+   "grade": 3
+  },
+  {
+   "word": "compact",
+   "grade": 3
+  },
+  {
+   "word": "compete",
+   "grade": 3
+  },
+  {
+   "word": "composer",
+   "grade": 3
+  },
+  {
+   "word": "concentrate",
+   "grade": 3
+  },
+  {
+   "word": "concentrate on ～",
+   "grade": 3
+  },
+  {
+   "word": "conductor",
+   "grade": 3
+  },
+  {
+   "word": "congratulation",
+   "grade": 3
+  },
+  {
+   "word": "Congratulations on ～.",
+   "grade": 3
+  },
+  {
+   "word": "connect",
+   "grade": 3
+  },
+  {
+   "word": "construction",
+   "grade": 3
+  },
+  {
+   "word": "consume",
+   "grade": 3
+  },
+  {
+   "word": "contain",
+   "grade": 3
+  },
+  {
+   "word": "control",
+   "grade": 3
+  },
+  {
+   "word": "cooperation",
+   "grade": 3
+  },
+  {
+   "word": "counter",
+   "grade": 3
+  },
+  {
+   "word": "cream puff",
+   "grade": 3
+  },
+  {
+   "word": "croquette",
+   "grade": 3
+  },
+  {
+   "word": "crush",
+   "grade": 3
+  },
+  {
+   "word": "curiosity",
+   "grade": 3
+  },
+  {
+   "word": "customer",
+   "grade": 3
+  },
+  {
+   "word": "daily",
+   "grade": 3
+  },
+  {
+   "word": "dark",
+   "grade": 3
+  },
+  {
+   "word": "daughter",
+   "grade": 3
+  },
+  {
+   "word": "death",
+   "grade": 3
+  },
+  {
+   "word": "decrease",
+   "grade": 3
+  },
+  {
+   "word": "demonstration",
+   "grade": 3
+  },
+  {
+   "word": "dentist",
+   "grade": 3
+  },
+  {
+   "word": "desert",
+   "grade": 3
+  },
+  {
+   "word": "designer",
+   "grade": 3
+  },
+  {
+   "word": "diary",
+   "grade": 3
+  },
+  {
+   "word": "dictionary",
+   "grade": 3
+  },
+  {
+   "word": "die of ～",
+   "grade": 3
+  },
+  {
+   "word": "diplomat",
+   "grade": 3
+  },
+  {
+   "word": "disability",
+   "grade": 3
+  },
+  {
+   "word": "disappear",
+   "grade": 3
+  },
+  {
+   "word": "discovery",
+   "grade": 3
+  },
+  {
+   "word": "discussion",
+   "grade": 3
+  },
+  {
+   "word": "disease",
+   "grade": 3
+  },
+  {
+   "word": "dive",
+   "grade": 3
+  },
+  {
+   "word": "document",
+   "grade": 3
+  },
+  {
+   "word": "done",
+   "grade": 3
+  },
+  {
+   "word": "double dribble",
+   "grade": 3
+  },
+  {
+   "word": "Dr.",
+   "grade": 3
+  },
+  {
+   "word": "dramatic",
+   "grade": 3
+  },
+  {
+   "word": "drive",
+   "grade": 3
+  },
+  {
+   "word": "drop by ～",
+   "grade": 3
+  },
+  {
+   "word": "drought",
+   "grade": 3
+  },
+  {
+   "word": "dry",
+   "grade": 3
+  },
+  {
+   "word": "dry cleaner",
+   "grade": 3
+  },
+  {
+   "word": "dumpling",
+   "grade": 3
+  },
+  {
+   "word": "eagle",
+   "grade": 3
+  },
+  {
+   "word": "east",
+   "grade": 3
+  },
+  {
+   "word": "eaten",
+   "grade": 3
+  },
+  {
+   "word": "editor",
+   "grade": 3
+  },
+  {
+   "word": "eel",
+   "grade": 3
+  },
+  {
+   "word": "effective",
+   "grade": 3
+  },
+  {
+   "word": "elderly",
+   "grade": 3
+  },
+  {
+   "word": "emotion",
+   "grade": 3
+  },
+  {
+   "word": "employee",
+   "grade": 3
+  },
+  {
+   "word": "enable",
+   "grade": 3
+  },
+  {
+   "word": "enter",
+   "grade": 3
+  },
+  {
+   "word": "entertainer",
+   "grade": 3
+  },
+  {
+   "word": "entry",
+   "grade": 3
+  },
+  {
+   "word": "environment",
+   "grade": 3
+  },
+  {
+   "word": "equity",
+   "grade": 3
+  },
+  {
+   "word": "especially",
+   "grade": 3
+  },
+  {
+   "word": "Europe",
+   "grade": 3
+  },
+  {
+   "word": "European",
+   "grade": 3
+  },
+  {
+   "word": "even if ～",
+   "grade": 3
+  },
+  {
+   "word": "ever",
+   "grade": 3
+  },
+  {
+   "word": "exhibition",
+   "grade": 3
+  },
+  {
+   "word": "explain",
+   "grade": 3
+  },
+  {
+   "word": "explanation",
+   "grade": 3
+  },
+  {
+   "word": "expression",
+   "grade": 3
+  },
+  {
+   "word": "extra",
+   "grade": 3
+  },
+  {
+   "word": "eye contact",
+   "grade": 3
+  },
+  {
+   "word": "facial",
+   "grade": 3
+  },
+  {
+   "word": "facility",
+   "grade": 3
+  },
+  {
+   "word": "fair",
+   "grade": 3
+  },
+  {
+   "word": "fair trade",
+   "grade": 3
+  },
+  {
+   "word": "fall over",
+   "grade": 3
+  },
+  {
+   "word": "far away",
+   "grade": 3
+  },
+  {
+   "word": "farm",
+   "grade": 3
+  },
+  {
+   "word": "fashion model",
+   "grade": 3
+  },
+  {
+   "word": "feather",
+   "grade": 3
+  },
+  {
+   "word": "feel like ～",
+   "grade": 3
+  },
+  {
+   "word": "felt",
+   "grade": 3
+  },
+  {
+   "word": "female",
+   "grade": 3
+  },
+  {
+   "word": "fever",
+   "grade": 3
+  },
+  {
+   "word": "few",
+   "grade": 3
+  },
+  {
+   "word": "fight",
+   "grade": 3
+  },
+  {
+   "word": "fisherman",
+   "grade": 3
+  },
+  {
+   "word": "flavor",
+   "grade": 3
+  },
+  {
+   "word": "florist",
+   "grade": 3
+  },
+  {
+   "word": "flu",
+   "grade": 3
+  },
+  {
+   "word": "following",
+   "grade": 3
+  },
+  {
+   "word": "food poisoning",
+   "grade": 3
+  },
+  {
+   "word": "food waste",
+   "grade": 3
+  },
+  {
+   "word": "force",
+   "grade": 3
+  },
+  {
+   "word": "forever",
+   "grade": 3
+  },
+  {
+   "word": "forgot",
+   "grade": 3
+  },
+  {
+   "word": "fought",
+   "grade": 3
+  },
+  {
+   "word": "freedom",
+   "grade": 3
+  },
+  {
+   "word": "freely",
+   "grade": 3
+  },
+  {
+   "word": "fried vegetables",
+   "grade": 3
+  },
+  {
+   "word": "game creator",
+   "grade": 3
+  },
+  {
+   "word": "gardener",
+   "grade": 3
+  },
+  {
+   "word": "gather",
+   "grade": 3
+  },
+  {
+   "word": "gently",
+   "grade": 3
+  },
+  {
+   "word": "gesture",
+   "grade": 3
+  },
+  {
+   "word": "get along with ～",
+   "grade": 3
+  },
+  {
+   "word": "get angry with ～",
+   "grade": 3
+  },
+  {
+   "word": "get caught in ～",
+   "grade": 3
+  },
+  {
+   "word": "get rest",
+   "grade": 3
+  },
+  {
+   "word": "girlfriend",
+   "grade": 3
+  },
+  {
+   "word": "given",
+   "grade": 3
+  },
+  {
+   "word": "go with ～",
+   "grade": 3
+  },
+  {
+   "word": "gotten",
+   "grade": 3
+  },
+  {
+   "word": "government",
+   "grade": 3
+  },
+  {
+   "word": "government worker",
+   "grade": 3
+  },
+  {
+   "word": "graduation",
+   "grade": 3
+  },
+  {
+   "word": "grand",
+   "grade": 3
+  },
+  {
+   "word": "grandchild",
+   "grade": 3
+  },
+  {
+   "word": "grandchildren",
+   "grade": 3
+  },
+  {
+   "word": "granddaughter",
+   "grade": 3
+  },
+  {
+   "word": "grandson",
+   "grade": 3
+  },
+  {
+   "word": "graph",
+   "grade": 3
+  },
+  {
+   "word": "Great Pacific Garbage Patch",
+   "grade": 3
+  },
+  {
+   "word": "Greece",
+   "grade": 3
+  },
+  {
+   "word": "grilled",
+   "grade": 3
+  },
+  {
+   "word": "ground",
+   "grade": 3
+  },
+  {
+   "word": "guess",
+   "grade": 3
+  },
+  {
+   "word": "guide dog trainer",
+   "grade": 3
+  },
+  {
+   "word": "gun",
+   "grade": 3
+  },
+  {
+   "word": "gunman",
+   "grade": 3
+  },
+  {
+   "word": "habit",
+   "grade": 3
+  },
+  {
+   "word": "hair",
+   "grade": 3
+  },
+  {
+   "word": "hair stylist",
+   "grade": 3
+  },
+  {
+   "word": "half-time",
+   "grade": 3
+  },
+  {
+   "word": "hamburger steak",
+   "grade": 3
+  },
+  {
+   "word": "hand rail",
+   "grade": 3
+  },
+  {
+   "word": "happily",
+   "grade": 3
+  },
+  {
+   "word": "harmony",
+   "grade": 3
+  },
+  {
+   "word": "Harry Potter",
+   "grade": 3
+  },
+  {
+   "word": "Harvard University",
+   "grade": 3
+  },
+  {
+   "word": "have ～ in one’s lap",
+   "grade": 3
+  },
+  {
+   "word": "haven’t",
+   "grade": 3
+  },
+  {
+   "word": "health",
+   "grade": 3
+  },
+  {
+   "word": "hear of ～",
+   "grade": 3
+  },
+  {
+   "word": "heard",
+   "grade": 3
+  },
+  {
+   "word": "heater",
+   "grade": 3
+  },
+  {
+   "word": "held",
+   "grade": 3
+  },
+  {
+   "word": "Helen",
+   "grade": 3
+  },
+  {
+   "word": "hide",
+   "grade": 3
+  },
+  {
+   "word": "historic",
+   "grade": 3
+  },
+  {
+   "word": "hmm",
+   "grade": 3
+  },
+  {
+   "word": "home attendant",
+   "grade": 3
+  },
+  {
+   "word": "homemade",
+   "grade": 3
+  },
+  {
+   "word": "hometown",
+   "grade": 3
+  },
+  {
+   "word": "hoop",
+   "grade": 3
+  },
+  {
+   "word": "Hopter",
+   "grade": 3
+  },
+  {
+   "word": "huge",
+   "grade": 3
+  },
+  {
+   "word": "human",
+   "grade": 3
+  },
+  {
+   "word": "humorous",
+   "grade": 3
+  },
+  {
+   "word": "hundreds of ～",
+   "grade": 3
+  },
+  {
+   "word": "hunger",
+   "grade": 3
+  },
+  {
+   "word": "hunter",
+   "grade": 3
+  },
+  {
+   "word": "hurry",
+   "grade": 3
+  },
+  {
+   "word": "hurt",
+   "grade": 3
+  },
+  {
+   "word": "husband",
+   "grade": 3
+  },
+  {
+   "word": "ice",
+   "grade": 3
+  },
+  {
+   "word": "Ig Nobel Prize",
+   "grade": 3
+  },
+  {
+   "word": "illustration",
+   "grade": 3
+  },
+  {
+   "word": "illustrator",
+   "grade": 3
+  },
+  {
+   "word": "image",
+   "grade": 3
+  },
+  {
+   "word": "imagination",
+   "grade": 3
+  },
+  {
+   "word": "imagine",
+   "grade": 3
+  },
+  {
+   "word": "immediately",
+   "grade": 3
+  },
+  {
+   "word": "impossible",
+   "grade": 3
+  },
+  {
+   "word": "improbable",
+   "grade": 3
+  },
+  {
+   "word": "improve",
+   "grade": 3
+  },
+  {
+   "word": "in a hurry",
+   "grade": 3
+  },
+  {
+   "word": "in a row",
+   "grade": 3
+  },
+  {
+   "word": "in addition",
+   "grade": 3
+  },
+  {
+   "word": "in stock",
+   "grade": 3
+  },
+  {
+   "word": "in the recent past",
+   "grade": 3
+  },
+  {
+   "word": "including",
+   "grade": 3
+  },
+  {
+   "word": "indoor",
+   "grade": 3
+  },
+  {
+   "word": "infant",
+   "grade": 3
+  },
+  {
+   "word": "injured",
+   "grade": 3
+  },
+  {
+   "word": "injury",
+   "grade": 3
+  },
+  {
+   "word": "insect",
+   "grade": 3
+  },
+  {
+   "word": "instant",
+   "grade": 3
+  },
+  {
+   "word": "instead",
+   "grade": 3
+  },
+  {
+   "word": "instead of ～",
+   "grade": 3
+  },
+  {
+   "word": "inter-class",
+   "grade": 3
+  },
+  {
+   "word": "interpreter",
+   "grade": 3
+  },
+  {
+   "word": "introduce",
+   "grade": 3
+  },
+  {
+   "word": "introduction",
+   "grade": 3
+  },
+  {
+   "word": "inventor",
+   "grade": 3
+  },
+  {
+   "word": "invite",
+   "grade": 3
+  },
+  {
+   "word": "it is said that ～",
+   "grade": 3
+  },
+  {
+   "word": "it is true that 〜",
+   "grade": 3
+  },
+  {
+   "word": "it is true that ～",
+   "grade": 3
+  },
+  {
+   "word": "item",
+   "grade": 3
+  },
+  {
+   "word": "itself",
+   "grade": 3
+  },
+  {
+   "word": "I’ve",
+   "grade": 3
+  },
+  {
+   "word": "Japanese omelet",
+   "grade": 3
+  },
+  {
+   "word": "jean",
+   "grade": 3
+  },
+  {
+   "word": "journalist",
+   "grade": 3
+  },
+  {
+   "word": "joy",
+   "grade": 3
+  },
+  {
+   "word": "jumbo jet",
+   "grade": 3
+  },
+  {
+   "word": "keep a diary",
+   "grade": 3
+  },
+  {
+   "word": "kept",
+   "grade": 3
+  },
+  {
+   "word": "kill",
+   "grade": 3
+  },
+  {
+   "word": "kilogram",
+   "grade": 3
+  },
+  {
+   "word": "kindergarten teacher",
+   "grade": 3
+  },
+  {
+   "word": "kindness",
+   "grade": 3
+  },
+  {
+   "word": "knife",
+   "grade": 3
+  },
+  {
+   "word": "KRD Hall",
+   "grade": 3
+  },
+  {
+   "word": "kronor",
+   "grade": 3
+  },
+  {
+   "word": "lack",
+   "grade": 3
+  },
+  {
+   "word": "lap",
+   "grade": 3
+  },
+  {
+   "word": "later on",
+   "grade": 3
+  },
+  {
+   "word": "laugh",
+   "grade": 3
+  },
+  {
+   "word": "lawyer",
+   "grade": 3
+  },
+  {
+   "word": "lead",
+   "grade": 3
+  },
+  {
+   "word": "least",
+   "grade": 3
+  },
+  {
+   "word": "leave ～ behind",
+   "grade": 3
+  },
+  {
+   "word": "leftover",
+   "grade": 3
+  },
+  {
+   "word": "lent",
+   "grade": 3
+  },
+  {
+   "word": "let",
+   "grade": 3
+  },
+  {
+   "word": "lift",
+   "grade": 3
+  },
+  {
+   "word": "limit",
+   "grade": 3
+  },
+  {
+   "word": "limited",
+   "grade": 3
+  },
+  {
+   "word": "Lisa",
+   "grade": 3
+  },
+  {
+   "word": "little by little",
+   "grade": 3
+  },
+  {
+   "word": "live on",
+   "grade": 3
+  },
+  {
+   "word": "lives",
+   "grade": 3
+  },
+  {
+   "word": "loneliness",
+   "grade": 3
+  },
+  {
+   "word": "look for ～",
+   "grade": 3
+  },
+  {
+   "word": "lots of ～",
+   "grade": 3
+  },
+  {
+   "word": "magazine",
+   "grade": 3
+  },
+  {
+   "word": "main",
+   "grade": 3
+  },
+  {
+   "word": "Main Stadium",
+   "grade": 3
+  },
+  {
+   "word": "mainly",
+   "grade": 3
+  },
+  {
+   "word": "make up for ～",
+   "grade": 3
+  },
+  {
+   "word": "Malala Day",
+   "grade": 3
+  },
+  {
+   "word": "Malala Yousafzai",
+   "grade": 3
+  },
+  {
+   "word": "male",
+   "grade": 3
+  },
+  {
+   "word": "marathon",
+   "grade": 3
+  },
+  {
+   "word": "Marine Park",
+   "grade": 3
+  },
+  {
+   "word": "mark",
+   "grade": 3
+  },
+  {
+   "word": "marry",
+   "grade": 3
+  },
+  {
+   "word": "Mary",
+   "grade": 3
+  },
+  {
+   "word": "mask",
+   "grade": 3
+  },
+  {
+   "word": "Massachusetts",
+   "grade": 3
+  },
+  {
+   "word": "meaning",
+   "grade": 3
+  },
+  {
+   "word": "meaningful",
+   "grade": 3
+  },
+  {
+   "word": "measure",
+   "grade": 3
+  },
+  {
+   "word": "meatball",
+   "grade": 3
+  },
+  {
+   "word": "medicine",
+   "grade": 3
+  },
+  {
+   "word": "Mexico",
+   "grade": 3
+  },
+  {
+   "word": "miracle",
+   "grade": 3
+  },
+  {
+   "word": "miraculously",
+   "grade": 3
+  },
+  {
+   "word": "miserable",
+   "grade": 3
+  },
+  {
+   "word": "miss out on ～",
+   "grade": 3
+  },
+  {
+   "word": "mostly",
+   "grade": 3
+  },
+  {
+   "word": "movement",
+   "grade": 3
+  },
+  {
+   "word": "movie director",
+   "grade": 3
+  },
+  {
+   "word": "mug",
+   "grade": 3
+  },
+  {
+   "word": "muscle",
+   "grade": 3
+  },
+  {
+   "word": "musical",
+   "grade": 3
+  },
+  {
+   "word": "musical instrument",
+   "grade": 3
+  },
+  {
+   "word": "nail artist",
+   "grade": 3
+  },
+  {
+   "word": "NBA",
+   "grade": 3
+  },
+  {
+   "word": "necessary",
+   "grade": 3
+  },
+  {
+   "word": "neck",
+   "grade": 3
+  },
+  {
+   "word": "nephew",
+   "grade": 3
+  },
+  {
+   "word": "net",
+   "grade": 3
+  },
+  {
+   "word": "newscaster",
+   "grade": 3
+  },
+  {
+   "word": "newspaper reporter",
+   "grade": 3
+  },
+  {
+   "word": "niece",
+   "grade": 3
+  },
+  {
+   "word": "no longer ～",
+   "grade": 3
+  },
+  {
+   "word": "Nobel Peace Prize",
+   "grade": 3
+  },
+  {
+   "word": "Nobel Prize",
+   "grade": 3
+  },
+  {
+   "word": "noble",
+   "grade": 3
+  },
+  {
+   "word": "noon",
+   "grade": 3
+  },
+  {
+   "word": "normal",
+   "grade": 3
+  },
+  {
+   "word": "north",
+   "grade": 3
+  },
+  {
+   "word": "northern",
+   "grade": 3
+  },
+  {
+   "word": "not only ～ but also ...",
+   "grade": 3
+  },
+  {
+   "word": "not ～ but ...",
+   "grade": 3
+  },
+  {
+   "word": "notice",
+   "grade": 3
+  },
+  {
+   "word": "novelist",
+   "grade": 3
+  },
+  {
+   "word": "NPO",
+   "grade": 3
+  },
+  {
+   "word": "nursery school teacher",
+   "grade": 3
+  },
+  {
+   "word": "nursing home",
+   "grade": 3
+  },
+  {
+   "word": "Ocean Cleanup",
+   "grade": 3
+  },
+  {
+   "word": "official",
+   "grade": 3
+  },
+  {
+   "word": "on sale",
+   "grade": 3
+  },
+  {
+   "word": "on the other hand",
+   "grade": 3
+  },
+  {
+   "word": "opening",
+   "grade": 3
+  },
+  {
+   "word": "opinion",
+   "grade": 3
+  },
+  {
+   "word": "original",
+   "grade": 3
+  },
+  {
+   "word": "owl",
+   "grade": 3
+  },
+  {
+   "word": "package",
+   "grade": 3
+  },
+  {
+   "word": "Pakistan",
+   "grade": 3
+  },
+  {
+   "word": "Pakistani",
+   "grade": 3
+  },
+  {
+   "word": "parody",
+   "grade": 3
+  },
+  {
+   "word": "part",
+   "grade": 3
+  },
+  {
+   "word": "passion",
+   "grade": 3
+  },
+  {
+   "word": "password",
+   "grade": 3
+  },
+  {
+   "word": "past",
+   "grade": 3
+  },
+  {
+   "word": "patch",
+   "grade": 3
+  },
+  {
+   "word": "patient",
+   "grade": 3
+  },
+  {
+   "word": "pearl",
+   "grade": 3
+  },
+  {
+   "word": "pelican",
+   "grade": 3
+  },
+  {
+   "word": "perfect",
+   "grade": 3
+  },
+  {
+   "word": "perhaps",
+   "grade": 3
+  },
+  {
+   "word": "period",
+   "grade": 3
+  },
+  {
+   "word": "pet groomer",
+   "grade": 3
+  },
+  {
+   "word": "pharmacist",
+   "grade": 3
+  },
+  {
+   "word": "pharmacy",
+   "grade": 3
+  },
+  {
+   "word": "phone",
+   "grade": 3
+  },
+  {
+   "word": "pianist",
+   "grade": 3
+  },
+  {
+   "word": "pickle",
+   "grade": 3
+  },
+  {
+   "word": "piggy",
+   "grade": 3
+  },
+  {
+   "word": "poisoning",
+   "grade": 3
+  },
+  {
+   "word": "police officer",
+   "grade": 3
+  },
+  {
+   "word": "politician",
+   "grade": 3
+  },
+  {
+   "word": "pork cutlet",
+   "grade": 3
+  },
+  {
+   "word": "portion",
+   "grade": 3
+  },
+  {
+   "word": "position",
+   "grade": 3
+  },
+  {
+   "word": "possible",
+   "grade": 3
+  },
+  {
+   "word": "potter",
+   "grade": 3
+  },
+  {
+   "word": "powder",
+   "grade": 3
+  },
+  {
+   "word": "powerful",
+   "grade": 3
+  },
+  {
+   "word": "prawn",
+   "grade": 3
+  },
+  {
+   "word": "presentation",
+   "grade": 3
+  },
+  {
+   "word": "price",
+   "grade": 3
+  },
+  {
+   "word": "prize",
+   "grade": 3
+  },
+  {
+   "word": "probably",
+   "grade": 3
+  },
+  {
+   "word": "publish",
+   "grade": 3
+  },
+  {
+   "word": "purpose",
+   "grade": 3
+  },
+  {
+   "word": "quality",
+   "grade": 3
+  },
+  {
+   "word": "race",
+   "grade": 3
+  },
+  {
+   "word": "raise",
+   "grade": 3
+  },
+  {
+   "word": "ranking",
+   "grade": 3
+  },
+  {
+   "word": "rapid",
+   "grade": 3
+  },
+  {
+   "word": "raptor",
+   "grade": 3
+  },
+  {
+   "word": "Raptors",
+   "grade": 3
+  },
+  {
+   "word": "rather",
+   "grade": 3
+  },
+  {
+   "word": "reality",
+   "grade": 3
+  },
+  {
+   "word": "realize",
+   "grade": 3
+  },
+  {
+   "word": "recent",
+   "grade": 3
+  },
+  {
+   "word": "recover",
+   "grade": 3
+  },
+  {
+   "word": "red bean paste",
+   "grade": 3
+  },
+  {
+   "word": "reduce",
+   "grade": 3
+  },
+  {
+   "word": "regard",
+   "grade": 3
+  },
+  {
+   "word": "regard ～ as ...",
+   "grade": 3
+  },
+  {
+   "word": "regular",
+   "grade": 3
+  },
+  {
+   "word": "remove",
+   "grade": 3
+  },
+  {
+   "word": "repair",
+   "grade": 3
+  },
+  {
+   "word": "report",
+   "grade": 3
+  },
+  {
+   "word": "represent",
+   "grade": 3
+  },
+  {
+   "word": "researcher",
+   "grade": 3
+  },
+  {
+   "word": "rest",
+   "grade": 3
+  },
+  {
+   "word": "result",
+   "grade": 3
+  },
+  {
+   "word": "right now",
+   "grade": 3
+  },
+  {
+   "word": "rock",
+   "grade": 3
+  },
+  {
+   "word": "Rocky Area",
+   "grade": 3
+  },
+  {
+   "word": "roof",
+   "grade": 3
+  },
+  {
+   "word": "rope",
+   "grade": 3
+  },
+  {
+   "word": "routine",
+   "grade": 3
+  },
+  {
+   "word": "row",
+   "grade": 3
+  },
+  {
+   "word": "run a marathon",
+   "grade": 3
+  },
+  {
+   "word": "sale",
+   "grade": 3
+  },
+  {
+   "word": "salmon",
+   "grade": 3
+  },
+  {
+   "word": "salted plum",
+   "grade": 3
+  },
+  {
+   "word": "say to oneself",
+   "grade": 3
+  },
+  {
+   "word": "scene",
+   "grade": 3
+  },
+  {
+   "word": "schoolgirl",
+   "grade": 3
+  },
+  {
+   "word": "schoolyard",
+   "grade": 3
+  },
+  {
+   "word": "scientific",
+   "grade": 3
+  },
+  {
+   "word": "screen",
+   "grade": 3
+  },
+  {
+   "word": "scriptwriter",
+   "grade": 3
+  },
+  {
+   "word": "SDGs",
+   "grade": 3
+  },
+  {
+   "word": "secretary",
+   "grade": 3
+  },
+  {
+   "word": "sell out ～",
+   "grade": 3
+  },
+  {
+   "word": "senior",
+   "grade": 3
+  },
+  {
+   "word": "serious",
+   "grade": 3
+  },
+  {
+   "word": "serve",
+   "grade": 3
+  },
+  {
+   "word": "several",
+   "grade": 3
+  },
+  {
+   "word": "severe",
+   "grade": 3
+  },
+  {
+   "word": "shake",
+   "grade": 3
+  },
+  {
+   "word": "shake hands with ～",
+   "grade": 3
+  },
+  {
+   "word": "shark",
+   "grade": 3
+  },
+  {
+   "word": "sharp",
+   "grade": 3
+  },
+  {
+   "word": "shawl",
+   "grade": 3
+  },
+  {
+   "word": "shed",
+   "grade": 3
+  },
+  {
+   "word": "shock",
+   "grade": 3
+  },
+  {
+   "word": "shocked",
+   "grade": 3
+  },
+  {
+   "word": "shout",
+   "grade": 3
+  },
+  {
+   "word": "shovel",
+   "grade": 3
+  },
+  {
+   "word": "shrink",
+   "grade": 3
+  },
+  {
+   "word": "Shrink Ray",
+   "grade": 3
+  },
+  {
+   "word": "side",
+   "grade": 3
+  },
+  {
+   "word": "sign language",
+   "grade": 3
+  },
+  {
+   "word": "silent",
+   "grade": 3
+  },
+  {
+   "word": "silly",
+   "grade": 3
+  },
+  {
+   "word": "simple",
+   "grade": 3
+  },
+  {
+   "word": "since",
+   "grade": 3
+  },
+  {
+   "word": "skating",
+   "grade": 3
+  },
+  {
+   "word": "Sky Family",
+   "grade": 3
+  },
+  {
+   "word": "so-so",
+   "grade": 3
+  },
+  {
+   "word": "society",
+   "grade": 3
+  },
+  {
+   "word": "softness",
+   "grade": 3
+  },
+  {
+   "word": "soldier",
+   "grade": 3
+  },
+  {
+   "word": "solid",
+   "grade": 3
+  },
+  {
+   "word": "solve",
+   "grade": 3
+  },
+  {
+   "word": "someone",
+   "grade": 3
+  },
+  {
+   "word": "son",
+   "grade": 3
+  },
+  {
+   "word": "songwriter",
+   "grade": 3
+  },
+  {
+   "word": "Sophia",
+   "grade": 3
+  },
+  {
+   "word": "source",
+   "grade": 3
+  },
+  {
+   "word": "south",
+   "grade": 3
+  },
+  {
+   "word": "soybean flour",
+   "grade": 3
+  },
+  {
+   "word": "Spanish",
+   "grade": 3
+  },
+  {
+   "word": "speak out",
+   "grade": 3
+  },
+  {
+   "word": "speech",
+   "grade": 3
+  },
+  {
+   "word": "spent",
+   "grade": 3
+  },
+  {
+   "word": "spice",
+   "grade": 3
+  },
+  {
+   "word": "spread",
+   "grade": 3
+  },
+  {
+   "word": "spring roll",
+   "grade": 3
+  },
+  {
+   "word": "stage",
+   "grade": 3
+  },
+  {
+   "word": "starving",
+   "grade": 3
+  },
+  {
+   "word": "steamed meat dumpling",
+   "grade": 3
+  },
+  {
+   "word": "stew",
+   "grade": 3
+  },
+  {
+   "word": "stomach",
+   "grade": 3
+  },
+  {
+   "word": "stream",
+   "grade": 3
+  },
+  {
+   "word": "stripe",
+   "grade": 3
+  },
+  {
+   "word": "subway",
+   "grade": 3
+  },
+  {
+   "word": "suffer",
+   "grade": 3
+  },
+  {
+   "word": "suggest",
+   "grade": 3
+  },
+  {
+   "word": "suggestion",
+   "grade": 3
+  },
+  {
+   "word": "suitcase",
+   "grade": 3
+  },
+  {
+   "word": "Sunshine Band",
+   "grade": 3
+  },
+  {
+   "word": "surprisingly",
+   "grade": 3
+  },
+  {
+   "word": "swallow",
+   "grade": 3
+  },
+  {
+   "word": "Swat Valley",
+   "grade": 3
+  },
+  {
+   "word": "Swedish",
+   "grade": 3
+  },
+  {
+   "word": "Swiss",
+   "grade": 3
+  },
+  {
+   "word": "system",
+   "grade": 3
+  },
+  {
+   "word": "tag",
+   "grade": 3
+  },
+  {
+   "word": "take a class",
+   "grade": 3
+  },
+  {
+   "word": "take care of ～",
+   "grade": 3
+  },
+  {
+   "word": "take part in ～",
+   "grade": 3
+  },
+  {
+   "word": "Taliban",
+   "grade": 3
+  },
+  {
+   "word": "taxi driver",
+   "grade": 3
+  },
+  {
+   "word": "tear",
+   "grade": 3
+  },
+  {
+   "word": "technical",
+   "grade": 3
+  },
+  {
+   "word": "technique",
+   "grade": 3
+  },
+  {
+   "word": "tent",
+   "grade": 3
+  },
+  {
+   "word": "thanks to ～",
+   "grade": 3
+  },
+  {
+   "word": "there’s",
+   "grade": 3
+  },
+  {
+   "word": "these days",
+   "grade": 3
+  },
+  {
+   "word": "throughout",
+   "grade": 3
+  },
+  {
+   "word": "throw",
+   "grade": 3
+  },
+  {
+   "word": "throw ～ away",
+   "grade": 3
+  },
+  {
+   "word": "thus",
+   "grade": 3
+  },
+  {
+   "word": "tight",
+   "grade": 3
+  },
+  {
+   "word": "Time Cloth",
+   "grade": 3
+  },
+  {
+   "word": "title",
+   "grade": 3
+  },
+  {
+   "word": "to-go box",
+   "grade": 3
+  },
+  {
+   "word": "toad",
+   "grade": 3
+  },
+  {
+   "word": "ton",
+   "grade": 3
+  },
+  {
+   "word": "tonight",
+   "grade": 3
+  },
+  {
+   "word": "topic",
+   "grade": 3
+  },
+  {
+   "word": "Toronto",
+   "grade": 3
+  },
+  {
+   "word": "tour",
+   "grade": 3
+  },
+  {
+   "word": "tour conductor",
+   "grade": 3
+  },
+  {
+   "word": "tournament",
+   "grade": 3
+  },
+  {
+   "word": "tower",
+   "grade": 3
+  },
+  {
+   "word": "translator",
+   "grade": 3
+  },
+  {
+   "word": "trash",
+   "grade": 3
+  },
+  {
+   "word": "trash can",
+   "grade": 3
+  },
+  {
+   "word": "treatment",
+   "grade": 3
+  },
+  {
+   "word": "trillion",
+   "grade": 3
+  },
+  {
+   "word": "trunk",
+   "grade": 3
+  },
+  {
+   "word": "TV personality",
+   "grade": 3
+  },
+  {
+   "word": "twice",
+   "grade": 3
+  },
+  {
+   "word": "type",
+   "grade": 3
+  },
+  {
+   "word": "U.N.",
+   "grade": 3
+  },
+  {
+   "word": "understood",
+   "grade": 3
+  },
+  {
+   "word": "unfairly",
+   "grade": 3
+  },
+  {
+   "word": "unfortunately",
+   "grade": 3
+  },
+  {
+   "word": "United Nations",
+   "grade": 3
+  },
+  {
+   "word": "unusual",
+   "grade": 3
+  },
+  {
+   "word": "user",
+   "grade": 3
+  },
+  {
+   "word": "vacuum cleaner",
+   "grade": 3
+  },
+  {
+   "word": "valuable",
+   "grade": 3
+  },
+  {
+   "word": "value",
+   "grade": 3
+  },
+  {
+   "word": "variety",
+   "grade": 3
+  },
+  {
+   "word": "various",
+   "grade": 3
+  },
+  {
+   "word": "victory",
+   "grade": 3
+  },
+  {
+   "word": "violinist",
+   "grade": 3
+  },
+  {
+   "word": "vocalist",
+   "grade": 3
+  },
+  {
+   "word": "voice actor",
+   "grade": 3
+  },
+  {
+   "word": "wafer",
+   "grade": 3
+  },
+  {
+   "word": "waiter",
+   "grade": 3
+  },
+  {
+   "word": "wake",
+   "grade": 3
+  },
+  {
+   "word": "wake up",
+   "grade": 3
+  },
+  {
+   "word": "waste",
+   "grade": 3
+  },
+  {
+   "word": "weak",
+   "grade": 3
+  },
+  {
+   "word": "weaken",
+   "grade": 3
+  },
+  {
+   "word": "weapon",
+   "grade": 3
+  },
+  {
+   "word": "weather forecaster",
+   "grade": 3
+  },
+  {
+   "word": "website",
+   "grade": 3
+  },
+  {
+   "word": "west",
+   "grade": 3
+  },
+  {
+   "word": "what’s more",
+   "grade": 3
+  },
+  {
+   "word": "wheat",
+   "grade": 3
+  },
+  {
+   "word": "wheel",
+   "grade": 3
+  },
+  {
+   "word": "whole",
+   "grade": 3
+  },
+  {
+   "word": "wide",
+   "grade": 3
+  },
+  {
+   "word": "widely",
+   "grade": 3
+  },
+  {
+   "word": "wife",
+   "grade": 3
+  },
+  {
+   "word": "wild",
+   "grade": 3
+  },
+  {
+   "word": "winner",
+   "grade": 3
+  },
+  {
+   "word": "women",
+   "grade": 3
+  },
+  {
+   "word": "word",
+   "grade": 3
+  },
+  {
+   "word": "worth",
+   "grade": 3
+  },
+  {
+   "word": "wouldn’t",
+   "grade": 3
+  },
+  {
+   "word": "wound",
+   "grade": 3
+  },
+  {
+   "word": "writing",
+   "grade": 3
+  },
+  {
+   "word": "yard",
+   "grade": 3
+  },
+  {
+   "word": "yet",
+   "grade": 3
+  },
+  {
+   "word": "you’ve",
+   "grade": 3
+  },
+  {
+   "word": "Zimbabwe",
+   "grade": 3
+  }
+ ]
+}

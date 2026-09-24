@@ -25,7 +25,8 @@ const STEPS = [
   ['normalizePartOfSpeech.js', '--write'], // 「熟」→「熟語」
   ['importWritingPhrases.js', '--write'], // 英検ライティング表現
   ['assignThemes.js', '--write'], // 意味のまとまり
-  ['relevel-words.js', '--write'], // レベル1〜7（scripts/lib/relevel.js）
+  ['apply-textbook-eiken.js', '--write'], // 中学の語の英検の級を教科書の初出学年で（scripts/lib/textbookEiken.js）
+  ['relevel-words.js', '--write'], // レベル1〜7（scripts/lib/relevel.js）。英検の級を使うので上の段のあと
   ['build-book-words.js'], // 単語帳4冊（master のレベルを借りる）
   ['refresh-word-manifest.js'], // 端末が読み直す目印
 ];
