@@ -4,7 +4,6 @@ import { getAuth } from 'firebase/auth';
 import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop } from 'react-icons/fa';
 
 import AnswerControls from './components/learning/AnswerControls';
-import PeekNudge from './components/learning/PeekNudge';
 import SessionHeader from './components/learning/SessionHeader';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
@@ -82,8 +81,6 @@ export default function StudyFlashcard({
   const [revealed, setRevealed] = useState(() => new Set());
   const [judgements, setJudgements] = useState({});
   const [wordbookProgress, setWordbookProgress] = useState(0);
-  // 答えを見たまま「わかった」を押した回数。吹き出しの発火に使う
-  const [peekCount, setPeekCount] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
@@ -296,8 +293,7 @@ export default function StudyFlashcard({
     // **手を動かした印。** 放置の判定と、つくばホームへ送る新規語数／復習語数の分かれ目
     noteActivity(policy.activity);
     const word = cards[currentIndex];
-    // 答えを見たまま「わかった」を押したら、止めはしないが気づかせる
-    if (isFlipped && quality === 'good') setPeekCount((prev) => prev + 1);
+    // 答えを見てから「わかった」を押しても茶々は入れない（2026-09-24 に吹き出しを外した）
 
     recordAnswer(word, quality, isFlipped);
     if (word && quality === 'again') {
@@ -783,7 +779,6 @@ export default function StudyFlashcard({
       </div>
 
       {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
-      <PeekNudge trigger={peekCount} />
       {/* もう一度｜もう覚えた｜わかった（2026-09-24）。「迷った」は外した（使われていない）。
           もう覚えたは上スワイプと同じ処理で、同じ黄色（→ AnswerControls.css） */}
       <AnswerControls

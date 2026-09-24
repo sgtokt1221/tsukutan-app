@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebaseConfig';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { logStudySession } from './logic/studyLogger';
-import { initialize, speak } from './logic/speechUtils';
+import { initialize, speakSequence, stopSpeaking } from './logic/speechUtils';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 import {
   MAX_STAGES,
-  MIN_ANSWERS_FOR_EARLY_FINISH,
   createInitialState,
   selectQuestions,
   recordAnswer,
@@ -23,12 +22,25 @@ import {
   estimateVocabulary,
 } from './logic/placementTestEngine';
 
+/** 読み終えてから次のカードへ進むまでの間（ミリ秒） */
+export const REVEAL_PAUSE_MS = 600;
+/** 読み上げが返らない端末でも止まらないための上限（ミリ秒） */
+export const REVEAL_MAX_MS = 8000;
+
 /**
  * 単語力チェックテスト。
  *
  * 判定は src/logic/placementTestEngine.js が持つ。ここは表示と入力だけを扱う。
  * 難易度が動くのはステージを締めたときだけなので、5問目で調整が入っても
  * ステージが作り直されることはない。
+ *
+ * ## 答えたら毎回めくれて読み上げる（2026-09-24）
+ * 1. 表（英単語）だけを見て「わかる／わからない」を答える。**答える前にはめくれない**
+ * 2. 答えた瞬間にカードがめくれ、英語 → 意味を読み上げる（答え合わせ）。裏に自分の答えも出す
+ * 3. 読み終えたら少し置いて自動で次へ
+ * もとは答える前にダブルタップで見られて、見てからの「わかる」を半分として数えていたが、
+ * 最終の判定ではその区別が抜けていて満点扱いになり、2回タップすれば印も消えていた。
+ * 答え合わせを全問に付けたので、答える前に見る道そのものを無くした。
  */
 export default function VocabularyCheckTest({ allWords: passedWords, onTestComplete, onCancel }) {
   const navigate = useNavigate();
@@ -48,6 +60,18 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   // 回答が少ないまま抜けようとしたときの確認
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  // 'ask'（答える）/ 'reveal'（めくって読み上げている）。reveal 中は答えを受け付けない
+  const [phase, setPhase] = useState('ask');
+  // 裏に出す「あなたの答え」
+  const [lastAnswer, setLastAnswer] = useState(null);
+  /*
+    **答えの受け付けは ref で鍵を掛ける。** state だけだと、同じ瞬間の2回の押下が
+    どちらも 'ask' を見てしまい、回答は1件なのに問題が2つ進んでいた（連打で1問飛ぶ）
+  */
+  const answeringRef = useRef(false);
+  // 答えた時点の結果。読み上げが終わってから、これで次へ進める
+  const pendingRef = useRef(null);
+  const timersRef = useRef([]);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -57,6 +81,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   useEffect(() => {
     initialize().catch((error) => console.error('Speech initialization failed:', error));
   }, []);
+
+  const clearTimers = useCallback(() => {
+    timersRef.current.forEach((id) => clearTimeout(id));
+    timersRef.current = [];
+  }, []);
+
+  // 画面を離れるときは読み上げと待ちを止める
+  useEffect(() => () => { clearTimers(); stopSpeaking(); }, [clearTimers]);
 
   // ステージが変わったときだけ問題を組み直す。
   // 依存を stage / targetLevel に絞ってあるので、回答のたびに作り直されることはない。
@@ -71,6 +103,9 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     setQuestions(picked);
     setQuestionIndex(0);
     setIsFlipped(false);
+    setPhase('ask');
+    setLastAnswer(null);
+    answeringRef.current = false;
     setQuestionStartTime(Date.now());
     x.set(0);
     y.set(0);
@@ -122,7 +157,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
 
       // 保存に成功したときだけ完了画面へ進む（計画書11.6）
       if (onTestComplete) {
-        onTestComplete(finalLevel, answers);
+        // 結果画面の「推定語彙数」は、ここで保存した値を出す（目標の語数と食い違っていた）
+        onTestComplete(finalLevel, answers, estimatedVocabulary);
       } else {
         navigate('/student-dashboard');
       }
@@ -134,19 +170,53 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     }
   }, [words, onTestComplete, navigate]);
 
-  const answerCurrent = useCallback(async (isCorrect) => {
+  /** 読み上げが終わった（または上限が来た）。少し置いて次へ進む。**1回だけ** */
+  const finishReveal = useCallback(() => {
+    const pending = pendingRef.current;
+    if (!pending || pending.finishing) return;
+    pending.finishing = true;
+    clearTimers();
+    timersRef.current.push(setTimeout(async () => {
+      pendingRef.current = null;
+      let { next } = pending;
+      // 候補が足りずステージの予定問題数に満たないことがあるので、
+      // 用意した問題を使い切った時点でもステージを締める。
+      if (pending.usedAllQuestions || isStageComplete(next)) {
+        next = completeStage(next);
+        setEngine(next);
+        if (next.completed) {
+          // 書き込みを取りこぼさないよう待ってから保存へ進む
+          await pending.reviewWrite.catch(() => {});
+          await finishTestAndSave(next);
+        }
+        // 次のステージの問題は、ステージが変わったのを見て組み直す（上の useEffect）
+        return;
+      }
+      setQuestionIndex((prev) => prev + 1);
+      setIsFlipped(false);
+      setPhase('ask');
+      setLastAnswer(null);
+      setQuestionStartTime(Date.now());
+      x.set(0);
+      y.set(0);
+      answeringRef.current = false;
+    }, REVEAL_PAUSE_MS));
+  }, [clearTimers, finishTestAndSave, x, y]);
+
+  const answerCurrent = useCallback((isCorrect) => {
     const currentWord = questions[questionIndex];
-    if (!currentWord || isSaving || engine.completed) return;
+    if (!currentWord || isSaving || engine.completed || answeringRef.current) return;
+    answeringRef.current = true;
 
     const responseTime = questionStartTime ? Date.now() - questionStartTime : 0;
-    // 答えを見てから「わかる」を押したかを残す。自己申告なので、
-    // 見たうえでの「わかる」は思い出せたことにならない（半分の得点）。
-    let next = recordAnswer(engine, {
+    // 答える前には見られないので、見たかどうかの印は常に false
+    const next = recordAnswer(engine, {
       wordId: currentWord.id,
       isCorrect,
       responseTime,
-      revealed: isFlipped,
+      revealed: false,
     });
+    setEngine(next);
 
     // 不正解の単語は復習リストへ
     const user = auth.currentUser;
@@ -154,27 +224,27 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       ? updateUserWordProgress(user.uid, currentWord, false)
       : Promise.resolve();
 
-    // 候補が足りずステージの予定問題数に満たないことがあるので、
-    // 用意した問題を使い切った時点でもステージを締める。
-    const usedAllQuestions = questionIndex >= questions.length - 1;
-    if (usedAllQuestions || isStageComplete(next)) {
-      next = completeStage(next);
-      setEngine(next);
-      if (next.completed) {
-        // 書き込みを取りこぼさないよう待ってから保存へ進む
-        await reviewWrite.catch(() => {});
-        await finishTestAndSave(next);
-      }
-      return;
-    }
+    pendingRef.current = {
+      next,
+      reviewWrite,
+      usedAllQuestions: questionIndex >= questions.length - 1,
+      finishing: false,
+    };
 
-    setEngine(next);
-    setQuestionIndex((prev) => prev + 1);
-    setIsFlipped(false);
-    setQuestionStartTime(Date.now());
+    // めくって、英語 → 意味を読み上げる（答え合わせ）
+    setLastAnswer(isCorrect);
+    setPhase('reveal');
+    setIsFlipped(true);
     x.set(0);
     y.set(0);
-  }, [questions, questionIndex, engine, questionStartTime, isSaving, isFlipped, finishTestAndSave, x, y]);
+    const meaning = currentWord.meaning || currentWord.japanese;
+    speakSequence(
+      [{ text: currentWord.word, lang: 'en-US' }, { text: meaning, lang: 'ja-JP' }],
+      { onDone: finishReveal },
+    );
+    // 読み上げが返らない端末（音声が出ない・止められた）でも止まらない
+    timersRef.current.push(setTimeout(finishReveal, REVEAL_MAX_MS));
+  }, [questions, questionIndex, engine, questionStartTime, isSaving, finishReveal, x, y]);
 
   const handleDragEnd = (event, info) => {
     if (Math.abs(info.offset.x) < 50) {
@@ -184,15 +254,9 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     answerCurrent(info.offset.x > 0);
   };
 
-  const handleDoubleClick = () => {
-    setIsFlipped((prev) => !prev);
-    const currentWord = questions[questionIndex];
-    if (!isFlipped && currentWord) speak(currentWord.word);
-  };
-
   // 前の問題へ戻る。直前の回答は取り消すが、同じ単語は再出題しない。
   const handlePrevQuestion = () => {
-    if (questionIndex === 0) return;
+    if (questionIndex === 0 || phase !== 'ask') return;
     setEngine((prev) => undoLastAnswer(prev));
     setQuestionIndex((prev) => Math.max(0, prev - 1));
     setIsFlipped(false);
@@ -201,15 +265,17 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     y.set(0);
   };
 
-  const handleLeave = async () => {
-    // 回答が少ないうちに抜けた結果でレベルを上書きしない。
-    // 1問だけ答えて戻ると、そのレベルが正式なレベルとして保存され、
-    // 日次計画・推薦・進捗のすべてが狂っていた。
-    // MIN_ANSWERS_FOR_EARLY_FINISH はエンジン側の早期終了の下限と同じ。
-    if (engine.allAnswers.length >= MIN_ANSWERS_FOR_EARLY_FINISH) {
-      await finishTestAndSave({ ...engine, resultLevel: computeResultLevel(engine) });
-      return;
-    }
+  const handleLeave = () => {
+    clearTimers();
+    stopSpeaking();
+    // めくっている途中で止めた。「続ける」を選んだら、もう一度次へ進められるようにしておく
+    if (pendingRef.current) pendingRef.current.finishing = false;
+    /*
+      **判定が終わる前に抜けた結果は保存しない**（2026-09-24）。
+      以前は15問を超えていれば、その時点の見込みで保存していた。レベル5・6の語を1問も
+      出していないのにレベル6として保存され、前回ちゃんと受けた結果を上書きしていた。
+      保存するのは最後まで答えたとき（finishReveal → finishTestAndSave）だけ。
+    */
     if (engine.allAnswers.length > 0) {
       setConfirmLeave(true);
       return;
@@ -231,14 +297,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
         <div className="app-status-card">
           <h1 className="app-status-title">結果は保存されません</h1>
           <p className="app-status-message">
-            レベルを判定するには {MIN_ANSWERS_FOR_EARLY_FINISH} 問以上の回答が必要です。
+            レベルの判定が終わる前にやめると、途中までの結果は保存されません。
             （今 {engine.allAnswers.length} 問）
             ここでやめると、今のレベルはそのままになります。
           </p>
           <button
             type="button"
             className="primary-action"
-            onClick={() => setConfirmLeave(false)}
+            onClick={() => { setConfirmLeave(false); if (phase === 'reveal') finishReveal(); }}
           >
             テストを続ける
           </button>
@@ -292,21 +358,18 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
         <p className="test-header-note">
           出題レベル: {engine.targetLevel} / 7　これまでの正答率: {accuracy}%（{answeredCount}問）
         </p>
-        {/* 「確認してから答える」と案内すると、見てから「わかる」を押す流れに
-            なってしまう。まず答え、分からないときだけ見る、と伝える。 */}
-        <p>まず答えてください。分からないときはダブルタップで答えを見られます（得点は半分）</p>
         <p>わかる→右へスワイプ / わからない→左へスワイプ</p>
+        <p>答えるとカードがめくれて、答えを読み上げます。</p>
       </div>
 
       <div id="flashcard-container">
         <motion.div
           key={currentWord.id}
           id="flashcard"
-          drag="x"
+          drag={phase === 'ask' ? 'x' : false}
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           style={{ x, y, rotate, backgroundColor: cardColor }}
           onDragEnd={handleDragEnd}
-          onDoubleClick={handleDoubleClick}
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ duration: 0.4 }}
         >
@@ -314,6 +377,11 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
             <p id="card-front-text">{currentWord.word}</p>
           </div>
           <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
+            {lastAnswer !== null && (
+              <p className={lastAnswer ? 'test-your-answer is-yes' : 'test-your-answer is-no'} data-testid="your-answer">
+                あなたの答え：{lastAnswer ? 'わかる' : 'わからない'}
+              </p>
+            )}
             <h3 id="card-back-word">{currentWord.word}</h3>
             <p id="card-back-meaning">{currentWord.meaning || currentWord.japanese}</p>
             {(currentWord.example || currentWord.exampleJa) && <hr />}
@@ -338,10 +406,10 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
 
       {/* スワイプできない環境でも進められるようにボタンを置く（計画書13.3） */}
       <div className="test-answer-buttons">
-        <button type="button" className="test-answer-btn incorrect" onClick={() => answerCurrent(false)}>
+        <button type="button" className="test-answer-btn incorrect" onClick={() => answerCurrent(false)} disabled={phase !== 'ask'}>
           わからない
         </button>
-        <button type="button" className="test-answer-btn correct" onClick={() => answerCurrent(true)}>
+        <button type="button" className="test-answer-btn correct" onClick={() => answerCurrent(true)} disabled={phase !== 'ask'}>
           わかる
         </button>
       </div>
@@ -351,7 +419,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
           type="button"
           className="test-nav-btn"
           onClick={handlePrevQuestion}
-          disabled={questionIndex === 0}
+          disabled={questionIndex === 0 || phase !== 'ask'}
         >
           <FaUndo /> 前の問題
         </button>

@@ -389,6 +389,8 @@ export default function StudentDashboard() {
   // 面接モードを開いている級。null なら開いていない。
   const [interviewGrade, setInterviewGrade] = useState(null);
   const [testResultLevel, setTestResultLevel] = useState(0);
+  // テストで保存した推定語彙数（結果画面に出す）
+  const [testResultVocabulary, setTestResultVocabulary] = useState(null);
   
   // デバッグログ: testResultLevelの値を監視
   useEffect(() => {
@@ -745,9 +747,10 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleTestComplete = (finalLevel, responseTimes = []) => {
+  const handleTestComplete = (finalLevel, responseTimes = [], estimatedVocabulary = null) => {
     logger.debug('🎯 テスト完了処理開始:', finalLevel, responseTimes);
     setTestResultLevel(finalLevel);
+    setTestResultVocabulary(estimatedVocabulary);
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
     }
@@ -1516,7 +1519,15 @@ export default function StudentDashboard() {
         );
       case 'result':
         const lastResponseTimes = JSON.parse(localStorage.getItem('lastTestResponseTimes') || '[]');
-        return <TestResult level={testResultLevel} onRestart={() => {}} responseTimes={lastResponseTimes} />;
+        return (
+          <TestResult
+            level={testResultLevel}
+            onRestart={() => {}}
+            responseTimes={lastResponseTimes}
+            // 再読み込みしたときは保存済みの値（progress.assessedVocabulary）に戻る
+            estimatedVocabulary={testResultVocabulary ?? userData?.progress?.assessedVocabulary}
+          />
+        );
       case 'select':
       default:
         const progressPercentage = userData?.progress?.percentage || 0;

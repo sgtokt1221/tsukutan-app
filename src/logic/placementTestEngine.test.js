@@ -331,3 +331,32 @@ describe('答えを見てからの回答', () => {
     expect(state.targetLevel).toBeLessThanOrEqual(3);
   });
 });
+
+/*
+  **同じつづりを1回のテストで二度出さない**（2026-09-24）。単語データには同じつづりの
+  別の行があり、IDだけで除いていたのでテストの23%で同じ語が2回出ていた。
+*/
+describe('同じつづりの二度出し', () => {
+  const dupWords = [
+    { id: 'a1', word: 'about', level: 3 },
+    { id: 'a2', word: 'About ', level: 3 },
+    { id: 'b1', word: 'bread', level: 3 },
+    { id: 'c1', word: 'cat', level: 3 },
+  ];
+
+  it('**同じステージの中で同じつづりを2つ選ばない**', () => {
+    for (let seed = 1; seed <= 20; seed += 1) {
+      const picked = selectQuestions(dupWords, 3, 4, [], seededRandom(seed));
+      const spellings = picked.map((w) => w.word.trim().toLowerCase());
+      expect(new Set(spellings).size).toBe(spellings.length);
+      expect(picked).toHaveLength(3);
+    }
+  });
+
+  it('**前のステージで出したつづりは、別のIDでも出さない**', () => {
+    for (let seed = 1; seed <= 20; seed += 1) {
+      const picked = selectQuestions(dupWords, 3, 4, ['a1'], seededRandom(seed));
+      expect(picked.map((w) => w.id)).not.toContain('a2');
+    }
+  });
+});
