@@ -3,6 +3,18 @@ import { db } from '../firebaseConfig';
 import logger from './logger';
 
 /**
+ * レベル別の「続き」を覚える鍵のレベル部分。
+ *
+ * 2026-09-24 に単語のレベルを付け直した（scripts/relevel-words.js）。
+ * 大阪府・高校英語はレベルの中身と並びが変わったので、古い位置（「120語目まで」）から
+ * 再開すると別の語から始まる。この2冊だけ鍵を替え、続きを一度まっさらにする。
+ * 英検の級別はレベルを見ていない（英検の級で分ける）ので今の鍵のまま。
+ */
+const RELEVELED_TEXTBOOKS = new Set(['osaka-koukou-nyuushi', 'highschool-english']);
+export const levelProgressKey = (textbookId, level) =>
+  (RELEVELED_TEXTBOOKS.has(textbookId) ? `r2-${level}` : String(level));
+
+/**
  * 自由学習の進捗を保存します
  * @param {string} userId ユーザーID
  * @param {string} textbookId テキストブックID

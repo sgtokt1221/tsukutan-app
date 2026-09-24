@@ -17,18 +17,18 @@
   "files": {
     "words-master.json": {
       "count": 8160,
-      "bytes": 2367287,
-      "sha256": "b594772390976f3e69c6809be4d5b588b88586585fa48527f3398c57cc414020"
+      "bytes": 2280631,
+      "sha256": "b22b672a8ee5356299c7561dbb61941a7eb6e3aa61e293eed39ca74343c34d22"
     },
     "words-osaka.json": {
       "count": 3193,
-      "bytes": 763709,
-      "sha256": "4aefaaa5fe6809e2da78f629a2cb0683b64eed1deec6aab8c262da2c23784757"
+      "bytes": 753149,
+      "sha256": "4724933db8b8105b07e84192c8761cc0269fd100a644ec5dc5fe02bd0be80462"
     },
     "words-highschool.json": {
       "count": 4789,
-      "bytes": 1545220,
-      "sha256": "dc9274c183c3bb2b54c57195e126f1fb1fe8ede950715f37ac8b6c26719afab3"
+      "bytes": 1468596,
+      "sha256": "166a20cabfce9f3547d4b1f9a03b503615b36cf463e74321fc29e1fa0fd1d27d"
     },
     "pronunciations.json": {
       "count": 6491,

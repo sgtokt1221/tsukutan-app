@@ -1,6 +1,7 @@
 import {
   achievementPercentage,
   assessedWordCount,
+  levelLookup,
   masteredBeyondAssessment,
   reachedWordCount,
 } from './vocabularyCount';
@@ -33,20 +34,37 @@ describe('masteredBeyondAssessment', () => {
     { id: 'f', level: 7, status: 'mastered', migratedTo: 'x' }, // 旧文書
   ];
 
+  const levelOf = levelLookup([...master, { id: 'e', level: 7 }, { id: 'f', level: 7 }]);
+
   test('判定レベルより上の復習完了だけ数える', () => {
-    expect(masteredBeyondAssessment(reviewWords, 5)).toBe(1);
+    expect(masteredBeyondAssessment(reviewWords, 5, levelOf)).toBe(1);
   });
 
   test('判定レベル以下はすでに含まれているので数えない', () => {
-    expect(masteredBeyondAssessment(reviewWords, 7)).toBe(0);
+    expect(masteredBeyondAssessment(reviewWords, 7, levelOf)).toBe(0);
   });
 
   test('復習完了していない語は数えない', () => {
-    expect(masteredBeyondAssessment([{ id: 'e', level: 7 }], 5)).toBe(0);
+    expect(masteredBeyondAssessment([{ id: 'e', level: 7 }], 5, levelOf)).toBe(0);
   });
 
   test('移行済みの旧文書は数えない', () => {
-    expect(masteredBeyondAssessment([{ id: 'f', level: 7, status: 'mastered', migratedTo: 'x' }], 5)).toBe(0);
+    expect(masteredBeyondAssessment([{ id: 'f', level: 7, status: 'mastered', migratedTo: 'x' }], 5, levelOf)).toBe(0);
+  });
+
+  /*
+    **レベルは単語データから引く**（2026-09-24）。復習データの写しのレベルは覚えた時点のままで、
+    単語データのレベルを付け直しても追いかけない。
+  */
+  test('**写しのレベルが古くても、単語データのレベルで数える**', () => {
+    // 写しでは7だが、単語データでは1（判定範囲内）→ 数えない
+    expect(masteredBeyondAssessment([{ id: 'a', level: 7, status: 'mastered' }], 5, levelOf)).toBe(0);
+    // 写しでは1だが、単語データでは7（範囲外）→ 数える
+    expect(masteredBeyondAssessment([{ id: 'd', level: 1, status: 'mastered' }], 5, levelOf)).toBe(1);
+  });
+
+  test('単語データに無い id は数えない（レベルが分からない）', () => {
+    expect(masteredBeyondAssessment([{ id: 'zzz', level: 7, status: 'mastered' }], 5, levelOf)).toBe(0);
   });
 });
 

@@ -8,6 +8,11 @@
  *   node scripts/build-word-master.js            # 生成
  *   node scripts/build-word-master.js --check    # 差分があるかだけ確認（書き込まない）
  *
+ * **単独では流さない。** これは `npm run build:words`（scripts/build-words.js）の1段目で、
+ * 品詞の統一・ライティング表現・テーマ・レベルの付け直しは後の段が足す。
+ * ここの `--check` もこの段の出力とだけ比べるので、いつも「差分あり」になる。
+ * 全体が最新かは `npm run check:words` で見る。
+ *
  * 入力
  *   words.json          正本。7,205件、レベル1〜7（再分類済み）
  *   public/words.json   大阪府公立入試の収録範囲。旧レベル体系（1〜9）
@@ -24,8 +29,10 @@
  *   public/data/manifest.json          版・件数・SHA-256
  *
  * 永続IDの性質
- *   - 語+品詞+意味+レベル の署名から決まるので、JSONの並び順を変えても変わらない
- *   - 既に words-master.json にIDがある項目は、意味やレベルを直してもそのIDを維持する
+ *   - 新しい語の id は 語+品詞+意味+（元データの）レベル の署名から決まる
+ *   - 既に words-master.json にある語は、**語+品詞+意味** で引いてその id を引き継ぐ。
+ *     レベルは照合に使わない（relevel-words.js が付け直すので、元データのレベルと一致しない。
+ *     2026-09-24 まではレベルも照合に入れていて、付け直すと id が変わる作りだった）
  *   - 意味や品詞が違う同綴語（close 動/形/副 など）は別IDになる
  */
 
@@ -66,6 +73,12 @@ const contentKey = (entry) =>
 
 /** レベルまで含めた完全一致キー。ID生成の署名にも使う。 */
 const fullKey = (entry) => `${contentKey(entry)}|${entry.level}`;
+
+/** 既存の id を引き継ぐときの照合キー。レベルを含めず、品詞は表記ゆれを直してから */
+const normalizePos = (value) =>
+  String(value || '').split(/\s*[,、]\s*/).map((part) => part.trim()).map((part) => (part === '熟' ? '熟語' : part)).join(', ');
+const idMatchKey = (entry) =>
+  [normalize(entry.word), normalize(normalizePos(entry.partOfSpeech)), normalize(entry.meaning)].join('|');
 
 const makeId = (entry) => {
   const signature = `${ID_SOURCE}|${fullKey(entry)}`;
@@ -205,13 +218,28 @@ const main = () => {
   //--------------------------------------------------------------------------
   // 3. 永続IDを付ける。既存のIDがあれば必ずそれを維持する。
   //--------------------------------------------------------------------------
-  const existingIdByFullKey = new Map();
+  // 既存の id は「語＋品詞＋意味」で引く（レベルは見ない）。レベルは
+  // relevel-words.js が後から付け直すので、ここのレベルと既存ファイルのレベルは一致しない。
+  // 品詞は normalizePartOfSpeech.js と同じ正規化をかけてから比べる（「熟」→「熟語」）。
+  // 中身がまったく同じ重複（6組）は、元の署名から作った id → 例文 の順で見分ける。
+  const existingByContent = new Map();
   const existingMasterPath = path.join(OUT_DIR, 'words-master.json');
   if (fs.existsSync(existingMasterPath)) {
     for (const entry of JSON.parse(fs.readFileSync(existingMasterPath, 'utf8'))) {
-      if (entry.id) existingIdByFullKey.set(fullKey(entry), entry.id);
+      if (!entry.id) continue;
+      const key = idMatchKey(entry);
+      if (!existingByContent.has(key)) existingByContent.set(key, []);
+      existingByContent.get(key).push(entry);
     }
   }
+  const claimed = new Set();
+  const existingIdFor = (entry) => {
+    const candidates = (existingByContent.get(idMatchKey(entry)) || []).filter((e) => !claimed.has(e.id));
+    if (candidates.length === 0) return null;
+    const bySignature = candidates.find((e) => e.id === makeId(entry));
+    const byExample = candidates.find((e) => e.example === entry.example);
+    return (bySignature || byExample || candidates[0]).id;
+  };
 
   const entries = [];
   const idOwner = new Map();
@@ -219,8 +247,12 @@ const main = () => {
   let reusedIds = 0;
 
   for (const [key, entry] of byFullKey) {
-    const id = existingIdByFullKey.get(key) || makeId(entry);
-    if (existingIdByFullKey.has(key)) reusedIds += 1;
+    const existing = existingIdFor(entry);
+    const id = existing || makeId(entry);
+    if (existing) {
+      reusedIds += 1;
+      claimed.add(existing);
+    }
 
     if (idOwner.has(id)) {
       idCollisions.push({ id, a: idOwner.get(id), b: key });
