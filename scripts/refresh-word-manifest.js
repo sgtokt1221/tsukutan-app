@@ -7,8 +7,8 @@
  * データを書き換えても manifest が古いままだと、**鍵が変わらないので端末は古いデータを使い続ける**
  * （エラーは出ない）。実際に words-master は 7,949語の版の鍵のまま 8,160語になっていた。
  *
- * `npm run build:words` は元データから作り直すので、あとから直接入れた変更（テーマの付与・
- * 英検ライティング表現など）を戻してしまう。データに手を入れたら、こちらで manifest だけ合わせる。
+ * `npm run build:words` の最後の段でもある（scripts/build-words.js）。
+ * データファイルに手を入れたときは、これだけ流して manifest を合わせる。
  * 番人は src/logic/wordManifest.test.js。
  *
  *   node scripts/refresh-word-manifest.js

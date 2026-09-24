@@ -17,6 +17,22 @@
  */
 
 /**
+ * 単語の id → 単語データ（master）のレベル。
+ *
+ * **復習データ（users/{uid}/reviewWords）の写しの level を使わない**（2026-09-24）。
+ * 写しは覚えた時点のレベルのままで、単語データのレベルを付け直しても追いかけない。
+ * master に無い id（単語帳だけの語・古い Firestore の id）はレベルが無いので数えない。
+ *
+ * @param {Array} master 単語マスター
+ * @returns {(word: {id?: string}) => number|null}
+ */
+export const levelLookup = (master = []) => {
+  const byId = new Map();
+  for (const word of master) if (word && word.id) byId.set(word.id, word.level);
+  return (word) => (word && byId.has(word.id) ? byId.get(word.id) : null);
+};
+
+/**
  * 判定レベル以下の語数。実力テストが「大丈夫だろう」とみなす範囲。
  *
  * @param {Array} master 単語マスター
@@ -38,14 +54,15 @@ export const assessedWordCount = (master = [], assessedLevel = 0) => {
  *
  * @param {Array} reviewWords users/{uid}/reviewWords の中身
  * @param {number} assessedLevel 実力テストの判定レベル
+ * @param {(word) => number|null} levelOf 単語のレベルの引き方（`levelLookup(master)`）
  */
-export const masteredBeyondAssessment = (reviewWords = [], assessedLevel = 0) => {
+export const masteredBeyondAssessment = (reviewWords = [], assessedLevel = 0, levelOf = () => null) => {
   const level = Number.isFinite(assessedLevel) ? assessedLevel : 0;
   const ids = new Set();
   for (const word of reviewWords) {
     if (!word || word.migratedTo) continue;
     if (word.status !== 'mastered') continue;
-    if ((word.level ?? 0) <= level) continue;
+    if ((levelOf(word) ?? 0) <= level) continue;
     ids.add(word.id || word.word);
   }
   return ids.size;
@@ -58,7 +75,7 @@ export const masteredBeyondAssessment = (reviewWords = [], assessedLevel = 0) =>
  */
 export const reachedWordCount = ({ master = [], reviewWords = [], assessedLevel = 0 } = {}) => {
   const assessed = assessedWordCount(master, assessedLevel);
-  const beyond = masteredBeyondAssessment(reviewWords, assessedLevel);
+  const beyond = masteredBeyondAssessment(reviewWords, assessedLevel, levelLookup(master));
   return { assessed, masteredBeyond: beyond, total: assessed + beyond };
 };
 

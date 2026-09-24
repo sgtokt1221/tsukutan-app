@@ -6,7 +6,7 @@ import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, updateDoc, wh
 import { generateDailyPlan } from './logic/learningPlanner';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { logStudySession } from './logic/studyLogger';
-import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress } from './logic/freeStudyProgress';
+import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress, levelProgressKey } from './logic/freeStudyProgress';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
 // 新規も復習も同じ単語カード。違いは learningMode（→ logic/studyMode.js）
@@ -34,7 +34,7 @@ import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVEL
 import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
-import { loadWordMaster, loadManifest } from './logic/wordMaster';
+import { loadWordMaster, loadManifest, loadTextbookWords } from './logic/wordMaster';
 import { INTERVIEW_GRADES } from './logic/interviewContent';
 import logger from './logic/logger';
 
@@ -108,20 +108,13 @@ const getTextbookWordCount = (textbookId, wordsData = [], textbookCounts = {}) =
   
   switch (textbookId) {
     case 'osaka-koukou-nyuushi':
+    case 'highschool-english':
       // 固定値 1969 が書かれていたが、Firestore の収録分をマスターへ
       // 取り込んだあとは 3,193 語になり、表示だけ古いままだった。
       // 教材ごとの件数は manifest から取る。
+      // 高校英語も「マスターのレベル5〜7」ではなく教材ファイルへの所属で数える
+      // （2026-09-24 にレベルを付け直し、高校英語の語は1〜7に散った）。
       return textbookCounts[textbookId] ?? 0;
-    
-    case 'highschool-english':
-      // 高校英語：wordsData.jsonからレベル5-7の単語をカウント
-      if (!wordsData.length) return 0;
-      const highschoolCount = wordsData.filter(word => {
-        const level = word.level || 1;
-        return level >= 5 && level <= 7;
-      }).length;
-      logger.debug('🎓 高校英語単語数:', highschoolCount);
-      return highschoolCount;
     
     
     default:
@@ -210,30 +203,6 @@ const isRecommendedLevel = (level, testLevel) => {
   return isRecommended;
 };
 
-  // 子レベルの推奨判定関数
-  const isRecommendedSubLevel = (subLevel, parentLevel, testLevel) => {
-    if (!testLevel || testLevel === 0) return false;
-    
-    // 親レベルが推奨されている場合、その子レベルも推奨
-    if (isRecommendedLevel(parentLevel, testLevel)) {
-      return true;
-    }
-    
-    // 特定のサブレベルが推奨される場合（例：7Aは2級レベル）
-    const subLevelMapping = {
-      '5A': 4, '5B': 5, '5C': 5,
-      '6A': 5, '6B': 6, '6C': 6,
-      '7A': 6, '7B': 7, '7C': 7
-    };
-    
-    const mappedLevel = subLevelMapping[subLevel];
-    if (mappedLevel && Math.abs(mappedLevel - testLevel) <= 1) {
-      return true;
-    }
-    
-    return false;
-  };
-
   // 大阪府公立入試教材を推奨すべき目標かどうか。
   // 旧IDの手書きリスト（hs1〜hs5）ではなく、共通定義の recommendedTextbooks を見る。
   const isHighSchoolExamTarget = (userData) => {
@@ -246,7 +215,7 @@ const isRecommendedLevel = (level, testLevel) => {
 // 既存の定数やヘルパー関数（すべて維持）
 const freeStudyOptions = [
   { id: 'osaka-koukou-nyuushi', group: 'school', label: '中学英語（大阪府公立入試）', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
-  { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
+  { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3, 4, 5, 6, 7] },
   { id: 'eiken-5', group: 'eiken', label: '英検5級', textbooks: ['highschool-english'] },
   { id: 'eiken-4', group: 'eiken', label: '英検4級', textbooks: ['highschool-english'] },
   { id: 'eiken-3', group: 'eiken', label: '英検3級', textbooks: ['highschool-english'] },
@@ -274,56 +243,17 @@ const levelDescriptions = toDescriptionMap((entry) => ({
   wordsRequired: entry.wordsRequired,
 }));
 
-// 高校英語専用のレベル定義
+/*
+  高校英語のカード。教材ファイルの語はレベル1〜7に散っているが（2026-09-24 に付け直した）、
+  1・2は数十語しかないので、1〜3を「中学の復習」1枚にまとめて見せる。
+  カードの鍵は 3（続きの鍵も r2-3）。
+*/
 const highschoolLevelDescriptions = {
-    1: { label: "高校基礎", equivalent: "英検準2級 / A2-B1", wordsRequired: 1335 },
-    2: { label: "高校標準", equivalent: "英検2級 / B1-B2", wordsRequired: 2941 },
-    3: { label: "高校応用", equivalent: "英検準1級 / B2-C1", wordsRequired: 1658 }
+  3: { label: '中学の復習', equivalent: '英検5級〜3級 / Pre-A1〜A2' },
+  ...Object.fromEntries([4, 5, 6, 7].map((level) => [level, levelDescriptions[level]])),
 };
-
-
-/**
- * 高校英語で、A/B/C の区分が付いていない語のグループか。
- *
- * マスターには subLevel を持たない語が各レベルに残っている
- * （5:186語 / 6:126語 / 7:166語）。これらは「7」のように
- * 数字だけのキーでまとまる。
- */
-const isUnlabeledSubLevel = (subLevel) => /^\d+$/.test(String(subLevel));
-
-// 高校英語のサブレベル説明を生成する関数
-const getHighschoolSubLevelDescription = (subLevel) => {
-  const level = parseInt(subLevel.substring(0, 1));
-  const subLevelLetter = subLevel.substring(1);
-
-  // 区分なしの語。以前は subLevelNames[''] を引いて
-  // 「英検準1級undefined」と表示されていた。
-  if (isUnlabeledSubLevel(subLevel)) {
-    const bandNames = { 5: '英検準2級', 6: '英検2級', 7: '英検準1級' };
-    return `${bandNames[level] || '高校英語'}その他`;
-  }
-
-  if (level === 5) {
-    // レベル5: 英検準2級レベル
-    const subLevelNames = { A: '基礎', B: '標準', C: '応用' };
-    return `英検準2級${subLevelNames[subLevelLetter]}`;
-  } else if (level === 6) {
-    // レベル6: 英検2級レベル
-    const subLevelNames = { A: '基礎', B: '標準', C: '応用' };
-    return `英検2級${subLevelNames[subLevelLetter]}`;
-  } else if (level === 7) {
-    // レベル7: 7Aは英検2級、7B・7Cは英検準1級
-    if (subLevelLetter === 'A') {
-      return '英検2級応用';
-    } else {
-      const subLevelNames = { B: '基礎', C: '応用' };
-      return `英検準1級${subLevelNames[subLevelLetter]}`;
-    }
-  }
-  
-  return `高校英語${subLevel}`;
-};
-
+const inHighschoolCard = (word, card) =>
+  (Number(card) === 3 ? word.level <= 3 : word.level === Number(card));
 
 // 英検教材用のレベル定義
 // 英検教材の表示。以前はここだけ「レベル7 = 英検1級」としていたが、
@@ -791,7 +721,7 @@ export default function StudentDashboard() {
         const lastIndex = logData.index || 0;
         const level = isRange
           ? currentSessionInfo.rangeKey
-          : currentSessionInfo.filterValue.replace('レベル', '');
+          : levelProgressKey(selectedTextbookId, currentSessionInfo.filterValue.replace('レベル', ''));
         
         logger.debug('進捗保存:', {
           userId: user.uid,
@@ -897,22 +827,13 @@ export default function StudentDashboard() {
             throw new Error('大阪府公立入試英単語データの読み込みに失敗しました');
           }
         } else if (textbookId === 'highschool-english') {
-          // 高校英語はマスターのレベル5〜7
-          const master = masterWords.length > 0 ? masterWords : await loadMasterWords();
-
-          const highschoolWords = master.filter(word => {
-            const level = word.level || 1;
-            return level >= 5 && level <= 7;
-          });
-          
-          logger.debug('📚 高校英語単語フィルタ成功:', {
-            高校英語単語数: highschoolWords.length,
-            サンプル単語: highschoolWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
-          });
-          
-          const words = highschoolWords.map((word) => ({ 
-            sourceTextbook: 'highschool-english', 
-            ...word 
+          // 高校英語は教材ファイル（words-highschool.json）に入っている語。
+          // 以前は「マスターのレベル5〜7」で拾っていたが、レベルを付け直した
+          // （2026-09-24）ので、高校英語の語は1〜7に散っている。
+          const highschoolWords = await loadTextbookWords('highschool-english');
+          const words = highschoolWords.map((word) => ({
+            sourceTextbook: 'highschool-english',
+            ...word
           }));
           combinedWords.push(...words);
           logger.debug(`高校英語から取得した単語数:`, words.length);
@@ -960,18 +881,9 @@ export default function StudentDashboard() {
             サンプル単語: filteredWords.slice(0, 5).map(w => ({ word: w.word, level: w.level }))
           });
           
-          if (textbookId === 'highschool-english') {
-            // 高校英語の場合はレベル5-7の単語を保持（レベル1-3は表示用）
-            filteredWords = filteredWords.filter(word => {
-              const level = word.level || 1;
-              return level >= 5 && level <= 7;
-            });
-            logger.debug('高校英語: レベル5-7の単語を保持、単語数:', filteredWords.length);
-          } else {
-            filteredWords = filteredWords.filter(word => {
-              return option.levels.includes(word.level);
-            });
-          }
+          filteredWords = filteredWords.filter(word => {
+            return option.levels.includes(word.level);
+          });
           
           logger.debug('レベルフィルタ後:', {
             フィルタ後単語数: filteredWords.length,
@@ -1043,15 +955,9 @@ export default function StudentDashboard() {
     logger.debug('親レベル選択:', parentLevel);
   };
 
-  // サブレベル選択の処理
+  // サブレベル選択の処理（英検の級の中のレベル）
   const handleSubLevelClick = (subLevel) => {
-    if (selectedTextbookId === 'highschool-english') {
-      // 高校英語の場合はサブレベル（5A, 5B, 5Cなど）をそのまま渡す
-      startLearning('sublevel', subLevel);
-    } else {
-      // その他の教材の場合は通常のレベル番号を渡す
-      startLearning('level', subLevel);
-    }
+    startLearning('level', subLevel);
   };
 
   // 親レベル選択をリセット
@@ -1074,7 +980,7 @@ export default function StudentDashboard() {
       selectedParentLevel
     });
     
-    if (filterType === 'level' || filterType === 'sublevel') {
+    if (filterType === 'level') {
         // サブレベル選択時（親レベル選択後）の場合は、親レベル範囲内からlevelフィールドでフィルタ
         if (showSubLevels && selectedParentLevel) {
           // まず親レベル範囲内の単語を取得
@@ -1110,33 +1016,15 @@ export default function StudentDashboard() {
               
               return false;
             });
-          } else if (selectedTextbookId === 'highschool-english') {
-            // 高校英語の場合：選択された親レベル内の英単語を取得
-            const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
-            const targetLevel = highschoolLevelMapping[selectedParentLevel];
-            
-            parentLevelWords = allWords.filter(word => word.level === targetLevel);
           } else {
             // その他の教材の場合：選択された親レベルの単語を取得
             parentLevelWords = allWords.filter(word => word.level === selectedParentLevel);
           }
           
-          // 親レベル範囲内から、指定されたlevelまたはsublevelの単語をフィルタ
-          if (filterType === 'sublevel' && selectedTextbookId === 'highschool-english') {
-            // 高校英語のサブレベルの場合（5A, 5B, 5Cなど）。
-            // 「7」のような数字だけのキーは A/B/C が付いていない語のまとまりで、
-            // subLevel === '7' では1語も当たらず「単語が見つかりません」になっていた。
-            filtered = isUnlabeledSubLevel(value)
-              ? parentLevelWords.filter(word => !word.subLevel)
-              : parentLevelWords.filter(word => word.subLevel === value);
-            logger.debug(`🎓 高校英語サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
-            sessionLabel = `サブレベル${value}`;
-          } else {
-            // 通常のレベルの場合
-            filtered = parentLevelWords.filter(word => word.level === Number(value));
-            logger.debug(`サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
-            sessionLabel = `レベル${value}`;
-          }
+          // 親レベル範囲内から、指定されたlevelの単語をフィルタ
+          filtered = parentLevelWords.filter(word => word.level === Number(value));
+          logger.debug(`サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
+          sessionLabel = `レベル${value}`;
         }
         // レベル別学習の場合、教材に応じてフィルタリング
         else if (selectedTextbookId && selectedTextbookId.startsWith('eiken-')) {
@@ -1152,6 +1040,10 @@ export default function StudentDashboard() {
           }
           logger.debug(`英検${targetEikenLevel}級以下から取得した単語数:`, filtered.length);
           sessionLabel = `英検${targetEikenLevel}級以下`;
+        } else if (selectedTextbookId === 'highschool-english') {
+          filtered = allWords.filter(word => inHighschoolCard(word, value));
+          // 見出しは他の教材と同じ「レベルN」。続きの鍵をここから作っている（handleSaveLog）
+          sessionLabel = `レベル${value}`;
         } else if (selectedTextbookId === 'osaka-koukou-nyuushi') {
           // 大阪府公立入試英単語の場合はlevelフィールドを基準にフィルタ
           filtered = allWords.filter(word => word.level === Number(value));
@@ -1166,7 +1058,7 @@ export default function StudentDashboard() {
         
         // 前回の進捗を取得
         if (selectedTextbookId) {
-          startIndex = await getFreeStudyProgress(auth.currentUser.uid, selectedTextbookId, String(value));
+          startIndex = await getFreeStudyProgress(auth.currentUser.uid, selectedTextbookId, levelProgressKey(selectedTextbookId, value));
           logger.debug('進捗取得:', {
             userId: auth.currentUser.uid,
             textbookId: selectedTextbookId,
@@ -1994,15 +1886,7 @@ export default function StudentDashboard() {
                       }
                     }
                   } else if (selectedTextbookId === 'highschool-english') {
-                    // 高校英語の場合はレベルマッピングを使用してフィルタ
-                    const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
-                    const targetLevel = highschoolLevelMapping[parseInt(level)];
-                    levelWords = allWords.filter(word => word.level === targetLevel);
-                    logger.debug(`🔍 高校英語レベル${level}→${targetLevel}フィルタリング:`, {
-                      全単語数: allWords.length,
-                      フィルタ後単語数: levelWords.length,
-                      サンプル単語: levelWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
-                    });
+                    levelWords = allWords.filter(word => inHighschoolCard(word, level));
                   } else if (selectedTextbookId === 'osaka-koukou-nyuushi') {
                     // 大阪府公立入試英単語の場合はlevelフィールドを基準にフィルタ
                     levelWords = allWords.filter(word => word.level === parseInt(level));
@@ -2021,7 +1905,7 @@ export default function StudentDashboard() {
                     });
                   }
                   
-                        const progressKey = `${selectedTextbookId}_${level}`;
+                        const progressKey = `${selectedTextbookId}_${levelProgressKey(selectedTextbookId, level)}`;
                         const lastIndex = freeStudyProgress[progressKey] || 0;
                         const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
                         
@@ -2091,8 +1975,8 @@ export default function StudentDashboard() {
                         disabled={!levelWords.length || isUnusedLevel || isEikenUnusedLevel}
                         onClick={() => {
                           if (!isUnusedLevel && !isEikenUnusedLevel) {
-                            if (selectedTextbookId && (selectedTextbookId.startsWith('eiken-') || selectedTextbookId === 'highschool-english')) {
-                              // 英検教材と高校英語の場合は親レベル選択
+                            if (selectedTextbookId && selectedTextbookId.startsWith('eiken-')) {
+                              // 英検教材の場合は親レベル選択
                               handleParentLevelClick(Number(level));
                             } else {
                               // その他の教材は直接学習開始
@@ -2179,27 +2063,6 @@ export default function StudentDashboard() {
                     // サンプル単語を表示
                     const sampleWords = parentLevelWords.slice(0, 5).map(w => w.word);
                     logger.debug(`英検${targetEikenLevel}級のサンプル単語:`, sampleWords);
-                  } else if (selectedTextbookId === 'highschool-english') {
-                    // 高校英語の場合：選択された親レベル内の英単語をサブレベル別に分けて表示
-                    // 高校英語のレベルマッピング: 1→5, 2→6, 3→7
-                    const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
-                    const targetLevel = highschoolLevelMapping[selectedParentLevel];
-                    
-                    logger.debug('🎓 高校英語フィルタリング:', {
-                      selectedTextbookId,
-                      selectedParentLevel,
-                      targetLevel,
-                      allWordsLength: allWords.length
-                    });
-                    
-                    // 選択された親レベル内の英単語を取得（当該レベルのみ）
-                    parentLevelWords = allWords.filter(word => word.level === targetLevel);
-                    
-                    logger.debug(`高校英語レベル${targetLevel}の単語数:`, parentLevelWords.length);
-                    
-                    // サンプル単語を表示
-                    const sampleWords = parentLevelWords.slice(0, 5).map(w => w.word);
-                    logger.debug(`高校英語レベル${targetLevel}のサンプル単語:`, sampleWords);
                   } else {
                     // その他の教材の場合：選択された親レベルの単語を取得
                     parentLevelWords = allWords.filter(word => word.level === selectedParentLevel);
@@ -2209,41 +2072,15 @@ export default function StudentDashboard() {
                   // levelに従ってランク分け
                   const levelGroups = {};
                   parentLevelWords.forEach(word => {
-                    if (selectedTextbookId === 'highschool-english' && word.subLevel) {
-                      // 高校英語の場合はサブレベル（5A, 5B, 5Cなど）でグループ化
-                      const subLevel = word.subLevel;
-                      if (!levelGroups[subLevel]) {
-                        levelGroups[subLevel] = [];
-                      }
-                      levelGroups[subLevel].push(word);
-                    } else {
-                      // その他の教材の場合は通常のレベルでグループ化
-                      const level = word.level || 1;
-                      if (!levelGroups[level]) {
-                        levelGroups[level] = [];
-                      }
-                      levelGroups[level].push(word);
+                    const level = word.level || 1;
+                    if (!levelGroups[level]) {
+                      levelGroups[level] = [];
                     }
+                    levelGroups[level].push(word);
                   });
                   
-                  // レベル順にソート（高校英語の場合はサブレベル順）
-                  const sortedLevels = Object.keys(levelGroups).sort((a, b) => {
-                    if (selectedTextbookId === 'highschool-english') {
-                      // サブレベルの場合（5A, 5B, 5C, 6A, 6B, 6C, 7A, 7B, 7C）
-                      const aLevel = parseInt(a.substring(0, 1));
-                      const bLevel = parseInt(b.substring(0, 1));
-                      if (aLevel !== bLevel) {
-                        return aLevel - bLevel;
-                      }
-                      // 区分なし（「その他」）は A・B・C のあとに置く
-                      if (isUnlabeledSubLevel(a) !== isUnlabeledSubLevel(b)) {
-                        return isUnlabeledSubLevel(a) ? 1 : -1;
-                      }
-                      return a.localeCompare(b); // A, B, Cの順
-                    } else {
-                      return parseInt(a) - parseInt(b);
-                    }
-                  });
+                  // レベル順にソート
+                  const sortedLevels = Object.keys(levelGroups).sort((a, b) => parseInt(a) - parseInt(b));
                   
                   logger.debug('サブレベル表示のランク分け:', {
                     selectedTextbookId,
@@ -2284,7 +2121,7 @@ export default function StudentDashboard() {
                       {/* サブレベルカード */}
                       {sortedLevels.map(level => {
                         const levelWords = levelGroups[level];
-                        const progressKey = `${selectedTextbookId}_${level}`;
+                        const progressKey = `${selectedTextbookId}_${levelProgressKey(selectedTextbookId, level)}`;
                         const lastIndex = freeStudyProgress[progressKey] || 0;
                         const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
                         
@@ -2297,10 +2134,11 @@ export default function StudentDashboard() {
                         const isEikenUnusedLevel = false;
                         
                         // 推奨判定
-                        const isRecommended = isRecommendedSubLevel(level, selectedParentLevel, testResultLevel);
+                        // 親レベル（英検の級）が推奨されていれば、その中のレベルも推奨
+                        const isRecommended = isRecommendedLevel(selectedParentLevel, testResultLevel);
                         const recommendations = getRecommendedLevels(testResultLevel);
                         const recommendationType = recommendations.recommended.find(rec => 
-                          isRecommendedSubLevel(level, selectedParentLevel, rec.level)
+                          isRecommendedLevel(selectedParentLevel, rec.level)
                         );
                         const priority = recommendationType ? recommendationType.priority : 'medium';
                         
@@ -2335,7 +2173,7 @@ export default function StudentDashboard() {
                               flexWrap: 'wrap'
                             }}>
                               <span className="selection-card-level">
-                                {selectedTextbookId === 'highschool-english' ? level : `レベル ${level}`}
+                                {`レベル ${level}`}
                               </span>
                               {isRecommended && !isUnusedLevel && !isEikenUnusedLevel ? (
                                 <RecommendationBadge type="sublevel" priority={priority} />
@@ -2353,9 +2191,7 @@ export default function StudentDashboard() {
                               )}
                             </div>
                             <span className="selection-card-desc">
-                              {selectedTextbookId === 'highschool-english' 
-                                ? getHighschoolSubLevelDescription(level)
-                                : selectedTextbookId && selectedTextbookId.startsWith('eiken-') 
+                              {selectedTextbookId && selectedTextbookId.startsWith('eiken-') 
                                 ? `英検${selectedTextbookId.split('-')[1]}級レベル内`
                                 : `レベル${selectedParentLevel}内`
                               }

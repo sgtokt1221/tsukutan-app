@@ -68,3 +68,15 @@ test('境目は8割', () => {
   expect(CLEAR_RATIO).toBe(0.8);
   expect(estimateLevel({ master: MASTER, reviewWords: graduated({ 1: 80 }) }).cleared).toBe(1);
 });
+
+/*
+  **覚えた語のレベルは単語データから引く**（2026-09-24）。
+  復習データの写しのレベルは覚えた時点のままで、付け直しを追いかけない。
+*/
+test('**写しのレベルではなく単語データのレベルで数える**', () => {
+  // 単語データではレベル1の語を、写しでは7として持っている
+  const stale = MASTER.filter((w) => w.level === 1).slice(0, 80).map((w) => ({ id: w.id, level: 7, status: 'mastered' }));
+  const result = estimateLevel({ master: MASTER, reviewWords: stale });
+  expect(result.ratios[1]).toBeGreaterThan(0);
+  expect(result.ratios[7]).toBe(0);
+});

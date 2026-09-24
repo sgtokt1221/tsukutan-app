@@ -29,10 +29,12 @@
     "lint": "eslint src --ext .js,.jsx",
     "deploy": "npm run build && firebase deploy --only hosting",
     "test:scripts": "node --test scripts/lib/*.test.js",
-    "build:words": "node scripts/build-word-master.js",
+    "build:words": "node scripts/build-words.js",
+    "check:words": "node scripts/build-words.js --check",
     "build:pronunciations": "node scripts/build-pronunciations.js",
     "build:books": "node scripts/import-exam-support-decks.js && node scripts/build-book-words.js",
-    "build:manifest": "node scripts/refresh-word-manifest.js"
+    "build:manifest": "node scripts/refresh-word-manifest.js",
+    "build:levels": "node scripts/relevel-words.js --write && node scripts/build-book-words.js && node scripts/refresh-word-manifest.js"
   },
   "eslintConfig": {
     "extends": [

@@ -1,4 +1,5 @@
 import LEVELS from '../config/levels.json';
+import { levelLookup } from './vocabularyCount';
 
 /**
  * 復習の卒業ぐあいから、いまのレベルを見積もる。
@@ -37,10 +38,13 @@ export const estimateLevel = ({ master = [], reviewWords = [] } = {}) => {
     if (level) total[level] = (total[level] || 0) + 1;
   }
 
+  // 覚えた語のレベルは単語データから id で引く。復習データの写しのレベルは
+  // 覚えた時点のままで、付け直し（2026-09-24）を追いかけない（→ vocabularyCount.levelLookup）
+  const levelOf = levelLookup(master);
   const mastered = {};
   for (const word of reviewWords) {
     if (word?.status !== 'mastered') continue;
-    const level = word?.level;
+    const level = levelOf(word);
     if (level) mastered[level] = (mastered[level] || 0) + 1;
   }
 

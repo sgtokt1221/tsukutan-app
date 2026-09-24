@@ -45,14 +45,17 @@ const assessedWordCount = (master, assessedLevel) => {
   return ids.size;
 };
 
-/** 復習完了のうち、判定レベルより上にある語の数。下は上の集合に含まれるので足さない。 */
-const masteredBeyondAssessment = (reviewWords, assessedLevel) => {
+/**
+ * 復習完了のうち、判定レベルより上にある語の数。下は上の集合に含まれるので足さない。
+ * **レベルは単語データから id で引く**（写しのレベルは覚えた時点のまま。src/logic/vocabularyCount.js と同じ）
+ */
+const masteredBeyondAssessment = (reviewWords, assessedLevel, levelById) => {
   const level = Number.isFinite(assessedLevel) ? assessedLevel : 0;
   const ids = new Set();
   for (const word of reviewWords) {
     if (!word || word.migratedTo) continue;
     if (word.status !== 'mastered') continue;
-    if ((word.level ?? 0) <= level) continue;
+    if ((levelById.get(word.id) ?? 0) <= level) continue;
     ids.add(word.id || word.word);
   }
   return ids.size;
@@ -89,6 +92,8 @@ const main = async () => {
   const db = admin.firestore();
 
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, 'utf8'));
+  // 復習データの写しのレベルではなく、単語データのレベルを id で引く
+  const levelById = new Map(master.map((w) => [w.id, w.level]));
 
   console.log(EXECUTE ? '=== 本実行 ===' : '=== ドライラン（書き込みません） ===');
   console.log(`マスター: ${master.length} 件`);
@@ -147,7 +152,7 @@ const main = async () => {
     const reviewWords = reviewSnapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 
     const assessed = assessedByLevel.get(assessedLevel) ?? assessedWordCount(master, assessedLevel);
-    const beyond = masteredBeyondAssessment(reviewWords, assessedLevel);
+    const beyond = masteredBeyondAssessment(reviewWords, assessedLevel, levelById);
     const total = assessed + beyond;
     const percentage = achievementPercentage(total, targetVocabulary);
 
