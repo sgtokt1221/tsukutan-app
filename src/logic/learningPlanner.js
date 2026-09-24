@@ -1,6 +1,7 @@
 import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { loadTextbookWords } from './wordMaster';
 import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowledgeAnalysis';
 import { getMotivationConfig, getTargetLevel, toGoalIds, getRecommendedTextbooks } from '../config';
 import { parseLocalDate, getTodayKey } from './dateKeys';
@@ -17,12 +18,14 @@ import {
   dedupeAcross,
   splitIntoSessions,
   sortReviewCandidates,
+  unlearnedCandidates,
   REVIEW_SESSION_SIZE,
 } from './dailyPlanMath';
 
-// Firestore に実体がある教材だけを引く。
-// 以前は英検コース名（eiken-5 など）もここに並んでいたが、
-// textbooks/{id}/words が存在しないため7回分の空クエリを投げていた。
+// 新しい単語を選ぶ教材。中身は public/data の教材ファイル（loadTextbookWords）。
+// 2026-09-24 までは Firestore の textbooks/{id}/words から引いていたが、そちらは
+// 付け直す前のレベル（1〜10）とランダムな文書IDのままで、生徒のレベル（1〜7）とも
+// 単語データの id とも合っていなかった。
 const TEXTBOOK_IDS = ['osaka-koukou-nyuushi', 'highschool-english'];
 
 const SECONDS_PER_NEW_WORD = 60;
@@ -124,7 +127,7 @@ export const generateDailyPlan = async (userData, userId) => {
   // 一度でも学習した単語は新規に出さない。習得済みも含める。
   // ここを復習候補から作ると、習得済みの単語が新規単語として
   // 出題し直されてしまう。
-  const learnedWordIds = new Set(allProgressEntries.map((entry) => entry.id));
+  // Firestore の教材から学んだ語は id が単語データと違うので、中身でも照らす（unlearnedCandidates）
 
   // 復習候補。習得済み（status: mastered）は履歴として残しているだけなので外す。
   const enrichedReviewEntries = allProgressEntries
@@ -182,7 +185,7 @@ export const generateDailyPlan = async (userData, userId) => {
   const { words: newWordCandidates, remainingCandidates } = await getNewWords(
     quota.plannedNewWords,
     userLevel,
-    learnedWordIds,
+    allProgressEntries,
     goalIds
   );
 
@@ -203,7 +206,7 @@ export const generateDailyPlan = async (userData, userId) => {
 
   const targetLevel = getTargetLevel(goalIds);
   const adjacentWords = targetLevel > 1
-    ? await getAdjacentLevelWords(targetLevel, learnedWordIds, motivation, goalIds)
+    ? await getAdjacentLevelWords(targetLevel, allProgressEntries, motivation, goalIds)
     : [];
 
   //--------------------------------------------------------------------------
@@ -291,26 +294,20 @@ const getRandomMasteredWords = async (userId, excludedIds, motivation) => {
  * 存在しないため常に 0 になり、隣接語が一度も出ていなかった。
  * 目標レベルは src/config の targetLevel から引く。
  */
-const getAdjacentLevelWords = async (targetLevel, learnedWordIds, motivation, goalIds) => {
+const getAdjacentLevelWords = async (targetLevel, learnedEntries, motivation, goalIds) => {
   const adjacentLevel = targetLevel - 1;
-  const textbookIds = textbooksForGoals(goalIds);
-
-  const snapshots = await Promise.all(
-    textbookIds.map((id) =>
-      getDocs(query(collection(db, 'textbooks', id, 'words'), where('level', '==', adjacentLevel)))
-    )
-  );
-
-  const candidateWords = [];
-  snapshots.forEach((snapshot) => {
-    snapshot.forEach((docSnapshot) => {
-      if (learnedWordIds.has(docSnapshot.id)) return;
-      candidateWords.push({ id: docSnapshot.id, ...docSnapshot.data(), isAdjacent: true });
-    });
-  });
+  const words = await loadGoalTextbookWords(goalIds);
+  const candidateWords = unlearnedCandidates(words, learnedEntries, (word) => word.level === adjacentLevel)
+    .map((word) => ({ ...word, isAdjacent: true }));
 
   candidateWords.sort(() => Math.random() - 0.5);
   return candidateWords.slice(0, motivation.adjacentWordsQuota);
+};
+
+/** 目標に紐づく教材の語をまとめて読む。読めなければ例外（空で返すと「単語がありません」と誤表示する） */
+const loadGoalTextbookWords = async (goalIds) => {
+  const lists = await Promise.all(textbooksForGoals(goalIds).map((id) => loadTextbookWords(id)));
+  return lists.flat();
 };
 
 /** 目標に紐づく教材だけを引く。目標が無ければ全教材。 */
@@ -322,26 +319,14 @@ const textbooksForGoals = (goalIds) => {
 /**
  * ユーザーのレベルに基づき、まだ学習していない新規単語を取得する。
  */
-const getNewWords = async (quota, userLevel, learnedWordIds, goalIds) => {
+const getNewWords = async (quota, userLevel, learnedEntries, goalIds) => {
   const safeQuota = Math.max(0, quota);
   // 単語データのレベルは1〜7（計画書11.3）
   const targetLevels = [userLevel, userLevel + 1].filter((level) => level >= 1 && level <= 7);
   if (targetLevels.length === 0) return { words: [], remainingCandidates: [] };
 
-  const textbookIds = textbooksForGoals(goalIds);
-  const snapshots = await Promise.all(
-    textbookIds.map((id) =>
-      getDocs(query(collection(db, 'textbooks', id, 'words'), where('level', 'in', targetLevels)))
-    )
-  );
-
-  const candidateWords = [];
-  snapshots.forEach((snapshot) => {
-    snapshot.docs.forEach((docSnapshot) => {
-      if (learnedWordIds.has(docSnapshot.id)) return;
-      candidateWords.push({ id: docSnapshot.id, ...docSnapshot.data() });
-    });
-  });
+  const words = await loadGoalTextbookWords(goalIds);
+  const candidateWords = unlearnedCandidates(words, learnedEntries, (word) => targetLevels.includes(word.level));
 
   candidateWords.sort(() => Math.random() - 0.5);
 

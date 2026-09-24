@@ -45,17 +45,23 @@ const assessedWordCount = (master, assessedLevel) => {
   return ids.size;
 };
 
+const normalizePos = (value) =>
+  String(value || '').split(/\s*[,、]\s*/).map((part) => part.trim()).map((part) => (part === '熟' ? '熟語' : part)).join(', ');
+const contentKey = (w) =>
+  [w.word, normalizePos(w.partOfSpeech), w.meaning].map((v) => String(v || '').trim().toLowerCase()).join('|');
+
 /**
  * 復習完了のうち、判定レベルより上にある語の数。下は上の集合に含まれるので足さない。
  * **レベルは単語データから id で引く**（写しのレベルは覚えた時点のまま。src/logic/vocabularyCount.js と同じ）
  */
-const masteredBeyondAssessment = (reviewWords, assessedLevel, levelById) => {
+const masteredBeyondAssessment = (reviewWords, assessedLevel, levelById, levelByContent) => {
   const level = Number.isFinite(assessedLevel) ? assessedLevel : 0;
   const ids = new Set();
   for (const word of reviewWords) {
     if (!word || word.migratedTo) continue;
     if (word.status !== 'mastered') continue;
-    if ((levelById.get(word.id) ?? 0) <= level) continue;
+    const wordLevel = levelById.has(word.id) ? levelById.get(word.id) : levelByContent.get(contentKey(word));
+    if ((wordLevel ?? 0) <= level) continue;
     ids.add(word.id || word.word);
   }
   return ids.size;
@@ -94,6 +100,12 @@ const main = async () => {
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, 'utf8'));
   // 復習データの写しのレベルではなく、単語データのレベルを id で引く
   const levelById = new Map(master.map((w) => [w.id, w.level]));
+  // 古い Firestore の教材の id で入っている語は 語＋品詞＋意味 で引く（src/logic/wordKey.js と同じ鍵）
+  const levelByContent = new Map();
+  for (const w of master) {
+    const key = contentKey(w);
+    if (!levelByContent.has(key) || w.level < levelByContent.get(key)) levelByContent.set(key, w.level);
+  }
 
   console.log(EXECUTE ? '=== 本実行 ===' : '=== ドライラン（書き込みません） ===');
   console.log(`マスター: ${master.length} 件`);
@@ -152,7 +164,7 @@ const main = async () => {
     const reviewWords = reviewSnapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 
     const assessed = assessedByLevel.get(assessedLevel) ?? assessedWordCount(master, assessedLevel);
-    const beyond = masteredBeyondAssessment(reviewWords, assessedLevel, levelById);
+    const beyond = masteredBeyondAssessment(reviewWords, assessedLevel, levelById, levelByContent);
     const total = assessed + beyond;
     const percentage = achievementPercentage(total, targetVocabulary);
 
