@@ -5,14 +5,17 @@ import logger from './logger';
 /**
  * レベル別の「続き」を覚える鍵のレベル部分。
  *
- * 2026-09-24 に単語のレベルを付け直した（scripts/relevel-words.js）。
- * 大阪府・高校英語はレベルの中身と並びが変わったので、古い位置（「120語目まで」）から
- * 再開すると別の語から始まる。この2冊だけ鍵を替え、続きを一度まっさらにする。
- * 英検の級別はレベルを見ていない（英検の級で分ける）ので今の鍵のまま。
+ * 単語の中身と並びが変わったら、古い位置（「120語目まで」）から再開すると別の語から始まる。
+ * 変えたときは版を上げて、続きを一度まっさらにする。
+ * - r2（2026-09-24）: レベルを付け直した（scripts/relevel-words.js）。大阪府・高校英語
+ * - r3（2026-09-24）: 中学の語の英検の級を教科書で決め直した（scripts/apply-textbook-eiken.js）。
+ *   英検の級別も語の集まりが変わったので対象に入れた
  */
-const RELEVELED_TEXTBOOKS = new Set(['osaka-koukou-nyuushi', 'highschool-english']);
+const PROGRESS_VERSION = 'r3';
+const isLevelTextbook = (textbookId) =>
+  textbookId === 'osaka-koukou-nyuushi' || textbookId === 'highschool-english' || String(textbookId).startsWith('eiken-');
 export const levelProgressKey = (textbookId, level) =>
-  (RELEVELED_TEXTBOOKS.has(textbookId) ? `r2-${level}` : String(level));
+  (isLevelTextbook(textbookId) ? `${PROGRESS_VERSION}-${level}` : String(level));
 
 /**
  * 自由学習の進捗を保存します
