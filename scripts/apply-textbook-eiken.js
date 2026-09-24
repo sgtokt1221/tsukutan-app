@@ -27,7 +27,9 @@ const easiest = (levels) => {
 
 const master = read('public/data/words-master.json');
 const textbook = read('data-sources/textbook-sunshine-r7.json');
-const changes = textbookEikenChanges(master, textbook.words);
+// 級は学年だけで決める（小学校で学んだ語は 0）。ページは教科書の学習（build-textbook-words.js）が使う
+const textbookWords = textbook.rows.map((r) => ({ word: r.word, grade: r.elementary ? 0 : r.grade }));
+const changes = textbookEikenChanges(master, textbookWords);
 
 const moves = {};
 for (const entry of master) {
@@ -35,7 +37,7 @@ for (const entry of master) {
   const key = `${easiest(entry.eikenLevels)} → ${easiest(changes.get(entry.id))}`;
   (moves[key] = moves[key] || []).push(entry.word);
 }
-console.log(`教科書の語: ${textbook.words.length}　変わる行: ${changes.size} / ${master.length}`);
+console.log(`教科書の語: ${textbookWords.length}　変わる行: ${changes.size} / ${master.length}`);
 for (const [key, words] of Object.entries(moves).sort((a, b) => b[1].length - a[1].length)) {
   console.log(`  ${key.padEnd(12)} ${String(words.length).padStart(4)}  ${words.slice(0, 10).join(', ')}`);
 }

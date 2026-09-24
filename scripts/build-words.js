@@ -28,11 +28,12 @@ const STEPS = [
   ['apply-textbook-eiken.js', '--write'], // 中学の語の英検の級を教科書の初出学年で（scripts/lib/textbookEiken.js）
   ['relevel-words.js', '--write'], // レベル1〜7（scripts/lib/relevel.js）。英検の級を使うので上の段のあと
   ['build-book-words.js'], // 単語帳4冊（master のレベルを借りる）
+  ['build-textbook-words.js'], // 教科書 Sunshine（master と単語帳から意味を引く。scripts/lib/textbookWords.js）
   ['refresh-word-manifest.js'], // 端末が読み直す目印
 ];
 
 /** 手順が読むもの。--check はこれだけを一時フォルダへ写して流す */
-const INPUTS = ['scripts', 'data-sources', 'public/data', 'public/words.json', 'words.json', 'highschool.json', 'src/config'];
+const INPUTS = ['scripts', 'data-sources', 'public/data', 'docs/baseline', 'public/words.json', 'words.json', 'highschool.json', 'src/config'];
 
 const run = (root, quiet) => {
   for (const [script, ...args] of STEPS) {

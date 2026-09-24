@@ -47,6 +47,14 @@ const {
   weakWordsForQuiz,
   StaffAccessError,
 } = require('./lib/staffMaterials');
+// 管理者が出す教科書の小テスト
+const {
+  QuizInputError,
+  validateCreate: validateQuizCreate,
+  pickQuizWords,
+  titleOf: quizTitleOf,
+  summarize: summarizeQuiz,
+} = require('./lib/quizAssignments');
 
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
@@ -1019,4 +1027,135 @@ exports.staffStudentMaterials = onRequest(
     serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
   },
   staffMaterialsApp
+);
+
+
+//==============================================================================
+// 管理者が出す「教科書の小テスト」（2026-09-24）
+//==============================================================================
+/*
+ * つくばホームの管理画面（`/tsukutsuku/`）から、学年・ページを指定して生徒に小テストを出す口。
+ * 判定の中身は `lib/quizAssignments.js`。入口の作りは `staffStudentMaterials` と同じ
+ * （CORS はつくばホームだけ・つくばホームのIDトークン・管理者だけ・トークンはログに出さない）。
+ *
+ *   { action: 'create', grade, pageFrom, pageTo, count, direction, targetUids }  → { id }
+ *   { action: 'list', uid? }  → { assignments: [...集計つき] }（uid を渡すとその生徒に出したものだけ）
+ *   { action: 'close', id }   → { ok }（取り下げ。生徒のホームのカードから消える）
+ *
+ * 生徒は `quiz_assignments` を自分が対象のものだけ読める（firestore.rules）。結果は本人が
+ * `users/{uid}/quizResults/{id}` に書く。
+ */
+const TEXTBOOK_CARDS_URL = 'https://tsukutan-58b3f.web.app/data/words-textbook-sunshine.json';
+let textbookCardsCache = { at: 0, cards: null };
+/** 教科書の語。**配信しているファイルを読む**（関数に写しを持たない）。10分だけ覚えておく */
+const loadTextbookCards = async () => {
+  if (textbookCardsCache.cards && Date.now() - textbookCardsCache.at < 10 * 60 * 1000) return textbookCardsCache.cards;
+  const response = await fetch(TEXTBOOK_CARDS_URL);
+  if (!response.ok) throw new Error(`教科書の単語を読めませんでした (${response.status})`);
+  const cards = await response.json();
+  if (!Array.isArray(cards) || cards.length === 0) throw new Error('教科書の単語が空です');
+  textbookCardsCache = { at: Date.now(), cards };
+  return cards;
+};
+
+const quizAssignmentsApp = express();
+quizAssignmentsApp.use(cors({ origin: STAFF_ORIGINS }));
+quizAssignmentsApp.use(express.json({ limit: '64kb' }));
+
+const toMillis = (v) => (v && typeof v.toMillis === 'function' ? v.toMillis() : null);
+
+quizAssignmentsApp.post('/', async (req, res) => {
+  const header = req.headers.authorization || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+  if (idToken === '') return res.status(401).json({ error: 'つくばホームのログインが必要です' });
+
+  let decoded;
+  try {
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    logger.warn('職員のトークンを検証できなかった', { message: e && e.message });
+    return res.status(401).json({ error: 'つくばホームのログインを確かめられませんでした' });
+  }
+
+  const body = req.body || {};
+  try {
+    assertStaffClaims(decoded);
+
+    if (body.action === 'create') {
+      const input = validateQuizCreate(body);
+      const words = pickQuizWords(await loadTextbookCards(), input);
+      const ref = db.collection('quiz_assignments').doc();
+      await ref.set({
+        textbook: 'sunshine',
+        title: quizTitleOf(input),
+        ...input,
+        count: words.length,
+        words,
+        active: true,
+        createdBy: decoded.uid,
+        createdByName: String(decoded.name || ''),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      // 画面が同じ語で紙の小テストも刷れるように、選んだ語も返す
+      return res.status(200).json({ id: ref.id, count: words.length, words });
+    }
+
+    if (body.action === 'list') {
+      const uid = typeof body.uid === 'string' && body.uid !== '' && !body.uid.includes('/') ? body.uid : '';
+      let query = db.collection('quiz_assignments');
+      if (uid) query = query.where('targetUids', 'array-contains', uid);
+      const snap = await query.orderBy('createdAt', 'desc').limit(30).get();
+      const assignments = await Promise.all(snap.docs.map(async (d) => {
+        const a = d.data();
+        const targets = uid ? [uid] : (a.targetUids || []);
+        const refs = targets.map((t) => db.collection('users').doc(t).collection('quizResults').doc(d.id));
+        const results = refs.length ? await db.getAll(...refs) : [];
+        const byUid = new Map(results.map((r, i) => [targets[i], r.exists ? r.data() : null]));
+        return {
+          id: d.id,
+          title: a.title,
+          grade: a.grade,
+          pageFrom: a.pageFrom,
+          pageTo: a.pageTo,
+          direction: a.direction,
+          count: a.count,
+          active: a.active !== false,
+          createdAt: toMillis(a.createdAt),
+          ...summarizeQuiz({ targetUids: targets }, byUid),
+        };
+      }));
+      return res.status(200).json({ assignments });
+    }
+
+    if (body.action === 'close') {
+      const id = typeof body.id === 'string' ? body.id : '';
+      if (id === '' || id.includes('/')) return res.status(400).json({ error: '小テストが指定されていません' });
+      const ref = db.collection('quiz_assignments').doc(id);
+      const snap = await ref.get();
+      if (!snap.exists) return res.status(404).json({ error: 'その小テストはありません' });
+      await ref.update({ active: false, closedAt: admin.firestore.FieldValue.serverTimestamp(), closedBy: decoded.uid });
+      return res.status(200).json({ ok: true });
+    }
+
+    return res.status(400).json({ error: '操作が指定されていません' });
+  } catch (e) {
+    if (e instanceof StaffAccessError) {
+      logger.warn('小テストの操作を拒否した', { staff: decoded.uid, role: decoded.role, message: e.message });
+      return res.status(403).json({ error: e.message });
+    }
+    if (e instanceof QuizInputError) return res.status(400).json({ error: e.message });
+    logger.error('小テストの操作に失敗した', { action: body.action, message: e && e.message });
+    return res.status(500).json({ error: 'うまくいきませんでした。もう一度お試しください' });
+  }
+});
+
+exports.staffQuizAssignments = onRequest(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    maxInstances: 10,
+    serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
+  },
+  quizAssignmentsApp
 );

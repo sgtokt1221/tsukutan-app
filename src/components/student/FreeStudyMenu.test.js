@@ -65,12 +65,13 @@ const show = (props = {}) => {
   生徒はまずここを探す。並び順まで固定するのは、後から足した入口が
   いつのまにか下へ埋もれるのを止めるため。
 */
-test('最初は 教材 / 中学英語 / 高校英語 / 英検 の4枚だけ', () => {
+test('最初は 教材 / 学校の教科書 / 中学英語 / 高校英語 / 英検 の5枚だけ', () => {
   show();
 
   const titles = screen.getAllByRole('button')
     .map((card) => card.querySelector('.free-study-card__title').textContent);
-  expect(titles).toEqual(['教材', '中学英語', '高校英語', '英検']);
+  // 学校の教科書（Sunshine）は 2026-09-24 に足した。塾の配る本のすぐ下
+  expect(titles).toEqual(['教材', '学校の教科書', '中学英語', '高校英語', '英検']);
 
   // 級や面接の入口は、英検を開くまで出さない
   expect(screen.queryByText('英検3級')).not.toBeInTheDocument();
@@ -255,5 +256,52 @@ describe('戻る先', () => {
   test('教材も一段ずつ戻る', () => {
     expect(freeStudyBackTarget('book-range', 'book-systan5')).toBe('books');
     expect(freeStudyBackTarget('books', null)).toBe('main');
+  });
+});
+
+describe('学校の教科書（Sunshine）', () => {
+  const CARDS = [
+    { id: 'a', word: 'apple', meaning: 'りんご', grade: 1, page: 10, order: 1 },
+    { id: 'b', word: 'bread', meaning: 'パン', grade: 1, page: 12, order: 2 },
+    { id: 'c', word: 'cat', meaning: 'ねこ', grade: 1, page: 15, order: 3 },
+    { id: 'd', word: 'dog', meaning: 'いぬ', grade: 2, page: 10, order: 4 },
+  ];
+
+  test('学年ごとの語数を出し、押すと学年を渡す', () => {
+    const onSelectTextbookGrade = jest.fn();
+    show({ mode: 'textbook-grade', textbookCards: CARDS, onSelectTextbookGrade });
+    expect(screen.getByText('1年').closest('button')).toHaveTextContent('3語');
+    fireEvent.click(screen.getByText('2年'));
+    expect(onSelectTextbookGrade).toHaveBeenCalledWith(2);
+  });
+
+  test('**はじめ→おわりの順にページを押すと、その範囲で始められる**', () => {
+    const onStartTextbookPages = jest.fn();
+    show({ mode: 'textbook-pages', textbookCards: CARDS, textbookGrade: 1, onStartTextbookPages });
+    // 語のあるページだけ（2年の p.10 は1年の画面に出さない）
+    expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(3);
+    fireEvent.click(screen.getByText('p.12'));
+    fireEvent.click(screen.getByText('p.15'));
+    fireEvent.click(screen.getByText('p.12〜15 の 2語を覚える'));
+    expect(onStartTextbookPages).toHaveBeenCalledWith(1, 12, 15);
+  });
+
+  test('1ページだけでも始められる。選ぶ前は押せない', () => {
+    const onStartTextbookPages = jest.fn();
+    show({ mode: 'textbook-pages', textbookCards: CARDS, textbookGrade: 1, onStartTextbookPages });
+    expect(screen.getByText('ページを選ぶと始められます')).toBeDisabled();
+    fireEvent.click(screen.getByText('p.10'));
+    fireEvent.click(screen.getByText('p.10 の 1語を覚える'));
+    expect(onStartTextbookPages).toHaveBeenCalledWith(1, 10, 10);
+  });
+
+  test('読み込み中と読めなかったときは、そう言う', () => {
+    show({ mode: 'textbook-grade', textbookCards: null });
+    expect(screen.getByText('教科書の単語を読み込んでいます…')).toBeInTheDocument();
+  });
+
+  test('戻る先：ページ → 学年 → 最初', () => {
+    expect(freeStudyBackTarget('textbook-pages')).toBe('textbook-grade');
+    expect(freeStudyBackTarget('textbook-grade')).toBe('main');
   });
 });

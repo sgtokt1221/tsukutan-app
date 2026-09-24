@@ -1,7 +1,9 @@
 import React from 'react';
-import { FaBook, FaBookOpen, FaChevronRight, FaGraduationCap, FaMicrophone, FaStar } from 'react-icons/fa';
+import { FaBook, FaBookOpen, FaChevronRight, FaGraduationCap, FaMicrophone, FaSchool, FaStar } from 'react-icons/fa';
 import RecommendationBadge from './RecommendationBadge';
 import { rangesOf } from '../../logic/bookWords';
+import { SUNSHINE } from '../../logic/textbookPages';
+import TextbookPagePicker from './TextbookPagePicker';
 import './FreeStudyMenu.css';
 
 /**
@@ -14,6 +16,8 @@ import './FreeStudyMenu.css';
  *   main            [教材] [中学英語] [高校英語] [英検]
  *    ├ books     塾が配っている単語帳4冊（表紙つき）
  *    │    └ book-range  番号の帯（1〜100 …）→ onSelectRange → そのままカードへ
+ *    ├ textbook-grade  学校の教科書（Sunshine）の学年
+ *    │    └ textbook-pages  ページの範囲 → onStartTextbookPages → そのままカードへ
  *    ├ 中学英語  → onSelectTextbook（レベル・品詞・意味の絞り込みへ）
  *    ├ 高校英語  → onSelectTextbook
  *    └ eiken     [単語を覚える] [二次試験（面接）]
@@ -41,6 +45,8 @@ export const freeStudyBackTarget = (mode, textbookId) => ({
   'eiken-interview': 'eiken',
   books: 'main',
   'book-range': 'books',
+  'textbook-grade': 'main',
+  'textbook-pages': 'textbook-grade',
   filter: textbookId?.startsWith('eiken-') ? 'eiken-words' : 'main',
 }[mode] || 'main');
 
@@ -100,7 +106,33 @@ export default function FreeStudyMenu({
   onSelectInterview,
   onSelectBook,
   onSelectRange,
+  // 学校の教科書。cards は読み込み前 null、読めなければ textbookError
+  textbookCards = null,
+  textbookError = '',
+  textbookGrade = null,
+  onSelectTextbookGrade,
+  onStartTextbookPages,
 }) {
+  if (mode === 'textbook-grade' || mode === 'textbook-pages') {
+    if (textbookError) return <p className="tile-caption" role="alert">{textbookError}</p>;
+    if (!textbookCards) return <p className="tile-caption">教科書の単語を読み込んでいます…</p>;
+    if (mode === 'textbook-pages') {
+      return <TextbookPagePicker cards={textbookCards} grade={textbookGrade} onStart={onStartTextbookPages} />;
+    }
+    return (
+      <div className="list-group">
+        {SUNSHINE.grades.map((grade) => (
+          <button key={grade} type="button" className="tile-button" onClick={() => onSelectTextbookGrade(grade)}>
+            <span className="tile-button__label">{grade}年</span>
+            <span className="tile-button__count">
+              {textbookCards.filter((c) => c.grade === grade).length.toLocaleString()}語
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   // 教材の一覧。**表紙で選べるようにする**（題名より先に絵で見つかる）
   if (mode === 'books') {
     return (
@@ -220,6 +252,13 @@ export default function FreeStudyMenu({
         title="教材"
         description="塾で使っている単語帳から選ぶ"
         onClick={() => onNavigate('books')}
+      />
+      {/* 学校の教科書。ページを指定して覚える（2026-09-24） */}
+      <MenuCard
+        Icon={FaSchool}
+        title="学校の教科書"
+        description={`${SUNSHINE.title}・ページを選んで覚える`}
+        onClick={() => onNavigate('textbook-grade')}
       />
       {TEXTBOOK_ENTRIES.map(({ id, title, description, Icon }) => (
         <MenuCard

@@ -23,6 +23,12 @@ import { isAheadOfAssessment } from './logic/estimatedLevel';
 import { setStudyRank } from './logic/studySession';
 import { BOOKS, isBookId, getBook, bookWordsUrl } from './config/books';
 import { wordsInRange, rangeKeyOf } from './logic/bookWords';
+import {
+  loadSunshineCards, sunshineTextbookId, isSunshineTextbookId, gradeOfSunshineId, wordsInPages, pageRangeKey, pageLabel,
+} from './logic/textbookPages';
+import { loadPendingQuizzes } from './logic/assignedQuiz';
+import AssignedQuiz from './components/quiz/AssignedQuiz';
+import AssignedQuizCard from './components/quiz/AssignedQuizCard';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
@@ -775,7 +781,11 @@ export default function StudentDashboard() {
     // **教材は番号の帯へ戻す**——絞り込み画面は通っていないので、
     // そこへ返すと行ったことのない画面に着地する（2026-09-22）
     if (currentLearningMode === 'free' && selectedTextbookId) {
-      setSelectionMode(isBookId(selectedTextbookId) ? 'book-range' : 'filter');
+      setSelectionMode(
+        isBookId(selectedTextbookId) ? 'book-range'
+          : isSunshineTextbookId(selectedTextbookId) ? 'textbook-pages'
+            : 'filter'
+      );
     } else {
       setSelectionMode('main');
     }
@@ -1193,6 +1203,75 @@ export default function StudentDashboard() {
     }
   };
 
+  /*
+    学校の教科書（Sunshine）。**選んだときだけ読む**（起動には乗せない。単語帳と同じ）。
+    選んだ学年は selectedTextbookId に `sunshine-1` の形で持つ。戻る先と進捗の鍵がそこから決まる
+  */
+  const [textbookCards, setTextbookCards] = useState(null);
+  const [textbookError, setTextbookError] = useState('');
+  useEffect(() => {
+    if (!String(selectionMode).startsWith('textbook') || textbookCards) return;
+    setTextbookError('');
+    loadSunshineCards()
+      .then(setTextbookCards)
+      .catch((error) => {
+        logger.warn('教科書の単語を読めませんでした', error);
+        setTextbookError('教科書の単語を読み込めませんでした。電波の良いところで、もう一度開いてください。');
+      });
+  }, [selectionMode, textbookCards]);
+
+  /*
+    先生が出した小テスト。ホームのいちばん上にカードで出す。
+    **解いたらサーバから読み直してカードを消す**（手元で消さない。楽観的更新をしない）
+  */
+  const [pendingQuizzes, setPendingQuizzes] = useState([]);
+  const [activeQuiz, setActiveQuiz] = useState(null);
+  const refreshQuizzes = useCallback(async (uid) => {
+    try {
+      setPendingQuizzes(await loadPendingQuizzes(uid));
+    } catch (error) {
+      // 読めなかったときはカードを出さないだけ（ホームの他の部分は使えるようにする）
+      logger.warn('先生からの小テストを読めませんでした', error);
+    }
+  }, []);
+  useEffect(() => {
+    if (userId) refreshQuizzes(userId);
+  }, [userId, refreshQuizzes]);
+  const startAssignedQuiz = (quiz) => {
+    setActiveQuiz(quiz);
+    setViewMode('assigned-quiz');
+  };
+  const closeAssignedQuiz = (finished) => {
+    setActiveQuiz(null);
+    setViewMode('select');
+    if (finished && userId) refreshQuizzes(userId);
+  };
+
+  const handleSelectTextbookGrade = (grade) => {
+    setSelectedTextbookId(sunshineTextbookId(grade));
+    setSelectionMode('textbook-pages');
+  };
+
+  /** ページの範囲を選んだ。**そのままカードへ**（絞り込み画面は通さない。単語帳と同じ） */
+  const startTextbookPages = async (grade, from, to) => {
+    const words = wordsInPages(textbookCards, grade, from, to);
+    if (words.length === 0) return;
+    const textbookId = sunshineTextbookId(grade);
+    const rangeKey = pageRangeKey(from, to);
+    const uid = auth.currentUser?.uid;
+    const startIndex = uid ? await getFreeStudyProgress(uid, textbookId, rangeKey) : 0;
+    setCurrentSessionInfo({
+      textbookId: `Sunshine ${grade}年`,
+      filterType: 'range',
+      filterValue: pageLabel(from, to),
+      rangeKey,
+      startIndex: startIndex < words.length ? startIndex : 0,
+    });
+    setCurrentLearningMode('free');
+    setLearningWords(words);
+    setViewMode('learn');
+  };
+
   const startBookmarkWords = () => {
     if (bookmarks.length === 0) return;
     setCurrentSessionInfo({
@@ -1426,6 +1505,9 @@ export default function StudentDashboard() {
 
         return (
           <>
+            {/* 先生からの小テストは、目標より上に置く（出されたものを最初にやってほしい） */}
+            <AssignedQuizCard quizzes={pendingQuizzes} onStart={startAssignedQuiz} />
+
             {/* 上から 目標 → ランク → タスク の順に置く。
                 何のために学んでいるかを最初に見せる。 */}
             <div className="section-card goal-card">
@@ -1684,6 +1766,18 @@ export default function StudentDashboard() {
       );
     }
 
+    // 先生からの小テストを解いているときは、タブに関係なくその画面
+    if (viewMode === 'assigned-quiz' && activeQuiz) {
+      return (
+        <AssignedQuiz
+          quiz={activeQuiz}
+          uid={userId}
+          onExit={() => closeAssignedQuiz(false)}
+          onFinished={() => closeAssignedQuiz(true)}
+        />
+      );
+    }
+
     // フラッシュカードページの場合は、タブに関係なく適切なコンテンツを表示
     if (viewMode === 'learn' || viewMode === 'review' || viewMode === 'test' || viewMode === 'result') {
       return renderContent();
@@ -1757,6 +1851,8 @@ export default function StudentDashboard() {
     'eiken-words': '英検の単語',
     'eiken-interview': '英検 二次試験（面接）',
     books: '教材で選ぶ',
+    'textbook-grade': '学校の教科書',
+    'textbook-pages': `Sunshine ${gradeOfSunshineId(selectedTextbookId) ?? ''}年`,
   }[selectionMode]
     || freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label
     || selectedTextbookId;
@@ -1803,6 +1899,11 @@ export default function StudentDashboard() {
                   onSelectInterview={setInterviewGrade}
                   onSelectBook={handleSelectBook}
                   onSelectRange={startBookRange}
+                  textbookCards={textbookCards}
+                  textbookError={textbookError}
+                  textbookGrade={gradeOfSunshineId(selectedTextbookId)}
+                  onSelectTextbookGrade={handleSelectTextbookGrade}
+                  onStartTextbookPages={startTextbookPages}
                 />
               ) : (
                 <>
