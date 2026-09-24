@@ -112,3 +112,16 @@ describe('achievementPercentage', () => {
     expect(achievementPercentage(3500, 7000)).toBe(50);
   });
 });
+
+describe('levelLookup：古い Firestore の id で入っている語', () => {
+  const data = [{ id: 'w_x', word: 'look after', partOfSpeech: '熟語', meaning: '世話をする', level: 3 }];
+
+  test('**id で引けなければ 語＋品詞＋意味 で引く**（日々の新しい単語は Firestore の文書IDで入っている）', () => {
+    const levelOf = levelLookup(data);
+    expect(levelOf({ id: 'RandomFsId', word: 'Look after', partOfSpeech: '熟', meaning: '世話をする', level: 9 })).toBe(3);
+  });
+
+  test('中身も合わなければ数えない', () => {
+    expect(levelLookup(data)({ id: 'RandomFsId', word: 'look after', partOfSpeech: '熟語', meaning: '別の意味' })).toBeNull();
+  });
+});

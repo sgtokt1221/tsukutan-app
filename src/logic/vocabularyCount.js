@@ -16,20 +16,37 @@
  * 語だけを足す。
  */
 
+import { wordContentKey } from './wordKey';
+
 /**
  * 単語の id → 単語データ（master）のレベル。
  *
  * **復習データ（users/{uid}/reviewWords）の写しの level を使わない**（2026-09-24）。
  * 写しは覚えた時点のレベルのままで、単語データのレベルを付け直しても追いかけない。
- * master に無い id（単語帳だけの語・古い Firestore の id）はレベルが無いので数えない。
+ * id で引けない語（古い Firestore の id）は 語＋品詞＋意味 で引く（wordKey.js）。
+ * それでも無い語（単語帳だけの語）はレベルが無いので数えない。
  *
  * @param {Array} master 単語マスター
  * @returns {(word: {id?: string}) => number|null}
  */
 export const levelLookup = (master = []) => {
   const byId = new Map();
-  for (const word of master) if (word && word.id) byId.set(word.id, word.level);
-  return (word) => (word && byId.has(word.id) ? byId.get(word.id) : null);
+  const byContent = new Map();
+  for (const word of master) {
+    if (!word || !word.id) continue;
+    byId.set(word.id, word.level);
+    // 中身が同じ語が複数あればやさしい方（重複6組はレベルを揃えてある）
+    const key = wordContentKey(word);
+    if (!byContent.has(key) || word.level < byContent.get(key)) byContent.set(key, word.level);
+  }
+  return (word) => {
+    if (!word) return null;
+    if (byId.has(word.id)) return byId.get(word.id);
+    // Firestore の教材から学んだ語（id が単語データと違う）は中身で引く。語の無い文書は引かない
+    if (!String(word.word || '').trim()) return null;
+    const key = wordContentKey(word);
+    return byContent.has(key) ? byContent.get(key) : null;
+  };
 };
 
 /**

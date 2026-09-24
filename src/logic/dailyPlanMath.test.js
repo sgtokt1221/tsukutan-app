@@ -5,6 +5,7 @@ import {
   dedupeAcross,
   splitIntoSessions,
   sortReviewCandidates,
+  unlearnedCandidates,
 } from './dailyPlanMath';
 import { parseLocalDate } from './dateKeys';
 
@@ -150,5 +151,27 @@ describe('sortReviewCandidates', () => {
     const input = [{ id: 'a', isOverdue: false }, { id: 'b', isOverdue: true }];
     sortReviewCandidates(input);
     expect(input.map((w) => w.id)).toEqual(['a', 'b']);
+  });
+});
+
+describe('unlearnedCandidates（日々の新しい単語の候補）', () => {
+  const w = (id, word, level, pos = '名', meaning = `${word}の意味`) => ({ id, word, partOfSpeech: pos, meaning, level });
+
+  test('**Firestore の文書IDで学んだ語も、中身が同じなら学習済みとして外す**', () => {
+    const words = [w('w_a', 'apple', 1), w('w_b', 'bread', 1)];
+    const learned = [{ id: 'Xy7randomFirestoreId', word: 'Apple ', partOfSpeech: '名', meaning: 'appleの意味' }];
+    expect(unlearnedCandidates(words, learned).map((x) => x.id)).toEqual(['w_b']);
+  });
+
+  test('品詞の「熟」と「熟語」は同じとみなす', () => {
+    const words = [w('w_c', 'look after', 3, '熟語', '世話をする')];
+    const learned = [{ id: 'old', word: 'look after', partOfSpeech: '熟', meaning: '世話をする' }];
+    expect(unlearnedCandidates(words, learned)).toEqual([]);
+  });
+
+  test('単語データの id で学んだ語も外し、2冊に入っている語は1つにする', () => {
+    const words = [w('w_a', 'apple', 1), w('w_b', 'bread', 2), w('w_b', 'bread', 2), w('w_c', 'cat', 5)];
+    const out = unlearnedCandidates(words, [{ id: 'w_a' }], (x) => x.level <= 2);
+    expect(out.map((x) => x.id)).toEqual(['w_b']);
   });
 });
