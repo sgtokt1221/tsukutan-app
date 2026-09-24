@@ -29,6 +29,8 @@ import {
 import { loadPendingQuizzes } from './logic/assignedQuiz';
 import AssignedQuiz from './components/quiz/AssignedQuiz';
 import AssignedQuizCard from './components/quiz/AssignedQuizCard';
+import ExamMissedNotice from './components/quiz/ExamMissedNotice';
+import { syncExamSupportMissed, reviewEntryOf } from './logic/examSupportMissed';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
@@ -792,6 +794,8 @@ export default function StudentDashboard() {
   };
 
   const handleReviewComplete = () => {
+    // 受験サポートのまちがえた語だけで復習していたら、次は今日の計画の復習に戻す
+    setReviewOverride(null);
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
     }
@@ -1237,6 +1241,31 @@ export default function StudentDashboard() {
   useEffect(() => {
     if (userId) refreshQuizzes(userId);
   }, [userId, refreshQuizzes]);
+  /*
+    受験サポートのテストでまちがえた語を、毎日の復習に入れる（2026-09-24。→ logic/examSupportMissed.js）。
+    起動と並行して1回。**失敗しても画面は止めない**（次に開いたときに取り直す）
+  */
+  const [examMissed, setExamMissed] = useState([]);
+  const [reviewOverride, setReviewOverride] = useState(null);
+  useEffect(() => {
+    if (!userId) return;
+    syncExamSupportMissed(userId)
+      .then((cards) => { if (cards.length > 0) setExamMissed(cards); })
+      .catch((error) => logger.warn('受験サポートのまちがえた語を取り込めませんでした', error));
+  }, [userId]);
+  /** 知らせの「今すぐ復習する」。今日の計画ではなく、取り込んだ語だけで復習する */
+  const startExamMissedReview = () => {
+    setReviewOverride(examMissed.map(reviewEntryOf));
+    setCurrentSessionInfo({
+      textbookId: '受験サポート',
+      filterType: 'まちがえた語',
+      filterValue: `${examMissed.length}語`,
+      startIndex: 0,
+    });
+    setExamMissed([]);
+    setViewMode('review');
+  };
+
   const startAssignedQuiz = (quiz) => {
     setActiveQuiz(quiz);
     setViewMode('assigned-quiz');
@@ -1474,7 +1503,7 @@ export default function StudentDashboard() {
                 />;
       case 'review':
         return <StudyFlashcard
-                  words={dailyPlan.reviewWords}
+                  words={reviewOverride || dailyPlan.reviewWords}
                   onBack={handleReviewComplete}
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
@@ -1507,6 +1536,7 @@ export default function StudentDashboard() {
           <>
             {/* 先生からの小テストは、目標より上に置く（出されたものを最初にやってほしい） */}
             <AssignedQuizCard quizzes={pendingQuizzes} onStart={startAssignedQuiz} />
+            <ExamMissedNotice words={examMissed} onReview={startExamMissedReview} onClose={() => setExamMissed([])} />
 
             {/* 上から 目標 → ランク → タスク の順に置く。
                 何のために学んでいるかを最初に見せる。 */}
