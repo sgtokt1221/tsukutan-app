@@ -237,3 +237,25 @@
   background-color: var(--color-danger-bg);
   color: var(--color-danger-ink);
 }
+
+/* 受験サポートのテストでまちがえた語の知らせ。面はベタ塗り（色帯のカードにしない） */
+.exam-missed-notice {
+  margin-bottom: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-lime-muted);
+  color: var(--color-ink-olive);
+}
+
+.exam-missed-notice__text {
+  margin: 0 0 var(--space-12);
+  font-size: var(--font-size-16);
+  line-height: var(--line-normal);
+}
+
+.exam-missed-notice__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
