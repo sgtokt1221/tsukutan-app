@@ -312,3 +312,39 @@ describe('単語帳の自動再生', () => {
     }
   });
 });
+
+/*
+  **答えのボタンは「もう一度｜もう覚えた｜わかった」**（2026-09-24）。
+  「迷った」は使われていないので外し、もう覚えた（上スワイプと同じ）を中央に黄色で置く。
+*/
+describe('答えのボタン', () => {
+  it('**迷ったは無い。中央が黄色の「もう覚えた」**', () => {
+    show('daily');
+    expect(screen.queryByRole('button', { name: '迷った' })).toBeNull();
+    const buttons = [...document.querySelectorAll('.answer-controls__buttons .answer-btn')];
+    expect(buttons.map((b) => b.textContent)).toEqual(['もう一度', 'もう覚えた', 'わかった']);
+    expect(buttons[1].className).toContain('answer-btn--graduate');
+  });
+
+  it('**毎日みる単語では中央は短く「覚えた」**（読み上げには全部の言葉）', () => {
+    show('bookmark');
+    const middle = document.querySelector('.answer-btn--graduate');
+    expect(middle.textContent).toBe('覚えた');
+    expect(middle.getAttribute('aria-label')).toBe('覚えた（毎日みるから外す）');
+  });
+
+  it('**下の段は「前の単語」だけ**（もう覚えたは中央へ移した）', () => {
+    show('daily');
+    const footer = document.querySelector('.session-footer');
+    expect(footer.textContent).toContain('前の単語');
+    expect(footer.textContent).not.toContain('もう覚えた');
+  });
+});
+
+describe('見出し', () => {
+  it('**単語帳でも見出しはフラッシュカードと同じ**（語数を足さない。右に総数が出ている）', () => {
+    show('free');
+    act(() => { fireEvent.click(screen.getByRole('tab', { name: '単語帳' })); });
+    expect(document.querySelector('.session-header__title').textContent).toBe('ターゲット1900 1〜100');
+  });
+});
