@@ -2348,6 +2348,28 @@ input[type="file"] { display: none; }
   border-color: #dc2626;
   color: #7f1d1d;
 }
+/* めくって読み上げている間は押せない（答えは1問に1回）。薄くして分かるようにする */
+.test-answer-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+/* 裏面の「あなたの答え」。答え合わせのときに自分がどちらを選んだかを見せる（2026-09-24） */
+.test-your-answer {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.test-your-answer.is-yes {
+  background-color: #d9f99d;
+  color: #365314;
+}
+.test-your-answer.is-no {
+  background-color: #fecaca;
+  color: #7f1d1d;
+}
 .test-nav-buttons {
   display: flex;
   justify-content: space-between;

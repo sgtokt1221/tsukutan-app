@@ -74,9 +74,22 @@ export const createInitialState = ({ startLevel = DEFAULT_START_LEVEL } = {}) =>
  * @param {Set|Array} askedIds 出題済みID
  * @param {Function} random 0〜1 を返す関数
  */
+/** つづりの比べ方（大文字小文字・前後の空白を無視）。つづりが無ければ ID で見分ける */
+const spellingOf = (word) => String(word?.word || '').trim().toLowerCase() || `#${word?.id}`;
+
 export const selectQuestions = (words, level, count, askedIds = [], random = Math.random) => {
   const asked = askedIds instanceof Set ? askedIds : new Set(askedIds);
-  const available = (words || []).filter((word) => word && word.id && !asked.has(word.id));
+  /*
+    **同じつづりを1回のテストで二度出さない**（2026-09-24）。単語データには同じつづりの
+    別の行が1,174語ぶんあり（about・after など）、IDだけで除いていたので、テストの23%で
+    同じ語が2回出ていた。2回目は答えを知った状態で自己申告することになる。
+  */
+  const askedSpellings = new Set(
+    (words || []).filter((word) => word && asked.has(word.id)).map(spellingOf),
+  );
+  const available = (words || []).filter(
+    (word) => word && word.id && !asked.has(word.id) && !askedSpellings.has(spellingOf(word)),
+  );
 
   const withinDistance = (distance) =>
     available.filter((word) => Math.abs((word.level ?? 0) - level) <= distance);
@@ -86,7 +99,17 @@ export const selectQuestions = (words, level, count, askedIds = [], random = Mat
   if (pool.length < count) pool = withinDistance(2);
   if (pool.length < count) pool = available;
 
-  return shuffle(pool, random).slice(0, count);
+  // 同じつづりが同じステージに2つ入らないように、混ぜてから先に出たものだけ取る
+  const seen = new Set();
+  const picked = [];
+  for (const word of shuffle(pool, random)) {
+    const key = spellingOf(word);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    picked.push(word);
+    if (picked.length >= count) break;
+  }
+  return picked;
 };
 
 /** 乱数を注入できる Fisher-Yates */
