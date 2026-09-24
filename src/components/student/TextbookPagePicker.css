@@ -1,0 +1,85 @@
+/* 教科書のページ選び。ページの札を格子に並べ、選んだ範囲を面で塗る。 */
+
+.page-picker__hint {
+  margin: 0 0 var(--space-12);
+  font-size: var(--font-size-14);
+  line-height: var(--line-normal);
+  color: var(--color-olive-muted);
+}
+
+.page-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: var(--space-8);
+}
+
+.page-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--tap-target);
+  padding: var(--space-8) var(--space-4);
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.page-chip:hover {
+  background-color: var(--color-lime-soft);
+}
+
+.page-chip.is-in-range {
+  background-color: var(--color-lime-soft);
+  border-color: var(--color-olive-subtle);
+}
+
+.page-chip.is-edge {
+  background-color: var(--color-ink-olive);
+  border-color: var(--color-ink-olive);
+  color: var(--color-surface);
+}
+
+.page-chip__page {
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-chip__count {
+  font-size: var(--font-size-12);
+  line-height: 1.2;
+}
+
+/* 始めるボタンは画面の下に留める（ページが多くても押しに戻らなくていい） */
+.page-picker__actions {
+  position: sticky;
+  bottom: 0;
+  margin-top: var(--space-16);
+  padding: var(--space-12) 0 calc(var(--space-12) + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to bottom, transparent, var(--color-surface) 30%);
+}
+
+.page-picker__start {
+  width: 100%;
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-16);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.page-picker__start:disabled {
+  background-color: var(--color-surface-muted, #eef0ec);
+  color: var(--color-olive-muted);
+  cursor: default;
+}

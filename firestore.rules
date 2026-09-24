@@ -75,6 +75,16 @@ service cloud.firestore {
     }
 
     //--------------------------------------------------------------------------
+    // 管理者が出した教科書の小テスト（2026-09-24）。
+    // 読めるのは対象の生徒だけ（targetUids に自分の uid がある文書）。書くのは Functions だけ
+    // （staffQuizAssignments）。生徒の結果は users/{uid}/quizResults に本人が書く。
+    //--------------------------------------------------------------------------
+    match /quiz_assignments/{assignmentId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.targetUids;
+      allow write: if false;
+    }
+
+    //--------------------------------------------------------------------------
     // CSV取り込みの操作記録。Functions だけが触る。
     //--------------------------------------------------------------------------
     match /importOperations/{operationId} {

@@ -68,6 +68,13 @@
         "headers": [
           { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
         ]
+      },
+      {
+        "//": "教科書の単語は、つくばホームの管理画面（/tsukutsuku/）も小テストを作るために読む（写しを2つ持たない）。中身は誰でも取れる静的ファイルなので、読むことだけ許す。",
+        "source": "/data/words-textbook-*.json",
+        "headers": [
+          { "key": "Access-Control-Allow-Origin", "value": "*" }
+        ]
       }
     ]
   },
