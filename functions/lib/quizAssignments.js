@@ -6,6 +6,11 @@
  * → `quiz_assignments/{id}` に書く → 生徒のつくつくのホームにカードが出る → 4択で解く
  * → 結果を `users/{uid}/quizResults/{id}` に本人が書く → 管理画面で済み・点数を見る。
  *
+ * ## 出題元は2つ（2026-09-24 に苦手な単語も足した）
+ * - `textbook` … 教科書の学年・ページから（下の説明）
+ * - `weak` … その生徒の苦手な単語から（`staffMaterials.js` の weakWordsForQuiz。苦手な順に上から）。
+ *   生徒ごとに語が違うので、**対象は1人だけ**
+ *
  * ## 語はサーバが選ぶ
  * 画面から語を受け取らない（書き換えられても、教科書に無い語や別の意味が出ないように）。
  * 教科書の語は `public/data/words-textbook-sunshine.json`（`scripts/build-textbook-words.js`）。
@@ -35,14 +40,22 @@ const isInt = (v) => Number.isInteger(v);
  */
 function validateCreate(body) {
   const b = body || {};
+  const source = b.source === 'weak' ? 'weak' : 'textbook';
+  const count = Number(b.count);
+  if (!isInt(count) || count < 0 || count > MAX_QUESTIONS) throw new QuizInputError(`問題数は${MAX_QUESTIONS}問までです`);
+  if (!DIRECTIONS.includes(b.direction)) throw new QuizInputError('出題の向きを選んでください');
+  if (source === 'weak') {
+    const uids = Array.isArray(b.targetUids) ? b.targetUids : [];
+    if (uids.length !== 1 || typeof uids[0] !== 'string' || uids[0] === '' || uids[0].includes('/')) {
+      throw new QuizInputError('苦手な単語の小テストは、1人ずつ出します');
+    }
+    return { source, count, direction: b.direction, targetUids: [uids[0]] };
+  }
   const grade = Number(b.grade);
   const pageFrom = Number(b.pageFrom);
   const pageTo = Number(b.pageTo);
-  const count = Number(b.count);
   if (![1, 2, 3].includes(grade)) throw new QuizInputError('学年を選んでください');
   if (!isInt(pageFrom) || !isInt(pageTo) || pageFrom < 1 || pageTo < 1) throw new QuizInputError('ページを選んでください');
-  if (!isInt(count) || count < 0 || count > MAX_QUESTIONS) throw new QuizInputError(`問題数は${MAX_QUESTIONS}問までです`);
-  if (!DIRECTIONS.includes(b.direction)) throw new QuizInputError('出題の向きを選んでください');
   const targets = [...new Set(Array.isArray(b.targetUids) ? b.targetUids : [])];
   if (targets.length === 0) throw new QuizInputError('対象の生徒を選んでください');
   if (targets.length > MAX_TARGETS) throw new QuizInputError(`一度に出せるのは${MAX_TARGETS}人までです`);
@@ -50,6 +63,7 @@ function validateCreate(body) {
     throw new QuizInputError('対象の生徒の指定が正しくありません');
   }
   return {
+    source,
     grade,
     pageFrom: Math.min(pageFrom, pageTo),
     pageTo: Math.max(pageFrom, pageTo),
@@ -68,9 +82,20 @@ function wordsInPages(cards, grade, from, to) {
     .sort((a, b) => a.page - b.page || a.order - b.order);
 }
 
-/** 見出し（`Sunshine 1年 p.30〜45`） */
-const titleOf = ({ grade, pageFrom, pageTo }) =>
-  `Sunshine ${grade}年 ${pageFrom === pageTo ? `p.${pageFrom}` : `p.${pageFrom}〜${pageTo}`}`;
+/** 見出し（`Sunshine 1年 p.30〜45` / `苦手な単語`） */
+const titleOf = ({ source, grade, pageFrom, pageTo }) => (source === 'weak' ? '苦手な単語'
+  : `Sunshine ${grade}年 ${pageFrom === pageTo ? `p.${pageFrom}` : `p.${pageFrom}〜${pageTo}`}`);
+
+/**
+ * 苦手な単語から出題する語。**苦手な順に上から** count 語（0 なら全部。上限 MAX_QUESTIONS）。
+ * @param {Array<{id, word, meaning}>} weakWords weakWordsForQuiz の結果（苦手な順）
+ */
+function pickWeakWords(weakWords, count) {
+  const usable = (weakWords || []).filter((w) => w && w.id && w.word && w.meaning);
+  if (usable.length === 0) throw new QuizInputError('この生徒には苦手な単語がまだありません');
+  const n = count > 0 ? count : MAX_QUESTIONS;
+  return usable.slice(0, n).map(({ id, word, meaning }) => ({ id, word, meaning }));
+}
 
 /**
  * 出題する語を選ぶ。範囲から count 語（0 なら全部）を**混ぜて**選ぶ。全員同じ問題になる。
@@ -113,5 +138,5 @@ function summarize(assignment, resultsByUid) {
 
 module.exports = {
   DIRECTIONS, MAX_TARGETS, MAX_QUESTIONS, QuizInputError,
-  validateCreate, wordsInPages, titleOf, pickQuizWords, summarize,
+  validateCreate, wordsInPages, titleOf, pickQuizWords, pickWeakWords, summarize,
 };

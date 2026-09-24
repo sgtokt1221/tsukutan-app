@@ -25,10 +25,11 @@ export default function AssignedQuiz({ quiz, uid, onExit, onFinished }) {
   const [saving, setSaving] = useState('idle'); // idle | saving | saved | error
   const [result, setResult] = useState(null);
 
-  // ひっかけが足りないとき用に、教科書の同じ学年の語（読めなくても小テストは進める）
+  // ひっかけが足りないとき用に、教科書の同じ学年の語（読めなくても小テストは進める）。
+  // 苦手な単語から出した小テストは学年を持たないので、教科書の全部から選ぶ
   useEffect(() => {
     loadSunshineCards()
-      .then((cards) => setExtraPool(cards.filter((c) => c.grade === quiz.grade)))
+      .then((cards) => setExtraPool(quiz.grade ? cards.filter((c) => c.grade === quiz.grade) : cards))
       .catch((error) => logger.warn('教科書の単語を読めませんでした（ひっかけは小テストの語だけで作ります）', error));
   }, [quiz.grade]);
 

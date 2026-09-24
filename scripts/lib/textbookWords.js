@@ -12,7 +12,7 @@
  *   3. 不規則な活用形（eaten / went / children）と複数形・三単現の -s → 原形の語。語は教科書の表記のまま、意味に「（eat の変化形）」を添える
  *   4. 単語帳（LEAP など）につづりが1件 → その語
  *   5. どれも無ければ出さない（意味の無いカードは学習にも小テストにも使えない）
- * **大文字で始まり、単語データにも無い語（人名・地名）は外す**（ユーザーの指定）。
+ * **人名・地名は外す**（ユーザーの指定）。大文字で始まる語は、単語データでも大文字で始まる語にだけ当てる。
  *
  * ## id
  * 1・2 は単語データの id をそのまま使う（覚えた記録・語彙数・苦手な単語とつながる）。
@@ -104,9 +104,14 @@ const borrow = (card, from, keys) => {
  */
 function resolveRow(row, masterByKey, bookByKey) {
   const key = norm(row.word);
-  const found = masterByKey.get(key) || [];
-  const isProperNoun = /^[A-Z]/.test(String(row.word).trim()) && found.length === 0;
-  if (isProperNoun) return { skip: 'proper-noun' };
+  /*
+    **大文字で始まる語（人名・地名）は、大文字で始まる語にしか当てない。** 登場人物の Bob が
+    動詞 bob「上下に動く」に当たっていた（2026-09-24。英検の級の lib/textbookEiken.js と同じ規則）。
+    I や Japan は単語データでも大文字なので当たる
+  */
+  const upper = /^[A-Z]/.test(String(row.word).trim());
+  const found = (masterByKey.get(key) || []).filter((m) => !upper || /^[A-Z]/.test(String(m.word).trim()));
+  if (upper && found.length === 0) return { skip: 'proper-noun' };
 
   const base = { word: row.word, grade: row.grade, page: row.page, order: row.order, partOfSpeech: '' };
 
