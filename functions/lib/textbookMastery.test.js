@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { masteryByTextbook, bucketOf, LEARNING_DAYS, RETAINED_DAYS } = require('./textbookMastery');
+const { masteryByTextbook, bucketOf, easiestEiken, LEARNING_DAYS, RETAINED_DAYS } = require('./textbookMastery');
 
 test('段階は間隔で分ける。外した語は卒業', () => {
   expect(bucketOf({ interval: 1 })).toBe('learning');
@@ -30,4 +30,19 @@ test('教材ごとに数える。id で引けなければ中身で引く（Fires
   const [m] = masteryByTextbook(docs, [{ id: 't', title: 'T', words }]);
   expect(m.total).toBe(3);
   expect(m.counts).toEqual({ unlearned: 1, learning: 1, settling: 0, retained: 1, graduated: 0 });
+});
+
+test('英検の級は、いちばんやさしい級1つにだけ入る（数値と文字列が混ざっていても）', () => {
+  expect(easiestEiken({ eikenLevels: [3, 4] })).toBe('4');
+  expect(easiestEiken({ eikenLevels: ['pre1', 2] })).toBe('2');
+  expect(easiestEiken({ eikenLevels: ['pre2'] })).toBe('pre2');
+  expect(easiestEiken({})).toBeNull();
+  expect(easiestEiken({ eikenLevels: ['x'] })).toBeNull();
+});
+
+test('英検の級の束は、本物の単語帳で空にならない', () => {
+  const words = JSON.parse(fs.readFileSync(path.join(__dirname, '../../public/data/words-master.json'), 'utf8'));
+  for (const g of ['5', '4', '3', 'pre2', '2', 'pre1']) {
+    expect(words.filter((w) => easiestEiken(w) === g).length).toBeGreaterThan(100);
+  }
 });

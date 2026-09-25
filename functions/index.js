@@ -48,7 +48,7 @@ const {
   StaffAccessError,
 } = require('./lib/staffMaterials');
 // 生徒詳細の「定着度」（教材ごと）
-const { masteryByTextbook } = require('./lib/textbookMastery');
+const { masteryByTextbook, easiestEiken } = require('./lib/textbookMastery');
 // 管理者が出す教科書の小テスト
 const {
   QuizInputError,
@@ -1086,9 +1086,13 @@ const MASTERY_TEXTBOOKS = [
   { id: 'book-target1900', title: '英単語ターゲット1900', file: 'words-book-target1900.json' },
   { id: 'book-leap', title: '必携英単語LEAP', file: 'words-book-leap.json' },
   { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', file: 'words-book-idiom-target1000.json' },
+  // 英検の級（2026-09-25）。1語はいちばんやさしい級1つにだけ入る。1級は語に印が無いので出さない
+  ...[['5', '5級'], ['4', '4級'], ['3', '3級'], ['pre2', '準2級'], ['2', '2級'], ['pre1', '準1級']]
+    .map(([eiken, label]) => ({ id: `eiken-${eiken}`, title: `英検${label}`, file: 'words-master.json', eiken })),
 ];
-const loadMasteryTextbooks = async () => Promise.all(MASTERY_TEXTBOOKS.map(async ({ id, title, file, grade }) => {
+const loadMasteryTextbooks = async () => Promise.all(MASTERY_TEXTBOOKS.map(async ({ id, title, file, grade, eiken }) => {
   const words = await loadDataFile(file);
+  if (eiken) return { id, title, words: words.filter((w) => easiestEiken(w) === eiken) };
   return { id, title, words: grade ? words.filter((w) => w.grade === grade) : words };
 }));
 

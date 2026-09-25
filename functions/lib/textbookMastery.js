@@ -59,4 +59,14 @@ function masteryByTextbook(reviewDocs, textbooks) {
   });
 }
 
-module.exports = { BUCKETS, LEARNING_DAYS, RETAINED_DAYS, bucketOf, contentKey, masteryByTextbook };
+/**
+ * 英検の級で束ねるときの所属。**いちばんやさしい級1つだけ**に入れる（scripts/lib/relevel.js の easiestEiken と同じ）。
+ * 複数の級に載る語を全部に数えると、同じ語が級をまたいで二重に数えられる。
+ */
+const EIKEN_ORDER = ['5', '4', '3', 'pre2', '2', 'pre1', '1'];
+function easiestEiken(word) {
+  const ranks = ((word && word.eikenLevels) || []).map((x) => EIKEN_ORDER.indexOf(String(x))).filter((i) => i >= 0);
+  return ranks.length ? EIKEN_ORDER[Math.min(...ranks)] : null;
+}
+
+module.exports = { BUCKETS, EIKEN_ORDER, LEARNING_DAYS, RETAINED_DAYS, bucketOf, contentKey, easiestEiken, masteryByTextbook };
