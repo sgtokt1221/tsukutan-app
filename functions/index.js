@@ -55,6 +55,8 @@ const {
   validateCreate: validateQuizCreate,
   pickQuizWords,
   pickWeakWords,
+  pickSourceWords,
+  dataFileOf: quizDataFileOf,
   titleOf: quizTitleOf,
   summarize: summarizeQuiz,
 } = require('./lib/quizAssignments');
@@ -1051,6 +1053,7 @@ exports.staffStudentMaterials = onRequest(
  * （CORS はつくばホームだけ・つくばホームのIDトークン・管理者だけ・トークンはログに出さない）。
  *
  *   { action: 'create', grade, pageFrom, pageTo, count, direction, targetUids }  → { id }
+ *   { action: 'create', source: 'weak' | 'book' (bookId, noFrom, noTo) | 'eiken' (eiken), count, direction, targetUids }
  *   { action: 'list', uid? }  → { assignments: [...集計つき] }（uid を渡すとその生徒に出したものだけ）
  *   { action: 'close', id }   → { ok }（取り下げ。生徒のホームのカードから消える）
  *
@@ -1126,12 +1129,15 @@ quizAssignmentsApp.post('/', async (req, res) => {
         // その生徒の苦手な単語（staffStudentMaterials と同じ決め方）
         const snap = await db.collection('users').doc(input.targetUids[0]).collection('reviewWords').get();
         words = pickWeakWords(weakWordsForQuiz(snap.docs.map((d) => ({ id: d.id, data: d.data() }))), input.count);
+      } else if (input.source === 'book' || input.source === 'eiken') {
+        // 単語帳（見出し番号の範囲）・英検（級）。規則は lib/quizAssignments.js
+        words = pickSourceWords(await loadDataFile(quizDataFileOf(input)), input);
       } else {
         words = pickQuizWords(await loadTextbookCards(), input);
       }
       const ref = db.collection('quiz_assignments').doc();
       await ref.set({
-        textbook: input.source === 'weak' ? null : 'sunshine',
+        textbook: input.source === 'textbook' ? 'sunshine' : null,
         title: quizTitleOf(input),
         ...input,
         count: words.length,
