@@ -56,6 +56,7 @@ const {
   pickQuizWords,
   pickWeakWords,
   pickSourceWords,
+  pickWeakInSource,
   dataFileOf: quizDataFileOf,
   titleOf: quizTitleOf,
   summarize: summarizeQuiz,
@@ -1054,6 +1055,7 @@ exports.staffStudentMaterials = onRequest(
  *
  *   { action: 'create', grade, pageFrom, pageTo, count, direction, targetUids }  → { id }
  *   { action: 'create', source: 'weak' | 'book' (bookId, noFrom, noTo) | 'eiken' (eiken), count, direction, targetUids }
+ *   教材（textbook / book / eiken）に weakOnly: true を付けると、範囲の中でその生徒が間違えた単語だけ（対象は1人）
  *   { action: 'list', uid? }  → { assignments: [...集計つき] }（uid を渡すとその生徒に出したものだけ）
  *   { action: 'close', id }   → { ok }（取り下げ。生徒のホームのカードから消える）
  *
@@ -1125,10 +1127,17 @@ quizAssignmentsApp.post('/', async (req, res) => {
     if (body.action === 'create') {
       const input = validateQuizCreate(body);
       let words;
+      // その生徒の苦手な単語（staffStudentMaterials と同じ決め方）
+      const weakOf = async (uid) => {
+        const snap = await db.collection('users').doc(uid).collection('reviewWords').get();
+        return weakWordsForQuiz(snap.docs.map((d) => ({ id: d.id, data: d.data() })));
+      };
       if (input.source === 'weak') {
-        // その生徒の苦手な単語（staffStudentMaterials と同じ決め方）
-        const snap = await db.collection('users').doc(input.targetUids[0]).collection('reviewWords').get();
-        words = pickWeakWords(weakWordsForQuiz(snap.docs.map((d) => ({ id: d.id, data: d.data() }))), input.count);
+        words = pickWeakWords(await weakOf(input.targetUids[0]), input.count);
+      } else if (input.weakOnly) {
+        // 教材の範囲の中で、その生徒が間違えた単語だけ（2026-09-26。規則は lib/quizAssignments.js）
+        const [sourceWords, weakWords] = await Promise.all([loadDataFile(quizDataFileOf(input)), weakOf(input.targetUids[0])]);
+        words = pickWeakInSource(sourceWords, weakWords, input);
       } else if (input.source === 'book' || input.source === 'eiken') {
         // 単語帳（見出し番号の範囲）・英検（級）。規則は lib/quizAssignments.js
         words = pickSourceWords(await loadDataFile(quizDataFileOf(input)), input);

@@ -17,7 +17,11 @@ describe('苦手な単語', () => {
 
   test('**直近で間違えた語は苦手**', () => {
     const [w] = weakWordsForQuiz([doc('miss', { repetitions: 0, easeFactor: 2.6 })]);
-    expect(w).toEqual({ id: 'miss', word: 'miss', meaning: 'missの意味', lastWrong: true });
+    expect(w).toEqual({ id: 'miss', word: 'miss', partOfSpeech: '', meaning: 'missの意味', lastWrong: true });
+  });
+
+  test('品詞も渡す（教材の語と 語＋品詞＋意味 で結びつけるため）', () => {
+    expect(weakWordsForQuiz([doc('run', { repetitions: 0, partOfSpeech: '動' })])[0].partOfSpeech).toBe('動');
   });
 
   test('**覚えやすさが初期値より下がった語は苦手**', () => {
