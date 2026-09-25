@@ -18,6 +18,8 @@
  * - 苦手 ＝ **直近で間違えた**（`repetitions === 0` で一度は答えている）か、
  *   **`easeFactor` が初期値より下がった**（間違い・迷いが正解より多い）
  * - 並び：直近で間違えた語が先、次に `easeFactor` の低い順
+ * - 品詞（`partOfSpeech`）も渡す（2026-09-26）。教材ごとの「間違えた単語だけ」で、教材の語と
+ *   語＋品詞＋意味で結びつけるため（quizAssignments.js の weakWordsInSource。画面も同じ規則で絞る）
  */
 
 /** つくばホームの管理者の役割 */
@@ -49,7 +51,7 @@ const hasAnswered = (data) => Boolean(data.lastReviewed);
  * 苦手な単語。苦手な順。
  *
  * @param {Array<{id: string, data: object}>} docs users/{uid}/reviewWords
- * @returns {Array<{id: string, word: string, meaning: string, lastWrong: boolean}>}
+ * @returns {Array<{id: string, word: string, partOfSpeech: string, meaning: string, lastWrong: boolean}>}
  */
 function weakWordsForQuiz(docs) {
   return (docs || [])
@@ -60,6 +62,7 @@ function weakWordsForQuiz(docs) {
       return {
         id,
         word: String(data.word || ''),
+        partOfSpeech: String(data.partOfSpeech || ''),
         meaning: String(data.meaning || data.japanese || data.translation || ''),
         lastWrong,
         ease,
@@ -67,7 +70,7 @@ function weakWordsForQuiz(docs) {
     })
     .filter((w) => w.word !== '' && (w.lastWrong || w.ease < INITIAL_EASE))
     .sort((a, b) => (Number(b.lastWrong) - Number(a.lastWrong)) || (a.ease - b.ease))
-    .map(({ id, word, meaning, lastWrong }) => ({ id, word, meaning, lastWrong }));
+    .map(({ id, word, partOfSpeech, meaning, lastWrong }) => ({ id, word, partOfSpeech, meaning, lastWrong }));
 }
 
 module.exports = {

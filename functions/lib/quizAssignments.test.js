@@ -157,3 +157,96 @@ describe('単語帳・英検から出す（2026-09-26。高校生の出題元）
     for (const b of QUIZ_BOOKS) expect(books).toContainEqual(b);
   });
 });
+
+describe('教材ごとの「間違えた単語だけ」（2026-09-26。weakOnly）', () => {
+  const { weakWordsInSource, pickWeakInSource, WEAK_ONLY_SUFFIX, MAX_QUESTIONS } = require('./quizAssignments');
+  const { weakWordsForQuiz } = require('./staffMaterials');
+  const one = { count: 0, direction: 'en-ja', targetUids: ['u1'] };
+
+  test('**true のときだけ weakOnly を持つ**（undefined を持つと Firestore が文書ごと拒む）', () => {
+    expect(validateCreate({ ...one, source: 'eiken', eiken: '3' })).not.toHaveProperty('weakOnly');
+    expect(validateCreate({ ...one, source: 'eiken', eiken: '3', weakOnly: 'yes' })).not.toHaveProperty('weakOnly');
+    expect(validateCreate({ ...one, source: 'eiken', eiken: '3', weakOnly: true }).weakOnly).toBe(true);
+    expect(validateCreate({ ...one, source: 'book', bookId: 'book-leap', noFrom: 1, noTo: 5, weakOnly: true }).weakOnly).toBe(true);
+    expect(validateCreate({ ...one, grade: 1, pageFrom: 1, pageTo: 2, weakOnly: true }).weakOnly).toBe(true);
+    // 苦手な単語にはもともと範囲が無いので付けない
+    expect(validateCreate({ ...one, source: 'weak', weakOnly: true })).not.toHaveProperty('weakOnly');
+  });
+
+  test('**生徒ごとに語が違うので、対象は1人だけ**', () => {
+    expect(() => validateCreate({ ...one, source: 'eiken', eiken: '3', weakOnly: true, targetUids: ['u1', 'u2'] }))
+      .toThrow('間違えた単語だけの小テストは、1人ずつ出します');
+  });
+
+  test('見出しの後ろに（間違えた単語）', () => {
+    expect(titleOf({ source: 'eiken', eiken: 'pre2', weakOnly: true })).toBe(`英検準2級${WEAK_ONLY_SUFFIX}`);
+    expect(titleOf({ source: 'eiken', eiken: 'pre2' })).toBe('英検準2級');
+  });
+
+  const POOL = [
+    { id: 'w_run', word: 'run', partOfSpeech: '動', meaning: '走る', no: 1 },
+    { id: 'w_go', word: 'go', partOfSpeech: '動', meaning: '行く', no: 2 },
+    { id: 'w_up', word: 'give up', partOfSpeech: '熟語', meaning: 'あきらめる', no: 3 },
+    { id: 'w_inc', word: 'increase', partOfSpeech: '動', meaning: '増える', no: 4 },
+  ];
+
+  test('結びつけは id → 語＋品詞＋意味（品詞の「熟」は「熟語」とそろえる）。並びは苦手な順', () => {
+    const weak = [
+      { id: 'old_random', word: 'give up', partOfSpeech: '熟', meaning: 'あきらめる', lastWrong: true },
+      { id: 'w_go', word: 'go', partOfSpeech: '動', meaning: '行く', lastWrong: false },
+      { id: 'x', word: 'apple', partOfSpeech: '名', meaning: 'りんご' },
+    ];
+    expect(weakWordsInSource(POOL, weak).map((w) => [w.id, w.lastWrong])).toEqual([['w_up', true], ['w_go', false]]);
+  });
+
+  test('**単語帳だけ綴りでも結びつける**（本の訳はマスタと違う。英検・教科書では綴りで見ない）', () => {
+    const weak = [{ id: 'w_master_inc', word: 'Increase ', partOfSpeech: '動', meaning: '増加する' }];
+    expect(weakWordsInSource(POOL, weak, { bySpelling: true }).map((w) => w.id)).toEqual(['w_inc']);
+    expect(weakWordsInSource(POOL, weak)).toEqual([]);
+  });
+
+  test('教材の1語は1回だけ（苦手の記録が2件当たっても）', () => {
+    const weak = [{ id: 'w_run', word: 'run' }, { id: 'r2', word: 'run', partOfSpeech: '動', meaning: '走る' }];
+    expect(weakWordsInSource(POOL, weak)).toHaveLength(1);
+  });
+
+  test('**範囲の外の苦手は出さない**。苦手な順に上から count 語。教材の語（訳・番号）を写す', () => {
+    const weak = [
+      { id: 'w_inc', word: 'increase' }, { id: 'w_go', word: 'go' }, { id: 'w_run', word: 'run' },
+    ];
+    const input = { source: 'book', bookId: 'book-leap', noFrom: 1, noTo: 2, count: 0 };
+    expect(pickWeakInSource(POOL, weak, input)).toEqual([
+      { id: 'w_go', word: 'go', meaning: '行く', no: 2 },
+      { id: 'w_run', word: 'run', meaning: '走る', no: 1 },
+    ]);
+    expect(pickWeakInSource(POOL, weak, { ...input, count: 1 }).map((w) => w.id)).toEqual(['w_go']);
+  });
+
+  test('**範囲に間違えた単語が無ければ出さない**（空の小テストを作らない）', () => {
+    expect(() => pickWeakInSource(POOL, [{ id: 'zzz', word: 'zzz' }], { source: 'book', noFrom: 1, noTo: 4, count: 0 }))
+      .toThrow('この範囲には、この生徒が間違えた単語がありません');
+  });
+
+  test('英検の級・教科書のページでも絞れる。0 は上限 MAX_QUESTIONS まで', () => {
+    const master = Array.from({ length: 80 }, (_, i) => ({ id: `m${i}`, word: `m${i}`, meaning: 'い', eikenLevels: [3] }));
+    const weak = master.map((w) => ({ id: w.id, word: w.word }));
+    expect(pickWeakInSource(master, weak, { source: 'eiken', eiken: '3', count: 0 })).toHaveLength(MAX_QUESTIONS);
+    expect(() => pickWeakInSource(master, weak, { source: 'eiken', eiken: '2', count: 0 })).toThrow(QuizInputError);
+    const cards = [
+      { id: 't1', word: 'a', meaning: 'あ', grade: 1, page: 10, order: 1 },
+      { id: 't2', word: 'b', meaning: 'い', grade: 1, page: 20, order: 1 },
+    ];
+    expect(pickWeakInSource(cards, [{ id: 't2' }, { id: 't1' }], { source: 'textbook', grade: 1, pageFrom: 10, pageTo: 12, count: 0 }))
+      .toEqual([{ id: 't1', word: 'a', meaning: 'あ', page: 10 }]);
+  });
+
+  test('**「苦手」の決め方は weakWordsForQuiz そのもの**（覚えた語・苦手でない語は教材で絞っても出ない）', () => {
+    const docs = [
+      { id: 'w_run', data: { word: 'run', partOfSpeech: '動', meaning: '走る', lastReviewed: 't', repetitions: 0, easeFactor: 2.5 } },
+      { id: 'w_go', data: { word: 'go', partOfSpeech: '動', meaning: '行く', lastReviewed: 't', repetitions: 3, easeFactor: 2.7 } },
+      { id: 'w_inc', data: { word: 'increase', partOfSpeech: '動', meaning: '増える', lastReviewed: 't', repetitions: 0, status: 'mastered' } },
+    ];
+    expect(pickWeakInSource(POOL, weakWordsForQuiz(docs), { source: 'book', noFrom: 1, noTo: 4, count: 0 }).map((w) => w.id))
+      .toEqual(['w_run']);
+  });
+});
