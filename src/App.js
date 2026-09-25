@@ -27,6 +27,8 @@ function AppContent() {
   const [currentUser, setCurrentUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isGoalSet, setIsGoalSet] = useState(false);
+  // 学年（'中学1年生' / '中1' など）。目標設定で出す教材を学年で分けるのに使う
+  const [schoolGrade, setSchoolGrade] = useState(null);
   
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
@@ -85,6 +87,7 @@ function AppContent() {
               void resumeAndFlush();
               const userDocRef = doc(db, 'users', user.uid);
               const userDoc = await getDoc(userDocRef);
+              setSchoolGrade(userDoc.exists() ? userDoc.data().grade ?? null : null);
               if (userDoc.exists() && userDoc.data().goal && userDoc.data().goal.isSet) {
                 setIsGoalSet(true);
               } else {
@@ -176,7 +179,7 @@ function AppContent() {
         <Route path="/student-dashboard" element={userRole === 'student' ? <StudentDashboard /> : <Navigate to="/" />} />
         <Route path="/set-goal" element={
           userRole === 'student' ? (
-            <GoalSetter onGoalSet={handleGoalSet} onGoalReset={handleGoalReset} />
+            <GoalSetter onGoalSet={handleGoalSet} onGoalReset={handleGoalReset} schoolGrade={schoolGrade} />
           ) : (
             <Navigate to="/" />
           )

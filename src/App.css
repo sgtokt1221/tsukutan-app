@@ -3224,26 +3224,46 @@ select:focus-visible,
   overflow: hidden;
 }
 
+/*
+  **iPhone の日付入力は、既定の見た目（appearance: auto）のままだと寸法が効かない。**
+  値が中央寄せの灰色の札になり、空のときは中身の高さが0になって箱が潰れる
+  （Safari のタブでも、ホーム画面から開いたときも同じ）。
+  見た目を外し、高さを「枠1px＋上下15px＋行20px＝52px」で固定する。
+  空でも値の欄に1行ぶんの高さを持たせて、入れる前と後で箱が動かないようにする。
+*/
 .goal-date-input {
+  -webkit-appearance: none;
+  appearance: none;
   display: block;
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  min-height: 52px;
+  height: 52px;
   margin: 0;
-  padding: var(--space-12) var(--space-16);
+  padding: 15px var(--space-16);
   border: var(--border-default);
   border-radius: var(--radius-control);
   background: var(--color-surface);
   color: var(--color-ink-olive);
   font: inherit;
-  line-height: 1.2;
+  /* 16px 未満にすると、iPhone は触った瞬間に画面を拡大する */
+  font-size: 16px;
+  line-height: 20px;
+  text-align: left;
   color-scheme: light;
 }
 
 .goal-date-input::-webkit-date-and-time-value {
   min-width: 0;
+  min-height: 20px;
+  margin: 0;
+  line-height: 20px;
   text-align: left;
+}
+
+.goal-date-input::-webkit-datetime-edit {
+  padding: 0;
+  line-height: 20px;
 }
 
 .goal-date-input::-webkit-calendar-picker-indicator {

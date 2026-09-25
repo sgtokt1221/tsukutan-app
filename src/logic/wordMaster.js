@@ -10,6 +10,7 @@
  */
 
 import { loadCachedJson } from './wordDataCache';
+import { BOOKS } from '../config/books';
 
 const BASE_PATH = '/data';
 
@@ -128,6 +129,9 @@ export const loadPronunciations = (options) => fetchCachedJson('pronunciations.j
 const TEXTBOOK_FILES = {
   'osaka-koukou-nyuushi': 'words-osaka.json',
   'highschool-english': 'words-highschool.json',
+  // 市販の単語帳。日々の新しい単語で「教材」に選べる（logic/newWordSources.js）。
+  // ファイル名の正本は config/books.js の deckId
+  ...Object.fromEntries(BOOKS.map((book) => [book.id, `words-book-${book.deckId}.json`])),
 };
 
 /** 教材ごとの単語。未知の教材IDは空配列。 */

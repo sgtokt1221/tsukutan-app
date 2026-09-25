@@ -46,37 +46,15 @@ import { StudentHeader, StudentBottomNav } from './components/layout/StudentShel
 import { loadWordMaster, loadManifest, loadTextbookWords } from './logic/wordMaster';
 import { INTERVIEW_GRADES } from './logic/interviewContent';
 import logger from './logic/logger';
+import { EIKEN_ORDER, easiestEikenLevel, eikenTargetOf } from './logic/eikenLevels';
 
 // 面接モードは画像と素材を伴うので、開いたときだけ読む。
 // 起動時の塊に入れると、使わない生徒の起動まで遅くなる。
 const EikenInterview = React.lazy(() => import('./components/eiken/EikenInterview'));
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
-/** 英検の級を、やさしい順に並べたもの。実データに1級の語は無い。 */
-export const EIKEN_ORDER = [5, 4, 3, 'pre2', 2, 'pre1'];
-
-/**
- * その単語が属する英検の級。複数の級に入っている語は
- * 一番やさしい級のものとして扱う。
- *
- * 実データでは 2,462 件が複数の級に属していて（"a lot of" は 3級・4級・5級）、
- * 級ごとに数えると同じ語を何度も数えてしまう。準1級だと合計 7,867 語と、
- * 実際の収録 4,478 語の倍近くになっていた。
- */
-export const easiestEikenLevel = (word) => {
-  if (!Array.isArray(word?.eikenLevels)) return null;
-  const known = word.eikenLevels.filter((level) => EIKEN_ORDER.includes(level));
-  if (known.length === 0) return null;
-  return known.reduce((a, b) => (EIKEN_ORDER.indexOf(a) < EIKEN_ORDER.indexOf(b) ? a : b));
-};
-
-/** 教材ID（eiken-3 / eiken-pre2 など）からその級を取り出す。 */
-export const eikenTargetOf = (textbookId = '') => {
-  const levelPart = textbookId.split('-')[1];
-  if (levelPart === 'pre2' || levelPart === 'pre1') return levelPart;
-  const numeric = parseInt(levelPart, 10);
-  return Number.isNaN(numeric) ? null : numeric;
-};
+// 英検の級の並び・語の級・教材IDからの級は logic/eikenLevels.js に移した（日々の新しい単語でも使う）
+export { EIKEN_ORDER, easiestEikenLevel, eikenTargetOf };
 
 /**
  * 英検教材に収録する語。その級以下（＝その級までにやさしい側）の語を集める。
@@ -1762,6 +1740,13 @@ export default function StudentDashboard() {
                 <p className="plan-notice" role="status">
                   期限に間に合わせるため、今日は希望の {dailyPlan.preferredNewWords} 語より多い
                   {' '}{dailyPlan.plannedNewWords} 語を出しています。
+                </p>
+              )}
+              {/* 選んだ教材の語を全部学び終えた。**黙って新規0にしない** */}
+              {dailyPlan.newWordSourceFinished && (
+                <p className="plan-notice" role="status">
+                  「{dailyPlan.newWordSourceTitle}」の単語はすべて学習しました。
+                  「目標を再設定する」から、次の教材を選べます。
                 </p>
               )}
                <div className="task-cards-container">

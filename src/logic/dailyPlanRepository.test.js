@@ -28,6 +28,21 @@ describe('planSignature', () => {
     expect(planSignature({ ...user, ...patch })).not.toBe(planSignature(user));
   });
 
+  /* **教材を署名に入れないと、変えてもその日は古い教材のまま**（翌日まで効かない） */
+  test('新しい単語の教材が変わると署名も変わる', () => {
+    const withBook = { ...user, goal: { ...user.goal, newWordTextbook: 'book-leap' } };
+    const withOther = { ...user, goal: { ...user.goal, newWordTextbook: 'eiken-3' } };
+    expect(planSignature(withBook)).not.toBe(planSignature(user));
+    expect(planSignature(withBook)).not.toBe(planSignature(withOther));
+  });
+
+  /* おまかせの生徒まで、今日の計画が作り直しにならないように */
+  test('おまかせ（null・未設定）は教材を足す前と同じ署名', () => {
+    const auto = { ...user, goal: { ...user.goal, newWordTextbook: null } };
+    expect(planSignature(auto)).toBe(planSignature(user));
+    expect(planSignature(user)).toBe('eiken_2,hs_60|2026-09-01|normal|4');
+  });
+
   test('設定が空でも落ちない', () => {
     expect(typeof planSignature(undefined)).toBe('string');
     expect(typeof planSignature({})).toBe('string');
