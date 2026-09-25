@@ -75,6 +75,13 @@
         "headers": [
           { "key": "Access-Control-Allow-Origin", "value": "*" }
         ]
+      },
+      {
+        "//": "単語帳と英検の語（words-master）も、つくばホームの管理画面が小テストの範囲を見せ・印刷するために読む（2026-09-26）。教科書と同じく読むことだけ許す。",
+        "source": "/data/@(words-book-*|words-master).json",
+        "headers": [
+          { "key": "Access-Control-Allow-Origin", "value": "*" }
+        ]
       }
     ]
   },
