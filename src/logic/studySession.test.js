@@ -612,3 +612,12 @@ describe('1分に満たない音読', () => {
     expect(ms).toBe(35_000);
   });
 });
+
+describe('練習した単語帳を送る（2026-09-24）', () => {
+  test('**noteDeck した単語帳が送る中身に入る**。付けていなければ欄ごと出さない', () => {
+    const { toPayload } = require('./studySession');
+    const base = { startedAtMs: Date.parse('2026-09-24T10:00:00Z'), visibleSince: null, accumulatedMs: 5 * 60 * 1000, lastAt: 0 };
+    expect(toPayload({ ...base, deckId: 'leap' }).deckId).toBe('leap');
+    expect('deckId' in toPayload(base)).toBe(false);
+  });
+});
