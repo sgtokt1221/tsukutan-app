@@ -12,6 +12,9 @@
  *   卒業していた語は卒業を外す）。受験サポートで間違えた＝まだ覚えていない、なので
  * - どこまで取り込んだかは `users/{uid}.examSupportMissedSince`。**全部書けてから進める**
  *   （途中で落ちても次に開いたとき取り直せる。二重に入っても害が無い書き方にしてある）
+ * - 同じ呼び出しで、**先生が受験サポートで出したテスト範囲（まだ合格していないもの）**も受け取る
+ *   （practice）。ホームの「受験サポートのテスト範囲」から、その範囲を単語帳のカードで練習する。
+ *   テストを受けるのは受験サポート。つくつくは覚えるところ（2026-09-24 の分担）
  */
 import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
@@ -20,6 +23,28 @@ import { addWordToReview } from './reviewLogic';
 
 const MISSED_URL = process.env.REACT_APP_MISSED_WORDS_URL
   || 'https://asia-northeast1-tsukubamanager-4900b.cloudfunctions.net/tsukutanMissedWords';
+
+/** 単語帳のカードを読む（冊ごとに1回。読めなければ投げる） */
+const deckCache = new Map();
+export function loadDeckCards(deckId, fetchImpl = fetch) {
+  if (deckCache.has(deckId)) return deckCache.get(deckId);
+  const book = BOOKS.find((b) => b.deckId === deckId);
+  if (!book) return Promise.resolve([]);
+  const p = fetchImpl(bookWordsUrl(book)).then((response) => {
+    if (!response.ok) throw new Error(`単語帳を読めませんでした (${deckId})`);
+    return response.json();
+  }).catch((error) => { deckCache.delete(deckId); throw error; });
+  deckCache.set(deckId, p);
+  return p;
+}
+
+/** 番号の一覧（`{deckId, no}`）をカードにする。要る冊だけ読む */
+export async function cardsForRefs(refs) {
+  const deckIds = [...new Set((refs || []).map((m) => m.deckId))];
+  const cardsByDeck = {};
+  await Promise.all(deckIds.map(async (deckId) => { cardsByDeck[deckId] = await loadDeckCards(deckId); }));
+  return cardsForMissed(refs, cardsByDeck);
+}
 
 /** 受け取った `{deckId, no}` を単語帳のカードに直す。無い語は飛ばす（本を入れ替えたときに落ちない） */
 export function cardsForMissed(missed, cardsByDeck) {
@@ -64,25 +89,16 @@ async function callMissed(payload) {
 
 /**
  * 取り込む。**失敗したら投げる**（呼び出し側はログだけにして画面を止めない）。
- * @returns {Promise<Array>} 復習に入れたカード（知らせと「今すぐ復習する」に使う）
+ * @returns {Promise<{ missed: Array, practice: Array }>} missed は復習に入れたカード（知らせと「今すぐ復習する」に使う）。
+ *   practice は出されたテスト範囲 `{assignmentId, title, dueDate, words, range}`（カードには押したときに直す）
  */
 export async function syncExamSupportMissed(uid) {
   const user = auth.currentUser;
-  if (!uid || !user) return [];
+  if (!uid || !user) return { missed: [], practice: [] };
   const userRef = doc(db, 'users', uid);
   const since = String((await getDoc(userRef)).data()?.examSupportMissedSince || '');
-  const { missed = [], latest = null } = await callMissed({ idToken: await user.getIdToken(), since });
-
-  const deckIds = [...new Set(missed.map((m) => m.deckId))];
-  const cardsByDeck = {};
-  await Promise.all(deckIds.map(async (deckId) => {
-    const book = BOOKS.find((b) => b.deckId === deckId);
-    if (!book) return;
-    const response = await fetch(bookWordsUrl(book));
-    if (!response.ok) throw new Error(`単語帳を読めませんでした (${deckId})`);
-    cardsByDeck[deckId] = await response.json();
-  }));
-  const cards = cardsForMissed(missed, cardsByDeck);
+  const { missed = [], latest = null, practice = [] } = await callMissed({ idToken: await user.getIdToken(), since });
+  const cards = await cardsForRefs(missed);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -97,5 +113,5 @@ export async function syncExamSupportMissed(uid) {
   }
   // 全部書けてから進める
   if (latest && latest > since) await updateDoc(userRef, { examSupportMissedSince: latest });
-  return cards;
+  return { missed: cards, practice: Array.isArray(practice) ? practice : [] };
 }

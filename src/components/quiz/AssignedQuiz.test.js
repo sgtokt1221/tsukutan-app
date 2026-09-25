@@ -72,3 +72,23 @@ test('ホームのカードは、まだ解いていない小テストがある�
   fireEvent.click(screen.getByText('Sunshine 1年 p.10〜12'));
   expect(onStart).toHaveBeenCalledWith(QUIZ);
 });
+
+describe('受験サポートのテスト範囲（2026-09-24）', () => {
+  // eslint-disable-next-line global-require
+  const ExamPracticeCard = require('./ExamPracticeCard').default;
+  const P = { assignmentId: 'a1', title: '必携英単語LEAP 101〜200', dueDate: '2026-09-30', words: [{ deckId: 'leap', no: 101 }, { deckId: 'leap', no: 102 }], range: { deckId: 'leap', from: 101, to: 200 } };
+
+  test('まだ合格していない範囲を出し、押すとその範囲で練習する。締切も見せる', () => {
+    const onStart = jest.fn();
+    render(<ExamPracticeCard practice={[P]} onStart={onStart} />);
+    expect(screen.getByText('受験サポートのテスト範囲')).toBeInTheDocument();
+    expect(screen.getByText(/2語・9\/30まで/)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('必携英単語LEAP 101〜200'));
+    expect(onStart).toHaveBeenCalledWith(P);
+  });
+
+  test('範囲が無ければ何も出さない', () => {
+    const { container } = render(<ExamPracticeCard practice={[]} onStart={() => {}} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+});

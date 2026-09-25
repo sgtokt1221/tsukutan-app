@@ -202,6 +202,11 @@ export function toPayload(s) {
         ...(Number(s.aloudCount) > 0
             ? { aloud: { count: Math.floor(Number(s.aloudCount)), title: s.aloudTitle || null } }
             : {}),
+        /*
+          **練習した単語帳**（2026-09-24）。受験サポートを受けている生徒なら、向こうがその参考書と
+          週間計画表のタスクに付け、見積もりに届けば済みにする。無ければ欄ごと出さない（上の音読と同じ）
+        */
+        ...(typeof s.deckId === 'string' && s.deckId ? { deckId: s.deckId } : {}),
     };
 }
 
@@ -363,8 +368,11 @@ export function noteAloud(title) {
     const t = now();
     // 手が止まっていたぶんは数えない（`noteActivity` と同じ作法）
     if (t - current.lastAt > IDLE_MS) {
+        // 練習している単語帳は持ち越す（同じ単語帳のカードを続けているので）
+        const deckId = current.deckId || null;
         endStudySession();
         startStudySession();
+        if (deckId) current.deckId = deckId;
     }
     // **読んだ時刻まで数える。** 締め時刻は「最後に手を動かした時刻」なので、
     // ここを動かさないと音読したぶんが長さ0になって落ちる
@@ -372,6 +380,23 @@ export function noteAloud(title) {
     current.aloudCount = (Number(current.aloudCount) || 0) + 1;
     const clean = String(title || '').trim();
     if (clean) current.aloudTitle = clean.slice(0, 60);
+    save();
+}
+
+/**
+ * いまの記録に、練習している単語帳を付ける（2026-09-24）。単語帳のカードを開いたときに呼ぶ。
+ *
+ * **1回の記録で複数冊なら、最後に開いた冊。** 記録はアプリ全体の時間なので、冊ごとには割らない
+ * （割るには記録を途中で切ることになり、短い記録が下限で落ちる）。
+ *
+ * @param {string|null} deckId 単語帳（`src/config/books.js` の deckId）。null で外す
+ */
+export function noteDeck(deckId) {
+    const next = typeof deckId === 'string' && deckId ? deckId : null;
+    // 外すだけなら、測っていないときに記録を始めない
+    if (!current && next === null) return;
+    if (!current) startStudySession();
+    current.deckId = next;
     save();
 }
 

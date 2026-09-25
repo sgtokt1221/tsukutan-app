@@ -20,7 +20,7 @@ import RankCard from './components/assessment/RankCard';
 import LevelNudge from './components/assessment/LevelNudge';
 import ReadingPanel from './components/reading/ReadingPanel';
 import { isAheadOfAssessment } from './logic/estimatedLevel';
-import { setStudyRank } from './logic/studySession';
+import { setStudyRank, noteDeck } from './logic/studySession';
 import { BOOKS, isBookId, getBook, bookWordsUrl } from './config/books';
 import { wordsInRange, rangeKeyOf } from './logic/bookWords';
 import {
@@ -30,7 +30,8 @@ import { loadPendingQuizzes } from './logic/assignedQuiz';
 import AssignedQuiz from './components/quiz/AssignedQuiz';
 import AssignedQuizCard from './components/quiz/AssignedQuizCard';
 import ExamMissedNotice from './components/quiz/ExamMissedNotice';
-import { syncExamSupportMissed, reviewEntryOf } from './logic/examSupportMissed';
+import { syncExamSupportMissed, reviewEntryOf, cardsForRefs } from './logic/examSupportMissed';
+import ExamPracticeCard from './components/quiz/ExamPracticeCard';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
@@ -981,6 +982,7 @@ export default function StudentDashboard() {
   };
 
   const startLearning = async (filterType, value) => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     let filtered = [];
     let sessionLabel = '';
     let startIndex = 0;
@@ -1125,6 +1127,7 @@ export default function StudentDashboard() {
   };
 
   const startDailyNewWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (!dailyPlan.newWords || dailyPlan.newWords.length === 0) {
       alert('今日の新規単語はありません。');
       return;
@@ -1141,6 +1144,7 @@ export default function StudentDashboard() {
   };
 
   const startExtraNewWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (!dailyPlan.extraNewWords || dailyPlan.extraNewWords.length === 0) {
       alert('追加の単語はありません。お疲れ様でした！');
       return;
@@ -1174,6 +1178,8 @@ export default function StudentDashboard() {
    * レベルで切り直すと本と別の並びになる。
    */
   const startBookRange = async (book, range) => {
+    // 練習した時間を受験サポートのタスクに付けるため、単語帳を記録に付ける
+    noteDeck(book.deckId);
     try {
       const response = await fetch(bookWordsUrl(book));
       // SPA の書き換えで index.html が 200 で返ることがある（wordMaster.js と同じ用心）
@@ -1247,14 +1253,55 @@ export default function StudentDashboard() {
   */
   const [examMissed, setExamMissed] = useState([]);
   const [reviewOverride, setReviewOverride] = useState(null);
+  // 受験サポートで出されたテスト範囲（まだ合格していないもの）。ホームで練習できる
+  const [examPractice, setExamPractice] = useState([]);
+  const [practiceBusy, setPracticeBusy] = useState('');
   useEffect(() => {
     if (!userId) return;
     syncExamSupportMissed(userId)
-      .then((cards) => { if (cards.length > 0) setExamMissed(cards); })
+      .then(({ missed, practice }) => {
+        if (missed.length > 0) setExamMissed(missed);
+        setExamPractice(practice);
+      })
       .catch((error) => logger.warn('受験サポートのまちがえた語を取り込めませんでした', error));
   }, [userId]);
+
+  /**
+   * テスト範囲を練習する。**自由学習の単語帳と同じカードの画面**へ。
+   * 範囲（番号の帯）なら単語帳の「前回の続き」と同じ鍵で再開する（同じ範囲を単語帳から開いても続きになる）
+   */
+  const startExamPractice = async (p) => {
+    setPracticeBusy(p.assignmentId);
+    try {
+      const cards = await cardsForRefs(p.words);
+      if (cards.length === 0) return;
+      const deckIds = [...new Set((p.words || []).map((w) => w.deckId))];
+      // 練習した時間を受験サポートのタスクに付けるため、単語帳を記録に付ける（1冊のときだけ）
+      noteDeck(deckIds.length === 1 ? deckIds[0] : null);
+      const book = p.range ? BOOKS.find((b) => b.deckId === p.range.deckId) : null;
+      const rangeKey = book ? rangeKeyOf(p.range.from, p.range.to) : null;
+      const uid = auth.currentUser?.uid;
+      const startIndex = book && uid ? await getFreeStudyProgress(uid, book.id, rangeKey) : 0;
+      setSelectedTextbookId(book ? book.id : null);
+      setCurrentSessionInfo({
+        textbookId: '受験サポート',
+        filterType: book ? 'range' : 'テスト範囲',
+        filterValue: p.title,
+        ...(rangeKey ? { rangeKey } : {}),
+        startIndex: startIndex < cards.length ? startIndex : 0,
+      });
+      setCurrentLearningMode('free');
+      setLearningWords(cards);
+      setViewMode('learn');
+    } catch (error) {
+      logger.warn('テスト範囲の単語を読めませんでした', error);
+    } finally {
+      setPracticeBusy('');
+    }
+  };
   /** 知らせの「今すぐ復習する」。今日の計画ではなく、取り込んだ語だけで復習する */
   const startExamMissedReview = () => {
+    noteDeck(null);
     setReviewOverride(examMissed.map(reviewEntryOf));
     setCurrentSessionInfo({
       textbookId: '受験サポート',
@@ -1283,6 +1330,7 @@ export default function StudentDashboard() {
 
   /** ページの範囲を選んだ。**そのままカードへ**（絞り込み画面は通さない。単語帳と同じ） */
   const startTextbookPages = async (grade, from, to) => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     const words = wordsInPages(textbookCards, grade, from, to);
     if (words.length === 0) return;
     const textbookId = sunshineTextbookId(grade);
@@ -1302,6 +1350,7 @@ export default function StudentDashboard() {
   };
 
   const startBookmarkWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (bookmarks.length === 0) return;
     setCurrentSessionInfo({
       textbookId: '毎日みる単語',
@@ -1317,6 +1366,7 @@ export default function StudentDashboard() {
   };
 
   const startDailyReviewWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (!dailyPlan.reviewWords || dailyPlan.reviewWords.length === 0) {
       alert('今日の復習単語はありません。');
       return;
@@ -1537,6 +1587,7 @@ export default function StudentDashboard() {
             {/* 先生からの小テストは、目標より上に置く（出されたものを最初にやってほしい） */}
             <AssignedQuizCard quizzes={pendingQuizzes} onStart={startAssignedQuiz} />
             <ExamMissedNotice words={examMissed} onReview={startExamMissedReview} onClose={() => setExamMissed([])} />
+            <ExamPracticeCard practice={examPractice} onStart={startExamPractice} busyId={practiceBusy} />
 
             {/* 上から 目標 → ランク → タスク の順に置く。
                 何のために学んでいるかを最初に見せる。 */}

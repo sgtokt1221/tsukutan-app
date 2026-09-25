@@ -259,3 +259,28 @@
   align-items: center;
   gap: var(--space-8);
 }
+
+/* 受験サポートのテスト範囲。先生からの小テスト（紺）と区別して緑の面にする */
+.exam-practice-card {
+  margin-bottom: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-lime-muted);
+  color: var(--color-ink-olive);
+}
+
+.exam-practice-card__eyebrow {
+  margin: 0;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+}
+
+.exam-practice-card__lead {
+  margin: var(--space-4) 0 var(--space-12);
+  font-size: var(--font-size-14);
+  line-height: var(--line-normal);
+}
+
+.exam-practice-card .assigned-quiz-card__item + .assigned-quiz-card__item {
+  margin-top: var(--space-8);
+}
