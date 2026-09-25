@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 // firebaseConfig は gitignore 済みの実ファイルを読ませたくないので、
@@ -174,6 +174,55 @@ describe('保存', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('目標の保存に失敗しました');
     expect(onGoalSet).not.toHaveBeenCalled();
+  });
+});
+
+describe('新しい単語の教材', () => {
+  // 目標の「英検2級 合格」と取り違えないよう、教材の欄の中だけを見る
+  const section = () => within(screen.getByRole('heading', { name: '新しい単語の教材' }).closest('section'));
+  const chip = (name) => section().getByRole('button', { name: new RegExp(name) });
+
+  test('既定はおまかせで、保存すると null が入る（undefined にしない）', async () => {
+    render(<GoalSetter />);
+    expect(chip('おまかせ')).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: /英検3級 合格/ }));
+    setDate(futureDate);
+    fireEvent.click(getSubmitButton());
+    await waitFor(() => expect(mockUpdateDoc).toHaveBeenCalledTimes(1));
+    expect(mockUpdateDoc.mock.calls[0][1].goal.newWordTextbook).toBeNull();
+  });
+
+  test('選んだ教材のIDを goal に保存する', async () => {
+    render(<GoalSetter schoolGrade="高校2年生" />);
+    fireEvent.click(chip('システム英単語'));
+    expect(chip('システム英単語')).toHaveAttribute('aria-pressed', 'true');
+    expect(chip('おまかせ')).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(screen.getByRole('button', { name: /英検3級 合格/ }));
+    setDate(futureDate);
+    fireEvent.click(getSubmitButton());
+    await waitFor(() => expect(mockUpdateDoc).toHaveBeenCalledTimes(1));
+    expect(mockUpdateDoc.mock.calls[0][1].goal.newWordTextbook).toBe('book-systan5');
+  });
+
+  test('中学生には教科書と英検だけ出す', () => {
+    render(<GoalSetter schoolGrade="中学1年生" />);
+    expect(chip('Sunshine 1年')).toBeInTheDocument();
+    expect(chip('英検準1級')).toBeInTheDocument();
+    expect(section().queryByRole('button', { name: /システム英単語/ })).not.toBeInTheDocument();
+  });
+
+  test('高校生には単語帳と英検だけ出す', () => {
+    render(<GoalSetter schoolGrade="高1" />);
+    expect(chip('英単語ターゲット1900')).toBeInTheDocument();
+    expect(chip('英検5級')).toBeInTheDocument();
+    expect(section().queryByRole('button', { name: /Sunshine/ })).not.toBeInTheDocument();
+  });
+
+  test('学年が分からなければ全部出す', () => {
+    render(<GoalSetter />);
+    expect(chip('Sunshine 3年')).toBeInTheDocument();
+    expect(chip('必携英単語LEAP')).toBeInTheDocument();
+    expect(chip('英検2級')).toBeInTheDocument();
   });
 });
 

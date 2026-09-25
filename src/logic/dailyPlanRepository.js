@@ -21,13 +21,19 @@ export const PLAN_VERSION = 1;
 
 /**
  * 計画を作り直すべきかを決める署名。
- * 目標・達成日・やる気・レベルが変わったら、その日の計画も作り直す。
+ * 目標・達成日・やる気・レベル・新しい単語の教材が変わったら、その日の計画も作り直す。
  */
 export const planSignature = (userData) => [
   (userData?.goal?.targets || []).map((t) => t?.goalId || t).sort().join(','),
   userData?.goal?.targetDate || '',
   userData?.goal?.motivationLevel || 'normal',
   String(userData?.level ?? ''),
+  /*
+    新しい単語の教材（目標設定で選ぶ）。**入れないと、変えてもその日は古い教材のまま**
+    （翌日まで効かない。エラーは出ない）。おまかせのときは足さない——
+    足すと、教材を選んでいない生徒まで今日の計画が作り直しになる。
+  */
+  ...(userData?.goal?.newWordTextbook ? [userData.goal.newWordTextbook] : []),
 ].join('|');
 
 /** 保存済み計画がそのまま使えるか */

@@ -21,6 +21,7 @@ import {
   unlearnedCandidates,
   REVIEW_SESSION_SIZE,
 } from './dailyPlanMath';
+import { getNewWordSource, estimateLevels, orderByLevelFit, withoutLearnedSpellings } from './newWordSources';
 
 // 新しい単語を選ぶ教材。中身は public/data の教材ファイル（loadTextbookWords）。
 // 2026-09-24 までは Firestore の textbooks/{id}/words から引いていたが、そちらは
@@ -76,6 +77,8 @@ const emptyPlan = (reason) => ({
   remainingDays: 0,
   remainingWords: 0,
   knowledgeHints: [],
+  newWordSourceTitle: null,
+  newWordSourceFinished: false,
   reason,
 });
 
@@ -156,6 +159,7 @@ export const generateDailyPlan = async (userData, userId) => {
       .filter(Boolean);
 
     const answered = stored.answeredNewWordIds || [];
+    const storedSource = getNewWordSource(stored.newWordSourceId);
     const restoredNewWords = remainingWords(stored.newWords, answered);
 
     return {
@@ -172,6 +176,8 @@ export const generateDailyPlan = async (userData, userId) => {
       remainingDays,
       remainingWords: remainingWordsCount,
       knowledgeHints: stored.knowledgeHints || [],
+      newWordSourceTitle: storedSource?.title ?? null,
+      newWordSourceFinished: Boolean(storedSource && stored.newWordSourceFinished),
       dateKey,
       fromStoredPlan: true,
     };
@@ -182,12 +188,11 @@ export const generateDailyPlan = async (userData, userId) => {
   //--------------------------------------------------------------------------
   const userLevel = userData?.level || 1;
   const goalIds = toGoalIds(userData?.goal?.targets);
-  const { words: newWordCandidates, remainingCandidates } = await getNewWords(
-    quota.plannedNewWords,
-    userLevel,
-    allProgressEntries,
-    goalIds
-  );
+  // 生徒が目標設定で教材を選んでいればそこから。おまかせ（未選択・知らないID）は今までどおり
+  const newWordSource = getNewWordSource(userData?.goal?.newWordTextbook);
+  const { words: newWordCandidates, remainingCandidates, sourceFinished = false } = newWordSource
+    ? await getNewWordsFromSource(newWordSource, quota.plannedNewWords, userLevel, allProgressEntries)
+    : await getNewWords(quota.plannedNewWords, userLevel, allProgressEntries, goalIds);
 
   // 時間に余裕があれば「おかわり」分を用意する
   const reviewTimeInSeconds = dueForReview.length * SECONDS_PER_REVIEW_WORD;
@@ -235,6 +240,9 @@ export const generateDailyPlan = async (userData, userId) => {
     extraNewWords,
     reviewWordIds: finalReviewWords.map((word) => word.id),
     knowledgeHints,
+    // 選んだ教材と、その語を全部学び終えていたか。**undefined を入れない**（書き込みごと拒否される）
+    newWordSourceId: newWordSource?.id ?? null,
+    newWordSourceFinished: sourceFinished,
     quota: {
       preferredNewWords: quota.preferredNewWords,
       requiredNewWords: quota.requiredNewWords,
@@ -257,6 +265,8 @@ export const generateDailyPlan = async (userData, userId) => {
     remainingDays,
     remainingWords: remainingWordsCount,
     knowledgeHints,
+    newWordSourceTitle: newWordSource?.title ?? null,
+    newWordSourceFinished: sourceFinished,
     dateKey,
     fromStoredPlan: false,
   };
@@ -333,5 +343,28 @@ const getNewWords = async (quota, userLevel, learnedEntries, goalIds) => {
   return {
     words: candidateWords.slice(0, safeQuota),
     remainingCandidates: candidateWords.slice(safeQuota),
+  };
+};
+
+/**
+ * 生徒が選んだ教材から新しい単語を取る。
+ *
+ * 生徒のレベルに合う語（[level, level+1]）から出し、足りなければ近いレベルへ広げて埋める
+ * （newWordSources.js の orderByLevelFit）。教材の語を全部学び終えていたら
+ * sourceFinished を立てる——**黙って0語にしない**（ホームで「学び終えた」と出す）。
+ *
+ * 学習済みは id と 語＋品詞＋意味 の両方で見る（unlearnedCandidates）。単語帳はさらに綴りでも見る
+ * （本だけの語は id も訳もマスタと違い、マスタで覚えた同じ語を出し直してしまうため）。
+ */
+export const getNewWordsFromSource = async (source, quota, userLevel, learnedEntries, random = Math.random) => {
+  const safeQuota = Math.max(0, quota);
+  const words = await source.load();
+  const unlearned = unlearnedCandidates(words, learnedEntries);
+  const candidates = source.matchBySpelling ? withoutLearnedSpellings(unlearned, learnedEntries) : unlearned;
+  const ordered = orderByLevelFit(candidates, estimateLevels(words), userLevel, random);
+  return {
+    words: ordered.slice(0, safeQuota),
+    remainingCandidates: ordered.slice(safeQuota),
+    sourceFinished: words.length > 0 && candidates.length === 0,
   };
 };

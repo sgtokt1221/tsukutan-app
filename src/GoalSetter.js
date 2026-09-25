@@ -5,21 +5,26 @@ import { updateProgressPercentage } from './logic/progressLogic';
 import { getGoalsByCategory, getMotivationConfig, MOTIVATION_LEVELS, DEFAULT_MOTIVATION_LEVEL } from './config';
 import { getTodayKey } from './logic/dateKeys';
 import { loadWordMaster } from './logic/wordMaster';
+import { sourcesForGrade } from './logic/newWordSources';
 
 /**
  * 目標設定画面。目標定義とやる気レベルは src/config を正本とする。
  * ここに一覧を手書きしない。
  */
-export default function GoalSetter({ onGoalSet, onGoalReset }) {
+export default function GoalSetter({ onGoalSet, onGoalReset, schoolGrade }) {
   const [selectedGoalIds, setSelectedGoalIds] = useState([]);
   const [targetDate, setTargetDate] = useState('');
   const [motivationLevel, setMotivationLevel] = useState(DEFAULT_MOTIVATION_LEVEL);
+  // 新しい単語の教材。null はおまかせ（目標に合わせて今までどおり選ぶ）
+  const [newWordTextbook, setNewWordTextbook] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [error, setError] = useState(null);
   const [notice, setNotice] = useState(null);
 
   const categories = useMemo(() => getGoalsByCategory(), []);
+  // 中学生には教科書と英検、高校生には単語帳と英検。小学生・学年不明は全部
+  const textbookOptions = useMemo(() => sourcesForGrade(schoolGrade), [schoolGrade]);
   const today = getTodayKey();
 
   /*
@@ -80,6 +85,8 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
           targets,
           targetDate,
           motivationLevel,
+          // **undefined を入れない**（Firestore が書き込みごと拒否する）。おまかせは null
+          newWordTextbook: newWordTextbook ?? null,
           isSet: true,
           setAt: new Date().toISOString(),
         },
@@ -126,6 +133,7 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
       setSelectedGoalIds([]);
       setTargetDate('');
       setMotivationLevel(DEFAULT_MOTIVATION_LEVEL);
+      setNewWordTextbook(null);
       setNotice('目標をリセットしました。新しい目標を設定してください。');
       if (onGoalReset) onGoalReset();
     } catch (err) {
@@ -223,6 +231,28 @@ export default function GoalSetter({ onGoalSet, onGoalReset }) {
           </div>
         </section>
       ))}
+
+      <section className="section-card">
+        <h2 className="section-title">新しい単語の教材</h2>
+        <p className="section-description">毎日の「新規単語」をどの教材から出すか選べます</p>
+        <div className="goal-options">
+          {[{ id: null, title: 'おまかせ' }, ...textbookOptions].map((option) => {
+            const isActive = newWordTextbook === option.id;
+            return (
+              <button
+                type="button"
+                key={option.id ?? 'auto'}
+                aria-pressed={isActive}
+                className={`goal-chip ${isActive ? 'selected' : ''}`}
+                onClick={() => setNewWordTextbook(option.id)}
+              >
+                <span className="goal-name">{option.title}</span>
+                {option.id === null && <span className="goal-desc">目標に合わせて選びます</span>}
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       <footer className="goal-footer">
         {selectedGoalIds.length === 0 && (
