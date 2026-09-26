@@ -7,7 +7,11 @@ import { useCallback, useState } from 'react';
  * 「外す」の意味が違うモードでは、そのモードを初めて開いたときにもう一度見せる。
  */
 
-const PREFIX = 'tsukutan.coach.';
+/*
+  頭に版を入れる。案内の中身を変えたら上げると、全員にもう一度出る
+  （v2 … 2026-09-26 に長押しを足した）。古い版の記録は残っても害が無い
+*/
+const PREFIX = 'tsukutan.coach.v2.';
 
 const readSeen = (key) => {
   try {

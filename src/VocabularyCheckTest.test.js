@@ -331,3 +331,42 @@ describe('答えたらめくれて、読み上げずに次へ', () => {
     expect(Number.isFinite(estimated)).toBe(true);
   });
 });
+
+describe('長押しで答えをのぞく（2026-09-26）', () => {
+  // eslint-disable-next-line global-require
+  const { HOLD_MS } = require('./logic/cardGestures');
+  const card = () => document.getElementById('flashcard');
+
+  test('**押している間だけ裏になり、離すと戻る。答えにはならない**', () => {
+    render(<VocabularyCheckTest allWords={WORDS} onCancel={() => {}} />);
+    const before = document.getElementById('card-front-text').textContent;
+    fireEvent.pointerDown(card());
+    act(() => { jest.advanceTimersByTime(HOLD_MS + 10); });
+    expect(card().getAttribute('data-peeking')).toBe('true');
+    fireEvent.pointerUp(card());
+    act(() => { jest.advanceTimersByTime(500); });
+    expect(card().getAttribute('data-peeking')).toBeNull();
+    expect(document.getElementById('card-front-text').textContent).toBe(before);
+    expect(screen.getByText(/^1 \//)).toBeInTheDocument();
+  });
+
+  test('**のぞいてから答えたら、見てから答えた印が付く**', async () => {
+    const onTestComplete = jest.fn();
+    render(<VocabularyCheckTest allWords={WORDS} onCancel={() => {}} onTestComplete={onTestComplete} />);
+    fireEvent.pointerDown(card());
+    act(() => { jest.advanceTimersByTime(HOLD_MS + 10); });
+    fireEvent.pointerUp(card());
+    clickKnow();
+    // 次の問題はのぞいていない
+    clickKnow();
+    // 記録（logStudySession）は最後まで行かないと出ないので、答えの中身は完了時に確かめる
+    for (let i = 0; i < 120 && onTestComplete.mock.calls.length === 0; i += 1) {
+      if (!screen.queryByRole('button', { name: 'わかる' })) break;
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'わかる' })); });
+      await act(async () => { jest.advanceTimersByTime(REVEAL_PAUSE_MS); });
+    }
+    const answers = onTestComplete.mock.calls[0]?.[1] || [];
+    expect(answers[0]?.revealed).toBe(true);
+    expect(answers[1]?.revealed).toBe(false);
+  });
+});

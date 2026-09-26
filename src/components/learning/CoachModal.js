@@ -25,6 +25,8 @@ const CARD_STEPS = {
   up: { pose: { x: 0, y: -46, rotate: 0, backgroundColor: '#fef08a' }, hand: { x: 0, y: -46 } },
   button: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, button: true },
   flip: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, flip: true },
+  // 長押し：押している間だけ裏。指は押し込んだまま
+  hold: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, flip: true, hand: { x: 0, y: 0 }, press: true },
   rest: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' } },
 };
 
@@ -32,6 +34,7 @@ const CARD_STEPS = {
 export function cardCoachSteps(policy) {
   const steps = [
     { key: 'tap', title: 'タップ', text: '答え（意味）が出る' },
+    { key: 'hold', title: '長押し', text: '押している間だけ答えが見える。離すと戻る' },
     { key: 'good', title: '右へ払う', text: 'わかった。次に出るまでの間があく' },
     { key: 'again', title: '左へ払う', text: 'もう一度。今日のうちにまた出る' },
   ];
@@ -48,6 +51,7 @@ export function cardCoachSteps(policy) {
 export const TEST_COACH_STEPS = [
   { key: 'good', title: '右へ払う', text: 'わかる' },
   { key: 'again', title: '左へ払う', text: 'わからない。知らない語は迷わずこちらへ' },
+  { key: 'hold', title: '長押し', text: '押している間だけ答えをのぞける。のぞいてからの「わかる」は半分だけ数える' },
   { key: 'flip', title: '答えを見る', text: '答えるとカードがめくれて意味が出る。すぐ次の問題へ進む' },
   {
     key: 'rest',
@@ -97,7 +101,7 @@ function CardDemo({ stepKey, buttons }) {
             className="coach-demo__hand"
             aria-hidden="true"
             initial={{ x: 0, y: 0, scale: 1 }}
-            animate={{ x: s.hand.x, y: s.hand.y, scale: stepKey === 'tap' ? [1, 0.85, 1] : 1 }}
+            animate={{ x: s.hand.x, y: s.hand.y, scale: stepKey === 'tap' ? [1, 0.85, 1] : s.press ? 0.85 : 1 }}
             transition={{ duration: 0.7, ease: GLIDE }}
           >
             <FaHandPointer />

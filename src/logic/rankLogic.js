@@ -162,3 +162,74 @@ export const scoreFromLegacyLevel = (level) => {
   const score = RANKS.levelToScore[key];
   return Number.isFinite(score) ? score : null;
 };
+
+/**
+ * テストで推定した力（小数のレベル。abilityEstimate.js）を能力スコアへ写す。
+ *
+ * レベル→スコアの代表値（`levelToScore`）を折れ線でつなぐ。レベルの間の力は間の点に、
+ * 7より上は最後の傾きのまま伸ばす（以前は7が780点止まりで、同じランクの中の差が出なかった）。
+ */
+export const scoreFromAbility = (theta) => {
+  if (!Number.isFinite(theta)) return null;
+  const points = [[0, SCORE_MIN]];
+  for (let level = 1; level <= 7; level += 1) {
+    const score = RANKS.levelToScore[String(level)];
+    if (Number.isFinite(score)) points.push([level, score]);
+  }
+  for (let i = 1; i < points.length; i += 1) {
+    const [x0, y0] = points[i - 1];
+    const [x1, y1] = points[i];
+    if (theta <= x1) return clampScore(y0 + ((y1 - y0) * (Math.max(theta, x0) - x0)) / (x1 - x0));
+  }
+  const [xa, ya] = points[points.length - 2];
+  const [xb, yb] = points[points.length - 1];
+  return clampScore(yb + ((yb - ya) / (xb - xa)) * (theta - xb));
+};
+
+/** ランクの中の段。各ランクの点の幅を3つに分ける（2026-09-26） */
+export const RANK_TIERS = [
+  { id: 'low', label: '初級' },
+  { id: 'mid', label: '中級' },
+  { id: 'high', label: '上級' },
+];
+
+/** そのスコアがランクの中のどの段か。未測定なら null */
+export const tierForScore = (score) => {
+  if (!rankForScore(score)) return null;
+  const index = Math.min(RANK_TIERS.length - 1, Math.floor(progressWithinRank(score) * RANK_TIERS.length));
+  return RANK_TIERS[index];
+};
+
+/** 「S 上級」のような呼び名。未測定なら null */
+export const rankLabel = (score) => {
+  const rank = rankForScore(score);
+  const tier = tierForScore(score);
+  return rank && tier ? `${rank.id} ${tier.label}` : null;
+};
+
+/**
+ * 次の段（同じランクの上の段、上級なら次のランクの初級）と、そこまでの点。
+ * 最上位・未測定なら null。
+ */
+export const nextStep = (score) => {
+  const rank = rankForScore(score);
+  const tier = tierForScore(score);
+  if (!rank || !tier) return null;
+  const index = RANK_TIERS.indexOf(tier);
+  if (index < RANK_TIERS.length - 1) {
+    const span = rank.max - rank.min;
+    const boundary = rank.min + (span * (index + 1)) / RANK_TIERS.length;
+    return { label: `${rank.id} ${RANK_TIERS[index + 1].label}`, points: Math.max(1, Math.ceil(boundary - clampScore(score))) };
+  }
+  const next = nextRank(rank.id);
+  if (!next || next.locked) return null;
+  return { label: `${next.id} ${RANK_TIERS[0].label}`, points: Math.max(1, Math.ceil(next.min - clampScore(score))) };
+};
+
+/**
+ * 生徒の能力スコア。**テストで力を測ってあればそちらから**、古い結果はレベルの代表値から。
+ * ホーム・きろく・結果画面で同じものを使う（別々に換算すると、画面ごとにランクが違って見える）。
+ */
+export const abilityScoreOf = ({ level, ability } = {}) => (
+  Number.isFinite(ability) ? scoreFromAbility(ability) : scoreFromLegacyLevel(level)
+);

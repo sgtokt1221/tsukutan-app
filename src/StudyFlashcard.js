@@ -19,7 +19,7 @@ import { swipeIntentAt, intentText } from './logic/swipeIntent';
 import { useNextInterval } from './logic/useNextInterval';
 import { studyModePolicy, sessionTitle } from './logic/studyMode';
 import { finishedLog, leftLog } from './logic/studyLog';
-import { flashcardGesture, wordbookGesture, findCardAtPoint } from './logic/cardGestures';
+import { flashcardGesture, wordbookGesture, findCardAtPoint, HOLD_MS, TAP_SLOP } from './logic/cardGestures';
 import { usePendingWrites } from './logic/usePendingWrites';
 // 勉強時間を測るのは**ここ1か所だけ**（→ `logic/studySession.js`）。
 // 自前で `new Date()` の差を取ると、つくばホームへ送る値と食い違う
@@ -84,6 +84,15 @@ export default function StudyFlashcard({
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFlipped, setIsFlipped] = useState(false);
+  /*
+    **長押しの間だけ裏を見せる**（2026-09-26）。離すと表に戻る。タップのめくり（isFlipped）とは別に持つ。
+    のぞいたら「答えを見てから答えた」として記録する（peekedRef）
+  */
+  const [peeking, setPeeking] = useState(false);
+  const peekTimerRef = useRef(null);
+  const peekingRef = useRef(false);
+  const peekedRef = useRef(false);
+  useEffect(() => () => clearTimeout(peekTimerRef.current), []);
   const [viewMode, setViewMode] = useState('flashcard'); // 'flashcard' | 'wordbook'
   // 単語帳：赤シートを開いている語・採点した語（どちらも単語の鍵で持つ）
   const [revealed, setRevealed] = useState(() => new Set());
@@ -149,6 +158,7 @@ export default function StudyFlashcard({
 
   const resetCard = useCallback(() => {
     setIsFlipped(false);
+    peekedRef.current = false;
     x.set(0);
     y.set(0);
   }, [x, y]);
@@ -314,7 +324,7 @@ export default function StudyFlashcard({
     const word = cards[currentIndex];
     // 答えを見てから「わかった」を押しても茶々は入れない（2026-09-24 に吹き出しを外した）
 
-    recordAnswer(word, quality, isFlipped);
+    recordAnswer(word, quality, isFlipped || peekedRef.current);
     if (word && quality === 'again') {
       incorrectRef.current = [...incorrectRef.current.filter((w) => w.id !== word.id), word];
     } else if (word && uid) {
@@ -461,9 +471,15 @@ export default function StudyFlashcard({
   // 判定は logic/cardGestures.js。ここは座標を集めて、判定の結果を実行するだけ
 
   /** 指（またはマウス）を離した。フラッシュカードと単語帳で分ける */
-  const endGesture = useCallback((dx, dy) => {
+  const endGesture = useCallback((dx, dy, wasPeeking = false) => {
     if (viewMode === 'flashcard') {
       const action = flashcardGesture(dx, dy, allowSwipeUp);
+      // 長押しで見ていただけなら、離して表に戻すだけ（めくりはしない）
+      if (wasPeeking && action === 'flip') {
+        x.set(0);
+        y.set(0);
+        return;
+      }
       if (action === 'good') handleCorrect();
       else if (action === 'again') handleIncorrect();
       else if (action === 'remove') handleRemoveCurrent();
@@ -485,6 +501,8 @@ export default function StudyFlashcard({
 
   /** 動かしている最中。フラッシュカードはカードごと、単語帳は横にだけ控えめについてくる */
   const moveGesture = useCallback((dx, dy) => {
+    // 動かし始めたら長押しではない（見ている最中なら、そのまま払える）
+    if (Math.abs(dx) > TAP_SLOP || Math.abs(dy) > TAP_SLOP) clearTimeout(peekTimerRef.current);
     if (viewMode === 'flashcard') {
       x.set(dx);
       y.set(dy);
@@ -502,15 +520,27 @@ export default function StudyFlashcard({
   const beginGesture = useCallback((target, clientX, clientY) => {
     swipeHandledRef.current = false;
     setIsDragging(true);
+    if (viewMode === 'flashcard') {
+      clearTimeout(peekTimerRef.current);
+      peekTimerRef.current = setTimeout(() => {
+        peekingRef.current = true;
+        peekedRef.current = true;
+        setPeeking(true);
+      }, HOLD_MS);
+    }
     grabbedCardRef.current = target?.closest?.('[data-card-index]') || findCardAtPoint(clientX, clientY);
     setDragStart({ x: clientX, y: clientY });
-  }, []);
+  }, [viewMode]);
 
   const finishGesture = useCallback((dx, dy) => {
     setIsDragging(false);
+    clearTimeout(peekTimerRef.current);
+    const wasPeeking = peekingRef.current;
+    peekingRef.current = false;
+    if (wasPeeking) setPeeking(false);
     const flashcard = document.getElementById('flashcard');
     if (flashcard) clearSwipeFeedback(flashcard);
-    endGesture(dx, dy);
+    endGesture(dx, dy, wasPeeking);
     grabbedCardRef.current = null;
     setDragStart({ x: 0, y: 0 });
   }, [endGesture]);
@@ -775,7 +805,7 @@ export default function StudyFlashcard({
             y,
             rotate,
             backgroundColor: cardColor,
-            rotateY: isFlipped ? 180 : 0,
+            rotateY: isFlipped || peeking ? 180 : 0,
             transition: { duration: 0.4 },
           }}
           onMouseDown={handleMouseDown}

@@ -9,7 +9,7 @@ import { clampLevel, getLevel } from '../../config';
 import TrendChart from './TrendChart';
 import RetentionBar from './RetentionBar';
 import RankCard from '../assessment/RankCard';
-import { RANK_IDS, rankForScore, scoreFromLegacyLevel } from '../../logic/rankLogic';
+import { RANK_IDS, rankForScore, abilityScoreOf, scoreFromLegacyLevel } from '../../logic/rankLogic';
 import { retentionBreakdown } from '../../logic/retentionBreakdown';
 import logger from '../../logic/logger';
 
@@ -27,6 +27,7 @@ const eikenLabel = (level) => getLevel(level)?.eiken || `レベル${level}`;
 
 export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStartLearning }) {
   const [analyticsData, setAnalyticsData] = useState(null);
+  const [currentAbility, setCurrentAbility] = useState(null);
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
   const [predictions, setPredictions] = useState(null);
@@ -49,6 +50,8 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
               const userData = userDoc.data();
               logger.debug('👤 最新ユーザーデータ:', userData);
               currentUserLevel = userData.level || 0;
+              // ランク内の段（初級・中級・上級）はテストで推定した力から出す
+              setCurrentAbility(userData.progress?.assessedAbility ?? null);
               logger.debug('📊 ユーザーデータから取得したレベル:', currentUserLevel);
             }
             
@@ -178,7 +181,7 @@ export default function AnalyticsPanel({ onNavigateTab, onSelectTextbook, onStar
               <h3>いまのランク</h3>
               <div className="section-divider"></div>
             </div>
-            <RankCard score={scoreFromLegacyLevel(analyticsData.currentLevel)} />
+            <RankCard score={abilityScoreOf({ level: analyticsData.currentLevel, ability: currentAbility })} />
           </div>
 
           {/* 基本統計 */}

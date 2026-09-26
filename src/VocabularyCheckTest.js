@@ -9,7 +9,7 @@ import { updateProgressPercentage } from './logic/progressLogic';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 import SwipeIntent from './components/learning/SwipeIntent';
 import CoachModal from './components/learning/CoachModal';
-import { TEST_SWIPE } from './logic/cardGestures';
+import { TEST_SWIPE, HOLD_MS, TAP_SLOP } from './logic/cardGestures';
 import { testIntentAt, testIntentText } from './logic/swipeIntent';
 import { useSeenOnce, TEST_COACH_KEY } from './logic/useSeenOnce';
 import {
@@ -63,6 +63,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   const [questions, setQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  /*
+    **長押しの間だけ答えをのぞける**（2026-09-26）。のぞいてから答えたら revealed として記録し、
+    「わかる」は半分だけ知っていた扱いにする（placementTestEngine の answerScore / abilityEstimate）。
+    のぞけるのに満点で数えると、見てから「わかる」を押すだけでランクが上がる
+  */
+  const [peeking, setPeeking] = useState(false);
+  const peekTimerRef = useRef(null);
+  const peekedRef = useRef(false);
   const [questionStartTime, setQuestionStartTime] = useState(null);
   const [saveError, setSaveError] = useState(null);
   // 回答が少ないまま抜けようとしたときの確認
@@ -173,7 +181,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       // 保存に成功したときだけ完了画面へ進む（計画書11.6）
       if (onTestComplete) {
         // 結果画面の「推定語彙数」は、ここで保存した値を出す（目標の語数と食い違っていた）
-        onTestComplete(finalLevel, answers, estimatedVocabulary);
+        onTestComplete(finalLevel, answers, estimatedVocabulary, ability);
       } else {
         navigate('/student-dashboard');
       }
@@ -224,13 +232,13 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     answeringRef.current = true;
 
     const responseTime = questionStartTime ? Date.now() - questionStartTime : 0;
-    // 答える前には見られないので、見たかどうかの印は常に false
     const next = recordAnswer(engine, {
       wordId: currentWord.id,
       wordLevel: currentWord.level,
       isCorrect,
       responseTime,
-      revealed: false,
+      // 長押しで答えをのぞいてから答えたか
+      revealed: peekedRef.current,
     });
     setEngine(next);
 
@@ -255,6 +263,25 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     y.set(0);
     finishReveal();
   }, [questions, questionIndex, engine, questionStartTime, isSaving, finishReveal, x, y]);
+
+  const startPeek = () => {
+    if (phase !== 'ask') return;
+    clearTimeout(peekTimerRef.current);
+    peekTimerRef.current = setTimeout(() => {
+      peekedRef.current = true;
+      setPeeking(true);
+    }, HOLD_MS);
+  };
+  const stopPeek = () => {
+    clearTimeout(peekTimerRef.current);
+    setPeeking(false);
+  };
+  // 次の問題（前の問題へ戻ったときも）では、のぞいた印を消す
+  useEffect(() => {
+    peekedRef.current = false;
+    setPeeking(false);
+  }, [questionIndex, questions]);
+  useEffect(() => () => clearTimeout(peekTimerRef.current), []);
 
   // 答えたら札は出さない。離したあとカードが戻る動きで、円が減っていくように見えた
   const intentAt = useCallback((dx) => (phase === 'ask' ? testIntentAt(dx) : null), [phase]);
@@ -391,8 +418,14 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
           dragTransition={{ bounceStiffness: 900, bounceDamping: 60 }}
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           style={{ x, y, rotate, backgroundColor: cardColor }}
-          onDragEnd={handleDragEnd}
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          onDragEnd={(event, info) => { stopPeek(); handleDragEnd(event, info); }}
+          onDrag={(event, info) => { if (Math.abs(info.offset.x) > TAP_SLOP) clearTimeout(peekTimerRef.current); }}
+          onPointerDown={startPeek}
+          onPointerUp={stopPeek}
+          onPointerCancel={stopPeek}
+          onPointerLeave={stopPeek}
+          animate={{ rotateY: isFlipped || peeking ? 180 : 0 }}
+          data-peeking={peeking ? 'true' : undefined}
           transition={{ duration: 0.4 }}
         >
           <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
