@@ -1,3 +1,4 @@
+import { isUpward } from './cardGestures';
 /**
  * スワイプ中にカードを塗る色。
  *
@@ -27,7 +28,7 @@ export const SWIPE_FEEDBACK = {
  * @param {boolean} allowGraduate 上スワイプ（復習完了）を使う画面か
  */
 export const swipeFeedbackFor = (deltaX, deltaY, allowGraduate = true) => {
-  if (allowGraduate && Math.abs(deltaY) > Math.abs(deltaX) && deltaY < -30) {
+  if (isUpward(deltaX, deltaY, allowGraduate) && deltaY < -30) {
     return SWIPE_FEEDBACK.graduate;
   }
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -79,7 +80,7 @@ const mixHex = (from, to, t) => {
  * @param {boolean} allowGraduate 上スワイプで外すモードか
  */
 export const cardColorAt = (x, y, allowGraduate) => {
-  if (allowGraduate && y < -40) return SWIPE_FEEDBACK.graduate.color;
+  if (isUpward(x || 0, y || 0, allowGraduate) && y < -40) return SWIPE_FEEDBACK.graduate.color;
   const dx = Math.max(-100, Math.min(100, typeof x === 'number' ? x : 0));
   if (dx === 0) return SWIPE_FEEDBACK.neutral.color;
   const target = dx < 0 ? SWIPE_FEEDBACK.incorrect.color : SWIPE_FEEDBACK.correct.color;

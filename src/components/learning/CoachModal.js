@@ -10,7 +10,7 @@ import './Coach.css';
  * 以前は本物のカードを自分で動かして見せていたが、「勝手に動いているように見える」
  * （2026-09-26）。本物のカードは生徒が触るまで動かさない。見本はモーダルの中の小さなカードで。
  *
- * 上スワイプは効くモード（復習・自由学習）でだけ見せる（→ logic/studyMode.js）。
+ * 上スワイプは全部のモードで効く。新しい単語では「はっきり上へ払ったときだけ」と添える（→ logic/studyMode.js）。
  * どのモードで出すかの記録は logic/useSeenOnce.js。
  */
 
@@ -38,7 +38,11 @@ export function cardCoachSteps(policy) {
     { key: 'good', title: '右へ払う', text: 'わかった。次に出るまでの間があく' },
     { key: 'again', title: '左へ払う', text: 'もう一度。今日のうちにまた出る' },
   ];
-  if (policy.swipeUp) steps.push({ key: 'up', title: '上へ払う', text: `${policy.removeShort}。${policy.removePlainHint}` });
+  if (policy.swipeUp) {
+    // 新しい単語は、はっきり上へ払ったときだけ外れる（→ logic/cardGestures.js の STRICT_UP_SWIPE）
+    const how = policy.swipeUp === 'strict' ? '大きくまっすぐ上へ払ったときだけ（少し流れただけでは外れない）。' : '';
+    steps.push({ key: 'up', title: '上へ払う', text: `${policy.removeShort}。${how}${policy.removePlainHint}` });
+  }
   steps.push({
     key: 'button',
     title: `「${policy.removeShort}」ボタン`,

@@ -77,11 +77,18 @@ beforeEach(() => {
 });
 
 describe('上スワイプ', () => {
-  it('**今日の新規では効かない。** 語は消えず、覚えた記録も付かない', () => {
+  it('**今日の新規は、はっきり上へ払ったときだけ効く**（2026-09-27 に戻した）', () => {
     show('daily');
     swipe(0, -200);
-    expect(mockUpdate).not.toHaveBeenCalled();
-    expect(document.body.textContent).toMatch(/3/);
+    expect(mockUpdate).toHaveBeenCalledWith('u1', expect.anything(), true, true);
+    expect(total()).toMatch(/2/);
+  });
+
+  it('**今日の新規で、少し上に流れただけ・斜めでは外れない**（誤って消さない）', () => {
+    show('daily');
+    swipe(0, -130);
+    swipe(120, -200);
+    expect(mockUpdate).not.toHaveBeenCalledWith('u1', expect.anything(), true, true);
     expect(total()).toMatch(/3/);
   });
 
@@ -92,10 +99,10 @@ describe('上スワイプ', () => {
     expect(total()).toMatch(/2/);
   });
 
-  it('**毎日みる単語では効かない**', () => {
+  it('**毎日みる単語では、はっきり上へ払えば★を外すだけ**（覚えた記録にしない）', () => {
     show('bookmark');
     swipe(0, -200);
-    expect(mockToggle).not.toHaveBeenCalled();
+    expect(mockToggle).toHaveBeenCalledTimes(1);
     expect(mockUpdate).not.toHaveBeenCalled();
   });
 });

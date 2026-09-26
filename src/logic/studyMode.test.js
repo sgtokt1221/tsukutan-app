@@ -13,10 +13,10 @@ describe('上スワイプが効くモード', () => {
     expect(studyModePolicy('free').swipeUp).toBe(true);
   });
 
-  it('**今日の新規・おかわり・毎日みる単語では効かない**（誤って消さない）', () => {
-    expect(studyModePolicy('daily').swipeUp).toBe(false);
-    expect(studyModePolicy('extra').swipeUp).toBe(false);
-    expect(studyModePolicy('bookmark').swipeUp).toBe(false);
+  it('**今日の新規・おかわり・毎日みる単語は、はっきり払ったときだけ**（誤って消さない）', () => {
+    expect(studyModePolicy('daily').swipeUp).toBe('strict');
+    expect(studyModePolicy('extra').swipeUp).toBe('strict');
+    expect(studyModePolicy('bookmark').swipeUp).toBe('strict');
   });
 
   it('知らないモードでは効かない（消える方に倒さない）', () => {
@@ -39,9 +39,10 @@ describe('外すボタン', () => {
     }
   });
 
-  it('上スワイプが効くモードだけ、スワイプでも同じと書き添える', () => {
+  it('上スワイプが効くモードでは、スワイプでも同じと書き添える', () => {
     expect(studyModePolicy('review').removeHint).toContain('スワイプ');
-    expect(studyModePolicy('daily').removeHint).not.toContain('スワイプ');
+    expect(studyModePolicy('daily').removeHint).toContain('スワイプ');
+    expect(studyModePolicy('???').removeHint).not.toContain('スワイプ');
   });
 });
 

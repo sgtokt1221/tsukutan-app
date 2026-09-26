@@ -4,18 +4,17 @@ import CoachModal, { cardCoachSteps } from './CoachModal';
 import { studyModePolicy } from '../../logic/studyMode';
 
 describe('カードの使い方（モーダル）', () => {
-  it('**上へ払うは、効くモードのときだけ出す**', () => {
-    const titles = (mode) => cardCoachSteps(studyModePolicy(mode)).map((s) => s.title);
-    expect(titles('review')).toContain('上へ払う');
-    expect(titles('free')).toContain('上へ払う');
-    expect(titles('daily')).not.toContain('上へ払う');
-    expect(titles('bookmark')).not.toContain('上へ払う');
+  it('**上へ払うは全部のモードで出し、新しい単語では「はっきり払う」と添える**', () => {
+    const up = (mode) => cardCoachSteps(studyModePolicy(mode)).find((s) => s.key === 'up');
+    expect(up('review').text).not.toContain('まっすぐ');
+    expect(up('daily').text).toContain('大きくまっすぐ上へ払ったときだけ');
+    expect(up('bookmark').text).toContain('大きくまっすぐ上へ払ったときだけ');
   });
 
   it('毎日みる単語では「覚えた＝毎日みるから外す」と言う', () => {
-    const last = cardCoachSteps(studyModePolicy('bookmark')).at(-1);
-    expect(last.title).toBe('「覚えた」ボタン');
-    expect(last.text).toBe('毎日みる単語から外します');
+    const steps = cardCoachSteps(studyModePolicy('bookmark'));
+    expect(steps.at(-1).title).toBe('「覚えた」ボタン');
+    expect(steps.find((s) => s.key === 'up').text).toContain('毎日みる単語から外します');
   });
 
   it('「やってみる」で閉じる', () => {
