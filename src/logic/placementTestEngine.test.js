@@ -392,3 +392,23 @@ describe('ステージをまたいで前の問題へ戻る（2026-09-26）', () 
     expect(undoLastAnswer(start)).toBe(start);
   });
 });
+
+describe('あと何問くらい（estimateRemaining）', () => {
+  // eslint-disable-next-line global-require
+  const { estimateRemaining, MIN_ANSWERS_FOR_EARLY_FINISH } = require('./placementTestEngine');
+
+  test('始めは、最短で終わるまでの問題数', () => {
+    // ステージ1(5) + ステージ2(10) で最低回答数15に届き、レベルが動かなければ終われる
+    expect(estimateRemaining(createInitialState())).toBe(MIN_ANSWERS_FOR_EARLY_FINISH);
+  });
+
+  test('答えるたびに1つずつ減る（同じステージの中）', () => {
+    const s0 = createInitialState();
+    const s1 = recordAnswer(s0, { wordId: 'a', isCorrect: true });
+    expect(estimateRemaining(s1)).toBe(estimateRemaining(s0) - 1);
+  });
+
+  test('終わっていれば0', () => {
+    expect(estimateRemaining({ ...createInitialState(), completed: true })).toBe(0);
+  });
+});

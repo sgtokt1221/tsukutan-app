@@ -272,3 +272,28 @@ export const computeResultLevel = (state) => {
   const theta = resultAbility(state);
   return theta == null ? clampLevel(state.targetLevel) : levelOfAbility(theta, MIN_LEVEL, MAX_LEVEL);
 };
+
+/**
+ * あと何問くらいで終わりそうか（画面の「あと約N問」とデッキの厚み）。
+ *
+ * テストは答え方で長さが変わるので、**今のステージでレベルが動かなかったとしたら**の見込み。
+ * 早く終わるには、レベルが動かないステージが STABLE_STAGES_FOR_EARLY_FINISH 回続き、
+ * 答えが MIN_ANSWERS_FOR_EARLY_FINISH 問以上あること（completeStage と同じ条件）。
+ * レベルが動けば見込みは増える（そのときは正直に増やす）。
+ */
+export const estimateRemaining = (state) => {
+  if (!state || state.completed) return 0;
+  const leftInStage = Math.max(0, questionsForStage(state.stage) - state.stageAnswers.length);
+  const stagesLeft = Math.max(0, MAX_STAGES - state.stage);
+  const moreStages = Math.min(stagesLeft, Math.max(0, STABLE_STAGES_FOR_EARLY_FINISH - (state.stableStages + 1)));
+  let remaining = leftInStage + moreStages * QUESTIONS_PER_STAGE;
+  // 答えの数が足りなければ、足りるところまでステージを重ねる
+  let answeredAtEnd = state.allAnswers.length + remaining;
+  let extra = 0;
+  while (answeredAtEnd < MIN_ANSWERS_FOR_EARLY_FINISH && moreStages + extra < stagesLeft) {
+    remaining += QUESTIONS_PER_STAGE;
+    answeredAtEnd += QUESTIONS_PER_STAGE;
+    extra += 1;
+  }
+  return remaining;
+};
