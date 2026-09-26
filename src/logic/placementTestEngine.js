@@ -13,7 +13,11 @@
  *   - ステージ得点と全体得点は別に持つ
  *   - 早期終了は最低回答数を満たしたうえで、全回答履歴から判定する
  *   - 同じ回答履歴を与えれば必ず同じ最終レベルになる
+ *   - **最終レベルと語彙数は答え全部から推定した「力」で出す**（abilityEstimate.js。2026-09-26）。
+ *     以前は最後のレベルの正答率で±1していただけで、受け直すと3回に1回ずれた
+ *   - 終わる時点で力が2つのレベルにまたがっていたら、1ステージだけ足して確かめる
  */
+import { estimateAbility, isAmbiguous, levelOfAbility } from './abilityEstimate';
 
 export const QUESTIONS_STAGE_1 = 5;
 export const QUESTIONS_PER_STAGE = 10;
@@ -22,6 +26,14 @@ export const MAX_STAGES = 10;
 export const MIN_LEVEL = 1;
 export const MAX_LEVEL = 7;
 export const DEFAULT_START_LEVEL = 3;
+
+/**
+ * 判定が割れたとき（力の推定の幅が2つのレベルにまたがるとき）に足すステージの数。
+ * 試算では、足すほど受け直したときに揃うが、1回で約10問ずつ増える。
+ */
+export const MAX_EXTRA_STAGES = 1;
+/** 「割れた」とみなす幅（推定の標準誤差の何倍か）。広いほど足しやすい */
+export const AMBIGUITY_MARGIN = 0.5;
 
 /** 早期終了に必要な最低回答数 */
 export const MIN_ANSWERS_FOR_EARLY_FINISH = 15;
@@ -139,7 +151,7 @@ export const seededRandom = (seed = 1) => {
 /**
  * 1問の回答を記録する。ここでは難易度を変えないし、何も初期化しない。
  */
-export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revealed = false }) => {
+export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revealed = false, wordLevel }) => {
   if (state.completed) return state;
 
   const answer = {
@@ -150,6 +162,8 @@ export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revea
     responseTime,
     stage: state.stage,
     level: state.targetLevel,
+    // 出した単語そのもののレベル（狙いの±2まで散る）。力の推定はこちらを使う
+    ...(Number.isFinite(wordLevel) ? { wordLevel } : {}),
   };
 
   return {
@@ -232,41 +246,29 @@ export const completeStage = (state) => {
     previousStage: state,
   };
 
+  if (settled && !outOfStages) {
+    // 割れていれば、もう1ステージ。狙いは推定した力に一番近いレベル
+    const ability = estimateAbility(state.allAnswers);
+    if (isAmbiguous(ability, AMBIGUITY_MARGIN) && (state.extraStages || 0) < MAX_EXTRA_STAGES) {
+      return { ...next, targetLevel: levelOfAbility(ability.theta), extraStages: (state.extraStages || 0) + 1 };
+    }
+  }
   if (settled || outOfStages) {
-    return { ...next, completed: true, resultLevel: computeResultLevel({ ...state, targetLevel: nextLevel }) };
+    return { ...next, completed: true, resultLevel: computeResultLevel(state) };
   }
   return next;
 };
 
+/** 答え全部から推定した力（小数のレベル）。答えが無ければ null */
+export const resultAbility = (state) => (
+  state.allAnswers.length === 0 ? null : estimateAbility(state.allAnswers).theta
+);
+
 /**
- * 全回答履歴から最終レベルを決める。
- *
- * 落ち着いたレベル（最後に到達したレベル）を基準にし、
- * そのレベルでの正答率が極端な場合だけ1段ずらす。
+ * 全回答履歴から最終レベルを決める。推定した力を1〜7に丸める。
  * 同じ履歴なら必ず同じ値になる。
  */
 export const computeResultLevel = (state) => {
-  if (state.allAnswers.length === 0) return clampLevel(state.targetLevel);
-
-  const settledLevel = state.targetLevel;
-  const atSettledLevel = state.allAnswers.filter((answer) => answer.level === settledLevel);
-  const sample = atSettledLevel.length > 0 ? atSettledLevel : state.allAnswers;
-  const accuracy = sample.filter((answer) => answer.isCorrect).length / sample.length;
-
-  if (accuracy >= 0.9) return clampLevel(settledLevel + 1);
-  if (accuracy <= 0.2) return clampLevel(settledLevel - 1);
-  return clampLevel(settledLevel);
-};
-
-/**
- * 推定語彙数。永続IDのユニーク件数から出す（計画書11.6）。
- * 同じ単語が複数の教材に入っていても二重に数えない。
- */
-export const estimateVocabulary = (words, level) => {
-  const ids = new Set();
-  for (const word of words || []) {
-    if (!word || (word.level ?? 0) > level) continue;
-    ids.add(word.id || `${word.word}|${word.partOfSpeech}|${word.meaning}`);
-  }
-  return ids.size;
+  const theta = resultAbility(state);
+  return theta == null ? clampLevel(state.targetLevel) : levelOfAbility(theta, MIN_LEVEL, MAX_LEVEL);
 };

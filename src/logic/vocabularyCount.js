@@ -17,6 +17,7 @@
  */
 
 import { wordContentKey } from './wordKey';
+import { expectedVocabulary, knowProbability } from './abilityEstimate';
 
 /**
  * 単語の id → 単語データ（master）のレベル。
@@ -86,11 +87,39 @@ export const masteredBeyondAssessment = (reviewWords = [], assessedLevel = 0, le
 };
 
 /**
+ * 復習完了の語が、テストの見込みに上乗せするぶん。
+ * 見込みで「6割知っていそう」なレベルの語を覚えきったなら、足すのは残りの4割ぶん。
+ */
+export const masteredBeyondAbility = (reviewWords = [], ability, levelOf = () => null) => {
+  const ids = new Set();
+  let extra = 0;
+  for (const word of reviewWords) {
+    if (!word || word.migratedTo || word.status !== 'mastered') continue;
+    const key = word.id || word.word;
+    if (ids.has(key)) continue;
+    const level = levelOf(word);
+    if (!Number.isFinite(level)) continue;
+    ids.add(key);
+    extra += 1 - knowProbability(level, ability);
+  }
+  return Math.round(extra);
+};
+
+/**
  * 到達語数。実力テストの範囲と、そこから外れた復習完了語の和。
+ *
+ * **テストで力（assessedAbility）を測ってあれば、そちらで数える**（2026-09-26）。
+ * 結果画面の推定語彙数と同じ出し方にそろえる（食い違うと、同じ日に2つの数字が出る）。
+ * 力が無い古い結果だけ、判定レベル以下を全部知っているとして数える。
  *
  * @returns {{assessed:number, masteredBeyond:number, total:number}}
  */
-export const reachedWordCount = ({ master = [], reviewWords = [], assessedLevel = 0 } = {}) => {
+export const reachedWordCount = ({ master = [], reviewWords = [], assessedLevel = 0, assessedAbility } = {}) => {
+  if (Number.isFinite(assessedAbility)) {
+    const assessed = expectedVocabulary(master, assessedAbility);
+    const beyond = masteredBeyondAbility(reviewWords, assessedAbility, levelLookup(master));
+    return { assessed, masteredBeyond: beyond, total: assessed + beyond };
+  }
   const assessed = assessedWordCount(master, assessedLevel);
   const beyond = masteredBeyondAssessment(reviewWords, assessedLevel, levelLookup(master));
   return { assessed, masteredBeyond: beyond, total: assessed + beyond };

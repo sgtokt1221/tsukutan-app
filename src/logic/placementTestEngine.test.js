@@ -14,7 +14,6 @@ import {
   totalScore,
   questionsForStage,
   computeResultLevel,
-  estimateVocabulary,
 } from './placementTestEngine';
 
 /** レベルごとに単語を用意する。eikenLevels には文字列も混ぜる。 */
@@ -255,49 +254,47 @@ describe('前の問題へ戻る', () => {
   });
 });
 
-describe('estimateVocabulary', () => {
-  test('永続IDのユニーク件数で数える', () => {
-    const words = [
-      { id: 'w1', level: 1 },
-      { id: 'w1', level: 1 }, // 同じIDが別教材から来ても1件
-      { id: 'w2', level: 3 },
-      { id: 'w3', level: 5 },
+describe('computeResultLevel（答え全部から推定した力を丸める）', () => {
+  const at = (wordLevel, isCorrect) => ({ level: wordLevel, wordLevel, isCorrect });
+
+  test('Lv3はほぼ知っていて、Lv5はほぼ知らない → Lv4', () => {
+    const answers = [
+      ...Array.from({ length: 10 }, (_, i) => at(3, i < 9)),
+      ...Array.from({ length: 10 }, (_, i) => at(4, i < 5)),
+      ...Array.from({ length: 10 }, (_, i) => at(5, i < 1)),
     ];
-    expect(estimateVocabulary(words, 3)).toBe(2);
-    expect(estimateVocabulary(words, 5)).toBe(3);
-  });
-
-  test('レベル0や空配列でも壊れない', () => {
-    expect(estimateVocabulary([], 3)).toBe(0);
-    expect(estimateVocabulary(null, 3)).toBe(0);
-  });
-
-  test('実際のマスターでも単調に増える', () => {
-    const master = require('../../public/data/words-master.json');
-    const counts = [1, 2, 3, 4, 5, 6, 7].map((level) => estimateVocabulary(master, level));
-    expect(counts).toEqual([...counts].sort((a, b) => a - b));
-    expect(counts[6]).toBe(master.length);
-  });
-});
-
-describe('computeResultLevel', () => {
-  test('落ち着いたレベルでほぼ全問正解なら1段上げる', () => {
-    const answers = Array.from({ length: 10 }, () => ({ level: 4, isCorrect: true }));
-    expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBe(5);
-  });
-
-  test('ほぼ全問不正解なら1段下げる', () => {
-    const answers = Array.from({ length: 10 }, () => ({ level: 4, isCorrect: false }));
-    expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBe(3);
-  });
-
-  test('中間ならそのまま', () => {
-    const answers = Array.from({ length: 10 }, (_, i) => ({ level: 4, isCorrect: i < 6 }));
     expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBe(4);
+  });
+
+  test('出した単語のレベル（wordLevel）で見る。ステージの狙い（level）ではない', () => {
+    // 狙いは4でも、実際に出たのがLv6の語で全部わかるなら力は高い
+    const answers = Array.from({ length: 20 }, () => ({ level: 4, wordLevel: 6, isCorrect: true }));
+    expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBeGreaterThanOrEqual(6);
   });
 
   test('回答が無ければ現在レベル', () => {
     expect(computeResultLevel({ targetLevel: 3, allAnswers: [] })).toBe(3);
+  });
+});
+
+describe('判定が割れたら1ステージ足す', () => {
+  const { MAX_EXTRA_STAGES } = require('./placementTestEngine');
+  // 狙いのレベルで毎回ちょうど半分わかる生徒（力が2つのレベルの境目にいる）
+  const playHalf = () => {
+    let s = createInitialState();
+    let n = 0;
+    while (!s.completed && n < 200) {
+      s = recordAnswer(s, { wordId: `w${n}`, isCorrect: n % 2 === 0, wordLevel: s.targetLevel });
+      n += 1;
+      if (isStageComplete(s)) s = completeStage(s);
+    }
+    return s;
+  };
+
+  test('足すのは最大 MAX_EXTRA_STAGES 回。必ず終わる', () => {
+    const s = playHalf();
+    expect(s.completed).toBe(true);
+    expect(s.extraStages || 0).toBeLessThanOrEqual(MAX_EXTRA_STAGES);
   });
 });
 
