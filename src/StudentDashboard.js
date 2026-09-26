@@ -1525,6 +1525,7 @@ export default function StudentDashboard() {
                   sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
                   learningMode={currentLearningMode}
+                  motivationLevel={userData?.goal?.motivationLevel}
                   onWordAnswered={
                     (currentLearningMode === 'daily' || currentLearningMode === 'extra') && dailyPlan.dateKey
                       ? (wordId) => markNewWordAnswered(auth.currentUser?.uid, dailyPlan.dateKey, wordId)
@@ -1538,6 +1539,7 @@ export default function StudentDashboard() {
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
                   learningMode="review"
+                  motivationLevel={userData?.goal?.motivationLevel}
                 />;
       case 'test':
         return (

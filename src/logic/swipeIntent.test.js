@@ -80,3 +80,31 @@ describe('単語力チェックテストの札', () => {
     expect(testIntentAt(5)).toBeNull();
   });
 });
+
+describe('やる気のペースで間隔が変わる（2026-09-26 まで全員「普通」だった）', () => {
+  it('3回目のわかった：そこそこ37日・普通17日・やる気満々10日', () => {
+    const third = { interval: 6, repetitions: 2, easeFactor: 2.7 };
+    expect(nextIntervalDays({ ...third, interval: 9 }, 'low')).toBe(37);
+    expect(nextIntervalDays(third, 'normal')).toBe(17);
+    expect(nextIntervalDays({ ...third, interval: 5 }, 'high')).toBe(10);
+  });
+
+  it('続けて覚えたときの伸び方', () => {
+    expect(reviewGaps(4, 'low')).toEqual([1, 9, 37, 156]);
+    expect(reviewGaps(4, 'high')).toEqual([1, 5, 10, 20]);
+  });
+
+  it('**学習カードは採点に生徒のペースを渡す**（渡し忘れは黙って「普通」になる）', () => {
+    // eslint-disable-next-line global-require
+    const fs = require('fs');
+    const path = require('path');
+    const source = fs.readFileSync(path.join(__dirname, '..', 'StudyFlashcard.js'), 'utf8');
+    const calls = source.match(/updateUserWordProgress\(uid, word, quality[^)]*\)/g) || [];
+    expect(calls.length).toBeGreaterThan(0);
+    calls.forEach((call) => expect(call).toContain('motivationLevel'));
+    const dashboard = fs.readFileSync(path.join(__dirname, '..', 'StudentDashboard.js'), 'utf8');
+    const opened = dashboard.match(/<StudyFlashcard[\s\S]*?\/>/g) || [];
+    expect(opened.length).toBeGreaterThan(0);
+    opened.forEach((tag) => expect(tag).toContain('motivationLevel='));
+  });
+});

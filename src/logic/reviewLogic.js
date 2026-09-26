@@ -63,6 +63,7 @@ export const updateUserWordProgress = async (
   word,
   answer,
   isReviewComplete = false,
+  // **渡さないと「普通」の間隔になる。** 学習カードは生徒のペースを渡すこと
   motivationLevel = 'normal',
   { revealed = false } = {}
 ) => {
