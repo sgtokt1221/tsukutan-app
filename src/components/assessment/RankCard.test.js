@@ -10,7 +10,8 @@ describe('RankCard compact rank journey', () => {
     expect(screen.getByText('TOEIC 385〜545 相当')).toBeInTheDocument();
     // B は 425〜574。518 は中級で、次は B 上級（525 から）
     expect(screen.getByText('B 上級 まで あと 7')).toBeInTheDocument();
-    expect(screen.getByText('中級')).toBeInTheDocument();
+    // 段は紋章と一体（帯）で出す
+    expect(screen.getByLabelText('ランク B 中級')).toBeInTheDocument();
 
     const journey = screen.getByLabelText('ランクの全体マップ。B ランク、全7段階の4番目');
     const steps = within(journey).getAllByRole('listitem');

@@ -166,16 +166,11 @@ export default function RankCard({
         <div className="rank-card__hero">
           <span className="rank-card__eyebrow">現在のランク</span>
           <div className="rank-card__hero-badge">
-            <RankBadge rankId={rank.id} size="xlarge" />
+            <RankBadge rankId={rank.id} size="xlarge" tier={tier} />
           </div>
         </div>
 
         <div className="rank-card__compact-summary">
-          {tier && (
-            <p className="rank-card__tier">
-              {rank.id} <strong>{tier.label}</strong>
-            </p>
-          )}
           <div className="rank-card__compact-heading">
             {/* 「全7段階の6番目」はアプリ内でしか意味を持たない。
                 生徒が知りたいのは外の物差しでどのあたりかなので、
@@ -225,9 +220,8 @@ export default function RankCard({
   return (
     <div className="rank-card">
       <div className="rank-card__head">
-        <RankBadge rankId={rank.id} size="large" />
+        <RankBadge rankId={rank.id} size="large" tier={tier} />
         <div className="rank-card__summary">
-          {tier && <p className="rank-card__tier">{rank.id} <strong>{tier.label}</strong></p>}
           <p className="rank-card__label">能力スコア</p>
           <p className="rank-card__score">
             {Math.round(score)}
