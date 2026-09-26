@@ -30,12 +30,15 @@ export default function WordbookList({
   gestureHandlers,
   // 自動再生で読んでいるカードの番号（読んでいなければ -1）
   playingIndex = -1,
+  // 絞り込み（すべて／まだ／もう一度）。番号（data-card-index）は並び全体の番号のまま
+  isVisible = () => true,
 }) {
   return (
     <div className="wordbook-list">
       <div className="wordbook-list__grid">
         {words.slice(startIndex).map((word, offset) => {
           const index = startIndex + offset;
+          if (!isVisible(word)) return null;
           const judgement = judgementOf(word);
           const revealed = isRevealed(word);
           const pronunciation = word.pronunciation || getPronunciation(word.word);

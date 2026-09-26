@@ -1,0 +1,98 @@
+/* 単語帳の「一覧の地図」と絞り込み（→ WordbookOverview.js） */
+
+.wb-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12) var(--space-12);
+}
+
+.wb-overview__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.wb-overview__filters {
+  display: flex;
+  gap: var(--space-4);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.wb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: none;
+  min-height: 36px;
+  padding: 0 var(--space-12);
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+/* 選んでいるものはベタ塗り＋白抜き */
+.wb-chip.is-on {
+  border-color: var(--color-ink-olive);
+  background-color: var(--color-ink-olive);
+  color: #ffffff;
+}
+
+.wb-chip__count {
+  font-size: var(--font-size-12);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.wb-reveal {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: #e5484d;
+  color: #ffffff;
+  font-size: var(--font-size-18);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+}
+
+.wb-map {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10px, 1fr));
+  gap: 3px;
+  max-height: 58px;
+  overflow: hidden;
+}
+
+.wb-map__cell {
+  height: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background-color: var(--color-olive-divider);
+  cursor: pointer;
+  transition: background-color var(--motion-standard) var(--ease-standard), transform var(--motion-fast);
+}
+
+.wb-map__cell.is-correct {
+  background-color: #5cc98a;
+}
+
+.wb-map__cell.is-incorrect {
+  background-color: #f07171;
+}
+
+.wb-map__cell:hover {
+  transform: scale(1.3);
+}

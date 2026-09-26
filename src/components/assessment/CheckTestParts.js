@@ -13,17 +13,21 @@ import './CheckTest.css';
 const GLIDE = [0.22, 0.9, 0.24, 1];
 
 /**
- * 上の帯。やめる／進み具合／前の問題。
+ * 上の帯。やめる／進み具合／前の問題。学習カード（StudyFlashcard）でも同じものを使う。
  * 進み具合は**戻さない**（見込みが増えても、バーは下げずに止めておく。下がると後退したように見える）。
+ * テストは答えで長さが変わるので「あと約N問」、学習カードは決まっているので「あとN枚」。
  */
-export function CheckTestTopBar({ answered, remaining, onQuit, onBack, canGoBack }) {
+export function CheckTestTopBar({
+  answered, remaining, onQuit, onBack, canGoBack,
+  quitLabel = '前の画面に戻る', backLabel = '前の問題', leftText,
+}) {
   const bestRef = useRef(0);
   const ratio = answered + remaining > 0 ? answered / (answered + remaining) : 0;
   bestRef.current = Math.max(bestRef.current, ratio);
   const percent = Math.round(bestRef.current * 100);
   return (
     <div className="vct-top">
-      <button type="button" className="vct-icon-btn" onClick={onQuit} aria-label="前の画面に戻る">
+      <button type="button" className="vct-icon-btn" onClick={onQuit} aria-label={quitLabel}>
         <FaTimes aria-hidden="true" />
       </button>
       <div className="vct-progress">
@@ -41,17 +45,20 @@ export function CheckTestTopBar({ answered, remaining, onQuit, onBack, canGoBack
             transition={{ duration: 0.5, ease: GLIDE }}
           />
         </div>
-        <span className="vct-progress__left">あと約{remaining}問</span>
+        <span className="vct-progress__left">{leftText ?? `あと約${remaining}問`}</span>
       </div>
-      <button
-        type="button"
-        className="vct-icon-btn"
-        onClick={onBack}
-        disabled={!canGoBack}
-        aria-label="前の問題"
-      >
-        <FaUndo aria-hidden="true" />
-      </button>
+      {/* 戻る先が無い画面（単語帳）では出さない */}
+      {onBack ? (
+        <button
+          type="button"
+          className="vct-icon-btn"
+          onClick={onBack}
+          disabled={!canGoBack}
+          aria-label={backLabel}
+        >
+          <FaUndo aria-hidden="true" />
+        </button>
+      ) : null}
     </div>
   );
 }

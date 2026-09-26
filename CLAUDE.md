@@ -42,6 +42,7 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `src/StudyFlashcard.js` | 単語カード（新規・復習とも。2026-09-23 に2本を1つにまとめた）。部品は `components/learning/`、指の判定は `logic/cardGestures.js`、記録の形は `logic/studyLog.js` |
 | `src/logic/studyMode.js` | モードごとの決まり（上スワイプ・外す・見出し・新規/復習の数え方）。**「復習なら」を部品に書かず、ここに足す** |
 | `src/components/onboarding/Onboarding.js` / `OnboardingScenes.js` | 初回の案内（12枚のアニメ。仕組み・ホーム・カード・えらぶ・長文・きろく）。**機能を足したらここにも1枚足す**。指の動かし方は書かない。図の日数は `reviewGaps`（実際の `nextSchedule`）から出す。中身を大きく変えたら `useOnboarding.js` の版を上げる |
+| `src/components/assessment/CheckTestParts.js` / `CheckTest.css` | 単語力チェックテストの見せ方（上の帯・デッキ・花火・ステージの合図）。**学習カードも同じ部品で組む**（`learning/StudyStage.css` は差分だけ）。単語帳の一覧の地図と絞り込みは `learning/WordbookOverview.js` |
 | `src/components/learning/CoachModal.js` | 学習画面の中の案内。動きの違うモードごと・単語帳を初めて開いたときにモーダルで出す（見たかは `logic/useSeenOnce.js`）。**本物のカードを自分で動かさない**（勝手に動いて見える） |
 | `src/components/learning/SwipeIntent.js` | ドラッグ中の「離すとどうなるか」の札（学習カードと単語力チェックテスト）。「決まり」は答えの判定と同じ閾値（`logic/swipeIntent.js`）。「次は何日後」は**保存済みの記録から**（`logic/useNextInterval.js`。カードの語で計算すると記録の無いカードで嘘になる） |
 | `src/VocabularyCheckTest.js` | 語彙力チェックテスト（975行） |
