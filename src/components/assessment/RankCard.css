@@ -578,3 +578,77 @@
 .rank-card--compact {
   gap: var(--space-8);
 }
+
+/* ---- 余白とつり合い（2026-09-26）----
+   最上段に見出しと再テスト、中段に紋章と相当、下段に全体マップ。
+   紋章の帯（初級・中級・上級）は紋章の外へはみ出すので、そのぶんの余白を下にとる */
+.rank-card--compact {
+  grid-template-columns: 104px minmax(0, 1fr);
+  grid-template-areas:
+    "top top"
+    "hero summary"
+    "journey journey";
+  row-gap: var(--space-12);
+  column-gap: var(--space-16);
+  padding: var(--space-16);
+}
+
+.rank-card__topline {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  min-height: var(--tap-target);
+  margin-bottom: calc(var(--space-4) * -1);
+}
+
+.rank-card__eyebrow {
+  font-size: var(--font-size-12);
+  letter-spacing: 0.08em;
+}
+
+.rank-card__hero-badge.has-tier {
+  margin-bottom: 22px;
+}
+
+.rank-card__compact-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  align-self: center;
+}
+
+.rank-card__compact-summary .rank-card__next-message {
+  margin: 0;
+}
+
+.rank-card__compact-position strong {
+  line-height: 1.25;
+}
+
+.rank-card__journey {
+  padding-top: var(--space-12);
+  border-top: 1px solid var(--color-olive-divider);
+}
+
+@media (max-width: 520px) {
+  .rank-card--compact {
+    grid-template-columns: 96px minmax(0, 1fr);
+    column-gap: var(--space-12);
+    padding: var(--space-12) var(--space-16) var(--space-16);
+  }
+
+  .rank-card__journey {
+    padding-top: var(--space-12);
+  }
+}
+
+.rank-card__compact-eiken {
+  white-space: normal;
+}
+
+.rank-card__compact-eiken strong {
+  white-space: nowrap;
+}
