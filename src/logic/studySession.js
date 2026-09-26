@@ -107,6 +107,26 @@ const RANK_KEY = 'tsukutan.study.rank';
  */
 const RANK_SENT_KEY = 'tsukutan.study.rankSent';
 
+/**
+ * ランクの中の段（'low' | 'mid' | 'high'）。**ランクと一緒に送る**（2026-09-26）。
+ * つくばホームの生徒詳細に「B 上級」と出すため。
+ */
+const RANK_TIER_KEY = 'tsukutan.study.rankTier';
+
+/** 送れたかの印。**ランクと段の組**で持つ（段だけ変わったときも送り直す） */
+const rankStamp = () => {
+    const rank = read(RANK_KEY);
+    return rank ? `${rank}:${read(RANK_TIER_KEY) || ''}` : null;
+};
+
+/** 送る中身に添えるランクと段。未測定なら何も足さない（向こうは届いたときだけ書く） */
+const rankFields = () => {
+    const rank = read(RANK_KEY);
+    if (!rank) return {};
+    const rankTier = read(RANK_TIER_KEY);
+    return rankTier ? { rank, rankTier } : { rank };
+};
+
 /** 送信中のランク。**同じものを二重に送らない**ための栓 */
 let rankSending = null;
 
@@ -226,10 +246,12 @@ function enqueue(payload) {
  * つくばホームは受け取って見せるだけなので、判定の式を向こうへ持っていかない。
  *
  * @param {string|null} rankId `null` なら未測定として何も送らない
+ * @param {string|null} [tierId] ランクの中の段（'low' | 'mid' | 'high'）
  */
-export function setStudyRank(rankId) {
+export function setStudyRank(rankId, tierId = null) {
     const clean = String(rankId || '').trim().toUpperCase();
     write(RANK_KEY, clean === '' ? null : clean);
+    write(RANK_TIER_KEY, clean === '' ? null : (tierId || null));
     // **変わったらその場で送る。** 勉強の送信を待つと、まだ勉強していない生徒の
     // 紋章が出ない。送れなければ `RANK_SENT_KEY` が古いままなので、次に試される
     void sendStudyRank();
@@ -248,13 +270,13 @@ export async function sendStudyRank() {
     // （`setStudyRank`）が重なると、同じランクを2回送ってしまう
     if (rankSending !== null) return rankSending;
     rankSending = (async () => {
-        const rank = read(RANK_KEY);
-        if (!rank) return { sent: false };
-        if (read(RANK_SENT_KEY) === rank) return { sent: false };
+        const stamp = rankStamp();
+        if (!stamp) return { sent: false };
+        if (read(RANK_SENT_KEY) === stamp) return { sent: false };
         if (!auth.currentUser) return { sent: false };
         try {
-            await callRecord({ sessions: [], rank, idToken: await entryToken() });
-            write(RANK_SENT_KEY, rank);
+            await callRecord({ sessions: [], ...rankFields(), idToken: await entryToken() });
+            write(RANK_SENT_KEY, stamp);
             return { sent: true };
         } catch (e) {
             // **印を付けない。** 次に呼ばれたときにもう一度試す
@@ -282,10 +304,10 @@ export async function flushStudySessions() {
     if (!auth.currentUser) return { sent: 0, kept: list.length };
     try {
         const idToken = await entryToken();
-        const rank = read(RANK_KEY);
+        const stamp = rankStamp();
         // **未測定なら欄ごと出さない。** 向こうは「届いたときだけ書く」作りなので、
         // 空を送ると測ってあるランクを消しに行くことになる
-        const data = await callRecord(rank ? { sessions: list, rank, idToken } : { sessions: list, idToken });
+        const data = await callRecord({ sessions: list, ...rankFields(), idToken });
         write(PENDING_KEY, null);
 
         /*
@@ -298,7 +320,7 @@ export async function flushStudySessions() {
           残すと毎回同じものを送り続けることになる。**見えるようにするだけ。**
         */
         // 一緒に送れたぶんは、ランクだけの送信をもう一度やらない
-        if (rank) write(RANK_SENT_KEY, rank);
+        if (stamp) write(RANK_SENT_KEY, stamp);
 
         const rejected = (data && data.rejected) || [];
         if (rejected.length > 0) {
@@ -504,6 +526,7 @@ export function _reset() {
     write(PENDING_KEY, null);
     write(RANK_KEY, null);
     write(RANK_SENT_KEY, null);
+    write(RANK_TIER_KEY, null);
 }
 
 /** テスト用。いま測っているものを覗く */
