@@ -1903,8 +1903,7 @@ export default function StudentDashboard() {
   const renderAnalyticsContent = () => (
     <AnalyticsPanel
       onNavigateTab={setActiveTab}
-      onSelectTextbook={handleSelectTextbook}
-      onStartLearning={startLearning}
+      onStartTest={startCheckTest}
     />
   );
 
