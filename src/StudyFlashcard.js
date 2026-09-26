@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { getAuth } from 'firebase/auth';
-import { FaArrowUp, FaUndo, FaArrowLeft, FaPlay, FaStop } from 'react-icons/fa';
+import { FaArrowUp, FaArrowLeft, FaPlay, FaStop } from 'react-icons/fa';
 
 import AnswerControls from './components/learning/AnswerControls';
-import SessionHeader from './components/learning/SessionHeader';
+// 見出しの部品は使わなくなったが、帯の小さなボタン・単語帳の上の固定の見た目はこのCSSにある
+import './components/learning/SessionHeader.css';
 import ModeTabs from './components/learning/ModeTabs';
 import WordbookZoomSlider from './components/learning/WordbookZoomSlider';
 import DirectionToggle from './components/learning/DirectionToggle';
@@ -12,8 +13,11 @@ import AutoPlaySpeed from './components/learning/AutoPlaySpeed';
 import BookmarkButton from './components/learning/BookmarkButton';
 import CardFace from './components/learning/CardFace';
 import WordbookList from './components/learning/WordbookList';
+import WordbookOverview, { matchesFilter } from './components/learning/WordbookOverview';
 import SwipeIntent from './components/learning/SwipeIntent';
 import CoachModal from './components/learning/CoachModal';
+import { CheckTestTopBar, Deck, Burst } from './components/assessment/CheckTestParts';
+import './components/learning/StudyStage.css';
 import { useSeenOnce, coachKeyFor, WORDBOOK_COACH_KEY } from './logic/useSeenOnce';
 import { swipeIntentAt, intentText } from './logic/swipeIntent';
 import { useNextInterval } from './logic/useNextInterval';
@@ -89,6 +93,13 @@ export default function StudyFlashcard({
     のぞいたら「答えを見てから答えた」として記録する（peekedRef）
   */
   const [peeking, setPeeking] = useState(false);
+  /*
+    **答えたカードの残像**（2026-09-26。単語力チェックテストと同じ見せ方）。
+    本物のカードはすぐ次の語へ進め、残像だけを払った向きへ飛ばす
+    （本物を飛ばし終えてから進めると、答えるたびに待ちが入り、記録の流れも変わる）
+  */
+  const [flying, setFlying] = useState(null);
+  const [burst, setBurst] = useState(0);
   const peekTimerRef = useRef(null);
   const peekingRef = useRef(false);
   const peekedRef = useRef(false);
@@ -98,6 +109,8 @@ export default function StudyFlashcard({
   const [revealed, setRevealed] = useState(() => new Set());
   const [judgements, setJudgements] = useState({});
   const [wordbookProgress, setWordbookProgress] = useState(0);
+  // 単語帳の絞り込み（すべて／まだ／もう一度）。→ WordbookOverview.js
+  const [wordbookFilter, setWordbookFilter] = useState('all');
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
@@ -318,9 +331,25 @@ export default function StudyFlashcard({
   }, [uid, trackWrite, motivationLevel]);
 
   /** フラッシュカードで答えた（わかった / もう一度） */
+  /** 答えたカードの残像を飛ばす。向き：good＝右／again＝左／remove＝上 */
+  const launchFlying = useCallback((dir) => {
+    const word = cards[currentIndex];
+    if (!word) return;
+    const meaning = word.japanese || word.meaning;
+    setFlying({
+      key: `${Date.now()}-${currentIndex}`,
+      dir,
+      text: isJaToEn ? meaning : word.word,
+      fromX: x.get(),
+      fromY: y.get(),
+    });
+    if (dir === 'good') setBurst((n) => n + 1);
+  }, [cards, currentIndex, isJaToEn, x, y]);
+
   const handleAnswer = useCallback(async (quality) => {
     // **手を動かした印。** 放置の判定と、つくばホームへ送る新規語数／復習語数の分かれ目
     noteActivity(policy.activity);
+    launchFlying(quality === 'good' ? 'good' : 'again');
     const word = cards[currentIndex];
     // 答えを見てから「わかった」を押しても茶々は入れない（2026-09-24 に吹き出しを外した）
 
@@ -337,7 +366,7 @@ export default function StudyFlashcard({
     } else {
       await finishSession(currentIndex);
     }
-  }, [policy.activity, cards, currentIndex, isFlipped, recordAnswer, uid, resetCard, finishSession]);
+  }, [policy.activity, cards, currentIndex, isFlipped, recordAnswer, uid, resetCard, finishSession, launchFlying]);
 
   const handleCorrect = useCallback(() => handleAnswer('good'), [handleAnswer]);
   const handleIncorrect = useCallback(() => handleAnswer('again'), [handleAnswer]);
@@ -380,10 +409,11 @@ export default function StudyFlashcard({
   const handleRemoveCurrent = useCallback(async () => {
     const word = cards[currentIndex];
     if (!word) return;
+    launchFlying('remove');
     removeWord(word);
     resetCard();
     if (currentIndex >= cards.length - 1) await finishSession(currentIndex);
-  }, [cards, currentIndex, removeWord, resetCard, finishSession]);
+  }, [cards, currentIndex, removeWord, resetCard, finishSession, launchFlying]);
 
   // ---- めくる・戻る ----
 
@@ -451,6 +481,22 @@ export default function StudyFlashcard({
     }).catch((error) => logger.warn('単語帳の採点を記録できませんでした', error));
     setJudgements((prev) => ({ ...prev, [key]: mark }));
   }, [judgements, uid, trackWrite, recordAnswer, revealed]);
+
+  /** 単語帳で答え合わせ（払った）した語の数 */
+  const checkedCount = cards.filter((word) => judgements[keyOf(word)]).length;
+
+  /** 赤シートをまとめて開く／隠す。**読み上げはしない**（1語ずつ開くときだけ読む） */
+  const allRevealed = cards.length > 0 && cards.every((word) => revealed.has(keyOf(word)));
+  const toggleRevealAll = useCallback(() => {
+    setRevealed(allRevealed ? new Set() : new Set(cards.map(keyOf)));
+  }, [allRevealed, cards]);
+
+  /** 一覧の地図のマスを押した。その語へ飛ぶ（絞り込みと続き位置で隠れていれば出す） */
+  const jumpToWord = useCallback((index) => {
+    setWordbookFilter('all');
+    setWordbookProgress((start) => Math.min(start, index));
+    setTimeout(() => scrollToCard(index), 60);
+  }, [scrollToCard]);
 
   /** 単語帳の自動再生を始める。**画面に見えている一番上のカードから** */
   const startWordbookAutoPlay = useCallback(() => {
@@ -675,13 +721,17 @@ export default function StudyFlashcard({
         style={{ '--wordbook-zoom': wordbookZoom / 100 }}
       >
         <div className="wordbook-header">
-          <SessionHeader
-            title={title}
-            current={wordbookProgress}
-            total={cards.length}
-            onBack={handleLeave}
-            backLabel="終了"
-            actions={(
+          {/* 上の帯はフラッシュカードと同じ形（2026-09-26）。進み具合は「確かめた語」の割合 */}
+          <CheckTestTopBar
+            answered={checkedCount}
+            remaining={cards.length - checkedCount}
+            onQuit={handleLeave}
+            quitLabel="終了"
+            leftText={`まだ${cards.length - checkedCount}語`}
+          />
+          <div className="study-stage__meta">
+            <span className="session-header__title study-stage__title">{title}</span>
+            <span className="study-stage__actions">
               <button
                 type="button"
                 className={wordbookAutoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
@@ -691,8 +741,8 @@ export default function StudyFlashcard({
               >
                 {wordbookAutoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
               </button>
-            )}
-          />
+            </span>
+          </div>
           <ModeTabs value="wordbook" onChange={setViewMode}>
             <div className="mode-tabs__controls">
               {/* 速さは自動再生中だけ出す（フラッシュカードと同じ） */}
@@ -701,6 +751,15 @@ export default function StudyFlashcard({
               <WordbookZoomSlider value={wordbookZoom} onChange={setWordbookZoom} />
             </div>
           </ModeTabs>
+          <WordbookOverview
+            words={cards}
+            judgementOf={judgementOf}
+            filter={wordbookFilter}
+            onFilter={setWordbookFilter}
+            onJump={jumpToWord}
+            allRevealed={allRevealed}
+            onToggleReveal={toggleRevealAll}
+          />
         </div>
 
         <WordbookList
@@ -718,6 +777,7 @@ export default function StudyFlashcard({
           isBookmarked={isBookmarked}
           onToggleBookmark={toggleBookmark}
           playingIndex={wordbookPlayIndex}
+          isVisible={(word) => matchesFilter(wordbookFilter, judgementOf(word))}
           gestureHandlers={{
             onMouseDown: handleMouseDown,
             onMouseMove: handleMouseMove,
@@ -751,37 +811,50 @@ export default function StudyFlashcard({
   // カードに出す意味。表示は japanese を先に見る（2本とも同じだった）
   const shownMeaning = currentWord?.japanese || currentWord?.meaning;
 
+  const leftCount = cards.length - currentIndex;
+  const flyTo = { good: { x: 480, y: 0, rotate: 18 }, again: { x: -480, y: 0, rotate: -18 }, remove: { x: 0, y: -560, rotate: 0 } };
+  const flyTint = { good: '#d9f99d', again: '#fecaca', remove: '#fef08a' };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-      {/* 戻る・セッション名・現在数・進捗をヘッダーにまとめる（計画書7.3 / 7.7）。
-          モード切替はヘッダー直下のアンダータブに置く。 */}
-      <SessionHeader
-        title={title}
-        current={currentIndex + 1}
-        total={cards.length}
-        onBack={handleLeave}
-        backLabel="終了"
-        actions={(
-          <>
-            {currentWord && (
-              <BookmarkButton
-                active={isBookmarked(currentWord)}
-                onToggle={() => toggleBookmark(currentWord)}
-                label={currentWord.word}
-              />
-            )}
-            <button
-              type="button"
-              className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
-              onClick={autoPlay ? stopAutoPlay : startAutoPlay}
-              aria-pressed={autoPlay}
-              aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
-            >
-              {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
-            </button>
-          </>
-        )}
+    /*
+      **単語力チェックテストと同じ見せ方**（2026-09-26）。全面に出して1画面に収める。
+      上：終了／あとN枚／前の単語、真ん中：デッキから出てくるカード、下：丸いボタン3つ。
+    */
+    <div className="study-stage vct">
+      <CheckTestTopBar
+        answered={currentIndex}
+        remaining={leftCount}
+        onQuit={handleLeave}
+        quitLabel="終了"
+        onBack={handlePrev}
+        backLabel="前の単語"
+        canGoBack={currentIndex > 0}
+        leftText={`あと${leftCount}枚`}
       />
+      {/* 読み上げ用。画面には出さない */}
+      <span className="visually-hidden">{currentIndex + 1} / {cards.length}</span>
+
+      <div className="study-stage__meta">
+        <span className="session-header__title study-stage__title">{title}</span>
+        <span className="study-stage__actions">
+          {currentWord && (
+            <BookmarkButton
+              active={isBookmarked(currentWord)}
+              onToggle={() => toggleBookmark(currentWord)}
+              label={currentWord.word}
+            />
+          )}
+          <button
+            type="button"
+            className={autoPlay ? 'session-header__icon-btn is-active' : 'session-header__icon-btn'}
+            onClick={autoPlay ? stopAutoPlay : startAutoPlay}
+            aria-pressed={autoPlay}
+            aria-label={autoPlay ? '自動読み上げを止める' : '自動読み上げを始める'}
+          >
+            {autoPlay ? <FaStop aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
+          </button>
+        </span>
+      </div>
       <ModeTabs value="flashcard" onChange={setViewMode}>
         <div className="mode-tabs__controls">
           {/* 速さは自動再生中だけ出す。止まっているときは関係がない */}
@@ -793,50 +866,79 @@ export default function StudyFlashcard({
       <div id="flashcard-container">
         {/* 動かしている最中の「離すとどうなるか」。毎回出す */}
         <SwipeIntent x={x} y={y} intentAt={intentAt} textOf={intentTextOf} />
-        <motion.div
-          key={currentIndex}
-          id="flashcard"
-          drag
-          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          dragElastic={0.7}
-          dragMomentum={false}
-          style={{
-            x,
-            y,
-            rotate,
-            backgroundColor: cardColor,
-            rotateY: isFlipped || peeking ? 180 : 0,
-            transition: { duration: 0.4 },
-          }}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <CardFace className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
-            {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
-            <p id="card-front-text" className={isJaToEn ? 'card-front-text--ja' : undefined}>
-              {isJaToEn ? shownMeaning : currentWord.word}
-            </p>
-            {!isJaToEn && pronunciation && (
-              <p className="card-pronunciation">[{pronunciation}]</p>
-            )}
-          </CardFace>
-          <CardFace className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
-            <h3 id="card-back-word">{currentWord.word}</h3>
-            {pronunciation && <p className="card-pronunciation">[{pronunciation}]</p>}
-            <p id="card-back-meaning">{shownMeaning}</p>
-            {(currentWord.example || currentWord.exampleJa) && <hr />}
-            <p className="example-text">{currentWord.example || ''}</p>
-            <p className="example-text-ja">{currentWord.exampleJa || ''}</p>
-          </CardFace>
-        </motion.div>
+        <div className="vct-stack">
+          <Deck remaining={leftCount} />
+          {/* 下のデッキから持ち上がって出てくる。指で動かす x とは別の枠で */}
+          <motion.div
+            key={currentIndex}
+            className="vct-card-wrap"
+            initial={{ scale: 0.9, y: 16, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            transition={{ duration: 0.35, ease: [0.22, 0.9, 0.24, 1] }}
+          >
+            <motion.div
+              id="flashcard"
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.7}
+              dragMomentum={false}
+              style={{
+                x,
+                y,
+                rotate,
+                backgroundColor: cardColor,
+                rotateY: isFlipped || peeking ? 180 : 0,
+                transition: { duration: 0.4 },
+              }}
+              onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              <CardFace className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
+                {/* 和→英のときは意味が問題になる。発音記号は答えを教えてしまうので出さない。 */}
+                <p id="card-front-text" className={isJaToEn ? 'card-front-text--ja' : undefined}>
+                  {isJaToEn ? shownMeaning : currentWord.word}
+                </p>
+                {!isJaToEn && pronunciation && (
+                  <p className="card-pronunciation">[{pronunciation}]</p>
+                )}
+              </CardFace>
+              <CardFace className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
+                <h3 id="card-back-word">{currentWord.word}</h3>
+                {pronunciation && <p className="card-pronunciation">[{pronunciation}]</p>}
+                <p id="card-back-meaning">{shownMeaning}</p>
+                {(currentWord.example || currentWord.exampleJa) && <hr />}
+                <p className="example-text">{currentWord.example || ''}</p>
+                <p className="example-text-ja">{currentWord.exampleJa || ''}</p>
+              </CardFace>
+            </motion.div>
+          </motion.div>
+
+          {/* 答えたカードの残像。払った向きへ飛んで消える */}
+          {flying && (
+            <motion.div
+              key={flying.key}
+              className="vct-card-wrap study-flying"
+              aria-hidden="true"
+              initial={{ x: flying.fromX, y: flying.fromY, rotate: flying.fromX / 18, opacity: 1 }}
+              animate={{ ...flyTo[flying.dir], opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeIn' }}
+              onAnimationComplete={() => setFlying((f) => (f && f.key === flying.key ? null : f))}
+            >
+              <div className="study-flying__card" style={{ backgroundColor: flyTint[flying.dir] }}>
+                {flying.text}
+              </div>
+            </motion.div>
+          )}
+          <Burst trigger={burst} />
+        </div>
       </div>
 
-      {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8） */}
-      {/* もう一度｜もう覚えた｜わかった（2026-09-24）。「迷った」は外した（使われていない）。
-          もう覚えたは上スワイプと同じ処理で、同じ黄色（→ AnswerControls.css） */}
+      {/* スワイプを知らなくても完走できるようにする（計画書7.5 / 7.8）。
+          もう一度｜もう覚えた｜わかった。もう覚えたは上スワイプと同じ処理 */}
       <AnswerControls
+        round
         onCorrect={handleCorrect}
         onIncorrect={handleIncorrect}
         middle={{
@@ -848,20 +950,6 @@ export default function StudyFlashcard({
       />
 
       {!cardCoachSeen && <CoachModal kind="card" policy={policy} onClose={markCardCoachSeen} />}
-
-      {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く。
-          「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
-          同じ画面に戻る道が2つあると、どちらが本当か迷う。 */}
-      <div className="session-footer">
-        <button
-          type="button"
-          className="ghost-button"
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-        >
-          <FaUndo aria-hidden="true" /> 前の単語
-        </button>
-      </div>
     </div>
   );
 }

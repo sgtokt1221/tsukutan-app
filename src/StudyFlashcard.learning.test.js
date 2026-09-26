@@ -333,11 +333,11 @@ describe('答えのボタン', () => {
     expect(middle.getAttribute('aria-label')).toBe('覚えた（毎日みるから外す）');
   });
 
-  it('**下の段は「前の単語」だけ**（もう覚えたは中央へ移した）', () => {
+  it('**「前の単語」は上の帯の ↶**（2026-09-26。単語力チェックテストと同じ並び）', () => {
     show('daily');
-    const footer = document.querySelector('.session-footer');
-    expect(footer.textContent).toContain('前の単語');
-    expect(footer.textContent).not.toContain('もう覚えた');
+    const back = screen.getByRole('button', { name: '前の単語' });
+    expect(back.closest('.vct-top')).not.toBeNull();
+    expect(back).toBeDisabled(); // 1語目では戻れない
   });
 });
 
