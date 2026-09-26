@@ -4,28 +4,40 @@
     "word": "a piece of ～",
     "meaning": "１つの～",
     "no": 1,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Could you give me a piece of paper, please?",
+    "exampleJa": "紙を1枚もらえますか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7b84a6ae8aebea91",
     "word": "a couple of ～",
     "meaning": "２つの～、２，３の～",
     "no": 2,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I bought a couple of notebooks at the store.",
+    "exampleJa": "私は店でノートを2、3冊買った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3fd89cc9c90c1dbd",
     "word": "a number of ～",
     "meaning": "いくつもの～、かなり多くの～",
     "no": 3,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A number of students joined the volunteer club this year.",
+    "exampleJa": "今年はかなり多くの生徒がボランティア部に入った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1cadeedd8cd193db",
     "word": "dozens of ～",
     "meaning": "数十もの～、何ダースもの～",
     "no": 4,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Dozens of birds were sitting on the electric wire.",
+    "exampleJa": "何十羽もの鳥が電線にとまっていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fbb9eca540348ef7",
@@ -44,7 +56,10 @@
     "word": "a great/good deal (of ～)",
     "meaning": "たくさん（の～）",
     "no": 6,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She spent a great deal of time on her science project.",
+    "exampleJa": "彼女は理科の研究にたくさんの時間を使った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fa234be309a85d8e",
@@ -75,7 +90,10 @@
     "word": "in fashion",
     "meaning": "流行して",
     "no": 9,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Wide pants are in fashion among students this year.",
+    "exampleJa": "今年は幅の広いズボンが学生の間で流行している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_46f85568b43c11ba",
@@ -130,105 +148,150 @@
     "word": "be aware of ～",
     "meaning": "～を知っている、～に気づいている",
     "no": 14,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Were you aware of the change in the test schedule?",
+    "exampleJa": "テストの日程の変更に気づいていましたか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e7c92d969cff01f5",
     "word": "be made of ～",
     "meaning": "～でできている",
     "no": 15,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This chair is made of wood from local trees.",
+    "exampleJa": "このいすは地元の木の木材でできている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_664a9d89e000e13e",
     "word": "be capable of ～",
     "meaning": "～ができる、～の可能性がある",
     "no": 16,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He is capable of running ten kilometers without stopping.",
+    "exampleJa": "彼は止まらずに10キロ走ることができる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4b3fd32db0e77041",
     "word": "be afraid of ～",
     "meaning": "～を恐れる［怖がる］、～を心配している",
     "no": 17,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My brother is afraid of big dogs.",
+    "exampleJa": "弟は大きな犬を怖がっている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c570fc77788f596d",
     "word": "be sure of/about ～",
     "meaning": "～を確信している",
     "no": 18,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am sure of her success in the contest.",
+    "exampleJa": "私は彼女がコンテストで成功すると確信している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4874bf4f429483ed",
     "word": "be composed of ～",
     "meaning": "～から構成されている",
     "no": 19,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our class is composed of twenty boys and fifteen girls.",
+    "exampleJa": "私たちのクラスは男子20人と女子15人から構成されている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d7d6338341d8f92b",
     "word": "be based on/upon ～",
     "meaning": "～に基づいている",
     "no": 20,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This movie is based on a true story.",
+    "exampleJa": "この映画は実話に基づいている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b36d558493e15587",
     "word": "be different from ～",
     "meaning": "～とは違っている",
     "no": 21,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My opinion is different from yours.",
+    "exampleJa": "私の意見はあなたの意見とは違っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d39e2f45aab47d88",
     "word": "be absent from ～",
     "meaning": "～を欠席する",
     "no": 22,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Ken was absent from school yesterday because of a cold.",
+    "exampleJa": "ケンは昨日、風邪で学校を欠席した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8927fc3b415bba2b",
     "word": "be engaged in ～",
     "meaning": "～に従事している、忙しく～をしている",
     "no": 23,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My uncle is engaged in farming in the countryside.",
+    "exampleJa": "おじは田舎で農業に従事している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_604b68f85fa97eba",
     "word": "be responsible for ～",
     "meaning": "～に責任がある",
     "no": 24,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The captain is responsible for the team's equipment.",
+    "exampleJa": "キャプテンはチームの道具に責任がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4f12b65e487f0a27",
     "word": "be married (to ～)",
     "meaning": "（～と）結婚している",
     "no": 25,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My aunt is married to a science teacher.",
+    "exampleJa": "おばは理科の先生と結婚している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2283a98b7efd733f",
     "word": "be satisfied with ～",
     "meaning": "～に満足している",
     "no": 26,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am satisfied with my score on the math test.",
+    "exampleJa": "私は数学のテストの点数に満足している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_928f1915b86cafd3",
     "word": "be curious about ～",
     "meaning": "～を知りたがる、～に好奇心の強い",
     "no": 27,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Children are curious about everything around them.",
+    "exampleJa": "子どもたちは身の回りのあらゆることを知りたがる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fbc4012a2316fc2e",
     "word": "be well off",
     "meaning": "裕福である",
     "no": 28,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "His family is well off and lives in a large house.",
+    "exampleJa": "彼の家族は裕福で、大きな家に住んでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9f1b284f41677532",
@@ -246,14 +309,20 @@
     "word": "be willing to do",
     "meaning": "…してもかまわない",
     "no": 30,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am willing to help you with your homework.",
+    "exampleJa": "あなたの宿題を手伝ってもかまわないよ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a508d13b8634e98a",
     "word": "be about to do",
     "meaning": "今にも…しようとしている",
     "no": 31,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The train is about to leave the station.",
+    "exampleJa": "電車が今にも駅を出発しようとしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e1b6db57c9552b09",
@@ -284,28 +353,40 @@
     "word": "contribute to ～",
     "meaning": "～の一因となる、～に貢献する、～に寄付［寄稿］する",
     "no": 34,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Lack of sleep contributed to his poor test results.",
+    "exampleJa": "睡眠不足が彼のテストの悪い結果の一因となった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b15ac8801fcdb051",
     "word": "amount to ～",
     "meaning": "総計～になる",
     "no": 35,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The cost of our class party amounted to 20,000 yen.",
+    "exampleJa": "クラスのパーティーの費用は総計2万円になった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a0bb3eae246c3210",
     "word": "depend on/upon ～",
     "meaning": "～に頼る、～しだいである",
     "no": 36,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many students depend on their parents for pocket money.",
+    "exampleJa": "多くの生徒はおこづかいを親に頼っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7b18974fe4e7ca62",
     "word": "focus on ～",
     "meaning": "～に集中する、～に焦点を合わせる",
     "no": 37,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Turn off your phone and focus on your studies.",
+    "exampleJa": "スマホを切って勉強に集中しなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8122ba7456a932c7",
@@ -324,7 +405,10 @@
     "word": "get on (～)",
     "meaning": "①（公共の乗り物など）に乗る ②仲良くやっていく、（なんとか）やっていく",
     "no": 39,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We got on the bus in front of the station.",
+    "exampleJa": "私たちは駅前でバスに乗った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3e330c5678244ebc",
@@ -402,21 +486,30 @@
     "word": "consist of ～",
     "meaning": "～から成り立っている",
     "no": 46,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The test consists of fifty questions.",
+    "exampleJa": "そのテストは50問から成り立っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_564c52829bb66f9e",
     "word": "complain about/of ～",
     "meaning": "（苦痛など）を訴える、～について不平を言う",
     "no": 47,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She complained of a headache and went to the nurse's office.",
+    "exampleJa": "彼女は頭痛を訴えて保健室へ行った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5a1bf358d29da902",
     "word": "die of/from ～",
     "meaning": "～で死ぬ",
     "no": 48,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many people died of the disease in the old days.",
+    "exampleJa": "昔は多くの人がその病気で死んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_10641aba16eed380",
@@ -447,14 +540,20 @@
     "word": "graduate from ～",
     "meaning": "～を卒業する",
     "no": 51,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My sister graduated from high school last spring.",
+    "exampleJa": "姉は去年の春に高校を卒業した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_72edd3bee6c7f481",
     "word": "differ from ～",
     "meaning": "～と異なる",
     "no": 52,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Japanese school life differs from school life in America.",
+    "exampleJa": "日本の学校生活はアメリカの学校生活と異なる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_15c10a61bd530caa",
@@ -473,14 +572,20 @@
     "word": "hear from ～",
     "meaning": "～から便り［電話・伝言］がある",
     "no": 54,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I was glad to hear from my old friend last week.",
+    "exampleJa": "先週、旧友から便りがあってうれしかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c3899fa73a863bdb",
     "word": "believe in ～",
     "meaning": "～の価値［存在］を信じる、～を信用する",
     "no": 55,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Do you believe in ghosts?",
+    "exampleJa": "あなたは幽霊の存在を信じますか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b3c735cbc9c4a70c",
@@ -511,49 +616,70 @@
     "word": "abound in/with ～",
     "meaning": "（場所が）～に富む",
     "no": 58,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This lake abounds in fish and birds.",
+    "exampleJa": "この湖は魚や鳥に富んでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9998c8d612e476e5",
     "word": "care about ～",
     "meaning": "～に気にかける、～に関心を持つ",
     "no": 59,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He doesn't care about what other people think.",
+    "exampleJa": "彼は他人がどう思うかを気にかけない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e76f4237a24bbe15",
     "word": "bring about ～",
     "meaning": "～を引き起こす",
     "no": 60,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The new rule brought about big changes in our school.",
+    "exampleJa": "新しい規則は私たちの学校に大きな変化を引き起こした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a24c82eb13e664af",
     "word": "deal with ～",
     "meaning": "～を扱う,処理する",
     "no": 61,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our teacher dealt with the problem quickly and calmly.",
+    "exampleJa": "先生はその問題を素早く冷静に処理した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4469d99c6078f080",
     "word": "go through ～",
     "meaning": "①～を通過する ②（苦しみなど）を経験する",
     "no": 62,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The train went through a long tunnel.",
+    "exampleJa": "電車は長いトンネルを通過した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0d498bf76d9ba12a",
     "word": "give up ～",
     "meaning": "～をあきらめる、～捨てる［やめる］",
     "no": 63,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Don't give up your dream so easily.",
+    "exampleJa": "そんなに簡単に夢をあきらめてはいけない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_783082f55fb8754d",
     "word": "grow up",
     "meaning": "大人になる、（事態などが）生じる",
     "no": 64,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I want to be a pilot when I grow up.",
+    "exampleJa": "大人になったらパイロットになりたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_40ad30b8b0c8cb7c",
@@ -596,21 +722,30 @@
     "word": "brush up (on) ～",
     "meaning": "（語学など）をやり直して磨きをかける",
     "no": 68,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I need to brush up on my English before the trip.",
+    "exampleJa": "旅行の前に英語をやり直して磨きをかける必要がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bd40f914f19633af",
     "word": "find out ～",
     "meaning": "（調査などの結果）を見つけ出す、（真相）を知る",
     "no": 69,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I finally found out why the computer was so slow.",
+    "exampleJa": "私はパソコンがとても遅い理由をついに見つけ出した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b64123a99dd8d26b",
     "word": "carry out ～",
     "meaning": "～を実行する",
     "no": 70,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The students carried out the plan for the school festival.",
+    "exampleJa": "生徒たちは文化祭の計画を実行した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_716a17c54928ecfd",
@@ -629,7 +764,10 @@
     "word": "figure out (～)",
     "meaning": "～を理解する、～を計算する、～を解く",
     "no": 72,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I couldn't figure out the meaning of this sentence.",
+    "exampleJa": "私はこの文の意味を理解できなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2eba3c220fc110bf",
@@ -648,7 +786,10 @@
     "word": "fill out ～",
     "meaning": "（書類など）に書き込む",
     "no": 74,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please fill out this form with a black pen.",
+    "exampleJa": "黒のペンでこの用紙に書き込んでください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4f96e1cb7af3eb3b",
@@ -739,21 +880,30 @@
     "word": "get along",
     "meaning": "①暮らす、（なんとか）やっていく ②仲良くやっていく、進む",
     "no": 82,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He is getting along well in his new city.",
+    "exampleJa": "彼は新しい町でうまく暮らしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1a8daf709c2c970e",
     "word": "get together (～)",
     "meaning": "集まる、～を集める",
     "no": 83,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Let's get together at the park after school.",
+    "exampleJa": "放課後、公園に集まろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_beb98dccfa088d9a",
     "word": "calm down (～)",
     "meaning": "～を落ち着かせる［静める］、落ち着く［静まる］",
     "no": 84,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The mother tried to calm down the crying baby.",
+    "exampleJa": "母親は泣いている赤ちゃんを落ち着かせようとした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a24e96b9ea61e95f",
@@ -820,7 +970,11 @@
     "word": "make sense",
     "meaning": "意味をなす、道理にかなう",
     "no": 90,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "food",
+    "example": "What you're saying doesn't make any sense.",
+    "exampleJa": "あなたの言っていることは全く意味をなさない。",
+    "pronunciation": "meɪk sɛns"
   },
   {
     "id": "w_df210ac8b434ba61",
@@ -899,7 +1053,10 @@
     "word": "get lost",
     "meaning": "道に迷う",
     "no": 97,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We got lost in the big shopping mall.",
+    "exampleJa": "私たちは大きなショッピングモールで道に迷った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7c41a4881ad465b4",
@@ -918,7 +1075,10 @@
     "word": "have/take ～ off",
     "meaning": "～を休みとしてとる",
     "no": 99,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My father took a week off to travel with us.",
+    "exampleJa": "父は私たちと旅行するために1週間休みをとった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8eb1d996b5dfbd35",
@@ -961,21 +1121,30 @@
     "word": "ask for ～",
     "meaning": "～を求める",
     "no": 103,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "If you get lost, ask for help at the station.",
+    "exampleJa": "道に迷ったら、駅で助けを求めなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a50666744b930865",
     "word": "get rid of ～",
     "meaning": "（厄介なもの）を取り除く",
     "no": 104,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I want to get rid of the old boxes in my room.",
+    "exampleJa": "部屋の古い箱を取り除きたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b138809a9f497fb8",
     "word": "fall in love with ～",
     "meaning": "（事・物）を大好きになる、（人）と恋に落ちる",
     "no": 105,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She fell in love with Kyoto on her first visit.",
+    "exampleJa": "彼女は初めて訪れたときに京都を大好きになった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7799318b4f57a876",
@@ -994,7 +1163,10 @@
     "word": "had better do",
     "meaning": "…したほうがいい、…すべきだ",
     "no": 107,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You had better go to bed early tonight.",
+    "exampleJa": "今夜は早く寝たほうがいい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_283f334616f78c4b",
@@ -1073,7 +1245,10 @@
     "word": "associate A with B",
     "meaning": "ＡをＢと結びつけて考える",
     "no": 114,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many people associate summer with fireworks.",
+    "exampleJa": "多くの人は夏を花火と結びつけて考える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_605f814afe5c390d",
@@ -1116,35 +1291,50 @@
     "word": "all the way",
     "meaning": "ずっと、はるばる",
     "no": 118,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My grandmother came all the way from Hokkaido to see me.",
+    "exampleJa": "祖母は私に会うためにはるばる北海道から来た。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6444b4ad5e70bbd3",
     "word": "～ and so on/forth",
     "meaning": "～など",
     "no": 119,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We bought apples, bananas, oranges, and so on.",
+    "exampleJa": "私たちはリンゴ、バナナ、オレンジなどを買った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_98fee34cd3702f1b",
     "word": "and yet",
     "meaning": "それにも関わらず",
     "no": 120,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He studied very hard, and yet he failed the test.",
+    "exampleJa": "彼はとても熱心に勉強した。それにも関わらず、テストに落ちた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8bc36918434bec3c",
     "word": "as ～ as possible/one can",
     "meaning": "できる限り～",
     "no": 121,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please answer the questions as quickly as possible.",
+    "exampleJa": "できる限り速く質問に答えてください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_055e39ed596ff46f",
     "word": "as a result (of ～)",
     "meaning": "（～の）結果として",
     "no": 122,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As a result of practice, she won the speech contest.",
+    "exampleJa": "練習の結果として、彼女はスピーチコンテストで優勝した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4507b305bd9c2d56",
@@ -1223,14 +1413,20 @@
     "word": "at once",
     "meaning": "①すぐに ②同時に",
     "no": 129,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Come here at once, please.",
+    "exampleJa": "すぐにこちらへ来てください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_efa620d95c8c0fe0",
     "word": "at all",
     "meaning": "①（否定文で）まったく ②（疑問文で）一体、そもそも ③（肯定文で）そもそも、ともかく",
     "no": 130,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I didn't understand his joke at all.",
+    "exampleJa": "私は彼の冗談がまったく分からなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_608a9029e664a499",
@@ -1249,7 +1445,10 @@
     "word": "at random",
     "meaning": "無作為に、手当たり次第に",
     "no": 132,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The teacher chose five students at random.",
+    "exampleJa": "先生は無作為に5人の生徒を選んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2d501855d51d6f83",
@@ -1280,7 +1479,10 @@
     "word": "between you and me",
     "meaning": "ここだけの話だが、内緒だが",
     "no": 135,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Between you and me, I don't like this song very much.",
+    "exampleJa": "ここだけの話だが、私はこの歌があまり好きではない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_80eea99ea047d584",
@@ -1299,7 +1501,10 @@
     "word": "by mistake",
     "meaning": "間違って",
     "no": 137,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I took my sister's umbrella by mistake.",
+    "exampleJa": "私は間違って妹の傘を持っていった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c7f916c033e50fae",
@@ -1330,7 +1535,10 @@
     "word": "far from ～",
     "meaning": "～からほど遠い、～どころではない",
     "no": 140,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My English is far from perfect.",
+    "exampleJa": "私の英語は完璧からほど遠い。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0ce575763498c799",
@@ -1349,7 +1557,10 @@
     "word": "for example/instance",
     "meaning": "例えば",
     "no": 142,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I like sports, for example, soccer and tennis.",
+    "exampleJa": "私はスポーツ、例えばサッカーやテニスが好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_935050ab079cb966",
@@ -1380,28 +1591,42 @@
     "word": "in addition (to ～)",
     "meaning": "（～に）加えて、さらに",
     "no": 145,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In addition to English, she studies Chinese on weekends.",
+    "exampleJa": "英語に加えて、彼女は週末に中国語を勉強している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cb55deb9d9268a37",
     "word": "in any case/event",
     "meaning": "とにかく、いずれにしても",
     "no": 146,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It may rain, but in any case we will play soccer.",
+    "exampleJa": "雨が降るかもしれないが、とにかく私たちはサッカーをする。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e97c57f32b6999c5",
     "word": "in detail",
     "meaning": "詳細に",
     "no": 147,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "quality",
+    "example": "He explained the plan in detail.",
+    "exampleJa": "彼はその計画を詳細に説明した。",
+    "pronunciation": "ɪn dɪˈteɪl"
   },
   {
     "id": "w_c1ca7c911825df83",
     "word": "in fact",
     "meaning": "①実際に ②（前言と対照して）（ところが）実際は",
     "no": 148,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "nature",
+    "example": "He looks young, but in fact he is over 50.",
+    "exampleJa": "彼は若く見えますが、実際は50歳を超えています。",
+    "pronunciation": "ɪn fækt"
   },
   {
     "id": "w_c6fc955abbd709b0",
@@ -1420,7 +1645,10 @@
     "word": "in other words",
     "meaning": "言い換えれば、つまり",
     "no": 150,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He is my mother's brother; in other words, he is my uncle.",
+    "exampleJa": "彼は母の兄弟だ。言い換えれば、私のおじだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_693b4084eed1431c",
@@ -1535,7 +1763,11 @@
     "word": "on the other hand",
     "meaning": "他方では、これに反して",
     "no": 160,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "body",
+    "example": "This car is expensive. On the other hand, it is very reliable.",
+    "exampleJa": "この車は高価だ。他方では、非常に信頼性が高い。",
+    "pronunciation": "ɑn ðə ˈʌðɚ hænd"
   },
   {
     "id": "w_0cda4abd18d06156",
@@ -1566,14 +1798,20 @@
     "word": "these days",
     "meaning": "近頃は、この頃は",
     "no": 163,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "These days, many students study with tablets.",
+    "exampleJa": "近頃は、多くの生徒がタブレットで勉強している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9b7a3291bfe54d48",
     "word": "according to ～",
     "meaning": "①～によれば ②～に従って、～に応じて",
     "no": 164,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "According to the weather report, it will snow tomorrow.",
+    "exampleJa": "天気予報によれば、明日は雪が降るそうだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_78e8079e773abea6",
@@ -1604,56 +1842,81 @@
     "word": "in spite of ～",
     "meaning": "～にもかかわらず",
     "no": 167,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In spite of the rain, the game was not canceled.",
+    "exampleJa": "雨にもかかわらず、試合は中止されなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b2adf3f632a37ae6",
     "word": "all over (～)",
     "meaning": "（～の）至る所に［で］、一面に",
     "no": 168,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Toys were lying all over the floor.",
+    "exampleJa": "おもちゃが床の至る所に散らばっていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4d78e07b0cb4a63e",
     "word": "apart from ～",
     "meaning": "①～のほかに ②～を除いては",
     "no": 169,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Apart from math, I also enjoy science.",
+    "exampleJa": "数学のほかに、私は理科も好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1b5c127a2b67640f",
     "word": "aside from ～",
     "meaning": "～を除いては、～のほかに",
     "no": 170,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Aside from a few mistakes, your essay is very good.",
+    "exampleJa": "いくつかの間違いを除いては、あなたの作文はとても良い。",
+    "exampleSource": "written"
   },
   {
     "id": "w_06d27317fb73d1d5",
     "word": "ahead of ～",
     "meaning": "（時間的に）～より先に、（位置的に）～の前に、～より進歩して",
     "no": 171,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We arrived at the stadium ahead of the other fans.",
+    "exampleJa": "私たちはほかのファンより先に競技場に着いた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6d7955d73579a5c0",
     "word": "in search of ～",
     "meaning": "～を求めて［探して］",
     "no": 172,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The birds flew south in search of warmer weather.",
+    "exampleJa": "鳥たちはより暖かい気候を求めて南へ飛んでいった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_adde3a033c4f4f55",
     "word": "in preparation",
     "meaning": "～の準備中で",
     "no": 173,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The students are practicing hard in preparation for the concert.",
+    "exampleJa": "生徒たちはコンサートの準備中で、熱心に練習している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_959ea520d1cecbc5",
     "word": "each other",
     "meaning": "お互い",
     "no": 174,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "people",
+    "example": "help each other",
+    "exampleJa": "お互いに助け合う",
+    "pronunciation": "itʃ ˈʌðɚ"
   },
   {
     "id": "w_e1cd3f28dc5b699a",
@@ -1696,14 +1959,20 @@
     "word": "as if/though …",
     "meaning": "まるで…するように",
     "no": 178,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He talks as if he knew everything about cars.",
+    "exampleJa": "彼はまるで車のことを何でも知っているかのように話す。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f07464bd1dfa2ad8",
     "word": "as soon as …",
     "meaning": "…するやいなや",
     "no": 179,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As soon as I got home, it started to rain.",
+    "exampleJa": "私が家に着くやいなや、雨が降り始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b4d0665c6b8d1373",
@@ -1722,21 +1991,30 @@
     "word": "bring up ～",
     "meaning": "①～を育てる②（問題・話題など）を持ち出す = raise",
     "no": 181,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She was brought up by her grandparents in the country.",
+    "exampleJa": "彼女は田舎で祖父母に育てられた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fa7c81cf4c1044c2",
     "word": "call off ～",
     "meaning": "～を中止する［取り消す］ = cancel",
     "no": 182,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The picnic was called off because of the storm.",
+    "exampleJa": "嵐のためにピクニックは中止された。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3937e02563bfe6eb",
     "word": "carry on (～)",
     "meaning": "（～を）続ける = happen, occur",
     "no": 183,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please carry on with your work while I'm away.",
+    "exampleJa": "私がいない間も作業を続けてください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3fdcd7b2f4bf76ca",
@@ -1755,28 +2033,40 @@
     "word": "come by ～",
     "meaning": "～を手に入れる = get, obtain",
     "no": 185,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Concert tickets are hard to come by these days.",
+    "exampleJa": "近頃はコンサートのチケットを手に入れるのが難しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1dfab45030dfad58",
     "word": "come up with ～",
     "meaning": "（解決策など）を思いつく = devise, invent, conceive",
     "no": 186,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She came up with a good idea for the class event.",
+    "exampleJa": "彼女はクラスの行事の良いアイデアを思いついた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_db3e8e63e41cddaa",
     "word": "do away with ～",
     "meaning": "～を取り除く、～を廃止する = eliminate, abolish",
     "no": 187,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our school did away with the old uniform rule.",
+    "exampleJa": "私たちの学校は古い制服の規則を廃止した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a827c9b1bbc725b8",
     "word": "find fault with ～",
     "meaning": "～にけちをつける、～を非難する = criticize",
     "no": 188,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My brother always finds fault with my cooking.",
+    "exampleJa": "兄はいつも私の料理にけちをつける。",
+    "exampleSource": "written"
   },
   {
     "id": "w_02cafb867ac0052e",
@@ -1795,7 +2085,10 @@
     "word": "hand in ～",
     "meaning": "（手渡しで）～を提出する［届ける］ = submit",
     "no": 190,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please hand in your reports by Friday.",
+    "exampleJa": "金曜日までにレポートを提出してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_68ae513769f9d702",
@@ -1946,14 +2239,20 @@
     "word": "along with ～",
     "meaning": "～と一緒に、～に加えて = besides",
     "no": 203,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I sent a birthday card along with a small present.",
+    "exampleJa": "私は小さなプレゼントと一緒に誕生日カードを送った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_14369baf4c20af87",
     "word": "in connection with ～",
     "meaning": "～に関連して = concerning, about",
     "no": 204,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The teacher called my parents in connection with my grades.",
+    "exampleJa": "先生は私の成績に関連して両親に電話をした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_dba41f04af62362f",
@@ -1996,7 +2295,10 @@
     "word": "above all (else)",
     "meaning": "とりわけ、特に = especially, particularly",
     "no": 208,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Above all, you should take care of your health.",
+    "exampleJa": "とりわけ、健康に気をつけるべきだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ba9fe78a6002e713",
@@ -2027,7 +2329,10 @@
     "word": "as a (general) rule",
     "meaning": "普通は、概して = generally, usually",
     "no": 211,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As a rule, I get up at six on weekdays.",
+    "exampleJa": "普通は、私は平日6時に起きる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_26b1a72e95622192",
@@ -2046,7 +2351,10 @@
     "word": "before long",
     "meaning": "間もなく = soon",
     "no": 213,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Before long, the snow stopped and the sun came out.",
+    "exampleJa": "間もなく雪がやみ、太陽が出てきた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_01c8662834ddb225",
@@ -2113,14 +2421,20 @@
     "word": "in all",
     "meaning": "全部で = altogether",
     "no": 219,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "There are thirty-five students in all in my class.",
+    "exampleJa": "私のクラスには全部で35人の生徒がいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0fcdc296bfe7a054",
     "word": "in particular",
     "meaning": "特に =especially, particularly",
     "no": 220,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I like fruit, and strawberries in particular.",
+    "exampleJa": "私は果物が好きで、特にイチゴが好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c1247d26156be794",
@@ -2175,28 +2489,40 @@
     "word": "agree to ～",
     "meaning": "（提案・計画・条件など）に同意する",
     "no": 225,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My parents agreed to my plan to study abroad.",
+    "exampleJa": "両親は私の留学の計画に同意した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f9ff80db392a8bb1",
     "word": "agree with ～",
     "meaning": "（人が）（人・考えなど）に同意する、（気候・食物などが）～に合う、～に一致［適合］する",
     "no": 226,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I agree with you about the new club rules.",
+    "exampleJa": "新しい部活の規則について、私はあなたに同意する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6c002bfbc7ed9e56",
     "word": "apply for ～",
     "meaning": "（仕事・許可など）を申し込む［志願する］",
     "no": 227,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My brother applied for a part-time job at a bakery.",
+    "exampleJa": "兄はパン屋のアルバイトを申し込んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ef36105a7932e2b1",
     "word": "apply to ～",
     "meaning": "①～に当てはまる ②（人・場所・組織）に申し込む",
     "no": 228,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This rule applies to all students in the school.",
+    "exampleJa": "この規則は学校の全生徒に当てはまる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0cb7cb622678b194",
@@ -2227,7 +2553,10 @@
     "word": "catch up with/to ～",
     "meaning": "（遅れた状態から）～に追いつく",
     "no": 231,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I ran fast to catch up with my friends.",
+    "exampleJa": "私は友だちに追いつくために速く走った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f21fc2b04450541a",
@@ -2282,21 +2611,30 @@
     "word": "correspond to ～",
     "meaning": "～に一致する、～に相当する",
     "no": 236,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The numbers on the map correspond to the pictures below.",
+    "exampleJa": "地図上の数字は下の写真に一致している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f94abfc23f2e793a",
     "word": "correspond with ～",
     "meaning": "～とやりとりを交わす、～と文通する",
     "no": 237,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I correspond with a pen pal in Canada.",
+    "exampleJa": "私はカナダのペンフレンドと文通している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6ed4d571383a14cb",
     "word": "hit on/upon ～",
     "meaning": "～を思いつく、～に出くわす",
     "no": 238,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "While taking a bath, he hit on a great idea.",
+    "exampleJa": "入浴中に、彼はすばらしい考えを思いついた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_df97779218e81674",
@@ -2315,7 +2653,10 @@
     "word": "dawn on ～",
     "meaning": "（考えなどが）（人）にわかり始める［思い浮かぶ］",
     "no": 240,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It suddenly dawned on me that I had left my key at home.",
+    "exampleJa": "鍵を家に置いてきたことが突然私にわかり始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c7a25927f7b300d7",
@@ -2370,77 +2711,110 @@
     "word": "be concerned about/for ～",
     "meaning": "～を心配している",
     "no": 245,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My mother is concerned about my health.",
+    "exampleJa": "母は私の健康を心配している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0519ea193b285439",
     "word": "be concerned with/in ～",
     "meaning": "～に関係している",
     "no": 246,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This book is concerned with the history of our town.",
+    "exampleJa": "この本は私たちの町の歴史に関係している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_164b4cf815513039",
     "word": "be free from/of ～",
     "meaning": "～がない",
     "no": 247,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This drink is free from sugar.",
+    "exampleJa": "この飲み物には砂糖がない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3804a72b55b20279",
     "word": "be free to do",
     "meaning": "自由に…できる",
     "no": 248,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Students are free to use the library after school.",
+    "exampleJa": "生徒は放課後、自由に図書館を使うことができる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_243cf6fe22f7bc27",
     "word": "be familiar to ～",
     "meaning": "（人）によく知られている",
     "no": 249,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This song is familiar to most Japanese people.",
+    "exampleJa": "この歌はほとんどの日本人によく知られている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_53aa3321ea2201a0",
     "word": "be familiar with ～",
     "meaning": "（物事）をよく知っている",
     "no": 250,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She is familiar with the streets of this town.",
+    "exampleJa": "彼女はこの町の通りをよく知っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4699d65e18bf604f",
     "word": "be true of ～",
     "meaning": "～に当てはめる",
     "no": 251,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The same is true of students in other countries.",
+    "exampleJa": "同じことはほかの国の生徒にも当てはまる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_66dd8b80f3dea7a0",
     "word": "be true to ～",
     "meaning": "～に忠実である",
     "no": 252,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He was always true to his promise.",
+    "exampleJa": "彼はいつも自分の約束に忠実であった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6be79469bff84253",
     "word": "be tired from/with ～",
     "meaning": "～で疲れる",
     "no": 253,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I was tired from the long walk.",
+    "exampleJa": "私は長い散歩で疲れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6d8c7d41435c9c4b",
     "word": "be tired of ～",
     "meaning": "～に飽きる［うんざりしている］",
     "no": 254,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm tired of eating the same food every day.",
+    "exampleJa": "毎日同じものを食べることに飽きた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5b8b68d20610565b",
     "word": "be bound for ～",
     "meaning": "～行きである",
     "no": 255,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This train is bound for Tokyo.",
+    "exampleJa": "この電車は東京行きである。",
+    "exampleSource": "written"
   },
   {
     "id": "w_52fbcacad5974f0c",
@@ -2458,35 +2832,50 @@
     "word": "be anxious about ～",
     "meaning": "～を心配している",
     "no": 257,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She is anxious about her entrance exam results.",
+    "exampleJa": "彼女は入試の結果を心配している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_79f0e1db339f33b6",
     "word": "be anxious to do",
     "meaning": "…したがる",
     "no": 258,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The children are anxious to see the new panda.",
+    "exampleJa": "子どもたちは新しいパンダを見たがっている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d3bf14837e901ba8",
     "word": "～ to come",
     "meaning": "（名詞の後に置いて）将来の～、来たるべき～",
     "no": 259,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This park will be loved in the years to come.",
+    "exampleJa": "この公園は将来の年月にわたって愛されるだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b0e7e24fad8fb775",
     "word": "～ to go",
     "meaning": "（名詞の後に置いて）あと～、残りの～、持ち帰り用の～",
     "no": 260,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "There are only two days to go until summer vacation.",
+    "exampleJa": "夏休みまであと2日しかない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cae81a950ae105e0",
     "word": "anything but ～",
     "meaning": "全然～ではない、～どころではない",
     "no": 261,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The test was anything but easy.",
+    "exampleJa": "そのテストは全然簡単ではなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_42a52c6d31aaaac7",
@@ -2553,14 +2942,20 @@
     "word": "by now",
     "meaning": "今はもう、今頃は",
     "no": 267,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She left an hour ago, so she should be home by now.",
+    "exampleJa": "彼女は1時間前に出たので、今頃は家にいるはずだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6ef47803fe0d15fe",
     "word": "for now",
     "meaning": "今のところは、当分は",
     "no": 268,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "That's all for now, class.",
+    "exampleJa": "皆さん、今のところはここまでです。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4e3ff6f4823f0e78",
@@ -2627,7 +3022,10 @@
     "word": "by any chance",
     "meaning": "（疑問文で）もしかして",
     "no": 274,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Do you have a pen, by any chance?",
+    "exampleJa": "もしかして、ペンを持っていますか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_08edc305bc7f83df",
@@ -2778,7 +3176,10 @@
     "word": "distinguish A from B",
     "meaning": "AをBと区別する",
     "no": 287,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Can you distinguish a crow from a raven?",
+    "exampleJa": "あなたはハシボソガラスをワタリガラスと区別できますか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0c559f395e2f715f",
@@ -2821,7 +3222,10 @@
     "word": "compensate for ～",
     "meaning": "～の埋め合わせをする、～を補償する",
     "no": 291,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He worked extra hours to compensate for his mistake.",
+    "exampleJa": "彼はミスの埋め合わせをするために残業した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3a78872d534da13a",
@@ -2840,7 +3244,10 @@
     "word": "care for ～",
     "meaning": "①～の世話をする ②～を好む、～を望む",
     "no": 293,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She cares for her sick grandmother after school.",
+    "exampleJa": "彼女は放課後、病気の祖母の世話をしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fcf8fa9cb3126609",
@@ -2883,7 +3290,10 @@
     "word": "consist in ～",
     "meaning": "～にある",
     "no": 297,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Happiness consists in being satisfied with what you have.",
+    "exampleJa": "幸福は持っているものに満足することにある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a43b3b9b45c73210",
@@ -2902,14 +3312,20 @@
     "word": "give in (～)",
     "meaning": "①屈服する ②～を提出する",
     "no": 299,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My father finally gave in and bought me a new phone.",
+    "exampleJa": "父はついに屈服して、私に新しいスマホを買ってくれた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0946131ab414f40b",
     "word": "give way (to ～)",
     "meaning": "（～に）屈服する、（～に）道を譲る",
     "no": 300,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Drivers must give way to people crossing the street.",
+    "exampleJa": "運転手は道路を渡る人に道を譲らなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c586942f3bbc3a5b",
@@ -2940,7 +3356,10 @@
     "word": "cling to ～",
     "meaning": "～にくっつく、～に固執［執着］する",
     "no": 303,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The wet shirt clung to his back.",
+    "exampleJa": "ぬれたシャツが彼の背中にくっついた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2657d9a4cf85f715",
@@ -2959,7 +3378,10 @@
     "word": "count on/upon ～",
     "meaning": "～に頼る、～を当てする",
     "no": 305,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You can count on me to help with the festival.",
+    "exampleJa": "文化祭の手伝いは私に頼っていいよ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2b3194dc7f94bc66",
@@ -3002,7 +3424,10 @@
     "word": "hand over ～",
     "meaning": "～を引き渡す、～を手渡す",
     "no": 309,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He handed over the class notes to his friend.",
+    "exampleJa": "彼は授業のノートを友だちに手渡した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_09e3368c17f99f71",
@@ -3021,14 +3446,20 @@
     "word": "date back to ～",
     "meaning": "～にさかのぼる、～に始まる",
     "no": 311,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This temple dates back to the eighth century.",
+    "exampleJa": "この寺は8世紀にさかのぼる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_374eca7a790eedbf",
     "word": "date from ～",
     "meaning": "～から始まる、～にさかのぼる",
     "no": 312,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The old bridge dates from the Edo period.",
+    "exampleJa": "その古い橋は江戸時代から始まる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2ef8200008fa48e9",
@@ -3083,7 +3514,10 @@
     "word": "hold back ～",
     "meaning": "～を制止する、（真相など）を隠す",
     "no": 317,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The police held back the crowd at the gate.",
+    "exampleJa": "警察は門のところで群衆を制止した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_73f72ac5c79663d1",
@@ -3102,7 +3536,10 @@
     "word": "feel sorry for ～",
     "meaning": "～を気の毒に思う、～に同情する",
     "no": 319,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I felt sorry for the boy who lost his dog.",
+    "exampleJa": "私は犬をなくした少年を気の毒に思った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d7e29fa6d9f6ce2a",
@@ -3181,35 +3618,50 @@
     "word": "be essential to ～",
     "meaning": "～にとって不可欠である",
     "no": 326,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Water is essential to all living things.",
+    "exampleJa": "水はすべての生き物にとって不可欠である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3a3afee802f78321",
     "word": "be indispensable to/for ～",
     "meaning": "～にとって不可欠である",
     "no": 327,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A dictionary is indispensable to language learners.",
+    "exampleJa": "辞書は語学の学習者にとって不可欠である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7bdc327dd51cc11a",
     "word": "be equal to ～",
     "meaning": "～に等しい",
     "no": 328,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "One kilometer is equal to one thousand meters.",
+    "exampleJa": "1キロメートルは1000メートルに等しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6887b1e4715867ed",
     "word": "be equivalent to ～",
     "meaning": "～に等しい",
     "no": 329,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "One dozen is equivalent to twelve.",
+    "exampleJa": "1ダースは12に等しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_dc26bde307e09120",
     "word": "be apt to do",
     "meaning": "～しがちである",
     "no": 330,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We are apt to forget new words quickly.",
+    "exampleJa": "私たちは新しい単語をすぐに忘れがちである。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9cec51555ce9dbc3",
@@ -3311,14 +3763,20 @@
     "word": "at the moment",
     "meaning": "（現在時制で）現在は、（過去時制で）ちょうどその時",
     "no": 339,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm very busy with my homework at the moment.",
+    "exampleJa": "現在は宿題でとても忙しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fafeb3214671e320",
     "word": "in a word",
     "meaning": "要するに、つまり",
     "no": 340,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In a word, the trip was a great success.",
+    "exampleJa": "要するに、その旅行は大成功だった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4bc51184fcce9436",
@@ -3337,7 +3795,10 @@
     "word": "generally speaking",
     "meaning": "一般的に言えば",
     "no": 342,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Generally speaking, girls like this kind of story.",
+    "exampleJa": "一般的に言えば、女の子はこの種の物語が好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3b3ab0a4a40b8580",
@@ -3356,7 +3817,10 @@
     "word": "all in all",
     "meaning": "全体的には、概して",
     "no": 344,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "All in all, it was a good school year.",
+    "exampleJa": "全体的には、良い一年だった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c49928c5ef751a63",
@@ -3387,7 +3851,10 @@
     "word": "at all cost(s)/any cost",
     "meaning": "ぜひとも",
     "no": 347,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We must win the next game at all costs.",
+    "exampleJa": "私たちはぜひとも次の試合に勝たなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_56a0451c79671a2d",
@@ -3406,7 +3873,10 @@
     "word": "as it were",
     "meaning": "いわば",
     "no": 349,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our coach is, as it were, a second father to us.",
+    "exampleJa": "私たちのコーチは、いわば私たちの第二の父親だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9d320d558b4aa497",
@@ -3425,7 +3895,10 @@
     "word": "for one's (own) part",
     "meaning": "～としては、～に関する限りは",
     "no": 351,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "For my part, I'd rather stay home this weekend.",
+    "exampleJa": "私としては、今週末は家にいたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_02059add601f7d3c",
@@ -3444,7 +3917,10 @@
     "word": "for the present",
     "meaning": "当分の間（は）、差し当たり",
     "no": 353,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "For the present, we will practice in the gym.",
+    "exampleJa": "当分の間は、体育館で練習します。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b618d3e4e1aa5178",
@@ -3463,7 +3939,10 @@
     "word": "close/near at hand",
     "meaning": "（距離・時間的に）すぐ近くに",
     "no": 355,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Keep your dictionary close at hand while you study.",
+    "exampleJa": "勉強中は辞書をすぐ近くに置いておきなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2a78ff1948446b0c",
@@ -3482,7 +3961,10 @@
     "word": "for all ～",
     "meaning": "～にもかかわらず",
     "no": 357,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "For all his efforts, he couldn't finish the race.",
+    "exampleJa": "努力にもかかわらず、彼はレースを完走できなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b12fc5e8e8bdde8e",
@@ -3501,14 +3983,20 @@
     "word": "as for ～",
     "meaning": "（人・物）～について言えば、～に関する限り",
     "no": 359,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As for me, I prefer tea to coffee.",
+    "exampleJa": "私について言えば、コーヒーより紅茶が好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fe3d39000c3dcf88",
     "word": "as to ～",
     "meaning": "（物）～に関しては",
     "no": 360,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We have no information as to the date of the event.",
+    "exampleJa": "行事の日付に関しては何も情報がない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_29398f4300dada59",
@@ -3539,21 +4027,30 @@
     "word": "be dependent on/upon ～",
     "meaning": "～に依存している",
     "no": 363,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Japan is dependent on other countries for oil.",
+    "exampleJa": "日本は石油をほかの国に依存している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0d85478a3f80fe37",
     "word": "be independent of ～",
     "meaning": "～から独立している",
     "no": 364,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My brother is now independent of our parents.",
+    "exampleJa": "兄は今では両親から独立している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_19eec93acd4191cc",
     "word": "in order",
     "meaning": "整頓されて、順調で、適切で",
     "no": 365,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Keep your desk in order before the class starts.",
+    "exampleJa": "授業が始まる前に机を整頓しておきなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_06a776692ac26a39",
@@ -3596,14 +4093,20 @@
     "word": "do with ～",
     "meaning": "①（couldを伴って）～があればありがたい ②（受動態で）～をすませた、～を縁を切った ③（whatを使った疑問文・否定文で）を処理［処置］する",
     "no": 369,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm so thirsty; I could do with a cold drink.",
+    "exampleJa": "とてものどが渇いた。冷たい飲み物があればありがたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5d3074915932ff87",
     "word": "do without ～",
     "meaning": "～なしですます",
     "no": 370,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I can't do without my glasses when I read.",
+    "exampleJa": "本を読むとき、私は眼鏡なしですますことができない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c1135916719b6b6b",
@@ -3658,14 +4161,20 @@
     "word": "act on/upon ～",
     "meaning": "①～に取り組む、～に作用する ②（命令・信念など）に従って行動する",
     "no": 375,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The city acted on the traffic problem near the school.",
+    "exampleJa": "市は学校近くの交通問題に取り組んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_55306124a1a919e0",
     "word": "break in ～",
     "meaning": "①押し入る、口を挟む ②～を慣らす",
     "no": 376,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Someone broke in and took the money last night.",
+    "exampleJa": "昨夜、誰かが押し入ってお金を盗んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2b1e22b7803d535a",
@@ -3684,49 +4193,70 @@
     "word": "break up ～",
     "meaning": "①ばらばらになる［解散する］、～をばらばらにする［解散させる］ ②（人が）別れる、（関係などが）終わる、～を終わらせる",
     "no": 378,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The ice began to break up in the spring sun.",
+    "exampleJa": "春の日差しで氷がばらばらになり始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ee681ef7c7f11c39",
     "word": "call for ～",
     "meaning": "①～を必要とする、～を求める ②（人）を誘い［迎え］に行く、（物）を取りに行く",
     "no": 379,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This job calls for a lot of patience.",
+    "exampleJa": "この仕事には多くの忍耐を必要とする。",
+    "exampleSource": "written"
   },
   {
     "id": "w_17ccbde79a528eee",
     "word": "call on/upon ～",
     "meaning": "①（人）を訪問する ②～に要求する",
     "no": 380,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We called on our teacher during the summer vacation.",
+    "exampleJa": "私たちは夏休み中に先生を訪問した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_99b412dc3fd5f9d6",
     "word": "come across ～",
     "meaning": "①～を偶然見つける、～に偶然出会う ②（考えなどが）（相手に）伝わる［理解される］",
     "no": 381,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I came across an old photo while cleaning my room.",
+    "exampleJa": "部屋を掃除していて古い写真を偶然見つけた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_be422ed61e044359",
     "word": "come to ～",
     "meaning": "①～に達する、～に来る ②（～to do）…するようになる③意識を回復する、正気に戻る",
     "no": 382,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The total bill came to 5,000 yen.",
+    "exampleJa": "請求額の合計は5000円に達した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_88635c9b89d42d32",
     "word": "give out ～",
     "meaning": "①～を配る、～を発する ②（供給物・力などが）尽きる［なくなる］",
     "no": 383,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The teacher gave out the test papers to the class.",
+    "exampleJa": "先生はクラスにテスト用紙を配った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d7141644030d7e29",
     "word": "go by ～",
     "meaning": "①（時などが）たつ、通り過ぎる ②～の名で通る［知られる］、～によって行動［判断］する",
     "no": 384,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Three years went by quickly after I entered high school.",
+    "exampleJa": "高校に入ってから3年がすぐにたった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bad960d3f84cddde",
@@ -3745,42 +4275,61 @@
     "word": "go on ～",
     "meaning": "①（状況などが）続く、（時間が）過ぎる ②（進行形で）起こる、行われる ③（旅行など）に出かける",
     "no": 386,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The meeting went on for two hours.",
+    "exampleJa": "会議は2時間続いた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9b4ae6c061ee7635",
     "word": "go out",
     "meaning": "①出かける②（灯火などが）消える、気絶する、死ぬ",
     "no": 387,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "movement",
+    "example": "go out for dinner",
+    "exampleJa": "夕食に出かける",
+    "pronunciation": "ɡoʊ aʊt"
   },
   {
     "id": "w_f0ad44184c8c0d30",
     "word": "go over ～",
     "meaning": "①～に詳細に目を通す、～を調べる ②～を復習する、～を繰り返す",
     "no": 388,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please go over your answers before you hand them in.",
+    "exampleJa": "提出する前に答えに詳細に目を通してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_00110100d6b6aeda",
     "word": "go with ～",
     "meaning": "①～と付き合う、～と一緒に行く ②～に似合う",
     "no": 389,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I went with my cousin to the summer festival.",
+    "exampleJa": "私はいとこと一緒に夏祭りに行った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2e930ece632cdc85",
     "word": "hold out ～",
     "meaning": "①（手など）を差し出す ②（希望など）を抱かせる、持ちこたえる［耐える］",
     "no": 390,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He held out his hand to help me stand up.",
+    "exampleJa": "彼は私が立ち上がるのを助けようと手を差し出した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3cdaa6ec82c9f83e",
     "word": "hold up ～",
     "meaning": "①～を持ち上げる、～を支える、持ちこたえる ②～を遅らせる ③～に強盗に入る",
     "no": 391,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She held up her new trophy for everyone to see.",
+    "exampleJa": "彼女はみんなに見えるように新しいトロフィーを持ち上げた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4f9ac82adefb2017",
@@ -4027,7 +4576,10 @@
     "word": "be due to do",
     "meaning": "①～のため［結果］である ②～する予定である",
     "no": 412,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The train delay was due to heavy snow.",
+    "exampleJa": "電車の遅れは大雪のためであった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cfd778b913a1cadf",
@@ -4070,7 +4622,10 @@
     "word": "all but ～",
     "meaning": "①～も同然、ほとんど～ ②～以外すべて",
     "no": 416,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The work is all but finished.",
+    "exampleJa": "その作業は終わったも同然だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4f294ab35b2b7f3b",
@@ -4113,21 +4668,30 @@
     "word": "by way of ～",
     "meaning": "①～経由で ②～として、～のつもりで（の）",
     "no": 420,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We flew to London by way of Dubai.",
+    "exampleJa": "私たちはドバイ経由でロンドンへ飛んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_71480cacc206a811",
     "word": "add to ～",
     "meaning": "～を増やす",
     "no": 421,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The bad weather added to our troubles on the trip.",
+    "exampleJa": "悪天候が旅行中の私たちの困難を増やした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7c80253c95d83be7",
     "word": "adapt to ～",
     "meaning": "（環境など）に順応する［慣れる］",
     "no": 422,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It took me a month to adapt to my new school.",
+    "exampleJa": "新しい学校に慣れるのに1か月かかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_40c8085302f3c843",
@@ -4146,14 +4710,20 @@
     "word": "admit to ～",
     "meaning": "～を認める［告白する］",
     "no": 424,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He admitted to breaking the window.",
+    "exampleJa": "彼は窓を割ったことを認めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cb178cba45b4e393",
     "word": "conform to/with ～",
     "meaning": "～と一致する、～に従う［合わせる］",
     "no": 425,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "All students must conform to the school rules.",
+    "exampleJa": "全生徒は校則に従わなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e4ba1e61c447b6ce",
@@ -4184,14 +4754,20 @@
     "word": "get to ～",
     "meaning": "①～に到着する ②～できる、～するようになる",
     "no": 428,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We got to the station just before the train left.",
+    "exampleJa": "私たちは電車が出る直前に駅に到着した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3a05a395e64fe001",
     "word": "adhere to ～",
     "meaning": "（主義・規則など）に忠実に従う、～にくっつく",
     "no": 429,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The team adhered to the coach's training plan.",
+    "exampleJa": "チームはコーチの練習計画に忠実に従った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cc87aed10d3d8566",
@@ -4210,21 +4786,30 @@
     "word": "decide on/upon ～",
     "meaning": "～を（どれにするか）決める、（複数の選択肢から）～に決める",
     "no": 431,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We decided on pizza for dinner.",
+    "exampleJa": "私たちは夕食をピザに決めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_278d98026350d6ac",
     "word": "fall on/upon ～",
     "meaning": "（責任・仕事などが）～に降りかかる、（休日などが）～に当たる",
     "no": 432,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The job of cleaning the room fell on me.",
+    "exampleJa": "部屋を掃除する仕事が私に降りかかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ce49942eec1479c4",
     "word": "feed on ～",
     "meaning": "～を常食［餌］にする",
     "no": 433,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Pandas feed on bamboo leaves.",
+    "exampleJa": "パンダは竹の葉を常食にしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fa17d7554f1fa994",
@@ -4243,63 +4828,90 @@
     "word": "break into ～",
     "meaning": "①～に侵入する②急に～をしだす",
     "no": 435,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A thief broke into the store last night.",
+    "exampleJa": "昨夜、泥棒がその店に侵入した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a67832b38b671c3c",
     "word": "enter into ～",
     "meaning": "（契約など）を取り結ぶ、（議論など）を始める",
     "no": 436,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The two schools entered into an agreement to share the field.",
+    "exampleJa": "2つの学校はグラウンドを共有する協定を取り結んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f2e21b0e2b3110a7",
     "word": "burst into ～",
     "meaning": "急に～をしだす、突然～に入る",
     "no": 437,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "When she heard the news, she burst into tears.",
+    "exampleJa": "その知らせを聞いて、彼女は急に泣きだした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5180023be26a8564",
     "word": "dispose of ～",
     "meaning": "～を処分する、～を平らげる",
     "no": 438,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please dispose of your trash in the right box.",
+    "exampleJa": "ごみは正しい箱で処分してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a5d09b17c5765552",
     "word": "approve of ～",
     "meaning": "～に賛成する、～を承認する",
     "no": 439,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My parents don't approve of my staying up late.",
+    "exampleJa": "両親は私が夜ふかしすることに賛成しない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_67f8764670faad4a",
     "word": "boast of/about ～",
     "meaning": "～を自慢する、～を誇らしげに話す",
     "no": 440,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He often boasts of his high test scores.",
+    "exampleJa": "彼はよくテストの高得点を自慢する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_db43fe95dd84c6fc",
     "word": "become of ～",
     "meaning": "（what, whatever を主語にして）\n～はどうなるか",
     "no": 441,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "What will become of the old school building?",
+    "exampleJa": "古い校舎はどうなるのだろうか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3bfd23f1cd1c4101",
     "word": "derive from ～",
     "meaning": "～に由来する、～から出ている",
     "no": 442,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many English words derive from Latin.",
+    "exampleJa": "多くの英単語はラテン語に由来する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e15dddb04d4723d6",
     "word": "aim at ～",
     "meaning": "～を目指す、～を狙う",
     "no": 443,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our team is aiming at first place this year.",
+    "exampleJa": "私たちのチームは今年、優勝を目指している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c4f125691355a1fc",
@@ -4354,7 +4966,10 @@
     "word": "go about ～",
     "meaning": "～に取りかかる、～に精を出す",
     "no": 448,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I don't know how to go about this science project.",
+    "exampleJa": "この理科の研究にどう取りかかればいいか分からない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_048318c7d4c959e4",
@@ -4373,7 +4988,11 @@
     "word": "end up",
     "meaning": "最後には～になる",
     "no": 450,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "time",
+    "example": "If you don't study, you will end up failing the exam.",
+    "exampleJa": "勉強しないと、最後には試験に落ちてしまいますよ。",
+    "pronunciation": "ɛnd ʌp"
   },
   {
     "id": "w_d2ff2ef58eb4312b",
@@ -4404,7 +5023,10 @@
     "word": "clear up ～",
     "meaning": "（天候が）晴れる、（疑念・不明点など）を明らかにする",
     "no": 453,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The sky cleared up in the afternoon.",
+    "exampleJa": "午後になって空が晴れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_db5b33ae869fb2f6",
@@ -4423,21 +5045,30 @@
     "word": "cheer up ～",
     "meaning": "元気づく、～を元気づける［応援する］",
     "no": 455,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Cheer up! You'll do better next time.",
+    "exampleJa": "元気を出して。次はもっとうまくいくよ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7ff97021ad03298a",
     "word": "blow up ～",
     "meaning": "爆発する、かっとなる、～を爆破する",
     "no": 456,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The old engine blew up with a loud noise.",
+    "exampleJa": "古いエンジンが大きな音を立てて爆発した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e4f25221bb562685",
     "word": "call up ～",
     "meaning": "（～に）電話をかける、（記憶・勇気など）を呼び起こす",
     "no": 457,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I called up my friend to ask about the homework.",
+    "exampleJa": "宿題について聞くために友だちに電話をかけた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7c67ccedb3f37622",
@@ -4468,7 +5099,10 @@
     "word": "cut down/back (on) ～",
     "meaning": "～（の量）を減らす、～を切り詰める",
     "no": 460,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm trying to cut down on sweets this month.",
+    "exampleJa": "今月は甘いものの量を減らそうとしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_629da817c918a45e",
@@ -4487,14 +5121,20 @@
     "word": "break down ～",
     "meaning": "①～を分解する、～を壊す ②故障する、取り乱す、肉体的［精神的］に参る",
     "no": 462,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He broke down the old radio to see how it worked.",
+    "exampleJa": "彼は仕組みを知るために古いラジオを分解した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b87e6c2373bcb0ab",
     "word": "hand down ～",
     "meaning": "～を（子孫［後世］に）伝える",
     "no": 463,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This recipe has been handed down in our family.",
+    "exampleJa": "このレシピは私たちの家族に代々伝えられてきた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d676ac8dc86ef7be",
@@ -4513,7 +5153,10 @@
     "word": "burn down ～",
     "meaning": "～を全焼させる、（建物が）全焼する",
     "no": 465,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The old barn burned down during the night.",
+    "exampleJa": "古い納屋は夜の間に全焼した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3e468cacc313ee08",
@@ -4556,7 +5199,10 @@
     "word": "drop out",
     "meaning": "脱落する、中途退学する",
     "no": 469,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Two runners dropped out of the race because of the heat.",
+    "exampleJa": "暑さのために2人の走者がレースから脱落した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d876c48910b7a877",
@@ -4647,14 +5293,20 @@
     "word": "give off ～",
     "meaning": "（光・音・においなど）を発する",
     "no": 477,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "These flowers give off a sweet smell.",
+    "exampleJa": "これらの花は甘い香りを発する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_da3a35ce44eb59d5",
     "word": "break off ～",
     "meaning": "（～を）急にやめる、～を切り離す",
     "no": 478,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She broke off in the middle of her story.",
+    "exampleJa": "彼女は話の途中で急にやめた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4af4348cc318ec67",
@@ -4721,21 +5373,30 @@
     "word": "give away ～",
     "meaning": "（秘密など）を漏らす、～をただでやる、～を配る",
     "no": 484,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Don't give away the ending of the movie!",
+    "exampleJa": "映画の結末を漏らさないで。",
+    "exampleSource": "written"
   },
   {
     "id": "w_361b9b729b78cf16",
     "word": "adjust (A) to B",
     "meaning": "（Aを）Bに合わせて調節する",
     "no": 485,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please adjust the chair to your height.",
+    "exampleJa": "いすをあなたの身長に合わせて調節してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0327dc0213cf0b1d",
     "word": "compare A with/to B",
     "meaning": "AとBを比較する、AをBにたとえる",
     "no": 486,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Don't compare your grades with your brother's.",
+    "exampleJa": "自分の成績とお兄さんの成績を比較してはいけない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_55433ffe69f04688",
@@ -4766,14 +5427,20 @@
     "word": "attach A to B",
     "meaning": "AをBに取りつける［付与する］",
     "no": 489,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please attach a photo to your application form.",
+    "exampleJa": "申込用紙に写真を取りつけてください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0b7a0d6a406d756a",
     "word": "attribute A to B",
     "meaning": "AをBのせい［結果］と考える",
     "no": 490,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She attributed her success to hard work.",
+    "exampleJa": "彼女は自分の成功を努力の結果と考えた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_84834dfce55ac095",
@@ -4792,7 +5459,10 @@
     "word": "confine A to B",
     "meaning": "AをBに限定する、AをBに閉じ込める",
     "no": 492,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please confine your speech to three minutes.",
+    "exampleJa": "スピーチを3分に限定してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_14179f8294dc53b1",
@@ -4835,7 +5505,10 @@
     "word": "forbid A from B",
     "meaning": "A（人）にBを禁止する",
     "no": 496,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The school forbids students from using phones in class.",
+    "exampleJa": "学校は生徒に授業中のスマホの使用を禁止している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_587eedc6d50b08c0",
@@ -4890,7 +5563,10 @@
     "word": "blame A for B",
     "meaning": "BのことでAを非難する、BをAのせいにする",
     "no": 501,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She blamed her brother for the broken window.",
+    "exampleJa": "彼女は割れた窓のことで弟を非難した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cc959f3eb94f97fc",
@@ -4957,7 +5633,10 @@
     "word": "accuse A of B",
     "meaning": "BのことでAを非難［告訴］する",
     "no": 507,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He accused his friend of reading his diary.",
+    "exampleJa": "彼は日記を読んだことで友だちを非難した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_24b5ded8d6425fd4",
@@ -4976,7 +5655,10 @@
     "word": "assure A of B",
     "meaning": "A（人）にB（物・事）を請け合う［保証する］",
     "no": 509,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The shop assured us of the quality of the bike.",
+    "exampleJa": "店は私たちに自転車の品質を保証した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7196f8f2ae430949",
@@ -5043,14 +5725,21 @@
     "word": "congratulate A on/for B",
     "meaning": "BのことでAを祝う",
     "no": 515,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We congratulated Mika on winning the speech contest.",
+    "exampleJa": "私たちはスピーチコンテストの優勝のことでミカを祝った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1b66a3e195a848ac",
     "word": "name A after B",
     "meaning": "AをBにちなんで名づける",
     "no": 516,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "time",
+    "example": "He named his dog Hachi after a famous dog.",
+    "exampleJa": "彼は有名な犬にちなんで自分の犬にハチと名付けた。",
+    "pronunciation": "neɪm ə ˈæftɚ bi"
   },
   {
     "id": "w_385fd76bf1f75ec4",
@@ -5177,28 +5866,41 @@
     "word": "shake hands",
     "meaning": "握手する",
     "no": 527,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "body",
+    "example": "The two leaders shook hands and smiled for the cameras.",
+    "exampleJa": "両首脳は握手し、カメラに向かって微笑んだ。",
+    "pronunciation": "ʃeɪk hændz"
   },
   {
     "id": "w_fec283ae6297b14d",
     "word": "change hands",
     "meaning": "持ち主が変わる",
     "no": 528,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "That old house has changed hands many times.",
+    "exampleJa": "その古い家は何度も持ち主が変わった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b44bcf56b425f52e",
     "word": "have a say (in ～)",
     "meaning": "（～に）発言権［発言力］を持つ",
     "no": 529,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Students should have a say in the school rules.",
+    "exampleJa": "生徒は校則に発言権を持つべきだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1eb42393b170b580",
     "word": "have/got one's (own) way",
     "meaning": "思い通りにする",
     "no": 530,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My little brother always wants to have his own way.",
+    "exampleJa": "弟はいつも思い通りにしたがる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fe6b42adef8a3ca3",
@@ -5289,7 +5991,10 @@
     "word": "have difficulty (in) doing",
     "meaning": "～するのが困難である、苦労しながら～する",
     "no": 538,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I had difficulty finding the right answer.",
+    "exampleJa": "私は正しい答えを見つけるのが困難だった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_536e4309d71d0ed8",
@@ -5307,35 +6012,50 @@
     "word": "have an influence/effect on ～",
     "meaning": "～に影響を与える",
     "no": 540,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Good teachers have a great influence on students.",
+    "exampleJa": "良い先生は生徒に大きな影響を与える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c61fe953dfbcc7f9",
     "word": "have a liking for ～",
     "meaning": "～を好む",
     "no": 541,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My sister has a liking for spicy food.",
+    "exampleJa": "姉は辛い食べ物を好む。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b9530a7dfc70d624",
     "word": "give rise to ～",
     "meaning": "～を引き起こす［生む］",
     "no": 542,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "His careless words gave rise to a misunderstanding.",
+    "exampleJa": "彼の不注意な言葉が誤解を引き起こした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1d7ceade9111172f",
     "word": "give birth to ～",
     "meaning": "～を産む、～の原因になる",
     "no": 543,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our cat gave birth to four kittens last night.",
+    "exampleJa": "うちの猫が昨夜4匹の子猫を産んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_37d92fe0c7d8f511",
     "word": "find one's way to ～",
     "meaning": "～へたどり着く、～まで道を探しながら進む",
     "no": 544,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We finally found our way to the hotel in the dark.",
+    "exampleJa": "私たちは暗闇の中でようやくホテルへたどり着いた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_14a6e7621c1993db",
@@ -5354,14 +6074,20 @@
     "word": "fall victim to ～",
     "meaning": "～の犠牲［餌食］になる",
     "no": 546,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many old trees fell victim to the typhoon.",
+    "exampleJa": "多くの古い木が台風の犠牲になった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d75641918d3b5fed",
     "word": "catch sight of ～",
     "meaning": "～を見つける［見かける］",
     "no": 547,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I caught sight of my teacher at the station this morning.",
+    "exampleJa": "今朝、駅で先生を見かけた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cff00bf24550c97c",
@@ -5380,301 +6106,431 @@
     "word": "be related to ～",
     "meaning": "～と関係がある、～と婚姻関係がある",
     "no": 549,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Your health is closely related to what you eat every day.",
+    "exampleJa": "健康は毎日食べるものと密接に関係がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bc276534d2e46efe",
     "word": "be similar to ～",
     "meaning": "～に似ている",
     "no": 550,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My new bag is similar to the one my sister has.",
+    "exampleJa": "私の新しいかばんは姉が持っているものに似ている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a852c025d74a5d50",
     "word": "be subject to ～",
     "meaning": "～を受けやすい、～に服従している",
     "no": 551,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The train schedule is subject to change because of the snow.",
+    "exampleJa": "雪のため、列車の時刻表は変更を受けやすい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5a85e1e0250489bb",
     "word": "be superior to ～",
     "meaning": "～より優れている",
     "no": 552,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This new phone is superior to the old model in many ways.",
+    "exampleJa": "この新しい携帯電話は多くの点で古い機種より優れている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4623bd7dbf487486",
     "word": "be sensitive to ～",
     "meaning": "～に敏感である",
     "no": 553,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My skin is very sensitive to strong sunlight.",
+    "exampleJa": "私の肌は強い日差しにとても敏感である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_87b18820e6a28789",
     "word": "be accustomed to ～",
     "meaning": "～に慣れている",
     "no": 554,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She is accustomed to getting up early for club practice.",
+    "exampleJa": "彼女は部活の練習のために早起きすることに慣れている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c905f421f72c525b",
     "word": "be contrary to ～",
     "meaning": "～に反している",
     "no": 555,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Using your phone during the test is contrary to the rules.",
+    "exampleJa": "テスト中に携帯電話を使うことは規則に反している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0578cadadbcc596e",
     "word": "be indifferent to/toward(s) ～",
     "meaning": "～に無関心［無頓着］である",
     "no": 556,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My brother is indifferent to fashion and wears the same shirt often.",
+    "exampleJa": "兄はファッションに無関心で、よく同じシャツを着ている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4034ce58b17689aa",
     "word": "be preferable to ～",
     "meaning": "～より好ましい［優れている］",
     "no": 557,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Walking to school is preferable to taking the crowded bus.",
+    "exampleJa": "歩いて登校するほうが混んだバスに乗るより好ましい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_299cc35cdbed51e9",
     "word": "be dedicated to ～",
     "meaning": "（仕事・目的など）に打ち込んでいる",
     "no": 558,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The coach is dedicated to helping every player improve.",
+    "exampleJa": "そのコーチは選手全員の上達を手助けすることに打ち込んでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_59e583c721af6b5d",
     "word": "be peculiar to ～",
     "meaning": "～に特有である",
     "no": 559,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This kind of sweet is peculiar to our town.",
+    "exampleJa": "この種のお菓子は私たちの町に特有である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b7019e21dc258137",
     "word": "be prone to ～",
     "meaning": "～になりやすい",
     "no": 560,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am prone to colds when the weather suddenly changes.",
+    "exampleJa": "天気が急に変わると、私は風邪をひきやすい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_83c1d13cff770f49",
     "word": "be identical to/with ～",
     "meaning": "～と同じ［同一］である",
     "no": 561,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Your answer is identical to the one in the textbook.",
+    "exampleJa": "あなたの答えは教科書の答えと同じである。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c2ef7956f59c5725",
     "word": "be involved in ～",
     "meaning": "～に携わっている［関係している］、～に熱中している",
     "no": 562,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many students are involved in planning the school festival.",
+    "exampleJa": "多くの生徒が文化祭の計画に携わっている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ba6f06047ba52947",
     "word": "be absorbed in ～",
     "meaning": "～に熱中している",
     "no": 563,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He was so absorbed in his book that he missed his stop.",
+    "exampleJa": "彼は本に熱中していたので、降りる駅を乗り過ごした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d4d5178bedb5a117",
     "word": "be lacking in ～",
     "meaning": "～に欠けている",
     "no": 564,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The report was lacking in clear examples.",
+    "exampleJa": "そのレポートは分かりやすい例に欠けていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2465162ebc38bb2f",
     "word": "be versed in ～",
     "meaning": "～に精通［熟達］している",
     "no": 565,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our science teacher is well versed in the history of space travel.",
+    "exampleJa": "理科の先生は宇宙旅行の歴史に精通している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_656a42670921b8fb",
     "word": "be abundant in ～",
     "meaning": "～が豊富である",
     "no": 566,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This area is abundant in fresh fruit and vegetables.",
+    "exampleJa": "この地域は新鮮な果物と野菜が豊富である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ca403dc908c6dd9c",
     "word": "be busy with ～",
     "meaning": "～で忙しい",
     "no": 567,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am busy with my homework tonight.",
+    "exampleJa": "今夜は宿題で忙しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ab7ec81d7357f624",
     "word": "be popular with/among ～",
     "meaning": "～に人気がある",
     "no": 568,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This song is popular with high school students.",
+    "exampleJa": "この歌は高校生に人気がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1f99aa63eb581bfe",
     "word": "be equipped with ～",
     "meaning": "～を備えている",
     "no": 569,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our classroom is equipped with a large screen.",
+    "exampleJa": "私たちの教室は大きなスクリーンを備えている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0141dff4a38429d2",
     "word": "be content/contented with ～",
     "meaning": "～に満足している",
     "no": 570,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She was content with her score on the math test.",
+    "exampleJa": "彼女は数学のテストの点数に満足していた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_36377d6290cec9fb",
     "word": "be confronted with/by ～",
     "meaning": "（困難・問題など）に直面している",
     "no": 571,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The team was confronted with a serious lack of players.",
+    "exampleJa": "そのチームは深刻な選手不足に直面していた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_790fccf3177cb2ab",
     "word": "be acquainted with ～",
     "meaning": "～に精通している、～と知り合いである",
     "no": 572,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She is acquainted with the rules of many card games.",
+    "exampleJa": "彼女は多くのカードゲームのルールに精通している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_aad4c991067a0046",
     "word": "be characteristic of ～",
     "meaning": "～に特有である、いかにも～らしい",
     "no": 573,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Being late is characteristic of him, so nobody was surprised.",
+    "exampleJa": "遅刻はいかにも彼らしいので、誰も驚かなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4dd64bc9fa3ec8f6",
     "word": "be worthy of ～",
     "meaning": "～に値する［ふさわしい］",
     "no": 574,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Her hard work is worthy of praise.",
+    "exampleJa": "彼女の努力は称賛に値する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_309c8e3bdcdfbf96",
     "word": "be ignorant of ～",
     "meaning": "～を知らない",
     "no": 575,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He was ignorant of the change in the test date.",
+    "exampleJa": "彼はテストの日程変更を知らなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_19750cdab2db7492",
     "word": "be confident of/about ～",
     "meaning": "～を確信している",
     "no": 576,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our team is confident of winning the next game.",
+    "exampleJa": "私たちのチームは次の試合での勝利を確信している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cd7369584d35a1b9",
     "word": "be considerate of/to ～",
     "meaning": "～に対して思いやりのある",
     "no": 577,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You should be considerate of others on the crowded train.",
+    "exampleJa": "混んだ電車では他人に対して思いやりを持つべきだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_21867237b29d8a28",
     "word": "be guilty of ～",
     "meaning": "～について有罪である、～を犯している",
     "no": 578,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He admitted that he was guilty of breaking the school rules.",
+    "exampleJa": "彼は校則違反を犯していたと認めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_830e63aec0ee2b34",
     "word": "be convinced of ～",
     "meaning": "～を確信している",
     "no": 579,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am convinced of the importance of reading every day.",
+    "exampleJa": "私は毎日読書をすることの大切さを確信している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_45404be0e72ae277",
     "word": "be tolerant of ～",
     "meaning": "～に対して寛大である",
     "no": 580,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our teacher is tolerant of small mistakes in speaking practice.",
+    "exampleJa": "先生はスピーキング練習での小さな間違いに対して寛大である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5915f9d883620524",
     "word": "be wary of ～",
     "meaning": "～に用心深い",
     "no": 581,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You should be wary of messages from people you don't know.",
+    "exampleJa": "知らない人からのメッセージには用心深くあるべきだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d505efe6ca16fff4",
     "word": "be suitable for/ to ～",
     "meaning": "～に適している、（目的など）に合っている",
     "no": 582,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This book is suitable for beginners in English.",
+    "exampleJa": "この本は英語の初心者に適している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_02019dbb46ff1966",
     "word": "be grateful (to A) for B",
     "meaning": "Bのことで（Aに）感謝している",
     "no": 583,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am grateful to my parents for their support.",
+    "exampleJa": "私は両親の支えのことで両親に感謝している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_26c14ebb369b5db8",
     "word": "be particular about/over ～",
     "meaning": "～についてやかましい［気難しい］",
     "no": 584,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My father is very particular about his coffee.",
+    "exampleJa": "父はコーヒーについてとてもやかましい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_12053657d796dc1d",
     "word": "come down with ～",
     "meaning": "（病気）にかかる",
     "no": 585,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I came down with the flu the day before the trip.",
+    "exampleJa": "旅行の前日にインフルエンザにかかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_677df9910127c3df",
     "word": "come into being/existence",
     "meaning": "出現する、生まれ出る",
     "no": 586,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Smartphones came into being only a few decades ago.",
+    "exampleJa": "スマートフォンはほんの数十年前に出現した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8ada1b362e7eda52",
     "word": "come true",
     "meaning": "（夢・予言などが）実現する",
     "no": 587,
-    "partOfSpeech": ""
+    "partOfSpeech": "熟語",
+    "theme": "movement",
+    "example": "I hope my dream will come true someday.",
+    "exampleJa": "いつか私の夢が実現することを願っています。",
+    "pronunciation": "kʌm tru"
   },
   {
     "id": "w_d0e5c690226ec002",
     "word": "do ～ good",
     "meaning": "（人）のためになる［役に立つ］",
     "no": 588,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A short walk after lunch will do you good.",
+    "exampleJa": "昼食後の短い散歩はあなたのためになるだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4f710c02b9e01a0f",
     "word": "get in touch (with ～)",
     "meaning": "（～と）連絡を取る",
     "no": 589,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please get in touch with me when you arrive at the station.",
+    "exampleJa": "駅に着いたら私に連絡を取ってください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_25dc80694438680c",
     "word": "go blind",
     "meaning": "失明する",
     "no": 590,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Looking directly at the sun can make you go blind.",
+    "exampleJa": "太陽を直接見ると失明することがある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9a6784dece029196",
     "word": "have A in common (with B)",
     "meaning": "（Bと）共通にAを持っている",
     "no": 591,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I have a lot in common with my new classmate.",
+    "exampleJa": "私は新しいクラスメートと共通点を多く持っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_151030f5f3970722",
@@ -5753,70 +6609,100 @@
     "word": "in terms of ～",
     "meaning": "～の観点から、～に換算して",
     "no": 598,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In terms of price, this shop is the best in town.",
+    "exampleJa": "値段の観点から、この店は町でいちばんだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_61af6426d97c2ad8",
     "word": "in contrast to/with ～",
     "meaning": "～と著しく違って、～と対照をなして",
     "no": 599,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In contrast to his quiet brother, Ken loves talking.",
+    "exampleJa": "物静かな兄と著しく違って、ケンは話すのが大好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cd7f39d4dbc78464",
     "word": "in danger of ～",
     "meaning": "～の危険があって",
     "no": 600,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many kinds of animals are in danger of dying out.",
+    "exampleJa": "多くの種類の動物が絶滅の危険にさらされている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ba6e153bd1392e87",
     "word": "in need of ～",
     "meaning": "～を必要として",
     "no": 601,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This old bike is in need of new tires.",
+    "exampleJa": "この古い自転車は新しいタイヤを必要としている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d31ba544f3858fc4",
     "word": "in response to ～",
     "meaning": "～に応じて［答えて］",
     "no": 602,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In response to our request, the school opened the library on Saturdays.",
+    "exampleJa": "私たちの要望に応じて、学校は土曜日も図書館を開けた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_54277444d147c614",
     "word": "in favor of ～",
     "meaning": "～に賛成して、～のほうを選んで",
     "no": 603,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Most students were in favor of the new lunch menu.",
+    "exampleJa": "ほとんどの生徒が新しい給食の献立に賛成していた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9fdf28fa3ecc75ef",
     "word": "in (the) face of ～",
     "meaning": "～に直面して、～にもかかわらず",
     "no": 604,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She kept smiling in the face of many difficulties.",
+    "exampleJa": "彼女は多くの困難に直面しても笑顔を絶やさなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b04ab31f7d4c46ef",
     "word": "in charge of ～",
     "meaning": "～を預かって［管理して］",
     "no": 605,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Mr. Sato is in charge of our class this year.",
+    "exampleJa": "今年は佐藤先生が私たちのクラスを担当している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_29a4c2b795574c8a",
     "word": "in relation to ～",
     "meaning": "～と比べて、～に関連して",
     "no": 606,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The price of the bag is high in relation to its quality.",
+    "exampleJa": "そのかばんの値段は品質と比べて高い。",
+    "exampleSource": "written"
   },
   {
     "id": "w_540a01ae486e0be7",
     "word": "in place of ～",
     "meaning": "～の代わりに",
     "no": 607,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You can use honey in place of sugar in this recipe.",
+    "exampleJa": "このレシピでは砂糖の代わりにはちみつを使える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_70f2481d35cd7b83",
@@ -5835,91 +6721,130 @@
     "word": "in honor of ～",
     "meaning": "～に敬意を表して、～のために",
     "no": 609,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We held a party in honor of our retiring teacher.",
+    "exampleJa": "退職する先生に敬意を表してパーティーを開いた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0573da695a3de9ec",
     "word": "in (the) light of ～",
     "meaning": "～から見て、～を考慮して",
     "no": 610,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In light of the heavy rain, the game was put off.",
+    "exampleJa": "大雨を考慮して、試合は延期された。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6a0ba9d6dbde5cbd",
     "word": "in harmony with ～",
     "meaning": "～と調和［一致］して",
     "no": 611,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The new building was designed in harmony with the old town.",
+    "exampleJa": "その新しい建物は古い町並みと調和するよう設計された。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7a394c9d5ceb115f",
     "word": "in exchange for ～",
     "meaning": "～と交換に",
     "no": 612,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I gave him my comic book in exchange for his game.",
+    "exampleJa": "私は彼のゲームと交換に自分の漫画本をあげた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f54d7380f71ae497",
     "word": "for the sake of ～",
     "meaning": "～のために",
     "no": 613,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She stopped eating sweets for the sake of her health.",
+    "exampleJa": "彼女は健康のために甘いものを食べるのをやめた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_13e70de6f6cf1ff9",
     "word": "for fear of ～",
     "meaning": "～を恐れて",
     "no": 614,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He spoke quietly for fear of waking the baby.",
+    "exampleJa": "彼は赤ちゃんを起こすことを恐れて小声で話した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3316a8dd71b840b1",
     "word": "for lack/want of ～",
     "meaning": "～がない［不足している］ために",
     "no": 615,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The plants died for lack of water.",
+    "exampleJa": "水が不足していたために植物は枯れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_317e0f1a2d89971e",
     "word": "at the expense of ～",
     "meaning": "～を犠牲にして",
     "no": 616,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He studied all night at the expense of his health.",
+    "exampleJa": "彼は健康を犠牲にして一晩中勉強した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c0eeb89143b84b34",
     "word": "at (the) sight of ～",
     "meaning": "～を見て",
     "no": 617,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The little girl cried at the sight of the big dog.",
+    "exampleJa": "その小さな女の子は大きな犬を見て泣いた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_44f487f9876ab1e5",
     "word": "at the mercy of ～",
     "meaning": "～のなすがままになって",
     "no": 618,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The small boat was at the mercy of the strong waves.",
+    "exampleJa": "その小舟は強い波のなすがままになっていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fb3f88c5ceb40972",
     "word": "as opposed to ～",
     "meaning": "～ではなく、～とは対照的に",
     "no": 619,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I prefer reading paper books, as opposed to e-books.",
+    "exampleJa": "私は電子書籍ではなく紙の本を読むほうが好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6320c4afdc55e764",
     "word": "by means of ～",
     "meaning": "～を用いて、～によって",
     "no": 620,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We communicated by means of gestures in the foreign country.",
+    "exampleJa": "私たちはその外国で身ぶりを用いて意思を伝え合った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c5b5ace67f6e3dfd",
     "word": "by/in virtue of ～",
     "meaning": "～のおかげで、～によって",
     "no": 621,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She became captain by virtue of her hard work.",
+    "exampleJa": "彼女は努力のおかげでキャプテンになった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3c8be3eb5bdb1631",
@@ -5962,7 +6887,10 @@
     "word": "in part",
     "meaning": "一部には、幾分（かは）",
     "no": 625,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "His success was due in part to good luck.",
+    "exampleJa": "彼の成功は一部には幸運によるものだった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fb82225fd81bbf6d",
@@ -5981,7 +6909,10 @@
     "word": "in place",
     "meaning": "あるべき場所に、きちんと整って、用意ができて",
     "no": 627,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Put the books back in place after you read them.",
+    "exampleJa": "読み終えたら本をあるべき場所に戻しなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_87b9ea109d907686",
@@ -6000,7 +6931,10 @@
     "word": "in demand",
     "meaning": "需要があって、必要とされて",
     "no": 629,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Nurses are in demand in many parts of Japan.",
+    "exampleJa": "看護師は日本の多くの地域で必要とされている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b0ab1366a2d4d2f2",
@@ -6019,14 +6953,20 @@
     "word": "in all likelihood",
     "meaning": "十中八九、おおかた",
     "no": 631,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In all likelihood, it will rain tomorrow afternoon.",
+    "exampleJa": "十中八九、明日の午後は雨が降るだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_52bdf2e428a05639",
     "word": "at work",
     "meaning": "①職業で、仕事中で[の] ②作用して、運転［作動］中で[の]",
     "no": 632,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My father is still at work, so he will be home late.",
+    "exampleJa": "父はまだ仕事中なので、帰りが遅くなる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_069a6764e4e7a140",
@@ -6225,21 +7165,30 @@
     "word": "from ～ on/onward(s)",
     "meaning": "～から以後は",
     "no": 649,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "From today on, I will walk to school every morning.",
+    "exampleJa": "今日から以後は、毎朝歩いて登校するつもりだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_68eeaf349714ffee",
     "word": "from ～ point of view",
     "meaning": "～の視点から（は）",
     "no": 650,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "From a student's point of view, the rule seems unfair.",
+    "exampleJa": "生徒の視点からは、その規則は不公平に思える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8794cd38d1c20843",
     "word": "for sure/certain",
     "meaning": "確かに",
     "no": 651,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I don't know for sure when the bus will come.",
+    "exampleJa": "バスがいつ来るのか確かにはわからない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_31a4af9a162ade91",
@@ -6306,14 +7255,20 @@
     "word": "behind the times",
     "meaning": "時代遅れの[で]",
     "no": 657,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My grandfather's phone is a little behind the times.",
+    "exampleJa": "祖父の携帯電話は少し時代遅れだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a4d0774fab5e686b",
     "word": "beyond description",
     "meaning": "言葉では表現できないほどの[に]",
     "no": 658,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The view from the mountain top was beautiful beyond description.",
+    "exampleJa": "山頂からの眺めは言葉では表現できないほど美しかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d8058a2994924c42",
@@ -6380,7 +7335,10 @@
     "word": "～ will do",
     "meaning": "～は役に立つ[用が足りる]",
     "no": 664,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I don't have a pen, but a pencil will do.",
+    "exampleJa": "ペンはないけれど、鉛筆で用が足りる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_11985200121c566e",
@@ -6411,7 +7369,10 @@
     "word": "cannot ～ too …",
     "meaning": "いくら～してもしすぎることはない",
     "no": 667,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You cannot be too careful when you cross the street.",
+    "exampleJa": "道路を渡るときはいくら注意してもしすぎることはない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9d048081a572bdd9",
@@ -6430,7 +7391,10 @@
     "word": "have A to do with B",
     "meaning": "ＢとＡの関係がある",
     "no": 669,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Sleep has a lot to do with your test scores.",
+    "exampleJa": "睡眠はテストの点数と大いに関係がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6dae1bfd6296152d",
@@ -6473,7 +7437,10 @@
     "word": "be used to doing",
     "meaning": "…することに慣れている",
     "no": 673,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am used to taking the train to school.",
+    "exampleJa": "私は電車で通学することに慣れている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_15a6a6ce04602173",
@@ -6492,7 +7459,10 @@
     "word": "come close/near to doing",
     "meaning": "もう少しで…しそうになる",
     "no": 675,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I came close to missing the last train last night.",
+    "exampleJa": "昨夜はもう少しで終電に乗り遅れそうになった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c88f6d366774e7a0",
@@ -6523,7 +7493,10 @@
     "word": "catch ～ doing",
     "meaning": "（人）が…しているところを見つける[捕らえる]",
     "no": 678,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My mother caught me playing games instead of studying.",
+    "exampleJa": "母は私が勉強せずにゲームをしているところを見つけた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b8a493b441bf03ce",
@@ -6626,28 +7599,40 @@
     "word": "as many/much as ～",
     "meaning": "～もの数[量]の、～と同数[量]の",
     "no": 687,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As many as 500 people came to the school concert.",
+    "exampleJa": "500人もの人が学校のコンサートに来た。",
+    "exampleSource": "written"
   },
   {
     "id": "w_31832877d196faf8",
     "word": "as good as ～",
     "meaning": "～も同然、ほとんど～",
     "no": 688,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My old bike looks as good as new after cleaning.",
+    "exampleJa": "私の古い自転車は掃除したら新品も同然に見える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bf620d745636b0f4",
     "word": "as ～ as any",
     "meaning": "誰[どれ]にも劣らず～",
     "no": 689,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She is as kind as any student in our class.",
+    "exampleJa": "彼女はクラスの誰にも劣らず親切だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d531774606f38969",
     "word": "all the + 比較級",
     "meaning": "ますます～、それだけいっそう～",
     "no": 690,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I like him all the better for his honesty.",
+    "exampleJa": "彼は正直なので、私はそれだけいっそう彼が好きだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_814007d1416cdedc",
@@ -6702,7 +7687,10 @@
     "word": "Couldn't be better.",
     "meaning": "最高です、これ以上良い状態はあり得ない",
     "no": 695,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "\"How are you today?\" \"Couldn't be better, thanks!\"",
+    "exampleJa": "「今日の調子はどう？」「最高です、ありがとう！」",
+    "exampleSource": "written"
   },
   {
     "id": "w_13adc18aa301a91e",
@@ -6781,7 +7769,10 @@
     "word": "every/each time …",
     "meaning": "…するたびに",
     "no": 702,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Every time I visit my grandmother, she makes cookies.",
+    "exampleJa": "私が祖母を訪ねるたびに、祖母はクッキーを作ってくれる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a43e00a42697c654",
@@ -6848,42 +7839,60 @@
     "word": "as is often the case (with～)",
     "meaning": "（～に関して）よくあることだが",
     "no": 708,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As is often the case with him, he forgot his textbook.",
+    "exampleJa": "彼に関してはよくあることだが、彼は教科書を忘れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d16ff5320e1a82b1",
     "word": "as ～ go",
     "meaning": "一般の～と比べると、～としては",
     "no": 709,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This is a cheap restaurant, as restaurants in Tokyo go.",
+    "exampleJa": "ここは東京の一般のレストランと比べると安い店だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_380e5fec4104705b",
     "word": "if only …",
     "meaning": "①…でありさえすれば ②（現在・未来の願望を表して）…でさえあればなあ",
     "no": 710,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "If only I had more time to finish my homework!",
+    "exampleJa": "宿題を終わらせる時間がもっとありさえすればなあ！",
+    "exampleSource": "written"
   },
   {
     "id": "w_ac688e25bce84058",
     "word": "if it were not for ～",
     "meaning": "もし～がなければ",
     "no": 711,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "If it were not for water, no plants could grow.",
+    "exampleJa": "もし水がなければ、植物は育たないだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9c82c530244fb9cd",
     "word": "(in) the way …",
     "meaning": "…から判断すると、…のように、…のやり方で",
     "no": 712,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Try to cook the rice the way your grandmother does.",
+    "exampleJa": "おばあさんのやり方でご飯を炊いてみなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b6fa2d930208edd6",
     "word": "～ to death",
     "meaning": "死ぬまで～、ひどく～",
     "no": 713,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I was bored to death during the long meeting.",
+    "exampleJa": "長い会議の間、私はひどく退屈した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9e8a7485bb4604c9",
@@ -6902,7 +7911,10 @@
     "word": "believe it or not",
     "meaning": "まさかと思うような話だが",
     "no": 715,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Believe it or not, our cat can open the door.",
+    "exampleJa": "まさかと思うような話だが、うちの猫はドアを開けられる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0dcefdb43907d01e",
@@ -6933,14 +7945,20 @@
     "word": "(Just) As ～, so …",
     "meaning": "ちょうど～であるように…だ",
     "no": 718,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Just as food feeds the body, so reading feeds the mind.",
+    "exampleJa": "ちょうど食べ物が体を養うように、読書は心を養う。",
+    "exampleSource": "written"
   },
   {
     "id": "w_13d37f1eeb6b1501",
     "word": "(It is) No wonder (that) …",
     "meaning": "…なのは当然だ",
     "no": 719,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "No wonder you are tired; you slept only three hours.",
+    "exampleJa": "疲れているのは当然だ。3時間しか寝ていないのだから。",
+    "exampleSource": "written"
   },
   {
     "id": "w_28cee72055a150fe",
@@ -6959,7 +7977,10 @@
     "word": "(The) Chances are (that) …",
     "meaning": "ひょっとしたら[たぶん]…だろう",
     "no": 721,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Chances are that the train will be late because of snow.",
+    "exampleJa": "たぶん雪のせいで電車は遅れるだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0d7a7df8a6999135",
@@ -6990,7 +8011,10 @@
     "word": "hardly ～ when/before …",
     "meaning": "～するかしないかのうちに…する",
     "no": 724,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I had hardly left home when it started to rain.",
+    "exampleJa": "家を出るか出ないかのうちに雨が降り出した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_300913210d114c0c",
@@ -7021,7 +8045,10 @@
     "word": "(It is) True ～, but …",
     "meaning": "確かに～だが、…だ",
     "no": 727,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "True, the test was difficult, but you did your best.",
+    "exampleJa": "確かにテストは難しかったが、あなたは全力を尽くした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c9c0a770835a66f9",
@@ -7124,7 +8151,10 @@
     "word": "the former ～, the latter …",
     "meaning": "前者は～、後者は…",
     "no": 736,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I have a cat and a dog; the former is quiet, the latter is noisy.",
+    "exampleJa": "私は猫と犬を飼っている。前者は静かで、後者はうるさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2d7f3ebe46ae988d",
@@ -7143,7 +8173,10 @@
     "word": "All one has to do is (to) do",
     "meaning": "（人は）はただ…すればよい",
     "no": 738,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "All you have to do is write your name here.",
+    "exampleJa": "あなたはただここに名前を書けばよい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_815368d9c0ad2bd3",
@@ -7162,35 +8195,50 @@
     "word": "be to do",
     "meaning": "①（予定・運命）…することになっている ②（義務）…すべきである ③（意図・目的）…するつもりである ④（可能）…できる",
     "no": 740,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The new library is to open next month.",
+    "exampleJa": "新しい図書館は来月開館することになっている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5800f5392436cfee",
     "word": "be forced to do",
     "meaning": "やむなく…する",
     "no": 741,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We were forced to cancel the picnic because of the rain.",
+    "exampleJa": "雨のため、私たちはやむなくピクニックを中止した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7b0adfddef5e22ae",
     "word": "be supposed to do",
     "meaning": "…することになっている、（世間で）…と考えられている",
     "no": 742,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We are supposed to meet at the station at nine.",
+    "exampleJa": "私たちは9時に駅で会うことになっている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d18f16ddc1ec4377",
     "word": "be to blame (for ～)",
     "meaning": "（～に対して）責めを負うべきである[責任がある]",
     "no": 743,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Nobody is to blame for the loss of the game.",
+    "exampleJa": "試合に負けたことに対して誰にも責任はない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4979bcfa41a7f10c",
     "word": "be entitled to ～",
     "meaning": "～の資格がある",
     "no": 744,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Members are entitled to a discount at this shop.",
+    "exampleJa": "会員はこの店で割引を受ける資格がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c7ed69cd3ed2a2f8",
@@ -7233,35 +8281,50 @@
     "word": "can afford to do",
     "meaning": "（経済的・時間的に）…する余裕がある",
     "no": 748,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I can't afford to buy a new smartphone this year.",
+    "exampleJa": "今年は新しいスマートフォンを買う余裕がない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_623bfe3a89cee114",
     "word": "bother to do",
     "meaning": "わざわざ…する",
     "no": 749,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He didn't even bother to say goodbye.",
+    "exampleJa": "彼はわざわざさよならを言うことさえしなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9905154b881571a9",
     "word": "come to an end/a close",
     "meaning": "終わる",
     "no": 750,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The summer vacation came to an end too quickly.",
+    "exampleJa": "夏休みはあまりにも早く終わった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b992dcddb52ce440",
     "word": "go so far as to do",
     "meaning": "…しさえする",
     "no": 751,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She went so far as to call my singing terrible.",
+    "exampleJa": "彼女は私の歌をひどいと言いさえした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_618da636f530ae9d",
     "word": "have no (other) choice but to do",
     "meaning": "…するよりほかに仕方がない",
     "no": 752,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The last bus had left, so I had no choice but to walk.",
+    "exampleJa": "最終バスが出てしまったので、歩くよりほかに仕方がなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_82f2d899aee99732",
@@ -7304,7 +8367,10 @@
     "word": "bring oneself to do",
     "meaning": "…する気持ちになる",
     "no": 756,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I couldn't bring myself to throw away my old toys.",
+    "exampleJa": "古いおもちゃを捨てる気持ちになれなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7a75d3e77e2d08d2",
@@ -7335,21 +8401,30 @@
     "word": "in order/so as to do",
     "meaning": "…するために",
     "no": 759,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She got up early in order to catch the first train.",
+    "exampleJa": "彼女は始発電車に乗るために早起きした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bf83ae5b1dd8bfb9",
     "word": "in that …",
     "meaning": "…の点で、…のゆえに",
     "no": 760,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This dictionary is useful in that it has many examples.",
+    "exampleJa": "この辞書は例文が多いという点で役に立つ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a230987f2a277bbc",
     "word": "as/so long as …",
     "meaning": "（条件・時間的限度）…である限り",
     "no": 761,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You can stay here as long as you keep quiet.",
+    "exampleJa": "静かにしている限り、ここにいてもよい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ed000ccfa1352ff5",
@@ -7380,14 +8455,20 @@
     "word": "by the time …",
     "meaning": "…までに（は）",
     "no": 764,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "By the time we got to the stadium, the game had started.",
+    "exampleJa": "私たちが競技場に着くまでには、試合は始まっていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f3b3cccaebdc4326",
     "word": "～, so (that) …",
     "meaning": "～だ、その結果…だ",
     "no": 765,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I overslept this morning, so I missed the bus.",
+    "exampleJa": "今朝寝坊した、その結果バスに乗り遅れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ecc5127c6587c695",
@@ -7406,21 +8487,30 @@
     "word": "in case …",
     "meaning": "①[主に米]もし…ならば ②[主に英]…するといけないから、…に備えて",
     "no": 767,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In case you need help, just call me.",
+    "exampleJa": "もし助けが必要ならば、とにかく私に電話して。",
+    "exampleSource": "written"
   },
   {
     "id": "w_41e0b9bff5fb0ec7",
     "word": "given (that) …",
     "meaning": "…を考慮すれば、…なので",
     "no": 768,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Given that he is only ten, his English is excellent.",
+    "exampleJa": "彼がまだ10歳であることを考慮すれば、彼の英語は素晴らしい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0dccc3a4ef2b8782",
     "word": "even as …",
     "meaning": "まさに…するときに",
     "no": 769,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Even as I was leaving home, the phone started ringing.",
+    "exampleJa": "まさに私が家を出ようとしたときに、電話が鳴り始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_66df0c80d6a409c8",
@@ -7475,7 +8565,10 @@
     "word": "A, and B at that",
     "meaning": "Aだ、その上Bでもある",
     "no": 774,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He made a mistake, and a big one at that.",
+    "exampleJa": "彼は間違いをした、その上大きな間違いでもあった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b26d5fbba3efaa8b",
@@ -7518,7 +8611,10 @@
     "word": "check out ～",
     "meaning": "①（魅力的なので）～を見てみる、～を調査[点検]する ②（図書館などから）～借り出す",
     "no": 778,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You should check out the new cafe near the station.",
+    "exampleJa": "駅の近くの新しいカフェを見てみるといいよ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_451a1737066aa699",
@@ -7537,35 +8633,50 @@
     "word": "hang up ～",
     "meaning": "（電話を）切る、（衣服など）を掛ける、～を中断する",
     "no": 780,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please don't hang up; I'll get my mother now.",
+    "exampleJa": "電話を切らないでください。今、母を呼んできます。",
+    "exampleSource": "written"
   },
   {
     "id": "w_61c1420095509012",
     "word": "give ～ a try",
     "meaning": "～を試してみる",
     "no": 781,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This game looks fun, so I'll give it a try.",
+    "exampleJa": "このゲームは面白そうなので、試してみよう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_66504eaddb062ee0",
     "word": "give ～ a hand",
     "meaning": "～に手を貸す",
     "no": 782,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Could you give me a hand with these heavy boxes?",
+    "exampleJa": "この重い箱を運ぶのに手を貸してもらえますか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_40dc45973b40b194",
     "word": "call back ～",
     "meaning": "～に折り返し電話する、～に電話をかけ直す、～を呼び戻す",
     "no": 783,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm busy now, so I'll call you back later.",
+    "exampleJa": "今忙しいので、あとで折り返し電話するね。",
+    "exampleSource": "written"
   },
   {
     "id": "w_46d6f4ef3808673d",
     "word": "from scratch",
     "meaning": "最初から",
     "no": 784,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I lost my notes, so I had to start from scratch.",
+    "exampleJa": "ノートをなくしたので、最初からやり直さなければならなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c736aecaeb74b35c",
@@ -7608,7 +8719,10 @@
     "word": "having said that",
     "meaning": "そうは言ったものの",
     "no": 788,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The test was hard. Having said that, I enjoyed it.",
+    "exampleJa": "テストは難しかった。そうは言ったものの、楽しめた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1c93b1fe3a072e75",
@@ -7639,7 +8753,10 @@
     "word": "drive at ～",
     "meaning": "（whatを目的語に）～のつもりである",
     "no": 791,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I don't understand what you are driving at.",
+    "exampleJa": "あなたが何を言うつもりなのかわからない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1741ade630296fef",
@@ -7658,7 +8775,10 @@
     "word": "before one knows it",
     "meaning": "あっという間に",
     "no": 793,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Before you know it, summer vacation will be over.",
+    "exampleJa": "あっという間に夏休みは終わってしまうだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cfe098e21dbd0ddf",
@@ -7677,14 +8797,20 @@
     "word": "call it a day",
     "meaning": "その日の仕事を終える",
     "no": 795,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It's getting dark, so let's call it a day.",
+    "exampleJa": "暗くなってきたので、今日の作業はこれで終えよう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_539de1c7d6315d86",
     "word": "have (a) good command of ～",
     "meaning": "（外国語など）を自由に使いこなす力がある",
     "no": 796,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She has a good command of English and French.",
+    "exampleJa": "彼女は英語とフランス語を自由に使いこなす力がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1081f8b7813a6a03",
@@ -7727,7 +8853,10 @@
     "word": "go to the polls",
     "meaning": "投票に行く",
     "no": 800,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My parents went to the polls early on Sunday morning.",
+    "exampleJa": "両親は日曜日の朝早くに投票に行った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5c9ab030c334a533",
@@ -7806,7 +8935,10 @@
     "word": "have/take a look (at ～)",
     "meaning": "（～を）見る",
     "no": 807,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Can I have a look at your photos from the trip?",
+    "exampleJa": "旅行の写真を見てもいいですか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3d7979c31e3b7a18",
@@ -7837,21 +8969,30 @@
     "word": "have no idea",
     "meaning": "見当がつかない",
     "no": 810,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I have no idea where I left my umbrella.",
+    "exampleJa": "傘をどこに置き忘れたのか見当がつかない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c741df11773b8f46",
     "word": "could use ～",
     "meaning": "（口語で）～があればありがたい、～が欲しい",
     "no": 811,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm so thirsty; I could use a cold drink.",
+    "exampleJa": "とても喉が渇いた。冷たい飲み物があればありがたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_131f6b3cb1418149",
     "word": "How come SV?",
     "meaning": "どうして…か [= Why(…)?]",
     "no": 812,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "How come you didn't come to practice yesterday?",
+    "exampleJa": "どうして昨日練習に来なかったの？",
+    "exampleSource": "written"
   },
   {
     "id": "w_ba68754553ef4393",
@@ -7930,14 +9071,20 @@
     "word": "help oneself to ～",
     "meaning": "～を自由に取る",
     "no": 819,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please help yourself to the cookies on the table.",
+    "exampleJa": "テーブルの上のクッキーを自由に取ってください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cd5536f7264835b4",
     "word": "I'm afraid not.",
     "meaning": "残念ながらそうではないようです",
     "no": 820,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "\"Is there any cake left?\" \"I'm afraid not.\"",
+    "exampleJa": "「ケーキはまだ残ってる？」「残念ながらないようです。」",
+    "exampleSource": "written"
   },
   {
     "id": "w_c608abf4dc050851",
@@ -7956,7 +9103,10 @@
     "word": "be fed up with ～",
     "meaning": "～にうんざりしている",
     "no": 822,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I'm fed up with this rainy weather.",
+    "exampleJa": "この雨続きの天気にはうんざりしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0721e64f52b729ea",
@@ -7999,14 +9149,20 @@
     "word": "Here we are.",
     "meaning": "さあ着いた",
     "no": 826,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Here we are. This is the museum I told you about.",
+    "exampleJa": "さあ着いた。ここが話していた博物館だよ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3643cd65f7fa7bf8",
     "word": "hit it off (with～)",
     "meaning": "（人と）仲良くなる[意気投合する]",
     "no": 827,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I hit it off with my new roommate right away.",
+    "exampleJa": "新しいルームメートとすぐに意気投合した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1dfc0ef5cf0e154a",
@@ -8025,7 +9181,10 @@
     "word": "give one's regard to ～",
     "meaning": "（伝言・手紙などで）～によろしくと伝える",
     "no": 829,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please give my regards to your family.",
+    "exampleJa": "ご家族によろしくとお伝えください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7651462732bf3489",
@@ -8044,119 +9203,170 @@
     "word": "be susceptible to ～",
     "meaning": "～の影響を受けやすい、～に感染しやすい",
     "no": 831,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Young children are susceptible to colds in winter.",
+    "exampleJa": "幼い子どもは冬に風邪に感染しやすい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_28bcbe35294ea9e9",
     "word": "be at odds (with ～)",
     "meaning": "（～と）食い違っている、（～と）反目し合っている",
     "no": 832,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "His story is at odds with what his friend said.",
+    "exampleJa": "彼の話は友達が言ったことと食い違っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6ef09edffd45c06c",
     "word": "be committed to ～",
     "meaning": "～に献身する、～と固く約束する[誓う]",
     "no": 833,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The club is committed to cleaning the local park every month.",
+    "exampleJa": "その部は毎月地元の公園を掃除することに献身している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5d40892e2daa3959",
     "word": "be here to stay",
     "meaning": "定着している",
     "no": 834,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Online classes seem to be here to stay.",
+    "exampleJa": "オンライン授業は定着しているようだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1bb1e15b67785c66",
     "word": "be liable to do/to ～",
     "meaning": "…しがちである/～にかかりやすい",
     "no": 835,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This old printer is liable to stop working suddenly.",
+    "exampleJa": "この古いプリンターは突然動かなくなりがちである。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bf7f4fe775272e5c",
     "word": "be intent on/upon ～",
     "meaning": "～に懸命[熱心]である",
     "no": 836,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She is intent on passing the entrance exam.",
+    "exampleJa": "彼女は入学試験に合格することに懸命である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3348da16e2f9cff2",
     "word": "be no match for ～",
     "meaning": "とても～にはかなわない",
     "no": 837,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I am no match for my brother at chess.",
+    "exampleJa": "チェスでは、私はとても兄にはかなわない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_32a68b60ba2d94e5",
     "word": "be vulnerable to ～",
     "meaning": "（病気・誘惑など）に弱い、（非難・攻撃など）を受けやすい",
     "no": 838,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Older people are vulnerable to the flu.",
+    "exampleJa": "高齢者はインフルエンザに弱い。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c628d078917623ba",
     "word": "be eligible for ～",
     "meaning": "～の資格がある",
     "no": 839,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Students with good grades are eligible for this scholarship.",
+    "exampleJa": "成績の良い生徒はこの奨学金の資格がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3f1685ba5fa78fcb",
     "word": "be worth doing",
     "meaning": "…する価値がある",
     "no": 840,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This movie is worth watching more than once.",
+    "exampleJa": "この映画は2回以上見る価値がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5d70cbdfc7021828",
     "word": "be out to do",
     "meaning": "…しようと狙っている",
     "no": 841,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our team is out to win the championship this year.",
+    "exampleJa": "私たちのチームは今年の優勝を狙っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_871a3b13531acd9d",
     "word": "be all ears",
     "meaning": "一心を耳に傾けている",
     "no": 842,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Tell me about your trip. I'm all ears.",
+    "exampleJa": "旅行の話を聞かせて。一心に耳を傾けているから。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8bb475aaa787ad25",
     "word": "be beside oneself (with ～)",
     "meaning": "（～で）我を忘れる、（～に）夢中である",
     "no": 843,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She was beside herself with joy when she passed the exam.",
+    "exampleJa": "彼女は試験に合格して喜びで我を忘れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_50bbf1fca0247516",
     "word": "be cut out to be ～",
     "meaning": "～に向いている[適している]",
     "no": 844,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He is kind and patient, so he is cut out to be a teacher.",
+    "exampleJa": "彼は優しくて忍耐強いので、教師に向いている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2e874d50a8e825a7",
     "word": "be (all) the rage",
     "meaning": "（大）流行している",
     "no": 845,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This hairstyle is all the rage among high school girls.",
+    "exampleJa": "この髪型は女子高生の間で大流行している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6e57dac5930935b8",
     "word": "account for ～",
     "meaning": "①～の説明となる、～の理由を説明する ②（割合など）を占める",
     "no": 846,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Lack of sleep may account for your headaches.",
+    "exampleJa": "睡眠不足が頭痛の説明となるかもしれない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_175d1e6c257efef2",
     "word": "allow for ～",
     "meaning": "～を可能にする、～を考慮に入れる",
     "no": 847,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The large windows allow for plenty of sunlight in the room.",
+    "exampleJa": "大きな窓が部屋にたっぷり日光を入れることを可能にしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c44dcde7afadb148",
@@ -8187,49 +9397,70 @@
     "word": "count for ～",
     "meaning": "～の価値[重要性]を持つ",
     "no": 850,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "In this contest, effort counts for more than talent.",
+    "exampleJa": "このコンテストでは、才能より努力のほうが重要性を持つ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6761b085e6e95e61",
     "word": "cope with ～",
     "meaning": "～をうまく処理する、～に対処する",
     "no": 851,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She learned to cope with stress by going for a run.",
+    "exampleJa": "彼女はランニングをすることでストレスに対処できるようになった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_dcd05ce0092b42ae",
     "word": "coincide with ～",
     "meaning": "～と一致する、～と同時に起こる",
     "no": 852,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My birthday coincides with the first day of school this year.",
+    "exampleJa": "今年は私の誕生日が始業日と同時に来る。",
+    "exampleSource": "written"
   },
   {
     "id": "w_01968c58fe321e21",
     "word": "comply with ～",
     "meaning": "（規則・命令など）に従う[応じる]",
     "no": 853,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "All visitors must comply with the museum's rules.",
+    "exampleJa": "訪問者は全員、博物館の規則に従わなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_033abc0365ba8153",
     "word": "dispense with ～",
     "meaning": "～なしですます",
     "no": 854,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Let's dispense with the speeches and start the party.",
+    "exampleJa": "スピーチはなしですませて、パーティーを始めよう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3e3661978f38843c",
     "word": "attend to ～",
     "meaning": "～を処理する、～に注意を払う、～の世話をする",
     "no": 855,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I have some homework to attend to before dinner.",
+    "exampleJa": "夕食の前に処理しなければならない宿題がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6998f3eb44ae54de",
     "word": "aspire to ～",
     "meaning": "～を熱望する",
     "no": 856,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many young players aspire to a place on the national team.",
+    "exampleJa": "多くの若い選手が代表チーム入りを熱望している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_72154f89dcf06cf9",
@@ -8248,14 +9479,20 @@
     "word": "consent to ～",
     "meaning": "～に同意する",
     "no": 858,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My parents consented to my plan to study abroad.",
+    "exampleJa": "両親は私の留学の計画に同意した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f72be1a881f295ac",
     "word": "deal in ～",
     "meaning": "（商品）を取り扱う、（仕事など）に従事する",
     "no": 859,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This small shop deals in used books and old maps.",
+    "exampleJa": "この小さな店は古本と古地図を取り扱っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_70b5dc1e9e6b97be",
@@ -8286,14 +9523,20 @@
     "word": "embark on/upon ～",
     "meaning": "（事業・計画など）に乗り出す、～を始める",
     "no": 862,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "After graduation, she embarked on a career in design.",
+    "exampleJa": "卒業後、彼女はデザインの仕事に乗り出した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4d67554050cac3cf",
     "word": "dwell on/upon ～",
     "meaning": "①～を詳しく述べる[書く]  ②～をくよくよ[つくづく]考える、～に拘る",
     "no": 863,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The speaker dwelt on the importance of good sleep.",
+    "exampleJa": "講演者は十分な睡眠の大切さを詳しく述べた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7b6059afeb61fd51",
@@ -8324,14 +9567,20 @@
     "word": "discriminate against ～",
     "meaning": "～を差別する",
     "no": 866,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The company must not discriminate against workers because of age.",
+    "exampleJa": "会社は年齢を理由に従業員を差別してはならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_118d0b22bbbee963",
     "word": "abide by ～",
     "meaning": "（法など）に従う、（約束など）を守る",
     "no": 867,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Every player must abide by the rules of the game.",
+    "exampleJa": "選手は全員、試合のルールに従わなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c574f0db0c1a1e0b",
@@ -8458,7 +9707,10 @@
     "word": "get away with ～",
     "meaning": "①（罰を受けずに）～をうまくやる ②～を持ち逃げする",
     "no": 878,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He copied his friend's homework, but he didn't get away with it.",
+    "exampleJa": "彼は友達の宿題を写したが、うまくごまかせなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fac425315f082b7b",
@@ -8477,14 +9729,20 @@
     "word": "hang around/about/round",
     "meaning": "ぶらつく、付き合う",
     "no": 880,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We hung around the shopping mall after school.",
+    "exampleJa": "私たちは放課後ショッピングモールをぶらついた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c60510dc4494af11",
     "word": "get down to ～",
     "meaning": "（仕事・問題など）に本気で取り掛かる",
     "no": 881,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Let's stop talking and get down to our homework.",
+    "exampleJa": "おしゃべりをやめて、宿題に本気で取り掛かろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_32d80673341485e0",
@@ -8515,14 +9773,20 @@
     "word": "follow through (on/with ～)",
     "meaning": "（～を）やり遂げる",
     "no": 884,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He always follows through on his promises.",
+    "exampleJa": "彼はいつも約束をやり遂げる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_88c5ca1af4f97c93",
     "word": "find oneself ～",
     "meaning": "（気がつくと）～にいる[～である]",
     "no": 885,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "When I woke up, I found myself on the sofa.",
+    "exampleJa": "目が覚めると、私はソファーの上にいた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_957ba54cd28b0e48",
@@ -8601,7 +9865,10 @@
     "word": "take hold of ^",
     "meaning": "～をつかむ、～を捕まえる",
     "no": 892,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Take hold of the rope and pull it slowly.",
+    "exampleJa": "ロープをつかんで、ゆっくり引っ張りなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0934257382d2dac3",
@@ -8728,7 +9995,10 @@
     "word": "come to terms with ～",
     "meaning": "～と折り合いがつく、（あきらめて）～を受け入れる",
     "no": 903,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He finally came to terms with losing the final match.",
+    "exampleJa": "彼はついに決勝戦で負けたことを受け入れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8dd441373910d45a",
@@ -8759,21 +10029,30 @@
     "word": "come in handy",
     "meaning": "役に立つ",
     "no": 906,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A small flashlight can come in handy during a power outage.",
+    "exampleJa": "停電の時には小さな懐中電灯が役に立つことがある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4d6664b9e24421b3",
     "word": "fall short of ～",
     "meaning": "（目標・基準など）に達しない",
     "no": 907,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My score fell short of my goal by five points.",
+    "exampleJa": "私の点数は目標に5点達しなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4a6123557b655108",
     "word": "go a long way to do",
     "meaning": "…するのに大いに役立つ",
     "no": 908,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A kind word can go a long way to make someone happy.",
+    "exampleJa": "親切な一言は人を幸せにするのに大いに役立つことがある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_592dbbdd07a73f7e",
@@ -8828,14 +10107,20 @@
     "word": "read between the line",
     "meaning": "行間を読む、真意をつかむ",
     "no": 913,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You need to read between the lines to understand her letter.",
+    "exampleJa": "彼女の手紙を理解するには行間を読む必要がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9659b0c11900b96b",
     "word": "follow suit",
     "meaning": "人のまねをする、先例になろう",
     "no": 914,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "When Ken raised his hand, the other students followed suit.",
+    "exampleJa": "ケンが手を挙げると、他の生徒たちもそれにならった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_488d22c8a09578af",
@@ -8854,42 +10139,60 @@
     "word": "get on ～'s nerves",
     "meaning": "～の神経にさわる",
     "no": 916,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The loud music next door is getting on my nerves.",
+    "exampleJa": "隣の大きな音楽が神経にさわってきた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7e08792541dd43bc",
     "word": "get/have the better of ～",
     "meaning": "～に勝つ、～を出し抜く",
     "no": 917,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My younger brother finally got the better of me at tennis.",
+    "exampleJa": "弟はついにテニスで私に勝った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d5ed4f5ad4794e9f",
     "word": "get/be even with ～",
     "meaning": "（人）に仕返しをする[恨みを晴らす]",
     "no": 918,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He played a joke on me, so I'll get even with him tomorrow.",
+    "exampleJa": "彼にいたずらをされたので、明日仕返しをするつもりだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_16e82c95143e088b",
     "word": "hold/keep ～ in check",
     "meaning": "～を抑える[食い止める]",
     "no": 919,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Try to keep your anger in check during the discussion.",
+    "exampleJa": "話し合いの間は怒りを抑えるようにしなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_963bca585f867ac7",
     "word": "have an eye for ～",
     "meaning": "～に対する眼識[鑑識力]がある",
     "no": 920,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My sister has an eye for good clothes.",
+    "exampleJa": "姉は良い服を見分ける眼識がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a413358ca885f1bc",
     "word": "have ～ on one's mind",
     "meaning": "～を気にしている[心配している]",
     "no": 921,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She has had the exam on her mind all week.",
+    "exampleJa": "彼女は一週間ずっと試験のことを気にしている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4a1126101ceaa3d9",
@@ -8920,7 +10223,10 @@
     "word": "impose A on/upon B",
     "meaning": "AをBに課す[押しつける]",
     "no": 924,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You shouldn't impose your ideas on other people.",
+    "exampleJa": "自分の考えを他人に押しつけるべきではない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4ae8b4c9280c7356",
@@ -8939,28 +10245,40 @@
     "word": "bring A home to B",
     "meaning": "A(ある事柄)をB(人)に痛感させる",
     "no": 926,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The long walk brought home to me how weak I was.",
+    "exampleJa": "長い散歩で、自分の体力のなさを痛感させられた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_41a91527f0e3dad1",
     "word": "a variety of ～",
     "meaning": "①（同一種類のもので）いろいろ[さまざま]な～ ②～の１種[１つの型]",
     "no": 927,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The shop sells a variety of fruits from around the world.",
+    "exampleJa": "その店は世界中のいろいろな果物を売っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_93a0f11bc05ff027",
     "word": "a handful of ～",
     "meaning": "一握りの～、少数[量]の～",
     "no": 928,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Only a handful of students came to the early practice.",
+    "exampleJa": "朝練に来たのはほんの一握りの生徒だけだった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5f3be5c14e929860",
     "word": "a host of ～",
     "meaning": "多数の～",
     "no": 929,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The new app has a host of useful features.",
+    "exampleJa": "その新しいアプリには多数の便利な機能がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c20bb164f82b60f8",
@@ -9003,7 +10321,10 @@
     "word": "all manner of ～",
     "meaning": "あらゆる種類の～",
     "no": 933,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The market sells all manner of goods, from food to toys.",
+    "exampleJa": "その市場では食べ物からおもちゃまで、あらゆる種類の品物が売られている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_29cf420589c0dc04",
@@ -9022,7 +10343,10 @@
     "word": "at issue",
     "meaning": "問題の、論争中の[で]",
     "no": 935,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The point at issue is how to spend the club budget.",
+    "exampleJa": "問題の点は部の予算をどう使うかだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bd7338f7d1266a71",
@@ -9053,42 +10377,60 @@
     "word": "(enough) ～ to go around",
     "meaning": "全員に行き渡るだけの～",
     "no": 938,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Is there enough pizza to go around?",
+    "exampleJa": "全員に行き渡るだけのピザはありますか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4dd8990adaef0f7f",
     "word": "every other ～",
     "meaning": "①１つおきの～、～おきに ②残りのすべての～",
     "no": 939,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I go swimming every other day to stay healthy.",
+    "exampleJa": "健康を保つために1日おきに泳ぎに行く。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f34ee3009df50f6f",
     "word": "for a rainy day",
     "meaning": "（将来）まさかの時[緊急時]に備えて",
     "no": 940,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My grandmother told me to save some money for a rainy day.",
+    "exampleJa": "祖母は、まさかの時に備えてお金を貯めておくよう私に言った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c90d4a48995fd763",
     "word": "in earnest",
     "meaning": "本格的に、熱心に",
     "no": 941,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He began studying in earnest for the entrance exam.",
+    "exampleJa": "彼は入試に向けて本格的に勉強し始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c44e8100bb50d92f",
     "word": "in (good) shape",
     "meaning": "調子が良くて",
     "no": 942,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She runs every morning to stay in good shape.",
+    "exampleJa": "彼女は調子を良く保つために毎朝走っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9f7473d4e754cf7e",
     "word": "in store (for～)",
     "meaning": "（～のために）用意して、（～の身に）降りかかろうとして",
     "no": 943,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Nobody knows what is in store for us in the future.",
+    "exampleJa": "将来私たちの身に何が降りかかろうとしているのか、誰にもわからない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6f326bc6876a8631",
@@ -9119,7 +10461,10 @@
     "word": "～ of one's own",
     "meaning": "自分自身の～",
     "no": 946,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I want to have a room of my own someday.",
+    "exampleJa": "いつか自分自身の部屋を持ちたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b02ad04c59d4889f",
@@ -9186,7 +10531,10 @@
     "word": "per capita",
     "meaning": "一人当たりの[で]",
     "no": 952,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Rice eaten per capita in Japan has gone down.",
+    "exampleJa": "日本の一人当たりの米の消費量は減っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_25627f8728a3258d",
@@ -9253,14 +10601,20 @@
     "word": "in accordance with ～",
     "meaning": "～に従って、～に応じて",
     "no": 958,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please sort the trash in accordance with the town rules.",
+    "exampleJa": "町の決まりに従ってごみを分別してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b4781efe0afcaac0",
     "word": "in proportion to ～",
     "meaning": "～に比例して",
     "no": 959,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Your pay will increase in proportion to your working hours.",
+    "exampleJa": "給料は働く時間に比例して増える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_de0f578d5de16e2f",
@@ -9279,14 +10633,20 @@
     "word": "as of ～",
     "meaning": "～現在で、～の時点で",
     "no": 961,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "As of today, our club has thirty members.",
+    "exampleJa": "今日現在で、私たちの部には30人の部員がいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6f0737a2dfb545ee",
     "word": "but for ～",
     "meaning": "～がないならば",
     "no": 962,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "But for your help, I could not have finished the project.",
+    "exampleJa": "あなたの助けがなかったならば、その課題を終えられなかっただろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_062c3794a736fa9e",
@@ -9449,7 +10809,10 @@
     "word": "at ～'s convenience",
     "meaning": "～の都合の良いときに",
     "no": 976,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please call me back at your convenience.",
+    "exampleJa": "ご都合の良いときに折り返しお電話ください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0f65a92dcc14fc9c",
@@ -9492,14 +10855,20 @@
     "word": "down the road",
     "meaning": "（口論で）やがては、将来は",
     "no": 980,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Learning English now will help you down the road.",
+    "exampleJa": "今英語を学んでおくことは、将来役に立つだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_026bc1c4dd1ebf64",
     "word": "early on",
     "meaning": "早い時期に、早くから",
     "no": 981,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She showed a talent for music early on.",
+    "exampleJa": "彼女は早い時期から音楽の才能を見せた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_95bfd2e58c8d36d0",
@@ -9518,21 +10887,30 @@
     "word": "for all I know",
     "meaning": "よくは知らないが、たぶん",
     "no": 983,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "For all I know, he may still be asleep.",
+    "exampleJa": "よくは知らないが、たぶん彼はまだ寝ているだろう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_35343aa01692fe05",
     "word": "for nothing",
     "meaning": "①無料で ②無駄に",
     "no": 984,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I got this T-shirt for nothing at the event.",
+    "exampleJa": "このTシャツはイベントで無料でもらった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_96096da30a0bf177",
     "word": "if anything",
     "meaning": "どちらかと言えば、もしあるとしても",
     "no": 985,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The test wasn't hard; if anything, it was too easy.",
+    "exampleJa": "テストは難しくなかった。どちらかと言えば、簡単すぎた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f5635ba59b93ecfc",
@@ -9551,7 +10929,10 @@
     "word": "in person",
     "meaning": "（代理人でなく）じかに、自ら",
     "no": 987,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I want to thank her in person, not by email.",
+    "exampleJa": "メールではなく、じかに彼女にお礼を言いたい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_34ae8627292abfa7",

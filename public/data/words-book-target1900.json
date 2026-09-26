@@ -16,35 +16,54 @@
     "word": "increase",
     "meaning": "増加する（⇔ decrease ⇒ 223）；を増やす",
     "no": 2,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The population is increasing.",
+    "exampleJa": "人口が増加している。",
+    "pronunciation": "ˌɪnˈkris"
   },
   {
     "id": "w_b58c3ee2cc1eed0a",
     "word": "improve",
     "meaning": "を向上させる；よくなる",
     "no": 3,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I read English books every day to improve my vocabulary.",
+    "exampleJa": "私は語彙力を向上させるため毎日英語の本を読む。",
+    "exampleSource": "written"
   },
   {
     "id": "w_aaa8ef6a82fffc2b",
     "word": "mean",
     "meaning": "を意味する；（...する）つもりである（to do）",
     "no": 4,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "food",
+    "example": "What does this word mean?",
+    "exampleJa": "この単語はどういう意味ですか？",
+    "pronunciation": "min"
   },
   {
     "id": "w_98e01e8f11726a44",
     "word": "own",
     "meaning": "を所有している；（事実・罪など）を認める",
     "no": 5,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "work",
+    "example": "Who owns this house?",
+    "exampleJa": "誰がこの家を所有していますか？",
+    "pronunciation": "oʊn"
   },
   {
     "id": "w_ab4565ccc8890fd8",
     "word": "include",
     "meaning": "を含む（⇔ exclude ⇒ 1009）",
     "no": 6,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The price includes tax.",
+    "exampleJa": "その価格は税金を含んでいる。",
+    "pronunciation": "ˌɪnˈklud"
   },
   {
     "id": "w_269921e75e51b8d6",
@@ -75,14 +94,22 @@
     "word": "suggest",
     "meaning": "を提案する；を暗示する",
     "no": 9,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "suggest a plan",
+    "exampleJa": "計画を提案する",
+    "pronunciation": "səˈdʒɛst"
   },
   {
     "id": "w_c5189e0eb4280994",
     "word": "produce",
     "meaning": "を生産する；を取り出す",
     "no": 10,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "produce cars",
+    "exampleJa": "車を生産する",
+    "pronunciation": "prəˈdus"
   },
   {
     "id": "w_9aacf344f2c9ca75",
@@ -101,7 +128,11 @@
     "word": "offer",
     "meaning": "を提供する，申し出る",
     "no": 12,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "work",
+    "example": "offer help",
+    "exampleJa": "助けを申し出る",
+    "pronunciation": "ˈɔfɚ"
   },
   {
     "id": "w_77a70fffec0f281a",
@@ -120,14 +151,22 @@
     "word": "share",
     "meaning": "を共有する；を分担する",
     "no": 14,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "work",
+    "example": "share a room",
+    "exampleJa": "部屋を共有する",
+    "pronunciation": "ʃɛr"
   },
   {
     "id": "w_902ad8b99e4af1bd",
     "word": "store",
     "meaning": "を保存する；を蓄える",
     "no": 15,
-    "partOfSpeech": ""
+    "partOfSpeech": "名, 動",
+    "theme": "place",
+    "example": "a toy store",
+    "exampleJa": "おもちゃ屋",
+    "pronunciation": "stɔr"
   },
   {
     "id": "w_ec2ae3e4dc1d40dc",
@@ -182,14 +221,21 @@
     "word": "reduce",
     "meaning": "を減らす；を（～に）変える（to）",
     "no": 20,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "reduce waste",
+    "exampleJa": "ごみを減らす",
+    "pronunciation": "rəˈdus"
   },
   {
     "id": "w_52cbc51829a31fb3",
     "word": "design",
     "meaning": "を設計する；を計画する",
     "no": 21,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My uncle designed the new library in our town.",
+    "exampleJa": "おじが町の新しい図書館を設計した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_52f30ad26a74b0d0",
@@ -220,7 +266,10 @@
     "word": "bear",
     "meaning": "に耐える（≒ endure ⇒ 824）；を負う；を産む；を（心に）抱く",
     "no": 24,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I can't bear the noise from the construction site.",
+    "exampleJa": "工事現場の騒音には耐えられない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ced046a2883414d0",
@@ -275,14 +324,22 @@
     "word": "realize",
     "meaning": "に気づく；を実現する",
     "no": 29,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "seeing",
+    "example": "realize my mistake",
+    "exampleJa": "私の間違いに気づく",
+    "pronunciation": "ˈriəˌlaɪz"
   },
   {
     "id": "w_6d24968e69d103d4",
     "word": "encourage",
     "meaning": "を奨励する；を励ます（⇔ discourage ⇒ 706）",
     "no": 30,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "His parents encouraged him to study music.",
+    "exampleJa": "彼の両親は彼に音楽を勉強するように励ました。",
+    "pronunciation": "ɛnˈkɝɪdʒ"
   },
   {
     "id": "w_3f0715d326522df7",
@@ -325,14 +382,21 @@
     "word": "mark",
     "meaning": "に印をつける；を（記号で）示す；に汚れをつける",
     "no": 34,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Mark the important words with a red pen.",
+    "exampleJa": "大事な単語に赤ペンで印をつけなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e1376e666d6f2adb",
     "word": "challenge",
     "meaning": "に異議を唱える；（人）に挑む",
     "no": 35,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "learning",
+    "example": "I challenged her.",
+    "exampleJa": "私は彼女に挑戦した。",
+    "pronunciation": "ˈtʃæləndʒ"
   },
   {
     "id": "w_f3fcad237dfafd07",
@@ -375,7 +439,11 @@
     "word": "found",
     "meaning": "を設立する；（理論など）を（～に基づいて）築く（on）",
     "no": 39,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The company was founded in 1990.",
+    "exampleJa": "その会社は1990年に設立されました。",
+    "pronunciation": "faʊnd"
   },
   {
     "id": "w_4e96b2ea4f3f143e",
@@ -442,7 +510,11 @@
     "word": "research",
     "meaning": "（～についての）研究，調査（into / on / in）",
     "no": 45,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "do research on",
+    "exampleJa": "〜について研究する",
+    "pronunciation": "riˈsɝtʃ"
   },
   {
     "id": "w_cdd12909d45e4b15",
@@ -461,7 +533,11 @@
     "word": "reason",
     "meaning": "理由；（...する）根拠（to do）；理性；分別",
     "no": 47,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "the reason why",
+    "exampleJa": "〜の理由",
+    "pronunciation": "ˈrizən"
   },
   {
     "id": "w_766aafa7a1311412",
@@ -480,28 +556,43 @@
     "word": "influence",
     "meaning": "影響（力）",
     "no": 49,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "seeing",
+    "example": "have an influence on children",
+    "exampleJa": "子供たちに影響を与える",
+    "pronunciation": "ˈɪnfluəns"
   },
   {
     "id": "w_2946a2caa5e6bc6a",
     "word": "situation",
     "meaning": "状況；（人の置かれた）立場",
     "no": 50,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "a difficult situation",
+    "exampleJa": "困難な状況",
+    "pronunciation": "ˌsɪtʃuˈeɪʃən"
   },
   {
     "id": "w_0eb0e1378959d589",
     "word": "environment",
     "meaning": "環境（≒ surroundings）",
     "no": 51,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "We must work to protect the natural environment.",
+    "exampleJa": "私たちは自然環境を保護するために努力しなければなりません。",
+    "pronunciation": "ɪnˈvaɪrənmənt"
   },
   {
     "id": "w_5f6d6194c9478dab",
     "word": "skill",
     "meaning": "技能；熟練",
     "no": 52,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Cooking is a useful skill to learn when you are young.",
+    "exampleJa": "料理は若いうちに身につけておくと役立つ技能だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b077649effefe991",
@@ -520,7 +611,10 @@
     "word": "view",
     "meaning": "（～についての）見解（on / about）；（～に対する）（特定の）見方（of）；眺め",
     "no": 54,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "What is your view on school uniforms?",
+    "exampleJa": "制服についてのあなたの見解は何ですか。",
+    "exampleSource": "written"
   },
   {
     "id": "w_27f0cffcc4ddd344",
@@ -539,7 +633,11 @@
     "word": "species",
     "meaning": "（生物の）種；種類",
     "no": 56,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "Some animal species are in danger of becoming extinct.",
+    "exampleJa": "いくつかの動物種は絶滅の危機に瀕しています。",
+    "pronunciation": "ˈspiʃiz"
   },
   {
     "id": "w_69b3807b9cfe5d63",
@@ -570,14 +668,22 @@
     "word": "memory",
     "meaning": "記憶（力）；（～の）思い出（of）",
     "no": 59,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "a good memory",
+    "exampleJa": "良い思い出",
+    "pronunciation": "ˈmɛmɚi"
   },
   {
     "id": "w_c2ef0a5e4874331e",
     "word": "practice",
     "meaning": "実践，実行；（社会の）慣習；練習",
     "no": 60,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "practice makes perfect",
+    "exampleJa": "習うより慣れよ",
+    "pronunciation": "ˈpræktəs"
   },
   {
     "id": "w_3c97ce2328d40cee",
@@ -644,35 +750,52 @@
     "word": "focus",
     "meaning": "焦点；関心の的",
     "no": 66,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "The main focus of the meeting was on improving sales.",
+    "exampleJa": "会議の主な焦点は売上の向上でした。",
+    "pronunciation": "ˈfoʊkəs"
   },
   {
     "id": "w_5aa47f13db66951c",
     "word": "subject",
     "meaning": "話題；科目；主題；被験者",
     "no": 67,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Let's change the subject and talk about the trip.",
+    "exampleJa": "話題を変えて旅行の話をしよう。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2445925302f0c2ca",
     "word": "project",
     "meaning": "計画；事業；研究計画",
     "no": 68,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our class started a project to clean the river.",
+    "exampleJa": "私たちのクラスは川をきれいにする計画を始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_22b95b61d67a03b2",
     "word": "quality",
     "meaning": "質（⇔ quantity ⇒ 471）；特質",
     "no": 69,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This shop sells vegetables of high quality.",
+    "exampleJa": "この店は質の高い野菜を売っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_349d3e6c70b91d18",
     "word": "role",
     "meaning": "役割；（俳優などの）役",
     "no": 70,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "work",
+    "example": "play an important role",
+    "exampleJa": "重要な役割を果たす",
+    "pronunciation": "roʊl"
   },
   {
     "id": "w_b78746c772f8c089",
@@ -703,7 +826,11 @@
     "word": "material",
     "meaning": "材料，素材；資料；生地",
     "no": 73,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "making",
+    "example": "use eco-friendly materials",
+    "exampleJa": "環境にやさしい素材を使う",
+    "pronunciation": "məˈtɪriəl"
   },
   {
     "id": "w_cc6bded7e02d901b",
@@ -746,7 +873,11 @@
     "word": "technology",
     "meaning": "科学技術；応用技術",
     "no": 77,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "new technology",
+    "exampleJa": "新しい科学技術",
+    "pronunciation": "tɛkˈnɑlədʒi"
   },
   {
     "id": "w_c21b0c6a299523f0",
@@ -789,7 +920,11 @@
     "word": "possible",
     "meaning": "可能な；可能性のある",
     "no": 81,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "It is possible.",
+    "exampleJa": "それは可能です。",
+    "pronunciation": "ˈpɑsəbəl"
   },
   {
     "id": "w_ac2ca469a186c3d1",
@@ -808,7 +943,10 @@
     "word": "public",
     "meaning": "公の（⇔ private 私的な）；公衆の；公開の",
     "no": 83,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Smoking is not allowed in public places.",
+    "exampleJa": "公の場所では喫煙は禁止されている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a156db3bfd9c54fb",
@@ -839,7 +977,11 @@
     "word": "similar",
     "meaning": "似ている，類似した；同様の",
     "no": 86,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "be similar to",
+    "exampleJa": "〜に似ている",
+    "pronunciation": "ˈsɪməlɚ"
   },
   {
     "id": "w_76768badab204b63",
@@ -858,14 +1000,22 @@
     "word": "major",
     "meaning": "主要な；大きい（ほうの）；長調の",
     "no": 88,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "learning",
+    "example": "This city is one of the major cities in Japan.",
+    "exampleJa": "この市は日本の主要都市の一つです。",
+    "pronunciation": "ˈmeɪdʒɚ"
   },
   {
     "id": "w_71a94bfbaefc1159",
     "word": "patient",
     "meaning": "忍耐強い；勤勉な",
     "no": 89,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "body",
+    "example": "a patient teacher",
+    "exampleJa": "忍耐強い先生",
+    "pronunciation": "ˈpeɪʃənt"
   },
   {
     "id": "w_095289ea7e71330b",
@@ -896,7 +1046,11 @@
     "word": "various",
     "meaning": "さまざまな；いくつかの",
     "no": 92,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quantity",
+    "example": "various kinds of flowers",
+    "exampleJa": "さまざまな種類の花",
+    "pronunciation": "ˈvɛriəs"
   },
   {
     "id": "w_81e59cee520cd804",
@@ -951,7 +1105,10 @@
     "word": "blank",
     "meaning": "空白の；無表情な；がらんとした",
     "no": 97,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Write your name in the blank space at the top.",
+    "exampleJa": "一番上の空白の欄に名前を書きなさい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6a9fd8ec21260ba4",
@@ -982,21 +1139,33 @@
     "word": "despite",
     "meaning": "～にもかかわらず（≒ in spite of）",
     "no": 100,
-    "partOfSpeech": ""
+    "partOfSpeech": "前",
+    "theme": "place",
+    "example": "He went to work despite his illness.",
+    "exampleJa": "彼は病気にもかかわらず仕事に行った。",
+    "pronunciation": "dɪˈspaɪt"
   },
   {
     "id": "w_fd43ceb59cda956a",
     "word": "notice",
     "meaning": "に気づく",
     "no": 101,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "seeing",
+    "example": "I noticed a mistake.",
+    "exampleJa": "私は間違いに気づいた。",
+    "pronunciation": "ˈnoʊtəs"
   },
   {
     "id": "w_68328b8464afa990",
     "word": "refer",
     "meaning": "言及する，関連する；参照する",
     "no": 102,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "The author refers to this study in her book.",
+    "exampleJa": "その著者は本の中でこの研究に言及している。",
+    "pronunciation": "rəˈfɝ"
   },
   {
     "id": "w_cab81ca9acf74c57",
@@ -1015,14 +1184,22 @@
     "word": "wonder",
     "meaning": "かなと思う；（に）驚く（at）",
     "no": 104,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "I wonder if he will come.",
+    "exampleJa": "彼は来るかなあ。",
+    "pronunciation": "ˈwʌndɚ"
   },
   {
     "id": "w_716b92a3797fd7a7",
     "word": "imagine",
     "meaning": "（を）想像する；（を）推測する",
     "no": 105,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "imagine the future",
+    "exampleJa": "未来を想像する",
+    "pronunciation": "ˌɪˈmædʒən"
   },
   {
     "id": "w_48e89fcce713b8c0",
@@ -1041,7 +1218,11 @@
     "word": "solve",
     "meaning": "を解く，解明する；（困難など）を解決する",
     "no": 107,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "solve a problem",
+    "exampleJa": "問題を解決する",
+    "pronunciation": "sɑlv"
   },
   {
     "id": "w_fb54d4e0ed27bcce",
@@ -1072,28 +1253,42 @@
     "word": "claim",
     "meaning": "と主張する；を（自分のものとして）要求する",
     "no": 110,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "He claimed that he knew nothing about the plan.",
+    "exampleJa": "彼はその計画について何も知らないと主張した。",
+    "pronunciation": "kleɪm"
   },
   {
     "id": "w_3d99cd970e981287",
     "word": "express",
     "meaning": "を表す，述べる",
     "no": 111,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It is hard for me to express my feelings in English.",
+    "exampleJa": "英語で自分の気持ちを表すのは私には難しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e4c3f749adbec8b8",
     "word": "draw",
     "meaning": "を引き出す；を引く；を描く；近づく",
     "no": 112,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "draw a picture",
+    "exampleJa": "絵を描く",
+    "pronunciation": "drɔ"
   },
   {
     "id": "w_589f89266fec72db",
     "word": "waste",
     "meaning": "を浪費する，無駄にする",
     "no": 113,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Don't waste your time playing games all day.",
+    "exampleJa": "一日中ゲームをして時間を浪費してはいけない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4ab80f642cf5f332",
@@ -1112,14 +1307,22 @@
     "word": "spread",
     "meaning": "を広める；広がる",
     "no": 115,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "①spread a cloth on the table ②The news spread quickly.",
+    "exampleJa": "①テーブルに布を広げる ②そのニュースはすぐに広まった",
+    "pronunciation": "sprɛd"
   },
   {
     "id": "w_d3653fe8ee73b904",
     "word": "prepare",
     "meaning": "を準備する；を調理する；（～のために）準備をする（for）",
     "no": 116,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "learning",
+    "example": "prepare for a trip",
+    "exampleJa": "旅行の準備をする",
+    "pronunciation": "priˈpɛr"
   },
   {
     "id": "w_9a7b8755703fd070",
@@ -1150,7 +1353,11 @@
     "word": "establish",
     "meaning": "を確立する；を設立する",
     "no": 119,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The company was established in 1950.",
+    "exampleJa": "その会社は1950年に設立されました。",
+    "pronunciation": "ɪˈstæblɪʃ"
   },
   {
     "id": "w_b77d42c1ac69df2b",
@@ -1169,14 +1376,22 @@
     "word": "suppose",
     "meaning": "と思う；と仮定する",
     "no": 121,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "I suppose you are right.",
+    "exampleJa": "私はあなたが正しいと思う。",
+    "pronunciation": "səˈpoʊz"
   },
   {
     "id": "w_33cfdcb5d27d6d10",
     "word": "perform",
     "meaning": "（を）行う；（を）演じる，（を）演奏する",
     "no": 122,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "perform a play",
+    "exampleJa": "劇を演じる",
+    "pronunciation": "pɚˈfɔrm"
   },
   {
     "id": "w_c62f03ef68aa7b12",
@@ -1303,14 +1518,21 @@
     "word": "respect",
     "meaning": "を尊敬する；を尊重する",
     "no": 133,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "respect my parents",
+    "exampleJa": "私の両親を尊敬する",
+    "pronunciation": "rɪˈspɛkt"
   },
   {
     "id": "w_0a7b7434a091d7b7",
     "word": "search",
     "meaning": "捜す；を捜索する；を詳しく調べる",
     "no": 134,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I searched for my keys all over the house.",
+    "exampleJa": "私は家じゅう鍵を捜した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2bf678bb6c0ac444",
@@ -1365,7 +1587,11 @@
     "word": "survive",
     "meaning": "を切り抜けて生き残る；より長生きする；生き延びる",
     "no": 139,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "survive the war",
+    "exampleJa": "その戦争を生き残る",
+    "pronunciation": "sɚˈvaɪv"
   },
   {
     "id": "w_9fa5612b29cf79b2",
@@ -1384,7 +1610,11 @@
     "word": "opportunity",
     "meaning": "機会（≒ chance）",
     "no": 141,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "a good opportunity",
+    "exampleJa": "良い機会",
+    "pronunciation": "ˌɑpɚˈtunəti"
   },
   {
     "id": "w_5c702a1d964cc555",
@@ -1487,7 +1717,11 @@
     "word": "figure",
     "meaning": "数字；姿；人物；図表",
     "no": 150,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "quantity",
+    "example": "She has a talent for working with figures.",
+    "exampleJa": "彼女には数字を扱う才能がある。",
+    "pronunciation": "ˈfɪɡjɚ"
   },
   {
     "id": "w_1641782eb373c59e",
@@ -1506,7 +1740,11 @@
     "word": "image",
     "meaning": "印象，イメージ；画像；像",
     "no": 152,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "seeing",
+    "example": "a beautiful image",
+    "exampleJa": "美しい画像",
+    "pronunciation": "ˈɪmədʒ"
   },
   {
     "id": "w_76a969477ee8eea8",
@@ -1585,7 +1823,11 @@
     "word": "phrase",
     "meaning": "句；成句；言葉遣い",
     "no": 159,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "It's important to learn common English phrases.",
+    "exampleJa": "よく使われる英語のフレーズを学ぶことは重要だ。",
+    "pronunciation": "freɪz"
   },
   {
     "id": "w_d2e64b679d87af2e",
@@ -1616,7 +1858,11 @@
     "word": "method",
     "meaning": "方法；体系；秩序",
     "no": 162,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "What is the best method for learning a new language?",
+    "exampleJa": "新しい言語を学ぶための最善の方法は何ですか？",
+    "pronunciation": "ˈmɛθəd"
   },
   {
     "id": "w_549d97cd9d3c51c8",
@@ -1647,21 +1893,33 @@
     "word": "medicine",
     "meaning": "薬；医学",
     "no": 165,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "take medicine",
+    "exampleJa": "薬を飲む",
+    "pronunciation": "ˈmɛdəsən"
   },
   {
     "id": "w_e81d75c0964baf75",
     "word": "detail",
     "meaning": "〔～s〕詳細（な情報），細部",
     "no": 166,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "listening",
+    "example": "Could you give me more details about the plan?",
+    "exampleJa": "その計画について、もう少し詳細を教えていただけますか？",
+    "pronunciation": "dɪˈteɪl"
   },
   {
     "id": "w_a5118a63175c9490",
     "word": "feature",
     "meaning": "特徴；〔通例～s〕顔つき；特集記事［番組］",
     "no": 167,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "The most interesting feature of the city is its old castle.",
+    "exampleJa": "その街の最も興味深い特徴は、その古い城です。",
+    "pronunciation": "ˈfitʃɚ"
   },
   {
     "id": "w_0a9554c958248394",
@@ -1728,7 +1986,11 @@
     "word": "site",
     "meaning": "用地，場所；跡地；（ウェブ）サイト",
     "no": 173,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "This is the construction site for the new library.",
+    "exampleJa": "ここが新しい図書館の建設現場です。",
+    "pronunciation": "saɪt"
   },
   {
     "id": "w_6639d88dab4fb1fd",
@@ -1795,7 +2057,11 @@
     "word": "positive",
     "meaning": "肯定的な；積極的な；確信して；（検査結果が）陽性の",
     "no": 179,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "speaking",
+    "example": "She has a very positive outlook on life.",
+    "exampleJa": "彼女は人生に対して非常に前向きな見方をしています。",
+    "pronunciation": "ˈpɑzətɪv"
   },
   {
     "id": "w_24fcce7c1ab637f9",
@@ -1850,7 +2116,11 @@
     "word": "specific",
     "meaning": "特定の；明確な，具体的な；（～に）特有の（to）",
     "no": 184,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "Do you have any specific questions?",
+    "exampleJa": "何か特定の質問はありますか？",
+    "pronunciation": "spəˈsɪfɪk"
   },
   {
     "id": "w_f50dc2d91a316b84",
@@ -1881,7 +2151,11 @@
     "word": "official",
     "meaning": "公用の；公式の；役所の",
     "no": 187,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "learning",
+    "example": "an official language",
+    "exampleJa": "公用語",
+    "pronunciation": "əˈfɪʃəl"
   },
   {
     "id": "w_8398615c51110f33",
@@ -1972,7 +2246,11 @@
     "word": "mobile",
     "meaning": "可動［移動］式の；流動性のある",
     "no": 195,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "movement",
+    "example": "A mobile library visits the village once a week.",
+    "exampleJa": "移動図書館が週に一度その村を訪れます。",
+    "pronunciation": "ˈmoʊbəl"
   },
   {
     "id": "w_17fe7e5d2cda75bd",
@@ -1991,7 +2269,11 @@
     "word": "plastic",
     "meaning": "柔軟な；プラスチックの，ビニールの",
     "no": 197,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "making",
+    "example": "a plastic bottle",
+    "exampleJa": "ペットボトル",
+    "pronunciation": "ˈplæstɪk"
   },
   {
     "id": "w_2905f30c4754cc64",
@@ -2034,21 +2316,30 @@
     "word": "identify",
     "meaning": "を特定する；を（～と）同一視する（with）",
     "no": 201,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The police identified the owner of the lost bag.",
+    "exampleJa": "警察は落とし物のかばんの持ち主を特定した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5a0a9c6adbf40d51",
     "word": "represent",
     "meaning": "を表す；を代表する；に相当する",
     "no": 202,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "On this map, blue lines represent rivers.",
+    "exampleJa": "この地図では、青い線が川を表す。",
+    "exampleSource": "written"
   },
   {
     "id": "w_88668dea7d7145eb",
     "word": "indicate",
     "meaning": "を指し示す；を述べる",
     "no": 203,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The sign indicated the way to the station.",
+    "exampleJa": "標識が駅への道を指し示していた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ff220031af7f33af",
@@ -2067,14 +2358,20 @@
     "word": "attend",
     "meaning": "に出席する；（を）世話する；（～に）対処［対応］する（to）",
     "no": 205,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "All club members must attend the meeting after school.",
+    "exampleJa": "部員は全員、放課後の会議に出席しなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4a39df652d5cf115",
     "word": "maintain",
     "meaning": "を維持する；と主張する；を養う",
     "no": 206,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It is important to maintain good health during exams.",
+    "exampleJa": "試験期間中は健康を維持することが大切だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_85d579d6abd41b39",
@@ -2093,56 +2390,80 @@
     "word": "replace",
     "meaning": "に取って代わる；を取り替える",
     "no": 208,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "E-mail has largely replaced letters.",
+    "exampleJa": "電子メールが手紙にほぼ取って代わった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a38880c053632019",
     "word": "sort",
     "meaning": "を（～に）分類する（into）；を（～から）えり分ける（from）",
     "no": 209,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please sort the garbage into three groups.",
+    "exampleJa": "ごみを3つの種類に分類してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b4ac64d99a38adb7",
     "word": "conduct",
     "meaning": "（調査・実験など）を実施する；を導く",
     "no": 210,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our class conducted a simple experiment with plants and sunlight.",
+    "exampleJa": "私たちのクラスは植物と日光を使った簡単な実験を実施した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_14f962c2f3100e83",
     "word": "associate",
     "meaning": "を結び付けて考える；（～と）交際する（with）",
     "no": 211,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many people associate summer with the beach and ice cream.",
+    "exampleJa": "多くの人は夏を海辺やアイスクリームと結び付けて考える。",
+    "exampleSource": "written"
   },
   {
     "id": "w_06ba3617a923dc02",
     "word": "attempt",
     "meaning": "を試みる，企てる",
     "no": 212,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He attempted to climb the mountain before sunrise.",
+    "exampleJa": "彼は日の出前にその山に登ろうと試みた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ef6430c8be7292ca",
     "word": "promote",
     "meaning": "を促進する；〔通例受身形で〕昇進する",
     "no": 213,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The school started a campaign to promote healthy eating.",
+    "exampleJa": "学校は健康的な食事を促進するキャンペーンを始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_70378c91f5473d51",
     "word": "earn",
     "meaning": "を稼ぐ；を得る；をもたらす",
     "no": 214,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She earns some money by working at a bakery on weekends.",
+    "exampleJa": "彼女は週末にパン屋で働いていくらかのお金を稼いでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_11c53a9f88e7c7e6",
     "word": "unite",
     "meaning": "を団結させる；（を）結合する；団結する",
     "no": 215,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The school festival united all the students in our class.",
+    "exampleJa": "文化祭は私たちのクラスの生徒全員を団結させた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0715b1ddb9051aa3",
@@ -2173,14 +2494,20 @@
     "word": "observe",
     "meaning": "に気づく；を観察する；を遵守する",
     "no": 218,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I observed that my friend looked tired during lunch.",
+    "exampleJa": "私は友達が昼食中に疲れた様子なのに気づいた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e05269f0982ff293",
     "word": "reveal",
     "meaning": "を明らかにする；を見せる",
     "no": 219,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The teacher finally revealed the answer to the difficult question.",
+    "exampleJa": "先生はついにその難しい問題の答えを明らかにした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f0ff4577748997ca",
@@ -2199,7 +2526,10 @@
     "word": "reflect",
     "meaning": "を反映する；（を）反射する；（を）熟考する",
     "no": 221,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The results of the survey reflect the opinions of young people.",
+    "exampleJa": "その調査結果は若者の意見を反映している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8d08c0be16dab4a5",
@@ -2230,56 +2560,80 @@
     "word": "ignore",
     "meaning": "を無視する",
     "no": 224,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He ignored my message and kept playing his game.",
+    "exampleJa": "彼は私のメッセージを無視してゲームを続けた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c2583021c52df68b",
     "word": "match",
     "meaning": "（と）合う；に匹敵する；一致する",
     "no": 225,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Your blue shirt matches those white shoes very well.",
+    "exampleJa": "あなたの青いシャツはその白い靴ととてもよく合う。",
+    "exampleSource": "written"
   },
   {
     "id": "w_be6156daad4920ed",
     "word": "define",
     "meaning": "を定義する；を明確にする",
     "no": 226,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It is hard to define the word \"happiness\" clearly.",
+    "exampleJa": "「幸せ」という言葉をはっきり定義するのは難しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_983499637c331281",
     "word": "adapt",
     "meaning": "適応する；を（～に）適合させる（to）",
     "no": 227,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It took me a few weeks to adapt to my new school.",
+    "exampleJa": "新しい学校に適応するのに数週間かかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_5f5b26eb57582801",
     "word": "contribute",
     "meaning": "貢献する，一因となる；（を）寄付する；（を）寄稿する",
     "no": 228,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Everyone on the team contributed to our victory.",
+    "exampleJa": "チームの全員が私たちの勝利に貢献した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_16c2882265dc350a",
     "word": "exchange",
     "meaning": "（を）交換する；両替する",
     "no": 229,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We exchanged phone numbers after the club meeting.",
+    "exampleJa": "私たちは部活の集まりの後で電話番号を交換した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cdfbd3369b6d1364",
     "word": "display",
     "meaning": "を示す；を発揮する；を展示［陳列］する",
     "no": 230,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The graph displays how much time students spend studying.",
+    "exampleJa": "そのグラフは生徒がどれだけの時間を勉強に使っているかを示している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d1de19f892691fd7",
     "word": "respond",
     "meaning": "反応する；答える",
     "no": 231,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The audience responded to his joke with loud laughter.",
+    "exampleJa": "観客は彼の冗談に大きな笑い声で反応した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b9c3db35b88f4ba7",
@@ -2298,14 +2652,21 @@
     "word": "doubt",
     "meaning": "ではないと思う；を疑う",
     "no": 233,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I doubt that it will rain tomorrow.",
+    "exampleJa": "明日雨が降るとは思わない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b0fc1bb2641bb4a9",
     "word": "remove",
     "meaning": "を取り除く；を解雇する",
     "no": 234,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "remove the stain",
+    "exampleJa": "しみを取り除く",
+    "pronunciation": "riˈmuv"
   },
   {
     "id": "w_fcfa77d6dc428078",
@@ -2324,28 +2685,40 @@
     "word": "assume",
     "meaning": "を当然のことと思う，と仮定する；（権力など）を手に入れる；（責任など）を引き受ける",
     "no": 236,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I assumed that the store would be open on Sunday.",
+    "exampleJa": "私はその店は日曜日も開いているものと思っていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_37650bd3714b4036",
     "word": "relax",
     "meaning": "くつろぐ；緩む；をくつろがせる；を緩める",
     "no": 237,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "After the exam, I relaxed on the sofa with some music.",
+    "exampleJa": "試験の後、私は音楽を聴きながらソファでくつろいだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7498d58002104988",
     "word": "satisfy",
     "meaning": "を満足させる；（条件など）を満たす",
     "no": 238,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The new menu did not satisfy the customers.",
+    "exampleJa": "新しいメニューは客を満足させなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ad0285ea0f37a6e5",
     "word": "desire",
     "meaning": "を強く望む",
     "no": 239,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She desires to study art in a foreign country.",
+    "exampleJa": "彼女は外国で美術を学ぶことを強く望んでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b10605ebc80307dc",
@@ -2364,14 +2737,20 @@
     "word": "concept",
     "meaning": "概念；考え；（商品・販売の）コンセプト",
     "no": 241,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The concept of time is difficult for small children.",
+    "exampleJa": "時間という概念は小さな子どもには難しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c0e0282f377c221e",
     "word": "fashion",
     "meaning": "流行，ファッション；方法，流儀",
     "no": 242,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Wide pants are in fashion among high school students now.",
+    "exampleJa": "今、高校生の間ではワイドパンツが流行している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_85b7a80295c2fe78",
@@ -2390,21 +2769,30 @@
     "word": "charge",
     "meaning": "料金；世話；管理；告発",
     "no": 244,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "There is no charge for using the school library.",
+    "exampleJa": "学校の図書館を利用するのに料金はかからない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8d5641a881340cda",
     "word": "contrast",
     "meaning": "（～との）対照（with / to）",
     "no": 245,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The white snow was in sharp contrast with the dark sky.",
+    "exampleJa": "白い雪は暗い空と鮮やかな対照をなしていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d37db8950accd5e7",
     "word": "colleague",
     "meaning": "（職場の）同僚",
     "no": 246,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My father often goes out for lunch with his colleagues.",
+    "exampleJa": "父はよく同僚と昼食を食べに出かける。",
+    "exampleSource": "written"
   },
   {
     "id": "w_357cab40a0c26f49",
@@ -2423,7 +2811,10 @@
     "word": "bill",
     "meaning": "請求書；【英】勘定書（≒ 【米】check）；法案",
     "no": 248,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My mother was surprised when she saw the phone bill.",
+    "exampleJa": "母は電話代の請求書を見て驚いた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cea0b802a0d1f88a",
@@ -2466,14 +2857,20 @@
     "word": "surface",
     "meaning": "表面；〔the ～〕外見",
     "no": 252,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Small leaves were floating on the surface of the pond.",
+    "exampleJa": "小さな葉が池の表面に浮かんでいた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a628545dd354bcb3",
     "word": "crop",
     "meaning": "〔しばしば～s〕作物；収穫高",
     "no": 253,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Rice is the most important crop in this area.",
+    "exampleJa": "米はこの地域で最も重要な作物だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ebc1fab7d00f3f7d",
@@ -2492,77 +2889,111 @@
     "word": "technique",
     "meaning": "技術；技巧；手法",
     "no": 255,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The coach taught us a new technique for shooting the ball.",
+    "exampleJa": "コーチは私たちにボールをシュートする新しい技術を教えてくれた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4b253701051b9366",
     "word": "status",
     "meaning": "地位；状態",
     "no": 256,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Doctors have a high social status in many countries.",
+    "exampleJa": "多くの国で医者は高い社会的地位を持っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8b58f4a155cb07b2",
     "word": "option",
     "meaning": "選択（の自由）；選択肢",
     "no": 257,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Taking the train is the cheapest option for us.",
+    "exampleJa": "電車に乗るのが私たちにとって最も安い選択肢だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_54dd5e55177fe43a",
     "word": "reward",
     "meaning": "報酬；報い",
     "no": 258,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A good grade was the reward for her hard work.",
+    "exampleJa": "良い成績が彼女の努力の報酬だった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9cf182cab94fe202",
     "word": "race",
     "meaning": "人種；民族；競争",
     "no": 259,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "win a race",
+    "exampleJa": "競争に勝つ",
+    "pronunciation": "reɪs"
   },
   {
     "id": "w_53b712802a528330",
     "word": "crime",
     "meaning": "罪，犯罪；違法行為",
     "no": 260,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Taking things from a shop without paying is a crime.",
+    "exampleJa": "お金を払わずに店の物を持ち出すことは犯罪だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c36e59333aac3741",
     "word": "conflict",
     "meaning": "争い；論争；不一致",
     "no": 261,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "There was a conflict between the two clubs over the gym.",
+    "exampleJa": "体育館をめぐって二つの部の間に争いがあった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_26b767e011407f87",
     "word": "struggle",
     "meaning": "闘い；懸命の努力",
     "no": 262,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Learning to swim was a long struggle for my brother.",
+    "exampleJa": "泳げるようになることは弟にとって長い闘いだった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_bc28d609ae918d72",
     "word": "context",
     "meaning": "状況，背景；文脈",
     "no": 263,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You can guess the meaning of a word from the context.",
+    "exampleJa": "単語の意味は文脈から推測できる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_268a7b2f924a7ba6",
     "word": "debate",
     "meaning": "討論，論争；討論会",
     "no": 264,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We had a debate about school uniforms in English class.",
+    "exampleJa": "私たちは英語の授業で制服について討論をした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b82822ea9c18f8d7",
     "word": "fuel",
     "meaning": "燃料；勢いを増加させるもの",
     "no": 265,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Cars need fuel to run.",
+    "exampleJa": "車は走るのに燃料が必要だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ffa0f1d97aafc15b",
@@ -2581,63 +3012,91 @@
     "word": "trend",
     "meaning": "（～への）傾向（toward）；流行",
     "no": 267,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "There is a trend toward using smartphones for studying.",
+    "exampleJa": "勉強にスマートフォンを使う傾向がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_08493317773e5c7b",
     "word": "balance",
     "meaning": "均衡，バランス；（体の）平衡；残高",
     "no": 268,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It is important to keep a balance between study and rest.",
+    "exampleJa": "勉強と休息の均衡を保つことが大切だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1249a87d7ede5532",
     "word": "traffic",
     "meaning": "交通；通行；交通［輸送］量；（不正）取引",
     "no": 269,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "movement",
+    "example": "a traffic accident",
+    "exampleJa": "交通事故",
+    "pronunciation": "ˈtræfɪk"
   },
   {
     "id": "w_a3fb8c95f15c65ae",
     "word": "strategy",
     "meaning": "戦略",
     "no": 270,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our team needs a new strategy to win the next game.",
+    "exampleJa": "次の試合に勝つために、私たちのチームには新しい戦略が必要だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_33b9ea765affa661",
     "word": "basis",
     "meaning": "基礎；根拠；基準",
     "no": 271,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Reading is the basis of all learning.",
+    "exampleJa": "読書はすべての学びの基礎である。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7f0172d1603945e5",
     "word": "consequence",
     "meaning": "〔通例～s〕結果；重大性",
     "no": 272,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Staying up late had bad consequences for my health.",
+    "exampleJa": "夜更かしは私の健康に悪い結果をもたらした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8da114c08569ccb3",
     "word": "aim",
     "meaning": "目的，目標；狙い",
     "no": 273,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The aim of this class is to improve your speaking skills.",
+    "exampleJa": "この授業の目的は話す力を伸ばすことだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b9d38c78159084da",
     "word": "ancestor",
     "meaning": "祖先（⇔ descendant 子孫）；原型",
     "no": 274,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My ancestors lived in a small village by the sea.",
+    "exampleJa": "私の祖先は海辺の小さな村に住んでいた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c86e21afd5b639a6",
     "word": "gene",
     "meaning": "遺伝子",
     "no": 275,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Eye color is partly decided by our genes.",
+    "exampleJa": "目の色は部分的に遺伝子によって決まる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4ff2e2418a5a6ccb",
@@ -2656,7 +3115,10 @@
     "word": "revolution",
     "meaning": "革命；回転；（天体の）公転（⇔ rotation 自転）",
     "no": 277,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The Internet caused a revolution in the way we communicate.",
+    "exampleJa": "インターネットは私たちの意思疎通の方法に革命を起こした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_fbba568e5f345442",
@@ -2675,14 +3137,20 @@
     "word": "cognitive",
     "meaning": "認知の",
     "no": 279,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Puzzles can help improve children's cognitive skills.",
+    "exampleJa": "パズルは子どもの認知能力を高めるのに役立つ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_72d7935abb3495dd",
     "word": "ideal",
     "meaning": "理想的な；観念的な",
     "no": 280,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This quiet park is an ideal place for reading.",
+    "exampleJa": "この静かな公園は読書に理想的な場所だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_75bd31045f140ca4",
@@ -2712,63 +3180,90 @@
     "word": "vast",
     "meaning": "莫大な；広大な",
     "no": 283,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The library has a vast number of old books.",
+    "exampleJa": "その図書館には莫大な数の古い本がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_78b9c4bcc0d4b165",
     "word": "extra",
     "meaning": "追加の，余分の；別勘定の",
     "no": 284,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The teacher gave us extra homework for the holiday.",
+    "exampleJa": "先生は休みのために追加の宿題を出した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_790d5fecb3701eb9",
     "word": "entire",
     "meaning": "全体の，全部の（≒ whole）；完全な",
     "no": 285,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I spent the entire day cleaning my room.",
+    "exampleJa": "私は丸一日を部屋の掃除に費やした。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1a73711b8040940a",
     "word": "familiar",
     "meaning": "精通している；よく知られている",
     "no": 286,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My brother is familiar with the rules of chess.",
+    "exampleJa": "兄はチェスのルールに精通している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_892bcdc6f729132d",
     "word": "obvious",
     "meaning": "明らかな（≒ clear）",
     "no": 287,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It was obvious that he had not done his homework.",
+    "exampleJa": "彼が宿題をしていないのは明らかだった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_01bf17d22fe4a7af",
     "word": "moral",
     "meaning": "道徳（上）の，倫理的な；道徳的な",
     "no": 288,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Telling the truth is a moral duty for everyone.",
+    "exampleJa": "真実を言うことは誰にとっても道徳上の義務だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_764fb7f8d7aca8dc",
     "word": "ordinary",
     "meaning": "一般の，普通の；並の",
     "no": 289,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It was just an ordinary day at school.",
+    "exampleJa": "それは学校でのごく普通の一日だった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c81eb2b8f049b6bd",
     "word": "equal",
     "meaning": "（～に）等しい（to）；匹敵する；平等な",
     "no": 290,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "One kilometer is equal to one thousand meters.",
+    "exampleJa": "1キロメートルは1000メートルに等しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_75fd0f74f1d2d73d",
     "word": "previous",
     "meaning": "以前の，前の",
     "no": 291,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I met her on the previous day of the concert.",
+    "exampleJa": "私はコンサートの前日に彼女に会った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a791763868c8c68d",
@@ -2787,49 +3282,70 @@
     "word": "rare",
     "meaning": "まれな，珍しい；希少な",
     "no": 293,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "It is rare to see snow in this town.",
+    "exampleJa": "この町で雪を見るのはまれだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_38cf38f8a1bd17e7",
     "word": "legal",
     "meaning": "法律の；合法の（⇔ illegal 違法の）",
     "no": 294,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She wants to study law and give legal advice someday.",
+    "exampleJa": "彼女は法律を学んで、いつか法律の助言をしたいと思っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f1b01b2aa2152856",
     "word": "independent",
     "meaning": "（～から）独立した（of / from）",
     "no": 295,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He wants to become independent of his parents after college.",
+    "exampleJa": "彼は大学卒業後、両親から独立したいと思っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4f4a5c8b4aa9db78",
     "word": "extreme",
     "meaning": "極端な；極度の，過激な",
     "no": 296,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Eating only one kind of food is an extreme diet.",
+    "exampleJa": "一種類の食べ物しか食べないのは極端な食事法だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0aefdee3c20ecdf3",
     "word": "actual",
     "meaning": "実際の，現実の",
     "no": 297,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The actual cost of the trip was higher than we expected.",
+    "exampleJa": "旅行の実際の費用は予想より高かった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ea68f3a632a446bc",
     "word": "willing",
     "meaning": "いとわない，かまわないと思う",
     "no": 298,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He is always willing to help his classmates.",
+    "exampleJa": "彼はいつもクラスメートを手伝うことをいとわない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_49decc2e45073bde",
     "word": "urban",
     "meaning": "都市の；都会的な（⇔ rural ⇒ 387）",
     "no": 299,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many young people prefer urban life to country life.",
+    "exampleJa": "多くの若者は田舎の生活より都市の生活を好む。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f478db846d23e319",
@@ -2848,21 +3364,31 @@
     "word": "predict",
     "meaning": "を予言［予測］する",
     "no": 301,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Nobody can predict the weather perfectly.",
+    "exampleJa": "誰も天気を完全に予測することはできない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_877fca6ae81dc3e7",
     "word": "examine",
     "meaning": "を調べる；を診察する；を尋問する",
     "no": 302,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The scientist examined the water from the river.",
+    "exampleJa": "その科学者は川の水を調べた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ed01d2d4bfee3daf",
     "word": "trust",
     "meaning": "を信頼する；を（信頼して）託す",
     "no": 303,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "I trust you.",
+    "exampleJa": "私はあなたを信頼しています。",
+    "pronunciation": "trʌst"
   },
   {
     "id": "w_875308dfc967351b",
@@ -2881,84 +3407,121 @@
     "word": "emerge",
     "meaning": "現れる；明らかになる；台頭する",
     "no": 305,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The sun emerged from behind the clouds.",
+    "exampleJa": "太陽が雲の後ろから現れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_54b3949f3042f51b",
     "word": "vary",
     "meaning": "さまざまである；変わる；を変える",
     "no": 306,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Prices of vegetables vary from season to season.",
+    "exampleJa": "野菜の値段は季節によってさまざまである。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c7adaeb0b7e1d5a2",
     "word": "release",
     "meaning": "を放出する；を解放する；を発表する",
     "no": 307,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Plants release oxygen into the air.",
+    "exampleJa": "植物は空気中に酸素を放出する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_42eddc2d347e5ffb",
     "word": "divide",
     "meaning": "を分ける；分かれる",
     "no": 308,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The teacher divided the class into four groups.",
+    "exampleJa": "先生はクラスを四つのグループに分けた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1e41a7df85b74635",
     "word": "enable",
     "meaning": "（人）が...できるようにする；を可能にする",
     "no": 309,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This app enables students to study anywhere.",
+    "exampleJa": "このアプリは生徒がどこでも勉強できるようにしてくれる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f610014fa3be39b9",
     "word": "judge",
     "meaning": "（を）判断する；に判決を下す",
     "no": 310,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "judge from the result",
+    "exampleJa": "結果から判断する",
+    "pronunciation": "dʒʌdʒ"
   },
   {
     "id": "w_4a3910078402ec06",
     "word": "rely",
     "meaning": "頼る（≒ depend ⇒ 36）",
     "no": 311,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Many students rely on their parents for money.",
+    "exampleJa": "多くの生徒はお金を親に頼っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_55e1457bc731c280",
     "word": "engage",
     "meaning": "を従事させる；を（～として）雇う（as）；（～に）従事する（in / with）",
     "no": 312,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The workers were engaged in cleaning the park.",
+    "exampleJa": "作業員たちは公園の清掃に従事していた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_504a7f7f543fc003",
     "word": "shift",
     "meaning": "を変える，移す；変わる；移動する",
     "no": 313,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She shifted her bag from one hand to the other.",
+    "exampleJa": "彼女はかばんを片方の手からもう片方の手に移した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_aefd4af8788c33d5",
     "word": "adopt",
     "meaning": "を採用する；（態度など）をとる；を養子にする",
     "no": 314,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our school adopted a new system for lunch orders.",
+    "exampleJa": "私たちの学校は昼食の注文に新しい方式を採用した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a68ece39b33b4c51",
     "word": "acquire",
     "meaning": "を得る；を習得する",
     "no": 315,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He acquired a lot of knowledge by reading books.",
+    "exampleJa": "彼は本を読むことで多くの知識を得た。",
+    "exampleSource": "written"
   },
   {
     "id": "w_9b159428704938e7",
     "word": "expand",
     "meaning": "（を）拡大する；（を）詳説する",
     "no": 316,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The shop plans to expand its business next year.",
+    "exampleJa": "その店は来年事業を拡大する予定だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0c533203a4784177",
@@ -2977,28 +3540,41 @@
     "word": "strike",
     "meaning": "の心を打つ；を襲う；を打つ；（に）ぶつかる",
     "no": 318,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I was struck by the beauty of the sunset.",
+    "exampleJa": "私は夕日の美しさに心を打たれた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_838756dae740003f",
     "word": "repeat",
     "meaning": "（を）繰り返す；を復唱する",
     "no": 319,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "repeat the same mistake",
+    "exampleJa": "同じ間違いを繰り返す",
+    "pronunciation": "rɪˈpit"
   },
   {
     "id": "w_cb1cebb62818475a",
     "word": "consume",
     "meaning": "を消費する；を食べる，飲む",
     "no": 320,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Large refrigerators consume a lot of electricity.",
+    "exampleJa": "大きな冷蔵庫は多くの電気を消費する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_636b9139d6b361ad",
     "word": "confuse",
     "meaning": "を混同する；を当惑させる",
     "no": 321,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "People often confuse me with my twin sister.",
+    "exampleJa": "人々はよく私を双子の妹と混同する。",
+    "exampleSource": "written"
   },
   {
     "id": "w_31c6c110e7b8f13a",
@@ -3017,21 +3593,30 @@
     "word": "evolve",
     "meaning": "（徐々に）発展する；進化する",
     "no": 323,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The small club evolved into a large group over the years.",
+    "exampleJa": "その小さな部は何年もかけて大きな団体へと発展した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d1cae5936449857d",
     "word": "convince",
     "meaning": "を納得［確信］させる",
     "no": 324,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She convinced her parents that the trip was safe.",
+    "exampleJa": "彼女は旅行が安全だと両親を納得させた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_50474ac37e2b20e6",
     "word": "recall",
     "meaning": "を思い出す；を呼び戻す",
     "no": 325,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I cannot recall the name of my first teacher.",
+    "exampleJa": "私は最初の先生の名前を思い出せない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_920cd3177c6357c0",
@@ -3050,7 +3635,10 @@
     "word": "preserve",
     "meaning": "を保存する；を保持する；を保護する",
     "no": 327,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The town works hard to preserve its old buildings.",
+    "exampleJa": "その町は古い建物を保存するために努力している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d9ba33be8cb5b802",
@@ -3093,7 +3681,10 @@
     "word": "operate",
     "meaning": "を操作する；機能する；手術する",
     "no": 331,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My grandfather does not know how to operate a computer.",
+    "exampleJa": "祖父はコンピューターの操作の仕方を知らない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_27e5d7feb8d76e33",
@@ -3112,42 +3703,61 @@
     "word": "surround",
     "meaning": "を取り巻く；にまつわる",
     "no": 333,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our school is surrounded by green fields.",
+    "exampleJa": "私たちの学校は緑の畑に囲まれている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0f64ff5f9c0079d9",
     "word": "flow",
     "meaning": "流れる；（～から）生じる（from）",
     "no": 334,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The river flows slowly through the center of the city.",
+    "exampleJa": "その川は町の中心をゆっくり流れている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c2421c00f41b1dd5",
     "word": "bore",
     "meaning": "（人）を退屈させる，うんざりさせる",
     "no": 335,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The long speech bored most of the students.",
+    "exampleJa": "長い演説はほとんどの生徒を退屈させた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_34f0e2689310b452",
     "word": "complain",
     "meaning": "（と）不平［苦情］を言う；訴える",
     "no": 336,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He complained that the classroom was too cold.",
+    "exampleJa": "彼は教室が寒すぎると不平を言った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a7b38761693f4d1c",
     "word": "host",
     "meaning": "を主催する；のホスト役を務める",
     "no": 337,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "people",
+    "example": "The city will host the next Olympic Games.",
+    "exampleJa": "その都市は次のオリンピックを開催します。",
+    "pronunciation": "hoʊst"
   },
   {
     "id": "w_df45b73b3394f141",
     "word": "combine",
     "meaning": "を（～と）結び付ける（with）；（～と）結び付く（with）",
     "no": 338,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She combined her love of music with her study of math.",
+    "exampleJa": "彼女は音楽好きを数学の勉強と結び付けた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_412a321db1d23003",
@@ -3166,77 +3776,110 @@
     "word": "appreciate",
     "meaning": "を正当に評価する；を鑑賞する；を感謝する",
     "no": 340,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The coach appreciated his effort during practice.",
+    "exampleJa": "コーチは練習中の彼の努力を正当に評価した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_95551c052a29fd66",
     "word": "target",
     "meaning": "（到達・攻撃）目標；的",
     "no": 341,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My target is to read fifty books this year.",
+    "exampleJa": "私の目標は今年本を50冊読むことだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_12d72d39d3ce57bb",
     "word": "element",
     "meaning": "要素，成分；元素；〔an / ofで〕少しの",
     "no": 342,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Trust is an important element of friendship.",
+    "exampleJa": "信頼は友情の重要な要素だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6e21ebca2a322dd7",
     "word": "principle",
     "meaning": "原則，原理；主義，信条",
     "no": 343,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The basic principle of this game is very simple.",
+    "exampleJa": "このゲームの基本原則はとても単純だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_cc3cef68c4c89c79",
     "word": "phenomenon",
     "meaning": "現象",
     "no": 344,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "A rainbow is a beautiful natural phenomenon.",
+    "exampleJa": "虹は美しい自然現象だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b2845bd059e4278e",
     "word": "atmosphere",
     "meaning": "〔the ～〕大気；雰囲気",
     "no": 345,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Plants take carbon dioxide from the atmosphere.",
+    "exampleJa": "植物は大気から二酸化炭素を取り込む。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b3495cfa43f3134b",
     "word": "origin",
     "meaning": "起源；源",
     "no": 346,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We studied the origin of the Japanese language.",
+    "exampleJa": "私たちは日本語の起源について学んだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_dd899dddf769c078",
     "word": "personality",
     "meaning": "個性，性格",
     "no": 347,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My sister has a bright and friendly personality.",
+    "exampleJa": "姉は明るく人なつっこい性格だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_761184c2375b3077",
     "word": "capacity",
     "meaning": "（最大）容量，収容能力；（潜在）能力",
     "no": 348,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The hall has a capacity of five hundred people.",
+    "exampleJa": "そのホールは500人の収容能力がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4a2d472e7cf9c2e3",
     "word": "profit",
     "meaning": "利益；収益（率）；得",
     "no": 349,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The school festival cafe made a small profit.",
+    "exampleJa": "文化祭のカフェは少しの利益を上げた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_97b9b4d0d1daa041",
     "word": "circumstance",
     "meaning": "〔通例～s〕状況，事情；境遇",
     "no": 350,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Under these circumstances, we have to cancel the picnic.",
+    "exampleJa": "このような状況では、ピクニックを中止しなければならない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_d5791b5a84c7708b",
@@ -3255,70 +3898,100 @@
     "word": "threat",
     "meaning": "脅威；（悪い）兆し；脅迫",
     "no": 352,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Plastic waste is a serious threat to sea animals.",
+    "exampleJa": "プラスチックごみは海の動物にとって深刻な脅威だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ae865f4f70973ff5",
     "word": "resident",
     "meaning": "居住者；滞在者",
     "no": 353,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The residents of this town enjoy the quiet life.",
+    "exampleJa": "この町の居住者は静かな暮らしを楽しんでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_2a60ba10653cf50e",
     "word": "wealth",
     "meaning": "富；資源；富裕",
     "no": 354,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Health is more important than wealth.",
+    "exampleJa": "健康は富よりも大切だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a37f1cf2b99ecd5d",
     "word": "institution",
     "meaning": "機関；協会；施設；制度",
     "no": 355,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The university is a famous research institution.",
+    "exampleJa": "その大学は有名な研究機関だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1407d2e0126a5f1d",
     "word": "authority",
     "meaning": "〔通例 the ～ties〕（関係）当局；権威；権限",
     "no": 356,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The school authorities decided to close the pool for repairs.",
+    "exampleJa": "学校当局は修理のためにプールを閉鎖することを決めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_26e9a90bc98ee5ec",
     "word": "vote",
     "meaning": "投票；投票結果；〔the ～〕選挙権",
     "no": 357,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our class chose the play for the festival by vote.",
+    "exampleJa": "私たちのクラスは文化祭の劇を投票で決めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6e389b470492f9cc",
     "word": "sight",
     "meaning": "光景；〔the ～s〕名所；見（え）ること；視野；視力",
     "no": 358,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The sight of the snowy mountains took my breath away.",
+    "exampleJa": "雪山の光景に私は息をのんだ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b4ff18a50de0e032",
     "word": "campaign",
     "meaning": "運動；軍事行動",
     "no": 359,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The students started a campaign to keep the beach clean.",
+    "exampleJa": "生徒たちは海岸をきれいに保つ運動を始めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_184ff7531e275735",
     "word": "fund",
     "meaning": "〔しばしば～s〕基金，資金",
     "no": 360,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The club raised funds to buy new uniforms.",
+    "exampleJa": "その部は新しいユニフォームを買うための資金を集めた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0e207bf096ff3297",
     "word": "web",
     "meaning": "〔the W-〕ウェブ；（クモの）巣",
     "no": 361,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "You can find a lot of information on the Web.",
+    "exampleJa": "ウェブ上では多くの情報を見つけられる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_efa107f28f45b941",
@@ -3337,49 +4010,71 @@
     "word": "analysis",
     "meaning": "分析（結果）（⇔ synthesis ⇒ 1868）",
     "no": 363,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The analysis of the test results took a whole week.",
+    "exampleJa": "テスト結果の分析には丸一週間かかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ee77e8ddb2c24f68",
     "word": "version",
     "meaning": "（本・製品などの）版；解釈",
     "no": 364,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I bought the new version of the dictionary.",
+    "exampleJa": "私はその辞書の新しい版を買った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c9a66bff882c2e09",
     "word": "perspective",
     "meaning": "観点，見方；大局観；遠近法",
     "no": 365,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Traveling abroad gave me a new perspective on life.",
+    "exampleJa": "海外旅行は私に人生への新しい見方を与えてくれた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_df708e14d7b513ea",
     "word": "crisis",
     "meaning": "危機",
     "no": 366,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The small town faced a water crisis last summer.",
+    "exampleJa": "その小さな町は昨年の夏に水の危機に直面した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_225b575b4c432901",
     "word": "disaster",
     "meaning": "災害；惨事",
     "no": 367,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "The earthquake was a terrible natural disaster.",
+    "exampleJa": "その地震はひどい自然災害でした。",
+    "pronunciation": "dɪˈzæstɚ"
   },
   {
     "id": "w_d1dbc252b2dfb693",
     "word": "lecture",
     "meaning": "講義，講演；説教",
     "no": 368,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We attended a lecture on space science at the university.",
+    "exampleJa": "私たちは大学で宇宙科学の講義に出席した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_3b76c515503f6e12",
     "word": "psychology",
     "meaning": "心理学；心理（状態）",
     "no": 369,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She wants to study psychology at college.",
+    "exampleJa": "彼女は大学で心理学を学びたいと思っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c46a1ec035332393",
@@ -3410,7 +4105,10 @@
     "word": "court",
     "meaning": "裁判所，法廷；裁判；宮廷；中庭",
     "no": 372,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Our class visited the court to learn about the law.",
+    "exampleJa": "私たちのクラスは法律について学ぶために裁判所を訪れた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_7cc944e236dc354e",
@@ -3441,133 +4139,190 @@
     "word": "agriculture",
     "meaning": "農業；農学，畜産",
     "no": 375,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Agriculture is the main industry in this village.",
+    "exampleJa": "農業はこの村の主な産業だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_333241a2bbc2966b",
     "word": "fossil",
     "meaning": "化石；時代遅れの人［物］",
     "no": 376,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The children found a fossil of a shell by the river.",
+    "exampleJa": "子どもたちは川のそばで貝の化石を見つけた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c1fa490004dfdd86",
     "word": "document",
     "meaning": "（公）文書，書類；記録，資料",
     "no": 377,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Please sign this document before you leave.",
+    "exampleJa": "お帰りになる前にこの書類に署名してください。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4c6137dc858abed9",
     "word": "vocabulary",
     "meaning": "語彙",
     "no": 378,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Reading novels helps you build a rich vocabulary.",
+    "exampleJa": "小説を読むと豊かな語彙が身につく。",
+    "exampleSource": "written"
   },
   {
     "id": "w_289d59059efcc9e2",
     "word": "intelligent",
     "meaning": "聡明な；知能を有する",
     "no": 379,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Dolphins are known to be very intelligent animals.",
+    "exampleJa": "イルカはとても知能の高い動物として知られている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f8211545801f77ca",
     "word": "conscious",
     "meaning": "意識して，気づいて（≒ aware）",
     "no": 380,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She was conscious of everyone looking at her.",
+    "exampleJa": "彼女はみんなが自分を見ていることを意識していた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ea72f89226ea4b1e",
     "word": "capable",
     "meaning": "能力がある；有能な",
     "no": 381,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "He is capable of solving this problem by himself.",
+    "exampleJa": "彼には一人でこの問題を解く能力がある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_6444f0846f1fd21f",
     "word": "accurate",
     "meaning": "正確な；精密な",
     "no": 382,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "This clock is very accurate.",
+    "exampleJa": "この時計はとても正確だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_515d81c47d4597cb",
     "word": "fundamental",
     "meaning": "基本的な；必須の",
     "no": 383,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Learning grammar is a fundamental part of studying English.",
+    "exampleJa": "文法を学ぶことは英語学習の基本的な部分だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_0f0c1e0536cb1db4",
     "word": "artificial",
     "meaning": "人工の（⇔ natural 自然の）；不自然な",
     "no": 384,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The soccer field is covered with artificial grass.",
+    "exampleJa": "そのサッカー場は人工芝で覆われている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_58144d9d951ec372",
     "word": "firm",
     "meaning": "確固たる；堅固な；安定した",
     "no": 385,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "She has a firm belief that hard work pays off.",
+    "exampleJa": "彼女は努力は報われるという確固たる信念を持っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_605471c534f64946",
     "word": "overall",
     "meaning": "総合的な；全体的な",
     "no": 386,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The overall result of the test was better than last year.",
+    "exampleJa": "テストの総合的な結果は昨年より良かった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f85a75d413bb4206",
     "word": "rural",
     "meaning": "田舎の（⇔ urban ⇒ 299），田園の",
     "no": 387,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My grandparents enjoy their quiet life in a rural area.",
+    "exampleJa": "祖父母は田舎の地域で静かな暮らしを楽しんでいる。",
+    "exampleSource": "written"
   },
   {
     "id": "w_310661942dd6a81b",
     "word": "military",
     "meaning": "軍の，軍事（用）の",
     "no": 388,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The old airport was once used as a military base.",
+    "exampleJa": "その古い空港はかつて軍の基地として使われていた。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a294bb553d2f81bc",
     "word": "nuclear",
     "meaning": "核の，原子力の",
     "no": 389,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Some countries use nuclear power to make electricity.",
+    "exampleJa": "原子力を使って電気をつくる国もある。",
+    "exampleSource": "written"
   },
   {
     "id": "w_87ab8a7cac84c8b2",
     "word": "biological",
     "meaning": "生物学（上）の",
     "no": 390,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Parents and children share many biological features.",
+    "exampleJa": "親と子は多くの生物学上の特徴を共有している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_117cb7c9c0cd1c9f",
     "word": "constant",
     "meaning": "絶え間ない；一定の",
     "no": 391,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The constant noise from the road kept me awake.",
+    "exampleJa": "道路からの絶え間ない騒音で私は眠れなかった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_ff23d6c2494d836e",
     "word": "severe",
     "meaning": "（人・規律・事態・天気などが）厳しい；猛烈な",
     "no": 392,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The coach is severe with players who come late.",
+    "exampleJa": "コーチは遅刻してくる選手に厳しい。",
+    "exampleSource": "written"
   },
   {
     "id": "w_b30e3d903c07f4a5",
     "word": "visual",
     "meaning": "視覚の；目に見える",
     "no": 393,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Pictures and charts are useful visual tools for learning.",
+    "exampleJa": "写真や図表は学習に役立つ視覚の道具だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_c659ca0b9ba86436",
@@ -3598,14 +4353,20 @@
     "word": "domestic",
     "meaning": "家庭の；国内の；（動物が）飼いならされた",
     "no": 396,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Cooking and cleaning are common domestic tasks.",
+    "exampleJa": "料理や掃除はよくある家庭の仕事だ。",
+    "exampleSource": "written"
   },
   {
     "id": "w_4455dc482ea5c954",
     "word": "mass",
     "meaning": "大規模な，大量の；大衆（向け）の",
     "no": 397,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "Smartphones became a mass product in a short time.",
+    "exampleJa": "スマートフォンは短期間で大衆向けの製品になった。",
+    "exampleSource": "written"
   },
   {
     "id": "w_8a7993b3c51f6e1f",
@@ -3624,7 +4385,11 @@
     "word": "overseas",
     "meaning": "海外へ［に，で］（≒ abroad）",
     "no": 399,
-    "partOfSpeech": ""
+    "partOfSpeech": "副",
+    "theme": "nature",
+    "example": "go overseas",
+    "exampleJa": "海外へ行く",
+    "pronunciation": "ˈoʊvɚˈsiz"
   },
   {
     "id": "w_bd6ec9cd9a4b8aec",
@@ -3691,7 +4456,11 @@
     "word": "recommend",
     "meaning": "を勧める",
     "no": 405,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "learning",
+    "example": "recommend a good camera",
+    "exampleJa": "良いカメラを勧める",
+    "pronunciation": "ˌrɛkəˈmɛnd"
   },
   {
     "id": "w_dde7ec62f7932080",
@@ -3710,7 +4479,11 @@
     "word": "generate",
     "meaning": "を生み出す；（電気など）を発生させる",
     "no": 407,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "The company is trying to generate more sales.",
+    "exampleJa": "その会社はより多くの売上を生み出そうとしています。",
+    "pronunciation": "ˈdʒɛnɚˌeɪt"
   },
   {
     "id": "w_4cde80600dd5b1dc",
@@ -3741,7 +4514,11 @@
     "word": "tear",
     "meaning": "を引き裂く；裂ける",
     "no": 410,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "Please don't tear any pages out of the library book.",
+    "exampleJa": "図書館の本のページを破り取らないでください。",
+    "pronunciation": "tɛr"
   },
   {
     "id": "w_8ffed9feda85c946",
@@ -3796,14 +4573,21 @@
     "word": "encounter",
     "meaning": "に遭遇する；に（思いがけず）出会う",
     "no": 415,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "We encountered heavy rain on our way home.",
+    "exampleJa": "私たちは帰り道で大雨に遭遇した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_a666be2420519c68",
     "word": "remind",
     "meaning": "に思い出させる",
     "no": 416,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "remind me of my mother",
+    "exampleJa": "私に母を思い出させる",
+    "pronunciation": "riˈmaɪnd"
   },
   {
     "id": "w_1857b6aac530fd84",
@@ -3846,7 +4630,11 @@
     "word": "deliver",
     "meaning": "を配達する；（演説・講義）をする；子を産む",
     "no": 420,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "deliver a letter",
+    "exampleJa": "手紙を配達する",
+    "pronunciation": "dɪˈlɪvɚ"
   },
   {
     "id": "w_703cb9d8023886aa",
@@ -3889,14 +4677,22 @@
     "word": "handle",
     "meaning": "を処理する，扱う；を論じる；を商う",
     "no": 424,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "She has a lot of experience handling difficult situations.",
+    "exampleJa": "彼女は困難な状況を処理する多くの経験を持っています。",
+    "pronunciation": "ˈhændəl"
   },
   {
     "id": "w_38b3a877c2f9fde1",
     "word": "praise",
     "meaning": "を（～のことで）賞賛する（for）；賛美する",
     "no": 425,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "The manager praised the team for their excellent work.",
+    "exampleJa": "マネージャーはチームの素晴らしい仕事を賞賛した。",
+    "pronunciation": "preɪz"
   },
   {
     "id": "w_c452ce5e17722430",
@@ -3999,7 +4795,11 @@
     "word": "favor",
     "meaning": "に賛成する；を好む；をひいきする",
     "no": 434,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "The results of the survey favor our candidate.",
+    "exampleJa": "調査の結果は私たちの候補者に有利です。",
+    "pronunciation": "ˈfeɪvɚ"
   },
   {
     "id": "w_ae8840b1604d7286",
@@ -4030,7 +4830,11 @@
     "word": "spell",
     "meaning": "（語）をつづる；という語になる",
     "no": 437,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "Could you spell your last name for me?",
+    "exampleJa": "あなたの名字の綴りを教えていただけますか？",
+    "pronunciation": "spɛl"
   },
   {
     "id": "w_ce45abc0dd0d59a1",
@@ -4049,7 +4853,11 @@
     "word": "repair",
     "meaning": "を修理する（≒ fix）；を修復する",
     "no": 439,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "repair a car",
+    "exampleJa": "車を修理する",
+    "pronunciation": "rɪˈpɛr"
   },
   {
     "id": "w_19b150b34dc47817",
@@ -4080,7 +4888,11 @@
     "word": "instruction",
     "meaning": "〔通例～s〕指示；〔～s〕（製品の）使用書",
     "no": 442,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "Please read the instructions before using the machine.",
+    "exampleJa": "機械を使用する前に指示書を読んでください。",
+    "pronunciation": "ˌɪnˈstrʌkʃən"
   },
   {
     "id": "w_1c600e2d29173313",
@@ -4159,7 +4971,11 @@
     "word": "instrument",
     "meaning": "器具；楽器（≒ musical instrument）",
     "no": 449,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "making",
+    "example": "play a musical instrument",
+    "exampleJa": "楽器を演奏する",
+    "pronunciation": "ˈɪnstrəmənt"
   },
   {
     "id": "w_d8a9538ec24125fe",
@@ -4238,14 +5054,22 @@
     "word": "diversity",
     "meaning": "多様性；相違点",
     "no": 456,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "quality",
+    "example": "The city is famous for its cultural diversity.",
+    "exampleJa": "その都市は文化の多様性で有名です。",
+    "pronunciation": "dɪˈvɝsɪti"
   },
   {
     "id": "w_94aa2602faab4cfe",
     "word": "victim",
     "meaning": "犠牲（者），被害者",
     "no": 457,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "He was the victim of a robbery.",
+    "exampleJa": "彼は強盗の被害者だった。",
+    "pronunciation": "ˈvɪktəm"
   },
   {
     "id": "w_dbc3d006829a5f41",
@@ -4348,7 +5172,11 @@
     "word": "lawyer",
     "meaning": "弁護士",
     "no": 466,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "work",
+    "example": "work as a lawyer",
+    "exampleJa": "弁護士として働く",
+    "pronunciation": "ˈlɔjɚ"
   },
   {
     "id": "w_b896028aab0093a1",
@@ -4415,7 +5243,11 @@
     "word": "landscape",
     "meaning": "風景；領域；状況",
     "no": 472,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "The Scottish landscape is famous for its mountains and lakes.",
+    "exampleJa": "スコットランドの風景は山と湖で有名です。",
+    "pronunciation": "ˈlændˌskeɪp"
   },
   {
     "id": "w_ad19658af2fd5caf",
@@ -4518,7 +5350,11 @@
     "word": "narrow",
     "meaning": "狭い；細い；限られた",
     "no": 481,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "a narrow street",
+    "exampleJa": "狭い通り",
+    "pronunciation": "ˈnɛroʊ"
   },
   {
     "id": "w_5c839e5fb7d74a12",
@@ -4609,7 +5445,11 @@
     "word": "strict",
     "meaning": "（規則などが）厳しい；厳格な",
     "no": 489,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "a strict teacher",
+    "exampleJa": "厳しい先生",
+    "pronunciation": "strɪkt"
   },
   {
     "id": "w_5342f1aa71298f61",
@@ -4712,14 +5552,22 @@
     "word": "immediate",
     "meaning": "即座の；当面の；すぐそばの；直接の",
     "no": 498,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "time",
+    "example": "The situation requires immediate action.",
+    "exampleJa": "その状況は即座の行動を必要としています。",
+    "pronunciation": "ˌɪˈmiˌdiət"
   },
   {
     "id": "w_8637390bd2af2cfc",
     "word": "crucial",
     "meaning": "重要な",
     "no": 499,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "Good communication is crucial in any relationship.",
+    "exampleJa": "良いコミュニケーションはどんな関係においても極めて重要です。",
+    "pronunciation": "ˈkruʃəl"
   },
   {
     "id": "w_aab8d9737239402f",
@@ -4750,7 +5598,11 @@
     "word": "translate",
     "meaning": "を翻訳する；を（～に）変える（into）",
     "no": 502,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "translate English into Japanese",
+    "exampleJa": "英語を日本語に翻訳する",
+    "pronunciation": "trænzˈleɪt"
   },
   {
     "id": "w_00b6c3241b3822b5",
@@ -4829,7 +5681,11 @@
     "word": "ensure",
     "meaning": "を確実にする（≒ make sure）；を守る",
     "no": 509,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "Please ensure that you have all the necessary documents.",
+    "exampleJa": "必要な書類がすべて揃っていることを確認してください。",
+    "pronunciation": "ɛnˈʃʊr"
   },
   {
     "id": "w_06f6d30f44c72f11",
@@ -4848,7 +5704,11 @@
     "word": "grant",
     "meaning": "（人）に（許可・権利など）を与える；を認める",
     "no": 511,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "The government granted him a visa.",
+    "exampleJa": "政府は彼にビザを認めた。",
+    "pronunciation": "ɡrænt"
   },
   {
     "id": "w_794598bb8f4f4868",
@@ -4903,7 +5763,11 @@
     "word": "emphasize",
     "meaning": "を強調する；を重視する",
     "no": 516,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "The teacher emphasized the importance of teamwork.",
+    "exampleJa": "先生はチームワークの重要性を強調した。",
+    "pronunciation": "ˈɛmfəˌsaɪz"
   },
   {
     "id": "w_7cfd21d4fc9ae963",
@@ -4970,14 +5834,22 @@
     "word": "beat",
     "meaning": "を打ち負かす；（を）打つ，たたく",
     "no": 522,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "Our team beat their biggest rival in the final match.",
+    "exampleJa": "私たちのチームは決勝戦で最大のライバルを打ち負かした。",
+    "pronunciation": "bit"
   },
   {
     "id": "w_1797cb5fcf5756da",
     "word": "regret",
     "meaning": "を後悔する",
     "no": 523,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "I regret what I said.",
+    "exampleJa": "私は言ったことを後悔している。",
+    "pronunciation": "rəˈɡrɛt"
   },
   {
     "id": "w_4e73aab177faf901",
@@ -5056,7 +5928,11 @@
     "word": "hang",
     "meaning": "を掛ける；を絞首刑にする；垂れ（下が）る",
     "no": 530,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "She hung the painting on the wall.",
+    "exampleJa": "彼女は壁にその絵を掛けた。",
+    "pronunciation": "hæŋ"
   },
   {
     "id": "w_3801c5fca22203d2",
@@ -5219,7 +6095,11 @@
     "word": "fee",
     "meaning": "料金；謝礼",
     "no": 544,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "speaking",
+    "example": "The entrance fee for the museum is 10 dollars.",
+    "exampleJa": "その博物館の入場料は10ドルです。",
+    "pronunciation": "fi"
   },
   {
     "id": "w_518af0c7b9d52bb7",
@@ -5286,7 +6166,11 @@
     "word": "emergency",
     "meaning": "緊急（事態）",
     "no": 550,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "In an emergency, please call this number.",
+    "exampleJa": "緊急の場合は、この番号に電話してください。",
+    "pronunciation": "ɪˈmɝdʒənsi"
   },
   {
     "id": "w_74bab01afd907b04",
@@ -5593,7 +6477,11 @@
     "word": "treasure",
     "meaning": "宝物，財宝；財産",
     "no": 576,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "quality",
+    "example": "a national treasure",
+    "exampleJa": "国宝",
+    "pronunciation": "ˈtrɛʒɚ"
   },
   {
     "id": "w_aa5c20551827b9ff",
@@ -5732,7 +6620,11 @@
     "word": "extraordinary",
     "meaning": "並はずれた；異常な，驚くべき",
     "no": 588,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "emotion",
+    "example": "She has an extraordinary talent for playing the violin.",
+    "exampleJa": "彼女にはバイオリンを弾く並外れた才能があります。",
+    "pronunciation": "ˌɛkstrəˈɔrdəˌnɛri"
   },
   {
     "id": "w_0b15eee632ab57d6",
@@ -5811,7 +6703,11 @@
     "word": "ethnic",
     "meaning": "民族の，人種の；民族特有の",
     "no": 595,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "nature",
+    "example": "The city is home to a diverse mix of ethnic groups.",
+    "exampleJa": "その都市は多様な民族グループの故郷です。",
+    "pronunciation": "ˈɛθnɪk"
   },
   {
     "id": "w_77d02178d45ae4dd",
@@ -5902,7 +6798,11 @@
     "word": "enhance",
     "meaning": "（価値など）を高める，増す",
     "no": 603,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The new software will enhance your productivity.",
+    "exampleJa": "新しいソフトウェアはあなたの生産性を高めるでしょう。",
+    "pronunciation": "ɛnˈhæns"
   },
   {
     "id": "w_4c04465638cc2cb1",
@@ -5933,7 +6833,10 @@
     "word": "disagree",
     "meaning": "不賛成である；意見が食い違う",
     "no": 606,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "I disagree with you about the plan for the trip.",
+    "exampleJa": "旅行の計画について私はあなたに賛成しない。",
+    "exampleSource": "written"
   },
   {
     "id": "w_e3308002c9ced1dc",
@@ -6084,7 +6987,11 @@
     "word": "illustrate",
     "meaning": "を説明する；に挿絵を入れる",
     "no": 619,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "Let me give you an example to illustrate my point.",
+    "exampleJa": "私の言いたいことを説明するために、例を挙げさせてください。",
+    "pronunciation": "ˈɪləˌstreɪt"
   },
   {
     "id": "w_029c29c7342b6916",
@@ -6103,7 +7010,11 @@
     "word": "convey",
     "meaning": "を伝える；を運ぶ，運搬する",
     "no": 621,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "Please convey my best wishes to your family.",
+    "exampleJa": "ご家族によろしくお伝えください。",
+    "pronunciation": "kənˈveɪ"
   },
   {
     "id": "w_ec96f5df9e6c7c9d",
@@ -6314,7 +7225,11 @@
     "word": "ease",
     "meaning": "を軽減する；和らぐ；緩む",
     "no": 639,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "quality",
+    "example": "This medicine should ease your pain.",
+    "exampleJa": "この薬はあなたの痛みを和らげるはずです。",
+    "pronunciation": "iz"
   },
   {
     "id": "w_d638b6cb99c545ac",
@@ -6333,7 +7248,11 @@
     "word": "sequence",
     "meaning": "連続；一連（のもの）",
     "no": 641,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "quantity",
+    "example": "The events happened in a surprising sequence.",
+    "exampleJa": "その出来事は驚くべき順序で起こった。",
+    "pronunciation": "ˈsikwəns"
   },
   {
     "id": "w_ca68246618844f49",
@@ -6568,7 +7487,11 @@
     "word": "shelter",
     "meaning": "避難（所），保護",
     "no": 661,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "They found shelter from the storm in a small cave.",
+    "exampleJa": "彼らは嵐からの避難所を小さな洞窟に見つけた。",
+    "pronunciation": "ˈʃɛltɚ"
   },
   {
     "id": "w_d06b7b237797b21e",
@@ -6599,7 +7522,11 @@
     "word": "habitat",
     "meaning": "生息地；（人の）居住地",
     "no": 664,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "The rainforest is the natural habitat of many animals.",
+    "exampleJa": "熱帯雨林は多くの動物の自然な生息地です。",
+    "pronunciation": "ˈhæbəˌtæt"
   },
   {
     "id": "w_bd3708330a1abbac",
@@ -6618,14 +7545,22 @@
     "word": "conservation",
     "meaning": "（動植物などの）保護；保存",
     "no": 666,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "Conservation of wildlife is very important.",
+    "exampleJa": "野生生物の保護は非常に重要です。",
+    "pronunciation": "ˌkɑnsɚˈveɪʃən"
   },
   {
     "id": "w_3eb6c6dfc1c2efa3",
     "word": "harvest",
     "meaning": "収穫（物）；収穫期；漁獲高",
     "no": 667,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "The farmers are busy with the rice harvest.",
+    "exampleJa": "農家の人々は米の収穫で忙しい。",
+    "pronunciation": "ˈhɑrvəst"
   },
   {
     "id": "w_a8a041e98dc2c8b3",
@@ -6704,7 +7639,11 @@
     "word": "cooperation",
     "meaning": "協力，共同",
     "no": 674,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "International cooperation is needed to solve this problem.",
+    "exampleJa": "この問題を解決するには国際協力が必要です。",
+    "pronunciation": "koʊˌɑpɚˈeɪʃən"
   },
   {
     "id": "w_d8059136afed6148",
@@ -6879,7 +7818,11 @@
     "word": "frequent",
     "meaning": "頻繁な",
     "no": 689,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "time",
+    "example": "He is a frequent visitor to this coffee shop.",
+    "exampleJa": "彼はこの喫茶店の常連客です。",
+    "pronunciation": "ˈfrikwənt"
   },
   {
     "id": "w_172771f1c7ab8703",
@@ -6934,7 +7877,11 @@
     "word": "extinct",
     "meaning": "絶滅した；廃止された",
     "no": 694,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "nature",
+    "example": "Dinosaurs became extinct millions of years ago.",
+    "exampleJa": "恐竜は何百万年も前に絶滅した。",
+    "pronunciation": "ɪkˈstɪŋkt"
   },
   {
     "id": "w_e7d99246582a9f1b",
@@ -7025,14 +7972,21 @@
     "word": "dominate",
     "meaning": "を支配する；（～より）優勢である（over）",
     "no": 702,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "people",
+    "example": "Their team dominated the game from the start.",
+    "exampleJa": "彼らのチームは最初から試合を支配していた。",
+    "pronunciation": "ˈdɑməˌneɪt"
   },
   {
     "id": "w_95f55e2d28b03c8f",
     "word": "guarantee",
     "meaning": "を保証する",
     "no": 703,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The shop guarantees that the watch will work for two years.",
+    "exampleJa": "その店はその時計が2年間動くことを保証している。",
+    "exampleSource": "written"
   },
   {
     "id": "w_1f796ccf06da566a",
@@ -7111,7 +8065,11 @@
     "word": "lend",
     "meaning": "を貸す（⇔ borrow を借りる）；（人）に（助言・援助など）を与える",
     "no": 710,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "lend him some money",
+    "exampleJa": "彼にお金をいくらか貸す",
+    "pronunciation": "lɛnd"
   },
   {
     "id": "w_45b616951f959e37",
@@ -7178,7 +8136,11 @@
     "word": "endanger",
     "meaning": "を危険にさらす",
     "no": 716,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "quality",
+    "example": "Pollution can endanger many species of animals.",
+    "exampleJa": "汚染は多くの種類の動物を危険にさらす可能性があります。",
+    "pronunciation": "ɛnˈdeɪndʒɚ"
   },
   {
     "id": "w_1dd0a845bb9b5e43",
@@ -7209,7 +8171,11 @@
     "word": "evaluate",
     "meaning": "を評価する；を査定する",
     "no": 719,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "We need to evaluate the effectiveness of the new program.",
+    "exampleJa": "私たちは新しいプログラムの有効性を評価する必要があります。",
+    "pronunciation": "ɪˈvæljuˌeɪt"
   },
   {
     "id": "w_7e40c676d0c7a54c",
@@ -7324,7 +8290,11 @@
     "word": "imitate",
     "meaning": "をまねる；を模造する",
     "no": 729,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "Parrots can imitate human speech.",
+    "exampleJa": "オウムは人間の言葉をまねることができます。",
+    "pronunciation": "ˈɪməˌteɪt"
   },
   {
     "id": "w_0ffea0b6148deb4a",
@@ -7463,7 +8433,11 @@
     "word": "wisdom",
     "meaning": "知恵；賢明さ；学識",
     "no": 741,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "She is known for her wisdom and kindness.",
+    "exampleJa": "彼女はその知恵と優しさで知られています。",
+    "pronunciation": "ˈwɪzdəm"
   },
   {
     "id": "w_d52bdd1ef320025b",
@@ -7482,14 +8456,22 @@
     "word": "heritage",
     "meaning": "遺産",
     "no": 743,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "This ancient castle is part of our national heritage.",
+    "exampleJa": "この古代の城は私たちの国の遺産の一部です。",
+    "pronunciation": "ˈhɛrətədʒ"
   },
   {
     "id": "w_8eaf52fa99c2ba5d",
     "word": "mission",
     "meaning": "使命；（外交）使節団；布教",
     "no": 744,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "making",
+    "example": "The team's mission was to explore the new planet.",
+    "exampleJa": "そのチームの使命は新しい惑星を探査することだった。",
+    "pronunciation": "ˈmɪʃən"
   },
   {
     "id": "w_1b3354fd4fbed955",
@@ -7508,7 +8490,11 @@
     "word": "elite",
     "meaning": "〔通例the ～〕〔集合的に〕エリート",
     "no": 746,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "He is a member of the country's political elite.",
+    "exampleJa": "彼はその国の政治エリートの一員です。",
+    "pronunciation": "ɪˈlit"
   },
   {
     "id": "w_66aecbd397b7ba3f",
@@ -7707,7 +8693,11 @@
     "word": "glance",
     "meaning": "（～を）ちらっと見ること（at）",
     "no": 763,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "seeing",
+    "example": "He gave a quick glance at his watch.",
+    "exampleJa": "彼は腕時計をちらっと見た。",
+    "pronunciation": "ɡlæns"
   },
   {
     "id": "w_e803540558420123",
@@ -8218,7 +9208,11 @@
     "word": "exhibit",
     "meaning": "を示す，見せる；を展示する",
     "no": 806,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "seeing",
+    "example": "The museum is exhibiting a collection of ancient artifacts.",
+    "exampleJa": "その美術館は古代の遺物のコレクションを展示しています。",
+    "pronunciation": "ɪɡˈzɪbɪt"
   },
   {
     "id": "w_30d6d237aed462fa",
@@ -8261,7 +9255,11 @@
     "word": "pop",
     "meaning": "ひょいと動く；不意に現れる；ポンとはじける",
     "no": 810,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "listening",
+    "example": "A brilliant idea popped into my head.",
+    "exampleJa": "素晴らしいアイデアが私の頭にひらめいた。",
+    "pronunciation": "pɑp"
   },
   {
     "id": "w_0b1ac6e9bfccd7f3",
@@ -8280,7 +9278,10 @@
     "word": "greet",
     "meaning": "に挨拶する；を迎える",
     "no": 812,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "The principal greeted each student at the school gate.",
+    "exampleJa": "校長は校門で生徒一人ひとりに挨拶した。",
+    "exampleSource": "written"
   },
   {
     "id": "w_47adb753e63340f0",
@@ -8335,7 +9336,11 @@
     "word": "deserve",
     "meaning": "に値する",
     "no": 817,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "She deserves to be praised for her hard work.",
+    "exampleJa": "彼女はその努力で称賛されるに値します。",
+    "pronunciation": "dɪˈzɝv"
   },
   {
     "id": "w_523d74a447296b5c",
@@ -8414,7 +9419,11 @@
     "word": "endure",
     "meaning": "に耐える（≒ put up with）；（に）持ちこたえる",
     "no": 824,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "She had to endure a lot of pain during her illness.",
+    "exampleJa": "彼女は病気の間、多くの痛みに耐えなければならなかった。",
+    "pronunciation": "ɛnˈdjʊr"
   },
   {
     "id": "w_6e640ce16899e797",
@@ -8577,7 +9586,11 @@
     "word": "embrace",
     "meaning": "を受け入れる；（を）抱擁する；を包含する",
     "no": 838,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "listening",
+    "example": "We should embrace diversity in our society.",
+    "exampleJa": "私たちは社会の多様性を受け入れるべきです。",
+    "pronunciation": "ɛmˈbreɪs"
   },
   {
     "id": "w_56f39825016ac590",
@@ -8620,7 +9633,11 @@
     "word": "enthusiasm",
     "meaning": "（～への）熱情，熱意（for）",
     "no": 842,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "He showed great enthusiasm for the new project.",
+    "exampleJa": "彼は新しいプロジェクトに大きな熱意を示した。",
+    "pronunciation": "ɪnˈθuziˌæzəm"
   },
   {
     "id": "w_c1481067df58e3ba",
@@ -8663,7 +9680,11 @@
     "word": "gravity",
     "meaning": "重力，引力；重量；重大さ",
     "no": 846,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "Gravity is the force that keeps us on the Earth.",
+    "exampleJa": "重力は私たちを地球上にとどめておく力です。",
+    "pronunciation": "ˈɡrævəti"
   },
   {
     "id": "w_e18a511e7eecad88",
@@ -8874,7 +9895,11 @@
     "word": "illusion",
     "meaning": "錯覚，思い違い；幻想",
     "no": 864,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "The oasis in the desert was just an optical illusion.",
+    "exampleJa": "砂漠のオアシスはただの目の錯覚だった。",
+    "pronunciation": "ˌɪˈluʒən"
   },
   {
     "id": "w_6c63cdcf6e1740eb",
@@ -8905,7 +9930,11 @@
     "word": "drought",
     "meaning": "干ばつ；（慢性的な）不足",
     "no": 867,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "The long drought caused serious damage to the crops.",
+    "exampleJa": "長い干ばつは作物に深刻な損害を与えた。",
+    "pronunciation": "draʊt"
   },
   {
     "id": "w_739e4ecfe35bb6fa",
@@ -8936,7 +9965,11 @@
     "word": "recipe",
     "meaning": "調理法，レシピ；手順；秘訣",
     "no": 870,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "I got this recipe from a famous chef.",
+    "exampleJa": "私はこのレシピを有名なシェフから教わりました。",
+    "pronunciation": "ˈrɛsəpi"
   },
   {
     "id": "w_78d13a264267b88a",
@@ -8991,7 +10024,11 @@
     "word": "prefecture",
     "meaning": "（日本の）県，府；（フランスなどの）県",
     "no": 875,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "Kyoto Prefecture is famous for its beautiful temples.",
+    "exampleJa": "京都府は美しい寺院で有名です。",
+    "pronunciation": "ˈpriˌfɛktʃɚ"
   },
   {
     "id": "w_ac2427e4b2383860",
@@ -9142,7 +10179,11 @@
     "word": "genuine",
     "meaning": "本物の（≒ authentic ⇒ 1580, real）；偽りのない",
     "no": 888,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "listening",
+    "example": "This is a genuine leather bag.",
+    "exampleJa": "これは本物の革のバッグです。",
+    "pronunciation": "ˈdʒɛnjəwən"
   },
   {
     "id": "w_d53210ee6aba9506",
@@ -9209,7 +10250,11 @@
     "word": "harsh",
     "meaning": "厳しい；（光・色・味などが）不快な",
     "no": 894,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "The team faced harsh criticism after their defeat.",
+    "exampleJa": "そのチームは敗戦後、厳しい批判に直面した。",
+    "pronunciation": "hɑrʃ"
   },
   {
     "id": "w_381fe33c62b7b0c4",
@@ -9456,7 +10501,11 @@
     "word": "grab",
     "meaning": "をつかむ；を横取りする；を急いで食べる",
     "no": 915,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "He grabbed his bag and ran out of the room.",
+    "exampleJa": "彼はバッグをつかんで部屋から走り出した。",
+    "pronunciation": "ɡræb"
   },
   {
     "id": "w_a499abe83e841e70",
@@ -9499,7 +10548,11 @@
     "word": "entertain",
     "meaning": "を楽しませる；をもてなす",
     "no": 919,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "The clown entertained the children with funny tricks.",
+    "exampleJa": "そのピエロは面白い芸で子供たちを楽しませた。",
+    "pronunciation": "ˌɛntɚˈteɪn"
   },
   {
     "id": "w_0e4b8b36b7e52f92",
@@ -9518,7 +10571,11 @@
     "word": "cultivate",
     "meaning": "を養う；を耕す；を栽培する",
     "no": 921,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "It is important to cultivate a positive mindset.",
+    "exampleJa": "前向きな考え方を養うことは重要です。",
+    "pronunciation": "ˈkʌltəˌveɪt"
   },
   {
     "id": "w_fc7a72da8873685e",
@@ -9645,7 +10702,11 @@
     "word": "fold",
     "meaning": "を折り畳む；（両腕）を組む；（折り）畳める",
     "no": 932,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "He folded the letter and put it in his pocket.",
+    "exampleJa": "彼はその手紙を折りたたんでポケットに入れた。",
+    "pronunciation": "foʊld"
   },
   {
     "id": "w_b9193d2a6ad37e03",
@@ -9772,7 +10833,11 @@
     "word": "dimension",
     "meaning": "側面，局面；次元；寸法",
     "no": 943,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "We need to consider the problem in all its dimensions.",
+    "exampleJa": "私たちはその問題をあらゆる側面から検討する必要があります。",
+    "pronunciation": "dɪˈmɛnʃən"
   },
   {
     "id": "w_7b7b0d8a9d215835",
@@ -10043,7 +11108,11 @@
     "word": "galaxy",
     "meaning": "星雲，銀河；〔the G～〕銀河系",
     "no": 966,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "Our solar system is part of the Milky Way galaxy.",
+    "exampleJa": "私たちの太陽系は天の川銀河の一部です。",
+    "pronunciation": "ˈɡæləksi"
   },
   {
     "id": "w_47e9339144c8b561",
@@ -10470,7 +11539,11 @@
     "word": "grasp",
     "meaning": "を把握［理解］する；をしっかり握る",
     "no": 1002,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "listening",
+    "example": "I found it difficult to grasp the main concepts of the theory.",
+    "exampleJa": "私はその理論の主要な概念を把握するのが難しいと感じた。",
+    "pronunciation": "ɡræsp"
   },
   {
     "id": "w_d7975f67274c63eb",
@@ -10585,7 +11658,11 @@
     "word": "heal",
     "meaning": "（人・傷など）を治す；治る",
     "no": 1012,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "It took a few weeks for the wound to heal completely.",
+    "exampleJa": "その傷が完全に治るまで数週間かかった。",
+    "pronunciation": "hil"
   },
   {
     "id": "w_1d2894b2b303e028",
@@ -10616,7 +11693,11 @@
     "word": "diminish",
     "meaning": "を減らす；減少する（≒decrease）",
     "no": 1015,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The company's profits have diminished in recent years.",
+    "exampleJa": "その会社の利益は近年減少しています。",
+    "pronunciation": "dɪˈmɪnɪʃ"
   },
   {
     "id": "w_e78d9bacc1a028e9",
@@ -10695,7 +11776,11 @@
     "word": "foster",
     "meaning": "をはぐくむ；を養育する；を心に抱く",
     "no": 1022,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "people",
+    "example": "The organization works to foster a sense of community.",
+    "exampleJa": "その組織は共同体意識を育むために活動している。",
+    "pronunciation": "ˈfɑstɚ"
   },
   {
     "id": "w_833d78f407a0bd17",
@@ -10738,7 +11823,11 @@
     "word": "govern",
     "meaning": "（を）統治する、支配する",
     "no": 1026,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "The country is governed by a democratically elected leader.",
+    "exampleJa": "その国は民主的に選出された指導者によって統治されています。",
+    "pronunciation": "ˈɡʌvɚn"
   },
   {
     "id": "w_6d2a76bf3835bd5a",
@@ -10817,7 +11906,11 @@
     "word": "nod",
     "meaning": "うなずく；会釈する；うとうとする",
     "no": 1033,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "She nodded her head in agreement.",
+    "exampleJa": "彼女は同意してうなずいた。",
+    "pronunciation": "nɑd"
   },
   {
     "id": "w_719dc62df63ece15",
@@ -10992,7 +12085,11 @@
     "word": "distress",
     "meaning": "苦悩；苦痛；困窮",
     "no": 1048,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "emotion",
+    "example": "The family was in great distress after the fire.",
+    "exampleJa": "その家族は火事の後、大きな苦悩の中にいた。",
+    "pronunciation": "dɪˈstrɛs"
   },
   {
     "id": "w_052984e24359be3c",
@@ -11083,7 +12180,11 @@
     "word": "faculty",
     "meaning": "能力、機能；学部；教授陣",
     "no": 1056,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "He is a member of the faculty of law.",
+    "exampleJa": "彼は法学部の教員です。",
+    "pronunciation": "ˈfækəlti"
   },
   {
     "id": "w_665982298d5826ea",
@@ -11186,14 +12287,22 @@
     "word": "fatigue",
     "meaning": "疲労（≒exhaustion）",
     "no": 1065,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "He was suffering from extreme fatigue after the long flight.",
+    "exampleJa": "彼は長いフライトの後、極度の疲労に苦しんでいた。",
+    "pronunciation": "fəˈtiɡ"
   },
   {
     "id": "w_ec43f0b2c0b29661",
     "word": "dilemma",
     "meaning": "ジレンマ、板ばさみ",
     "no": 1066,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "She is facing a dilemma between her career and her family.",
+    "exampleJa": "彼女はキャリアと家族の間でジレンマに直面しています。",
+    "pronunciation": "dɪˈlɛmə"
   },
   {
     "id": "w_dff9e0ecd3792756",
@@ -11308,7 +12417,11 @@
     "word": "fantasy",
     "meaning": "空想；幻想；幻想的作品",
     "no": 1076,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "He often escapes into a world of fantasy.",
+    "exampleJa": "彼はしばしば空想の世界に逃避します。",
+    "pronunciation": "ˈfæntəsi"
   },
   {
     "id": "w_7d14cccd7c51e9c9",
@@ -11363,7 +12476,11 @@
     "word": "elaborate",
     "meaning": "入念な；凝った",
     "no": 1081,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "She created an elaborate plan for the project.",
+    "exampleJa": "彼女はそのプロジェクトのために念入りな計画を立てた。",
+    "pronunciation": "ɪˈlæbrət"
   },
   {
     "id": "w_b8a469c130bdcd44",
@@ -11382,7 +12499,11 @@
     "word": "dynamic",
     "meaning": "活動的な、精力的な；動的な（⇔static 静的な）",
     "no": 1083,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "She is a dynamic leader who inspires her team.",
+    "exampleJa": "彼女はチームを鼓舞するダイナミックなリーダーです。",
+    "pronunciation": "daɪˈnæmɪk"
   },
   {
     "id": "w_a3349ca2770281b4",
@@ -11617,7 +12738,11 @@
     "word": "surf",
     "meaning": "（インターネット上の情報など）を見て回る；サーフィンをする",
     "no": 1103,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "seeing",
+    "example": "He spent the evening surfing the internet.",
+    "exampleJa": "彼は夕方、インターネットをサーフィンして過ごした。",
+    "pronunciation": "sɝf"
   },
   {
     "id": "w_b944a1f715da63ca",
@@ -11732,7 +12857,11 @@
     "word": "grip",
     "meaning": "を握る；をとらえる",
     "no": 1113,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "He gripped the steering wheel tightly.",
+    "exampleJa": "彼はハンドルをしっかりと握った。",
+    "pronunciation": "ɡrɪp"
   },
   {
     "id": "w_6ae58c4b08e1c744",
@@ -11871,7 +13000,11 @@
     "word": "wipe",
     "meaning": "を拭く；を拭き取る；を消し去る",
     "no": 1125,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "Could you please wipe the table?",
+    "exampleJa": "テーブルを拭いていただけますか？",
+    "pronunciation": "waɪp"
   },
   {
     "id": "w_88c6ddce2259102c",
@@ -11998,14 +13131,21 @@
     "word": "compromise",
     "meaning": "妥協する；を危うくする",
     "no": 1136,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My sister and I compromised and shared the TV.",
+    "exampleJa": "姉と私は妥協してテレビを分け合った。",
+    "exampleSource": "written"
   },
   {
     "id": "w_244f454736f1158f",
     "word": "elect",
     "meaning": "を選出する",
     "no": 1137,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "people",
+    "example": "The people will elect a new president next year.",
+    "exampleJa": "国民は来年、新しい大統領を選出します。",
+    "pronunciation": "ɪˈlɛkt"
   },
   {
     "id": "w_c94964930bb48f17",
@@ -12048,7 +13188,11 @@
     "word": "empathy",
     "meaning": "感情移入，共感",
     "no": 1141,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "emotion",
+    "example": "She has a deep empathy for the suffering of others.",
+    "exampleJa": "彼女は他人の苦しみに深い共感を抱いています。",
+    "pronunciation": "ˈɛmpəθi"
   },
   {
     "id": "w_59f484b4600294da",
@@ -12067,7 +13211,11 @@
     "word": "enterprise",
     "meaning": "企業，事業；企画；進取の気性",
     "no": 1143,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "work",
+    "example": "He is the founder of a successful business enterprise.",
+    "exampleJa": "彼は成功した事業の創設者です。",
+    "pronunciation": "ˈɛntɚˌpraɪz"
   },
   {
     "id": "w_c578fc1394eb473b",
@@ -12134,7 +13282,11 @@
     "word": "estate",
     "meaning": "（動産・不動産などの）財産；私有地",
     "no": 1149,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "He left his entire estate to his children.",
+    "exampleJa": "彼は全財産を子供たちに残した。",
+    "pronunciation": "ɪˈsteɪt"
   },
   {
     "id": "w_d0a532440714f29e",
@@ -12417,7 +13569,11 @@
     "word": "grave",
     "meaning": "墓；〔通例the ～〕死",
     "no": 1173,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "They visited their grandfather's grave on the anniversary of his death.",
+    "exampleJa": "彼らは祖父の命日に彼の墓を訪れた。",
+    "pronunciation": "ɡreɪv"
   },
   {
     "id": "w_9050607efd0ddd9f",
@@ -12436,7 +13592,11 @@
     "word": "scenery",
     "meaning": "〔集合的に〕景色；背景",
     "no": 1175,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "seeing",
+    "example": "The scenery from the top of the mountain was breathtaking.",
+    "exampleJa": "山の頂上からの景色は息をのむほど美しかった。",
+    "pronunciation": "ˈsinɚi"
   },
   {
     "id": "w_7eaedb7d7e5903fe",
@@ -12467,7 +13627,11 @@
     "word": "tablet",
     "meaning": "タブレット（型情報端末）；錠剤；平板",
     "no": 1178,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "making",
+    "example": "I use a tablet for reading e-books.",
+    "exampleJa": "私は電子書籍を読むのにタブレットを使っています。",
+    "pronunciation": "ˈtæblət"
   },
   {
     "id": "w_55fc199b701f9801",
@@ -12486,7 +13650,11 @@
     "word": "exotic",
     "meaning": "外来の；異国風の",
     "no": 1180,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "nature",
+    "example": "She loves to travel to exotic destinations.",
+    "exampleJa": "彼女はエキゾチックな旅行先に行くのが大好きです。",
+    "pronunciation": "ɪɡˈzɑtɪk"
   },
   {
     "id": "w_c9fac80ded2c11b0",
@@ -12637,7 +13805,10 @@
     "word": "hybrid",
     "meaning": "ハイブリッドの；雑種の；混成の",
     "no": 1193,
-    "partOfSpeech": ""
+    "partOfSpeech": "",
+    "example": "My father drives a hybrid car to save gas.",
+    "exampleJa": "父はガソリンを節約するためにハイブリッドの車に乗っている。",
+    "exampleSource": "written"
   },
   {
     "id": "w_f453a12a647033b1",
@@ -12740,7 +13911,11 @@
     "word": "esteem",
     "meaning": "を尊敬する；を見なす",
     "no": 1202,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "She is highly esteemed by her colleagues.",
+    "exampleJa": "彼女は同僚から高く評価されています。",
+    "pronunciation": "əˈstim"
   },
   {
     "id": "w_6f098c77789ccc3d",
@@ -12807,7 +13982,11 @@
     "word": "flourish",
     "meaning": "繁栄する；繁茂する；を振りかざす",
     "no": 1208,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "The company has flourished under his leadership.",
+    "exampleJa": "その会社は彼のリーダーシップの下で繁栄した。",
+    "pronunciation": "ˈflɝɪʃ"
   },
   {
     "id": "w_8faee0c62e6638b5",
@@ -13006,7 +14185,11 @@
     "word": "enforce",
     "meaning": "を施行［実施］する；を（～に）強制する（on / upon）",
     "no": 1225,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "The police are responsible for enforcing the law.",
+    "exampleJa": "警察は法律を執行する責任があります。",
+    "pronunciation": "ɛnˈfɔrs"
   },
   {
     "id": "w_0cb4fc0bae0d2b29",
@@ -13025,7 +14208,11 @@
     "word": "drain",
     "meaning": "（液体）を流出させる；（液体が）流れ出る",
     "no": 1227,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "The plumber came to fix the blocked drain.",
+    "exampleJa": "その配管工は詰まった排水管を直しに来た。",
+    "pronunciation": "dreɪn"
   },
   {
     "id": "w_a8586fa0703d0a8f",
@@ -13104,7 +14291,11 @@
     "word": "crush",
     "meaning": "を押しつぶす；を弾圧する；を絞り出す",
     "no": 1234,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "He crushed the empty can with his foot.",
+    "exampleJa": "彼は空き缶を足で押しつぶした。",
+    "pronunciation": "krʌʃ"
   },
   {
     "id": "w_f7a5b7f26cfaf147",
@@ -13135,14 +14326,22 @@
     "word": "exploit",
     "meaning": "を活用する；を搾取する，につけ込む",
     "no": 1237,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "work",
+    "example": "The company was accused of exploiting its workers.",
+    "exampleJa": "その会社は労働者を搾取しているとして非難された。",
+    "pronunciation": "ˈɛkˌsplɔɪt"
   },
   {
     "id": "w_e9d8553802b404c3",
     "word": "implement",
     "meaning": "を実行［実施］する",
     "no": 1238,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "The government will implement the new policy next month.",
+    "exampleJa": "政府は来月、新しい政策を実施します。",
+    "pronunciation": "ˈɪmpləmənt"
   },
   {
     "id": "w_3cf3ac9a8eac427d",
@@ -13389,7 +14588,11 @@
     "word": "famine",
     "meaning": "飢饉；（食糧・物資の）ひどい不足",
     "no": 1259,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "nature",
+    "example": "Millions of people died during the great famine.",
+    "exampleJa": "その大飢饉で何百万人もの人々が亡くなった。",
+    "pronunciation": "ˈfæmən"
   },
   {
     "id": "w_415f6e13f420868c",
@@ -13456,7 +14659,11 @@
     "word": "drill",
     "meaning": "訓練；（反復）練習；ドリル，錐",
     "no": 1265,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "learning",
+    "example": "The soldiers are doing a military drill.",
+    "exampleJa": "兵士たちは軍事訓練をしています。",
+    "pronunciation": "drɪl"
   },
   {
     "id": "w_ba7f3e774203ea5c",
@@ -13583,14 +14790,22 @@
     "word": "hierarchy",
     "meaning": "（社会の）階層制；〔the ～〕支配層",
     "no": 1276,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "There is a strict hierarchy in the military.",
+    "exampleJa": "軍隊には厳格な階層制があります。",
+    "pronunciation": "ˈhaɪɚˌɑrki"
   },
   {
     "id": "w_765740d260accf6b",
     "word": "monument",
     "meaning": "記念碑，遺跡；金字塔",
     "no": 1277,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "time",
+    "example": "The Washington Monument is a famous landmark in the United States.",
+    "exampleJa": "ワシントン記念塔はアメリカの有名なランドマークです。",
+    "pronunciation": "ˈmɑnjumənt"
   },
   {
     "id": "w_7e542e66df441480",
@@ -13609,7 +14824,11 @@
     "word": "decent",
     "meaning": "まずまずの；きちんとした；上品な",
     "no": 1279,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "He earns a decent salary.",
+    "exampleJa": "彼はまずまずの給料を稼いでいます。",
+    "pronunciation": "ˈdisənt"
   },
   {
     "id": "w_eda20f37aa7bcb62",
@@ -13700,7 +14919,11 @@
     "word": "deliberate",
     "meaning": "故意の；慎重な",
     "no": 1287,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "It was a deliberate attempt to mislead the public.",
+    "exampleJa": "それは一般の人々を誤解させるための意図的な試みでした。",
+    "pronunciation": "dɪˈlɪbɚət"
   },
   {
     "id": "w_9c5f0d5b94bdf0ca",
@@ -13779,7 +15002,11 @@
     "word": "humble",
     "meaning": "謙虚な；質素な；身分が低い",
     "no": 1294,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "Despite his success, he remains a very humble person.",
+    "exampleJa": "成功にもかかわらず、彼は非常に謙虚な人です。",
+    "pronunciation": "ˈhʌmbəl"
   },
   {
     "id": "w_3d6034927771e5fc",
@@ -14026,7 +15253,11 @@
     "word": "deposit",
     "meaning": "を置く；を預ける；を堆積させる",
     "no": 1315,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "work",
+    "example": "I need to deposit this check in my bank account.",
+    "exampleJa": "私はこの小切手を銀行口座に預ける必要があります。",
+    "pronunciation": "dəˈpɑzɪt"
   },
   {
     "id": "w_6298b4909b3e78c7",
@@ -14069,7 +15300,11 @@
     "word": "depict",
     "meaning": "を描く",
     "no": 1319,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "The novel depicts the life of a young artist in Paris.",
+    "exampleJa": "その小説はパリの若い芸術家の人生を描いています。",
+    "pronunciation": "dɪˈpɪkt"
   },
   {
     "id": "w_47f63e47f5f26f78",
@@ -14100,7 +15335,11 @@
     "word": "emit",
     "meaning": "（光・熱など）を出す，排出する；（信号）を送る",
     "no": 1322,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The factory emits a lot of smoke.",
+    "exampleJa": "その工場は多くの煙を排出します。",
+    "pronunciation": "ɪˈmɪt"
   },
   {
     "id": "w_d57f55977d88eaca",
@@ -14299,7 +15538,11 @@
     "word": "comprise",
     "meaning": "から成る；を構成する",
     "no": 1339,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "The United Kingdom comprises four countries.",
+    "exampleJa": "イギリスは4つの国から成っています。",
+    "pronunciation": "kəmˈpraɪz"
   },
   {
     "id": "w_b598df57916b05a7",
@@ -14330,14 +15573,22 @@
     "word": "dignity",
     "meaning": "尊厳；威厳",
     "no": 1342,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "He behaved with great dignity throughout the ceremony.",
+    "exampleJa": "彼は式典の間ずっと、素晴らしい威厳をもって振る舞った。",
+    "pronunciation": "ˈdɪɡnəti"
   },
   {
     "id": "w_1e6f115776293fb9",
     "word": "criterion",
     "meaning": "（判断・評価の）基準",
     "no": 1343,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "What is the criterion for success?",
+    "exampleJa": "成功の基準は何ですか？",
+    "pronunciation": "kraɪˈtɪriən"
   },
   {
     "id": "w_b7237d085dab18b5",
@@ -14416,7 +15667,11 @@
     "word": "epidemic",
     "meaning": "流行（病）；蔓延",
     "no": 1350,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "The country is facing a flu epidemic.",
+    "exampleJa": "その国はインフルエンザの流行に直面しています。",
+    "pronunciation": "ˌɛpəˈdɛmɪk"
   },
   {
     "id": "w_20670d34f6e49503",
@@ -14459,7 +15714,11 @@
     "word": "horror",
     "meaning": "恐怖；強い嫌悪；嫌な物［人］",
     "no": 1354,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "emotion",
+    "example": "She screamed in horror.",
+    "exampleJa": "彼女は恐怖のあまり悲鳴を上げた。",
+    "pronunciation": "ˈhɔrɚ"
   },
   {
     "id": "w_0351721708b7d26f",
@@ -14658,7 +15917,11 @@
     "word": "gear",
     "meaning": "用具（一式），器具；歯車；ギア",
     "no": 1371,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "You need to change gear when you go up a hill.",
+    "exampleJa": "坂を上るときはギアを変える必要があります。",
+    "pronunciation": "ɡɪr"
   },
   {
     "id": "w_516b79c590ca6127",
@@ -14869,7 +16132,11 @@
     "word": "fragile",
     "meaning": "壊れやすい；虚弱な",
     "no": 1389,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "making",
+    "example": "Be careful with that vase, it's very fragile.",
+    "exampleJa": "その花瓶はとても壊れやすいので注意してください。",
+    "pronunciation": "ˈfrædʒəl"
   },
   {
     "id": "w_94b16c6f33a9bf51",
@@ -14972,7 +16239,11 @@
     "word": "gross",
     "meaning": "総計の；甚だしい；粗野な",
     "no": 1398,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "The company's gross profit has increased.",
+    "exampleJa": "その会社の総利益は増加しました。",
+    "pronunciation": "ɡroʊs"
   },
   {
     "id": "w_bd03472431dc194b",
@@ -15003,7 +16274,11 @@
     "word": "update",
     "meaning": "を最新のものにする；をアップデートする",
     "no": 1401,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "You should update your software regularly.",
+    "exampleJa": "ソフトウェアは定期的に更新すべきです。",
+    "pronunciation": "əpˈdeɪt"
   },
   {
     "id": "w_f5b6ab346551564b",
@@ -15034,7 +16309,11 @@
     "word": "conquer",
     "meaning": "を征服する；を克服する",
     "no": 1404,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "people",
+    "example": "He conquered his fear of public speaking.",
+    "exampleJa": "彼は人前で話すことへの恐怖を克服した。",
+    "pronunciation": "ˈkɑŋkɚ"
   },
   {
     "id": "w_ed3ac5a4e1bc6f1f",
@@ -15113,7 +16392,11 @@
     "word": "designate",
     "meaning": "を指定する；を任命する",
     "no": 1411,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "This area has been designated as a nature reserve.",
+    "exampleJa": "この地域は自然保護区に指定されています。",
+    "pronunciation": "ˈdɛzəɡˌneɪt"
   },
   {
     "id": "w_ce1128b82318d5f2",
@@ -15144,7 +16427,11 @@
     "word": "disrupt",
     "meaning": "を混乱させる；を分裂させる",
     "no": 1414,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "The protest disrupted traffic in the city.",
+    "exampleJa": "その抗議活動は市内の交通を混乱させた。",
+    "pronunciation": "dɪsˈrʌpt"
   },
   {
     "id": "w_6795ff9cb05b8377",
@@ -15319,21 +16606,33 @@
     "word": "glow",
     "meaning": "光り［照り］輝く；赤く燃える；紅潮する",
     "no": 1429,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "seeing",
+    "example": "The embers were still glowing in the fireplace.",
+    "exampleJa": "暖炉の中ではまだ燃えさしが赤く燃えていた。",
+    "pronunciation": "ɡloʊ"
   },
   {
     "id": "w_ba61a726d8e73a29",
     "word": "disguise",
     "meaning": "を（～に）変装させる（as）；を偽る",
     "no": 1430,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "seeing",
+    "example": "He wore a disguise to avoid being recognized.",
+    "exampleJa": "彼は認識されるのを避けるために変装していた。",
+    "pronunciation": "dɪsˈɡaɪz"
   },
   {
     "id": "w_ec707be033d201b8",
     "word": "distort",
     "meaning": "を歪める；歪む",
     "no": 1431,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The media often distorts the truth.",
+    "exampleJa": "メディアはしばしば真実を歪めます。",
+    "pronunciation": "dɪˈstɔrt"
   },
   {
     "id": "w_310e7e53ae9a460c",
@@ -15388,7 +16687,11 @@
     "word": "dump",
     "meaning": "を投棄する；をどさっと落とす",
     "no": 1436,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "It is illegal to dump waste in the river.",
+    "exampleJa": "川に廃棄物を投棄することは違法です。",
+    "pronunciation": "dʌmp"
   },
   {
     "id": "w_c019047b280dbd82",
@@ -15419,14 +16722,22 @@
     "word": "enrich",
     "meaning": "を豊かにする；（物質）を濃縮化する",
     "no": 1439,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "quality",
+    "example": "Traveling can enrich your life in many ways.",
+    "exampleJa": "旅行は多くの点であなたの人生を豊かにすることができます。",
+    "pronunciation": "ɛnˈrɪtʃ"
   },
   {
     "id": "w_b1f55bb5c53d91bb",
     "word": "coordinate",
     "meaning": "を調整する；を組織する；（服など）をコーディネートする",
     "no": 1440,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "We need to coordinate our efforts to achieve our goal.",
+    "exampleJa": "私たちは目標を達成するために、努力を調整する必要があります。",
+    "pronunciation": "koʊˈɔrdənət"
   },
   {
     "id": "w_30a053d6a2ed9d5a",
@@ -15565,7 +16876,11 @@
     "word": "curse",
     "meaning": "悪態，ののしりの言葉；呪い；〔通例a ～〕災い",
     "no": 1452,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "emotion",
+    "example": "He muttered a curse under his breath.",
+    "exampleJa": "彼は小声でののしり言葉をつぶやいた。",
+    "pronunciation": "kɝs"
   },
   {
     "id": "w_f12f6af83dfe8db2",
@@ -16040,14 +17355,22 @@
     "word": "divine",
     "meaning": "神の；神にささげる",
     "no": 1492,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "people",
+    "example": "The ancient Greeks believed in many divine beings.",
+    "exampleJa": "古代ギリシャ人は多くの神々の存在を信じていた。",
+    "pronunciation": "dɪˈvaɪn"
   },
   {
     "id": "w_e7b0e131c28b419b",
     "word": "drastic",
     "meaning": "徹底的な，抜本的な；極端な",
     "no": 1493,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "listening",
+    "example": "The company needs to take drastic measures to avoid bankruptcy.",
+    "exampleJa": "その会社は倒産を避けるために抜本的な対策を講じる必要があります。",
+    "pronunciation": "ˈdræstɪk"
   },
   {
     "id": "w_bd39d8e9f656124f",
@@ -16174,21 +17497,33 @@
     "word": "enroll",
     "meaning": "登録する，入会する；を登録させる",
     "no": 1504,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "learning",
+    "example": "I decided to enroll in a language course.",
+    "exampleJa": "私は語学コースに登録することに決めた。",
+    "pronunciation": "ɛnˈroʊl"
   },
   {
     "id": "w_3ac2974412b1f7bf",
     "word": "entitle",
     "meaning": "に権利を与える；に題名をつける",
     "no": 1505,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "people",
+    "example": "This ticket entitles you to one free drink.",
+    "exampleJa": "このチケットで無料の飲み物を一杯もらえます。",
+    "pronunciation": "ɛnˈtaɪtəl"
   },
   {
     "id": "w_6569d1c189f3368b",
     "word": "halt",
     "meaning": "を止める；止まる",
     "no": 1506,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "The train came to a sudden halt.",
+    "exampleJa": "その電車は急停車した。",
+    "pronunciation": "hɔlt"
   },
   {
     "id": "w_5c784b84cfdc9c18",
@@ -16231,7 +17566,11 @@
     "word": "crawl",
     "meaning": "はう；ゆっくり進む",
     "no": 1510,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "The baby is just learning to crawl.",
+    "exampleJa": "その赤ちゃんはちょうどハイハイを覚えたところだ。",
+    "pronunciation": "krɔl"
   },
   {
     "id": "w_7ee7bfaabc56a044",
@@ -16478,7 +17817,11 @@
     "word": "delete",
     "meaning": "を削除する，消す",
     "no": 1531,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "Please delete this file from your computer.",
+    "exampleJa": "このファイルをコンピュータから削除してください。",
+    "pronunciation": "dɪˈlit"
   },
   {
     "id": "w_aaff3771d1264f8f",
@@ -16509,7 +17852,11 @@
     "word": "pray",
     "meaning": "（を）祈る",
     "no": 1534,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "She prayed for the safety of her family.",
+    "exampleJa": "彼女は家族の安全を祈った。",
+    "pronunciation": "preɪ"
   },
   {
     "id": "w_b297d262a3997963",
@@ -16588,7 +17935,11 @@
     "word": "entrepreneur",
     "meaning": "起業家，事業家",
     "no": 1541,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "He is a successful entrepreneur who has built a global company.",
+    "exampleJa": "彼はグローバル企業を築き上げた成功した起業家です。",
+    "pronunciation": "ˌɑntrəprəˈnɝ"
   },
   {
     "id": "w_74b4631b797ce2af",
@@ -16703,7 +18054,11 @@
     "word": "domain",
     "meaning": "分野；領域；ドメイン（＝ domain name）",
     "no": 1551,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "thinking",
+    "example": "This is a complex domain of study.",
+    "exampleJa": "これは複雑な研究分野です。",
+    "pronunciation": "doʊˈmeɪn"
   },
   {
     "id": "w_fa826c5b2f719b6e",
@@ -16734,7 +18089,11 @@
     "word": "frontier",
     "meaning": "〔通例the ～s〕最先端；〔the ～〕 【米】辺境地；国境",
     "no": 1554,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "They lived on the frontier in the 19th century.",
+    "exampleJa": "彼らは19世紀に辺境で暮らしていた。",
+    "pronunciation": "frənˈtɪr"
   },
   {
     "id": "w_831677f3fd36c762",
@@ -16885,7 +18244,11 @@
     "word": "laundry",
     "meaning": "洗濯（物）；クリーニング店",
     "no": 1567,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "place",
+    "example": "I need to do the laundry this weekend.",
+    "exampleJa": "今週末に洗濯をする必要があります。",
+    "pronunciation": "ˈlɔndri"
   },
   {
     "id": "w_38871004a44ea4c1",
@@ -17000,7 +18363,11 @@
     "word": "hygiene",
     "meaning": "衛生（状態）；健康法",
     "no": 1577,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "body",
+    "example": "Good personal hygiene is important for preventing illness.",
+    "exampleJa": "個人の良好な衛生状態は、病気を予防するために重要です。",
+    "pronunciation": "ˈhaɪˌdʒin"
   },
   {
     "id": "w_ab3928cc17ad0973",
@@ -17043,14 +18410,22 @@
     "word": "empirical",
     "meaning": "経験的な；経験主義の",
     "no": 1581,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "thinking",
+    "example": "The theory is supported by empirical evidence.",
+    "exampleJa": "その理論は経験的な証拠によって裏付けられています。",
+    "pronunciation": "ˌɛmˈpɪrɪkəl"
   },
   {
     "id": "w_460f5fcde9e9b547",
     "word": "immense",
     "meaning": "膨大な",
     "no": 1582,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "The project required an immense amount of work.",
+    "exampleJa": "そのプロジェクトは膨大な量の作業を必要とした。",
+    "pronunciation": "ˌɪˈmɛns"
   },
   {
     "id": "w_4d8c66e9fadd7975",
@@ -17141,21 +18516,33 @@
     "word": "hollow",
     "meaning": "空洞の；空虚な；うわべだけの",
     "no": 1590,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "nature",
+    "example": "The tree trunk was hollow inside.",
+    "exampleJa": "その木の幹は中が空洞だった。",
+    "pronunciation": "ˈhɑloʊ"
   },
   {
     "id": "w_cfdc6e95d29875a7",
     "word": "crude",
     "meaning": "大まかな；粗野な；未精製の",
     "no": 1591,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "making",
+    "example": "The first step is to process the crude oil.",
+    "exampleJa": "最初のステップは原油を処理することです。",
+    "pronunciation": "krud"
   },
   {
     "id": "w_27d01ddcb4e8683c",
     "word": "sore",
     "meaning": "痛い；腹が立って",
     "no": 1592,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "body",
+    "example": "I have a sore throat and a headache.",
+    "exampleJa": "私は喉が痛くて頭痛がします。",
+    "pronunciation": "sɔr"
   },
   {
     "id": "w_f4d8afaee9d4bfa9",
@@ -17198,7 +18585,11 @@
     "word": "edible",
     "meaning": "食用の，食べられる",
     "no": 1596,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "food",
+    "example": "Not all mushrooms are edible; some are poisonous.",
+    "exampleJa": "すべてのキノコが食べられるわけではありません。毒性のあるものもあります。",
+    "pronunciation": "ˈɛdəbəl"
   },
   {
     "id": "w_ed24cc80f237e88d",
@@ -17217,7 +18608,11 @@
     "word": "explicit",
     "meaning": "明白な（⇔ implicit ⇒ 1795）；率直な",
     "no": 1598,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "He gave me explicit instructions.",
+    "exampleJa": "彼は私に明白な指示を与えた。",
+    "pronunciation": "ɪkˈsplɪsət"
   },
   {
     "id": "w_1c5f55f7aa6fe1f9",
@@ -17260,7 +18655,11 @@
     "word": "exert",
     "meaning": "を及ぼす；（力など）を行使する",
     "no": 1602,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "He exerted all his strength to lift the heavy box.",
+    "exampleJa": "彼はその重い箱を持ち上げるために全力を尽くした。",
+    "pronunciation": "ɪɡˈzɝt"
   },
   {
     "id": "w_87fb61ed14cb378d",
@@ -17399,7 +18798,11 @@
     "word": "dictate",
     "meaning": "を指図する；を書き取らせる；を規定する",
     "no": 1614,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "body",
+    "example": "He dictated a letter to his secretary.",
+    "exampleJa": "彼は秘書に手紙を口述筆記させた。",
+    "pronunciation": "dɪkˈteɪt"
   },
   {
     "id": "w_dbeffcd8e735f8eb",
@@ -17526,7 +18929,11 @@
     "word": "grind",
     "meaning": "（穀物など）をひく",
     "no": 1625,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "They grind wheat to make flour.",
+    "exampleJa": "彼らは小麦をひいて小麦粉を作ります。",
+    "pronunciation": "ɡraɪnd"
   },
   {
     "id": "w_25decccb47eb0769",
@@ -17641,7 +19048,11 @@
     "word": "disregard",
     "meaning": "を無視する；を軽視する",
     "no": 1635,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "He disregarded the doctor's advice and continued to smoke.",
+    "exampleJa": "彼は医者の忠告を無視して喫煙を続けた。",
+    "pronunciation": "ˌdɪsrɪˈɡɑrd"
   },
   {
     "id": "w_0f61c33d0873a318",
@@ -17660,7 +19071,11 @@
     "word": "evoke",
     "meaning": "を呼び起こす",
     "no": 1637,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "The old photograph evoked memories of her childhood.",
+    "exampleJa": "その古い写真は彼女の子供時代の記憶を呼び起こした。",
+    "pronunciation": "ɪˈvoʊk"
   },
   {
     "id": "w_42ff627a85d617d5",
@@ -17691,7 +19106,11 @@
     "word": "contemplate",
     "meaning": "（を）熟考する；を予想する",
     "no": 1640,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "thinking",
+    "example": "I need some time to contemplate your offer.",
+    "exampleJa": "あなたの申し出を熟考するために少し時間が必要です。",
+    "pronunciation": "ˈkɑntəmˌpleɪt"
   },
   {
     "id": "w_54f9767126b67c3b",
@@ -18274,7 +19693,11 @@
     "word": "eternal",
     "meaning": "永遠の；不変の",
     "no": 1689,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "He believes in eternal life after death.",
+    "exampleJa": "彼は死後の永遠の命を信じています。",
+    "pronunciation": "ɪˈtɝnəl"
   },
   {
     "id": "w_099316d52e8dbd46",
@@ -18377,7 +19800,11 @@
     "word": "extrovert",
     "meaning": "外向的な；社交的な",
     "no": 1698,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "people",
+    "example": "She is an extrovert who loves meeting new people.",
+    "exampleJa": "彼女は新しい人々に会うのが大好きな社交的な人です。",
+    "pronunciation": "ˈɛkstrəˌvɝt"
   },
   {
     "id": "w_a584dc12f17a68e7",
@@ -18408,7 +19835,11 @@
     "word": "embody",
     "meaning": "を具現する；を包含する",
     "no": 1701,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "She embodies the values of honesty and integrity.",
+    "exampleJa": "彼女は正直さと誠実さの価値観を体現しています。",
+    "pronunciation": "ɪmˈbɑdi"
   },
   {
     "id": "w_d5ebcc0de88638f4",
@@ -18451,7 +19882,11 @@
     "word": "disclose",
     "meaning": "を公表する，暴く",
     "no": 1705,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "speaking",
+    "example": "The company refused to disclose the details of the agreement.",
+    "exampleJa": "その会社は契約の詳細を公表することを拒否した。",
+    "pronunciation": "dɪˈskloʊz"
   },
   {
     "id": "w_9257d677ce1dfa92",
@@ -18494,7 +19929,11 @@
     "word": "hinder",
     "meaning": "を妨げる",
     "no": 1709,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "Lack of sleep can hinder your performance.",
+    "exampleJa": "睡眠不足はあなたのパフォーマンスを妨げる可能性があります。",
+    "pronunciation": "ˈhɪndɚ"
   },
   {
     "id": "w_61a58a04f2e0de7c",
@@ -18537,7 +19976,11 @@
     "word": "erupt",
     "meaning": "（火山が）噴火する；勃発する",
     "no": 1713,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "The volcano could erupt at any moment.",
+    "exampleJa": "その火山はいつでも噴火する可能性があります。",
+    "pronunciation": "ɪˈrʌpt"
   },
   {
     "id": "w_c3a4a8cce12b078d",
@@ -18568,14 +20011,22 @@
     "word": "embed",
     "meaning": "〔通例受身形で〕埋め込まれる，はめ込まれる",
     "no": 1716,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "A video was embedded in the webpage.",
+    "exampleJa": "ウェブページにビデオが埋め込まれていた。",
+    "pronunciation": "ɪmˈbɛd"
   },
   {
     "id": "w_cd4c673a62a70459",
     "word": "displace",
     "meaning": "に取って代わる（≒ replace）；を移動させる",
     "no": 1717,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "The new technology has displaced many traditional workers.",
+    "exampleJa": "新しい技術は多くの伝統的な労働者に取って代わった。",
+    "pronunciation": "dɪˈspleɪs"
   },
   {
     "id": "w_00bff4fba79f0647",
@@ -18714,7 +20165,11 @@
     "word": "flush",
     "meaning": "を紅潮させる；を水で流す；紅潮する",
     "no": 1729,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "nature",
+    "example": "She flushed with embarrassment when he praised her.",
+    "exampleJa": "彼が彼女を褒めたとき、彼女は恥ずかしさで顔を赤らめた。",
+    "pronunciation": "flʌʃ"
   },
   {
     "id": "w_a90f033f5a3148c5",
@@ -18769,14 +20224,22 @@
     "word": "haunt",
     "meaning": "（記憶・考えなどが）につきまとう；（幽霊などが）に出る；によく行く",
     "no": 1734,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "emotion",
+    "example": "The memory of the accident haunted him for years.",
+    "exampleJa": "その事故の記憶は何年もの間、彼につきまとった。",
+    "pronunciation": "hɔnt"
   },
   {
     "id": "w_053518ea40d15876",
     "word": "divert",
     "meaning": "（注意など）をそらす；を迂回させる；（資金など）を転用する",
     "no": 1735,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "The police diverted traffic away from the scene of the accident.",
+    "exampleJa": "警察は事故現場から交通を迂回させた。",
+    "pronunciation": "daɪˈvɝt"
   },
   {
     "id": "w_80d56f2f62d4cfa1",
@@ -18831,7 +20294,11 @@
     "word": "entail",
     "meaning": "を伴う，引き起こす；（...すること）を含む（doing）",
     "no": 1740,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "change",
+    "example": "The job entails a lot of responsibility.",
+    "exampleJa": "その仕事は多くの責任を伴います。",
+    "pronunciation": "ɛnˈteɪl"
   },
   {
     "id": "w_651b1b6535d4e00a",
@@ -18910,7 +20377,11 @@
     "word": "deficit",
     "meaning": "赤字，不足；欠陥",
     "no": 1747,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "quantity",
+    "example": "The government is trying to reduce the budget deficit.",
+    "exampleJa": "政府は財政赤字を削減しようとしています。",
+    "pronunciation": "ˈdɛfəsət"
   },
   {
     "id": "w_8b070aa8ea71f46d",
@@ -18929,7 +20400,11 @@
     "word": "hazard",
     "meaning": "危険（要素）；偶然",
     "no": 1749,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "quality",
+    "example": "Smoking is a major health hazard.",
+    "exampleJa": "喫煙は重大な健康上の危険です。",
+    "pronunciation": "ˈhæzɚd"
   },
   {
     "id": "w_a726761e376dc435",
@@ -19764,7 +21239,11 @@
     "word": "corrupt",
     "meaning": "を堕落させる；を買収する；堕落する",
     "no": 1819,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "work",
+    "example": "Power can corrupt even the most honest people.",
+    "exampleJa": "権力は最も正直な人々でさえ堕落させることがあります。",
+    "pronunciation": "kɚˈʌpt"
   },
   {
     "id": "w_c4b129cc93080d51",
@@ -19795,7 +21274,11 @@
     "word": "compile",
     "meaning": "を編集する；（資料など）をまとめる",
     "no": 1822,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "The report was compiled from various sources.",
+    "exampleJa": "その報告書は様々な情報源からまとめられた。",
+    "pronunciation": "kəmˈpaɪl"
   },
   {
     "id": "w_df31e09c234bab37",
@@ -19898,7 +21381,11 @@
     "word": "forge",
     "meaning": "を偽造する；（関係など）を築く；を鍛造する",
     "no": 1831,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "making",
+    "example": "They are trying to forge a new partnership.",
+    "exampleJa": "彼らは新しいパートナーシップを築こうとしています。",
+    "pronunciation": "fɔrdʒ"
   },
   {
     "id": "w_aa0a7893fe3c5f37",
@@ -19917,7 +21404,11 @@
     "word": "dispatch",
     "meaning": "を派遣する；を発送する；を処理する",
     "no": 1833,
-    "partOfSpeech": ""
+    "partOfSpeech": "動",
+    "theme": "movement",
+    "example": "The company dispatched a team of engineers to fix the problem.",
+    "exampleJa": "その会社は問題を修理するためにエンジニアのチームを派遣した。",
+    "pronunciation": "dɪˈspætʃ"
   },
   {
     "id": "w_dbe0bbb2d974db78",
@@ -20044,14 +21535,22 @@
     "word": "embassy",
     "meaning": "大使館；大使一行",
     "no": 1844,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "He works at the Japanese embassy in Washington D.C.",
+    "exampleJa": "彼はワシントンD.C.の日本大使館で働いています。",
+    "pronunciation": "ˈɛmbəsi"
   },
   {
     "id": "w_c4319379639be65b",
     "word": "exile",
     "meaning": "亡命（者）；（国外）追放",
     "no": 1845,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "He spent many years in exile.",
+    "exampleJa": "彼は何年も亡命生活を送った。",
+    "pronunciation": "ˈɛɡˌzaɪl"
   },
   {
     "id": "w_717b00535a7f4626",
@@ -20166,7 +21665,11 @@
     "word": "errand",
     "meaning": "（人の）使い，使い走り；用件",
     "no": 1855,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "people",
+    "example": "I have to run some errands for my mother.",
+    "exampleJa": "私は母のためにいくつか用事を済ませなければなりません。",
+    "pronunciation": "ˈɛrənd"
   },
   {
     "id": "w_efa8201cc33b2385",
@@ -20377,7 +21880,11 @@
     "word": "contempt",
     "meaning": "軽蔑；恥辱",
     "no": 1873,
-    "partOfSpeech": ""
+    "partOfSpeech": "名",
+    "theme": "emotion",
+    "example": "She looked at him with contempt.",
+    "exampleJa": "彼女は彼を軽蔑の目で見た。",
+    "pronunciation": "kənˈtɛmpt"
   },
   {
     "id": "w_b090a1205c5c754c",
@@ -20576,14 +22083,22 @@
     "word": "humid",
     "meaning": "湿気のある（≒ muggy 蒸し暑い）",
     "no": 1890,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "The weather is hot and humid in the summer.",
+    "exampleJa": "夏は天気が暑くて湿気があります。",
+    "pronunciation": "ˈhjuməd"
   },
   {
     "id": "w_5880f3d464319a3e",
     "word": "contagious",
     "meaning": "感染（性）の；病気を伝染する",
     "no": 1891,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "quality",
+    "example": "The flu is a highly contagious disease.",
+    "exampleJa": "インフルエンザは非常に感染力の強い病気です。",
+    "pronunciation": "kənˈteɪdʒəs"
   },
   {
     "id": "w_ad6e1880c3d2d8b3",
@@ -20602,7 +22117,11 @@
     "word": "dumb",
     "meaning": "ばかげた；口のきけない；無言の",
     "no": 1893,
-    "partOfSpeech": ""
+    "partOfSpeech": "形",
+    "theme": "body",
+    "example": "That was a dumb mistake to make.",
+    "exampleJa": "それはばかげた間違いだった。",
+    "pronunciation": "dʌm"
   },
   {
     "id": "w_3197aad445da1183",
