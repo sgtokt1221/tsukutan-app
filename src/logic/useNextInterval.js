@@ -12,7 +12,7 @@ import { nextIntervalDays } from './swipeIntent';
  *
  * 読み終わるまでは null（札は日数を言わない）。
  */
-export function useNextInterval(uid, word) {
+export function useNextInterval(uid, word, motivationLevel) {
   const [result, setResult] = useState({ id: null, days: null });
   const id = word?.id;
 
@@ -20,13 +20,13 @@ export function useNextInterval(uid, word) {
     if (!id) return undefined;
     if (!uid) {
       // ログインしていなければ記録を書かない。カードの中身で見積もる
-      setResult({ id, days: nextIntervalDays(word) });
+      setResult({ id, days: nextIntervalDays(word, motivationLevel) });
       return undefined;
     }
     let alive = true;
     getDoc(doc(db, 'users', uid, 'reviewWords', id))
       .then((snap) => {
-        if (alive) setResult({ id, days: nextIntervalDays(snap.exists() ? snap.data() : null) });
+        if (alive) setResult({ id, days: nextIntervalDays(snap.exists() ? snap.data() : null, motivationLevel) });
       })
       .catch(() => {
         if (alive) setResult({ id, days: null });
@@ -34,7 +34,7 @@ export function useNextInterval(uid, word) {
     return () => { alive = false; };
     // 同じ語のあいだは読み直さない
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uid, id]);
+  }, [uid, id, motivationLevel]);
 
   return result.id === id ? result.days : null;
 }

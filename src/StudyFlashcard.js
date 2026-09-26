@@ -73,6 +73,9 @@ export default function StudyFlashcard({
   onFirstCompletion,
   // 今日の新規・おかわりだけ渡る。1語ずつ記録して、途中で閉じても再開できるようにする
   onWordAnswered,
+  // 生徒が選んだやる気のペース（userData.goal.motivationLevel）。次に出るまでの間隔に効く。
+  // **渡し忘れると全員「普通」になる**（2026-09-26 まで実際にそうだった。エラーは出ない）
+  motivationLevel,
 }) {
   const policy = studyModePolicy(learningMode);
   const allowSwipeUp = policy.swipeUp;
@@ -242,7 +245,7 @@ export default function StudyFlashcard({
 
   const currentWord = cards[currentIndex];
   // 札の「次は何日後」。保存済みの記録から（→ logic/useNextInterval.js）
-  const nextDays = useNextInterval(uid, currentWord);
+  const nextDays = useNextInterval(uid, currentWord, motivationLevel);
   const intentAt = useCallback((dx, dy) => swipeIntentAt(dx, dy, allowSwipeUp), [allowSwipeUp]);
   const intentTextOf = useCallback((kind) => intentText(kind, { days: nextDays, policy }), [nextDays, policy]);
 
@@ -290,7 +293,7 @@ export default function StudyFlashcard({
   const recordAnswer = useCallback((word, quality, wasRevealed) => {
     if (!uid || !word) return null;
     return trackWrite(
-      updateUserWordProgress(uid, word, quality, false, undefined, { revealed: wasRevealed })
+      updateUserWordProgress(uid, word, quality, false, motivationLevel, { revealed: wasRevealed })
         .then((result) => {
           if (result?.created) newlyLearnedIdsRef.current.add(word.id);
           onWordAnsweredRef.current?.(word.id);
@@ -302,7 +305,7 @@ export default function StudyFlashcard({
           return null;
         }),
     );
-  }, [uid, trackWrite]);
+  }, [uid, trackWrite, motivationLevel]);
 
   /** フラッシュカードで答えた（わかった / もう一度） */
   const handleAnswer = useCallback(async (quality) => {

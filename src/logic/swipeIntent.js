@@ -5,7 +5,7 @@
  * 札は「決まり」と言っているのに離しても何も起きない、が起きる。
  *
  * 「次は何日後」は、離したときに実際に書く計算（`nextSchedule`）と同じもので出す。
- * 学習画面は `updateUserWordProgress` をやる気レベル無しで呼ぶので、ここも普通で計算する。
+ * やる気のペースも、採点するときに渡すのと同じもの（`motivationLevel`）で計算する。
  * **元にするのは保存済みの記録（reviewWords の文書）。カードの語ではない**
  * （→ `useNextInterval`）。自由学習や毎日みる単語のカードは記録を持っていないので、
  * カードで計算すると、17日後に書くのに「明日」と出ていた（2026-09-26）。
@@ -54,9 +54,10 @@ export function testIntentAt(dx) {
 /**
  * 「わかった」にしたら、次に出るのは何日後か。
  * @param {object|null} saved 保存済みの記録（reviewWords の文書）。無ければはじめての語
+ * @param {string} [motivationLevel] 生徒のペース。無ければ普通（updateUserWordProgress と同じ）
  */
-export function nextIntervalDays(saved) {
-  const { interval } = nextSchedule(saved || {}, ANSWER_QUALITY.good, getMotivationConfig());
+export function nextIntervalDays(saved, motivationLevel) {
+  const { interval } = nextSchedule(saved || {}, ANSWER_QUALITY.good, getMotivationConfig(motivationLevel));
   return interval;
 }
 
@@ -65,8 +66,8 @@ export function nextIntervalDays(saved) {
  * @param {number} count 何回ぶん
  * @returns {number[]} 例：普通なら [1, 6, 17, 48]
  */
-export function reviewGaps(count) {
-  const config = getMotivationConfig();
+export function reviewGaps(count, motivationLevel) {
+  const config = getMotivationConfig(motivationLevel);
   const gaps = [];
   let state = { interval: 0, repetitions: 0, easeFactor: 2.5 };
   for (let i = 0; i < count; i++) {
