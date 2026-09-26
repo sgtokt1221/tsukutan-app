@@ -13,8 +13,7 @@ import BookmarkButton from './components/learning/BookmarkButton';
 import CardFace from './components/learning/CardFace';
 import WordbookList from './components/learning/WordbookList';
 import SwipeIntent from './components/learning/SwipeIntent';
-import FlashcardCoach from './components/learning/FlashcardCoach';
-import WordbookCoach from './components/learning/WordbookCoach';
+import CoachModal from './components/learning/CoachModal';
 import { useSeenOnce, coachKeyFor, WORDBOOK_COACH_KEY } from './logic/useSeenOnce';
 import { studyModePolicy, sessionTitle } from './logic/studyMode';
 import { finishedLog, leftLog } from './logic/studyLog';
@@ -137,17 +136,10 @@ export default function StudyFlashcard({
   const cardColor = useTransform([x, y], ([lx, ly]) => cardColorAt(lx, ly, allowSwipeUp));
 
   /*
-    **案内。** そのモードを初めて開いた1枚目で、カードが自分で動いて見せる（'demo'）。
-    終わったら「やってみよう」（'try'）を出し、1回答えたら消す。鍵は動きの違いごと（→ useSeenOnce.js）
+    **案内。** そのモードを初めて開いたとき、使い方をモーダルで出す。本物のカードは動かさない
+    （自分で動くと「勝手に動いている」に見えた）。鍵は動きの違いごと（→ useSeenOnce.js）
   */
   const [cardCoachSeen, markCardCoachSeen] = useSeenOnce(coachKeyFor(policy));
-  const [coachPhase, setCoachPhase] = useState(() => (cardCoachSeen ? null : 'demo'));
-  const [coachLine, setCoachLine] = useState('');
-  const [coachRemove, setCoachRemove] = useState(false);
-  const endCoachDemo = useCallback(() => {
-    setCoachPhase((phase) => (phase === 'demo' ? 'try' : phase));
-    markCardCoachSeen();
-  }, [markCardCoachSeen]);
   const [wordbookCoachSeen, markWordbookCoachSeen] = useSeenOnce(WORDBOOK_COACH_KEY);
 
   const resetCard = useCallback(() => {
@@ -310,7 +302,6 @@ export default function StudyFlashcard({
   const handleAnswer = useCallback(async (quality) => {
     // **手を動かした印。** 放置の判定と、つくばホームへ送る新規語数／復習語数の分かれ目
     noteActivity(policy.activity);
-    setCoachPhase(null);
     const word = cards[currentIndex];
     // 答えを見てから「わかった」を押しても茶々は入れない（2026-09-24 に吹き出しを外した）
 
@@ -370,7 +361,6 @@ export default function StudyFlashcard({
   const handleRemoveCurrent = useCallback(async () => {
     const word = cards[currentIndex];
     if (!word) return;
-    setCoachPhase(null);
     removeWord(word);
     resetCard();
     if (currentIndex >= cards.length - 1) await finishSession(currentIndex);
@@ -700,11 +690,7 @@ export default function StudyFlashcard({
         />
 
         {!wordbookCoachSeen && (
-          <WordbookCoach
-            shellRef={wordbookShellRef}
-            removeLabel={policy.removeLabel}
-            onDone={markWordbookCoachSeen}
-          />
+          <CoachModal kind="wordbook" policy={policy} onClose={markWordbookCoachSeen} />
         )}
 
         {/* 上に戻るボタン。カードに被らないよう右下の余白へ寄せる */}
@@ -768,19 +754,6 @@ export default function StudyFlashcard({
       <div id="flashcard-container">
         {/* 動かしている最中の「離すとどうなるか」。毎回出す */}
         <SwipeIntent x={x} y={y} allowSwipeUp={allowSwipeUp} word={currentWord} policy={policy} />
-        {coachPhase && (
-          <FlashcardCoach
-            phase={coachPhase}
-            x={x}
-            y={y}
-            allowSwipeUp={allowSwipeUp}
-            removeCoachText={policy.removeCoach}
-            onFlip={setIsFlipped}
-            onHighlightRemove={setCoachRemove}
-            onDemoEnd={endCoachDemo}
-            onLine={setCoachLine}
-          />
-        )}
         <motion.div
           key={currentIndex}
           id="flashcard"
@@ -832,19 +805,10 @@ export default function StudyFlashcard({
           fullLabel: policy.removeLabel,
           hint: policy.removeHint,
           onClick: handleRemoveCurrent,
-          coached: coachRemove,
         }}
-        hint={coachPhase && coachLine ? (
-          <span className="coach-line" key={coachLine}>
-            {coachLine}
-            {coachPhase === 'demo' && (
-              <button type="button" className="coach-skip" data-coach-skip onClick={endCoachDemo}>
-                とばす
-              </button>
-            )}
-          </span>
-        ) : undefined}
       />
+
+      {!cardCoachSeen && <CoachModal kind="card" policy={policy} onClose={markCardCoachSeen} />}
 
       {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く。
           「前の画面に戻る」は置かない。ヘッダーの「終了」と同じ行き先で、
