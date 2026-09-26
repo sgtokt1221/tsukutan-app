@@ -7,7 +7,7 @@ import { analyzeUserPerformance, generateLearningRecommendations } from './logic
 import { auth } from './firebaseConfig';
 import logger from './logic/logger';
 import RankBadge from './components/assessment/RankBadge';
-import { rankForScore, abilityScoreOf, rankLabel } from './logic/rankLogic';
+import { rankForScore, abilityScoreOf, rankLabel, tierForScore } from './logic/rankLogic';
 
 // レベル定義
 
@@ -85,7 +85,7 @@ function TestResult({ level, onRestart, responseTimes = [], estimatedVocabulary,
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="result-rank-award"
           >
-            <RankBadge rankId={resultRank?.id ?? null} size="large" />
+            <RankBadge rankId={resultRank?.id ?? null} size="large" tier={tierForScore(resultScore)} />
             <span className="result-rank-caption">
               {resultRank ? `ランク ${resultRankText} 獲得` : 'ランク測定中'}
             </span>
