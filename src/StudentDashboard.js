@@ -40,7 +40,7 @@ import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStu
 import RecommendationBadge from './components/student/RecommendationBadge';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
-import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
+import { bestRankOf, rankForScore, abilityScoreOf } from './logic/rankLogic';
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster, loadManifest, loadTextbookWords } from './logic/wordMaster';
@@ -308,6 +308,7 @@ export default function StudentDashboard() {
   const [testResultLevel, setTestResultLevel] = useState(0);
   // テストで保存した推定語彙数（結果画面に出す）
   const [testResultVocabulary, setTestResultVocabulary] = useState(null);
+  const [testResultAbility, setTestResultAbility] = useState(null);
   
   // デバッグログ: testResultLevelの値を監視
   useEffect(() => {
@@ -330,8 +331,12 @@ export default function StudentDashboard() {
     return names.length === 1 ? names[0] : `${names[0]} ほか${names.length - 1}件`;
   })();
 
-  // 能力スコアとランク。現行の level からの暫定換算（計画書12 フェーズ1）。
-  const abilityScore = scoreFromLegacyLevel(testResultLevel);
+  // 能力スコアとランク。テストで推定した力があればそこから（ランク内の初級・中級・上級まで出る）。
+  // 受けた直後は userData の読み直しより先に画面が変わるので、テストが返した値を先に使う
+  const abilityScore = abilityScoreOf({
+    level: testResultLevel,
+    ability: testResultAbility ?? userData?.progress?.assessedAbility,
+  });
   // 復習の卒業ぐあいから見たレベル（progressLogic が書く）。表示だけに使う。
   const estimatedLevel = userData?.progress?.estimatedLevel || null;
   const levelAhead = isAheadOfAssessment(estimatedLevel, testResultLevel);
@@ -664,10 +669,11 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleTestComplete = (finalLevel, responseTimes = [], estimatedVocabulary = null) => {
+  const handleTestComplete = (finalLevel, responseTimes = [], estimatedVocabulary = null, ability = null) => {
     logger.debug('🎯 テスト完了処理開始:', finalLevel, responseTimes);
     setTestResultLevel(finalLevel);
     setTestResultVocabulary(estimatedVocabulary);
+    setTestResultAbility(ability);
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
     }
@@ -1558,6 +1564,7 @@ export default function StudentDashboard() {
             responseTimes={lastResponseTimes}
             // 再読み込みしたときは保存済みの値（progress.assessedVocabulary）に戻る
             estimatedVocabulary={testResultVocabulary ?? userData?.progress?.assessedVocabulary}
+            ability={testResultAbility ?? userData?.progress?.assessedAbility}
           />
         );
       case 'select':

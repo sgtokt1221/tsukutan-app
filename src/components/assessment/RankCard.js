@@ -11,6 +11,8 @@ import {
   progressWithinRank,
   rankIndex,
   rankForScore,
+  tierForScore,
+  nextStep,
 } from '../../logic/rankLogic';
 import { buildEquivalency } from '../../logic/examEquivalency';
 import './RankCard.css';
@@ -138,6 +140,9 @@ export default function RankCard({
 
   const next = nextRank(rank.id);
   const remaining = pointsToNextRank(displayScore);
+  // ランクの中の段（初級・中級・上級）と、次の段まで（2026-09-26）
+  const tier = tierForScore(displayScore);
+  const step = nextStep(displayScore);
   const rankProgress = progressWithinRank(displayScore);
   const percent = Math.round(rankProgress * 100);
   const currentIndex = rankIndex(rank.id);
@@ -166,6 +171,11 @@ export default function RankCard({
         </div>
 
         <div className="rank-card__compact-summary">
+          {tier && (
+            <p className="rank-card__tier">
+              {rank.id} <strong>{tier.label}</strong>
+            </p>
+          )}
           <div className="rank-card__compact-heading">
             {/* 「全7段階の6番目」はアプリ内でしか意味を持たない。
                 生徒が知りたいのは外の物差しでどのあたりかなので、
@@ -199,10 +209,10 @@ export default function RankCard({
               </button>
             )}
           </div>
-          {next && !next.locked && (
+          {step && (
             <p className="rank-card__next-message">
               <span aria-hidden="true">↗</span>
-              次の {next.id} まで あと {remaining}
+              {step.label} まで あと {step.points}
             </p>
           )}
         </div>
@@ -217,6 +227,7 @@ export default function RankCard({
       <div className="rank-card__head">
         <RankBadge rankId={rank.id} size="large" />
         <div className="rank-card__summary">
+          {tier && <p className="rank-card__tier">{rank.id} <strong>{tier.label}</strong></p>}
           <p className="rank-card__label">能力スコア</p>
           <p className="rank-card__score">
             {Math.round(score)}

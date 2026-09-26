@@ -8,7 +8,9 @@ describe('RankCard compact rank journey', () => {
     // ホームは「全7段階の4番目」ではなく、外の物差しでの位置を出す
     expect(screen.getByText('英検準2級〜準2級プラス')).toBeInTheDocument();
     expect(screen.getByText('TOEIC 385〜545 相当')).toBeInTheDocument();
-    expect(screen.getByText('次の A まで あと 57')).toBeInTheDocument();
+    // B は 425〜574。518 は中級で、次は B 上級（525 から）
+    expect(screen.getByText('B 上級 まで あと 7')).toBeInTheDocument();
+    expect(screen.getByText('中級')).toBeInTheDocument();
 
     const journey = screen.getByLabelText('ランクの全体マップ。B ランク、全7段階の4番目');
     const steps = within(journey).getAllByRole('listitem');

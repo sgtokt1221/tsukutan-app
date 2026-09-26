@@ -502,8 +502,9 @@ function RankScene() {
         <span className="ob-rank__side ob-rank__side--yes">わかる →</span>
       </div>
       <p className="ob-cap">
-        ホームの「現在のランク」から単語力チェックテストを受けると、いまの力が E〜SS の7段階で分かり、
-        新しい単語もその力に合わせて出ます。しばらく受けていないと、もう一度受けるよう声をかけます。
+        ホームの「現在のランク」から単語力チェックテストを受けると、いまの力が E〜SS の7段階
+        （それぞれ初級・中級・上級）で分かり、新しい単語もその力に合わせて出ます。
+        わからない語は長押しで答えをのぞけます。しばらく受けていないと、もう一度受けるよう声をかけます。
       </p>
     </div>
   );
@@ -736,7 +737,7 @@ export const STEPS = [
   { id: 'plan', where: HOW, Scene: PlanScene, title: '今日のぶんは自動で決まる', body: '目標と達成日から逆算して、毎日計算し直します。目標はホームの「目標」でいつでも変えられます。' },
   { id: 'tasks', where: tab('home'), Scene: TasksScene, title: '毎日「今日のタスク」から始める', body: 'ホームに、今日やる単語が3種類並びます。' },
   { id: 'curve', where: HOW, Scene: CurveScene, title: '忘れる前に、もう一度出る', body: '覚えたかどうかで、次に出る日が変わります。' },
-  { id: 'dest', where: CARD, Scene: DestScene, title: 'カードの行き先は3つ', body: '答えを見たら、どれか1つを選びます。' },
+  { id: 'dest', where: CARD, Scene: DestScene, title: 'カードの行き先は3つ', body: 'タップか長押しで答えを見たら、どれか1つを選びます。' },
   { id: 'tools', where: CARD, Scene: ToolsScene, title: 'カードの上の道具', body: '覚えにくい語に印を付けたり、聞いて覚えたりできます。' },
   { id: 'wordbook', where: CARD, Scene: WordbookScene, title: '単語帳なら、まとめて見わたせる', body: 'カードを1枚ずつめくらず、一覧でどんどん確かめられます。' },
   { id: 'rank', where: tab('home'), Scene: RankScene, title: 'ランクで、いまの力が分かる', body: '最初に単語力チェックテストを受けておくと、ちょうどいい単語から始められます。' },

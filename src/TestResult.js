@@ -7,7 +7,7 @@ import { analyzeUserPerformance, generateLearningRecommendations } from './logic
 import { auth } from './firebaseConfig';
 import logger from './logic/logger';
 import RankBadge from './components/assessment/RankBadge';
-import { rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
+import { rankForScore, abilityScoreOf, rankLabel } from './logic/rankLogic';
 
 // レベル定義
 
@@ -21,9 +21,10 @@ const getLevelColor = (level) => {
 /**
  * @param {object} props
  * @param {number} props.level 判定したレベル（1〜MAX_WORD_LEVEL）
- * @param {number} [props.estimatedVocabulary] テストで保存した推定語彙数（`estimateVocabulary` の値）
+ * @param {number} [props.estimatedVocabulary] テストで保存した推定語彙数（`expectedVocabulary` の値）
+ * @param {number} [props.ability] テストで推定した力（小数のレベル）。ランクの中の段を出すのに使う
  */
-function TestResult({ level, onRestart, responseTimes = [], estimatedVocabulary }) {
+function TestResult({ level, onRestart, responseTimes = [], estimatedVocabulary, ability }) {
   const [meterWidth, setMeterWidth] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
   const [loadingAnalysis, setLoadingAnalysis] = useState(true);
@@ -64,7 +65,10 @@ function TestResult({ level, onRestart, responseTimes = [], estimatedVocabulary 
   const info = getLevel(level);
   const label = info?.label || 'レベル判定中';
   const equivalent = info ? getLevelEquivalent(level) : '';
-  const resultRank = rankForScore(scoreFromLegacyLevel(level));
+  const resultScore = abilityScoreOf({ level, ability });
+  const resultRank = rankForScore(resultScore);
+  // 「S 上級」のように、ランクの中の段まで出す
+  const resultRankText = rankLabel(resultScore) || resultRank?.id;
 
   return (
     <div className="test-result-container stylish-result">
@@ -83,7 +87,7 @@ function TestResult({ level, onRestart, responseTimes = [], estimatedVocabulary 
           >
             <RankBadge rankId={resultRank?.id ?? null} size="large" />
             <span className="result-rank-caption">
-              {resultRank ? `ランク ${resultRank.id} 獲得` : 'ランク測定中'}
+              {resultRank ? `ランク ${resultRankText} 獲得` : 'ランク測定中'}
             </span>
           </motion.div>
           <h2 className="result-title">診断結果</h2>
