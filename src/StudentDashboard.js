@@ -40,7 +40,7 @@ import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStu
 import RecommendationBadge from './components/student/RecommendationBadge';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
-import { bestRankOf, rankForScore, abilityScoreOf } from './logic/rankLogic';
+import { bestRankOf, rankForScore, abilityScoreOf, tierForScore } from './logic/rankLogic';
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
 import { loadWordMaster, loadManifest, loadTextbookWords } from './logic/wordMaster';
@@ -408,9 +408,11 @@ export default function StudentDashboard() {
     **自己ベスト（`bestRankId`）ではなく現在のランクを渡す。** 塾が見たいのは
     「いま何が読めるか」で、いちばん良かったときの記録ではない。
   */
+  // 段（初級・中級・上級）も一緒に送る（2026-09-26。つくばホームの生徒詳細に「B 上級」と出す）
+  const currentTierId = currentRankId ? tierForScore(abilityScore)?.id ?? null : null;
   useEffect(() => {
-    setStudyRank(currentRankId);
-  }, [currentRankId]);
+    setStudyRank(currentRankId, currentTierId);
+  }, [currentRankId, currentTierId]);
 
   // 教材ごとの収録語数は manifest を正とする。画面に数値を書かない。
   useEffect(() => {

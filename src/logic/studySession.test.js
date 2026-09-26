@@ -432,6 +432,21 @@ describe('ランクだけを送る', () => {
     expect(sentCalls).toHaveLength(1);
   });
 
+  test('**段（初級・中級・上級）も一緒に送る**（2026-09-26）', async () => {
+    setStudyRank('B', 'high');
+    await settle();
+    expect(sentCalls[0]).toEqual({ sessions: [], rank: 'B', rankTier: 'high', idToken: 'ID-TOKEN' });
+  });
+
+  test('**段だけ変わっても送り直す**（B 中級 → B 上級）', async () => {
+    setStudyRank('B', 'mid');
+    await settle();
+    setStudyRank('B', 'high');
+    await settle();
+    expect(sentCalls).toHaveLength(2);
+    expect(sentCalls[1].rankTier).toBe('high');
+  });
+
   test('上がったら送り直す', async () => {
     setStudyRank('B');
     await settle();
