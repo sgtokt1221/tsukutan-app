@@ -103,8 +103,10 @@ export default function RankCard({
     if (compact) {
       return (
         <div className="rank-card rank-card--compact rank-card--unmeasured">
-          <div className="rank-card__hero">
+          <div className="rank-card__topline">
             <span className="rank-card__eyebrow">現在のランク</span>
+          </div>
+          <div className="rank-card__hero">
             <RankBadge rankId={null} size="medium" />
           </div>
           <div className="rank-card__compact-summary">
@@ -163,9 +165,25 @@ export default function RankCard({
         className={`rank-card rank-card--compact rank-card--rank-${rank.id.toLowerCase()}`}
         style={{ '--current-rank-color': rank.color }}
       >
-        <div className="rank-card__hero">
+        {/* 見出しと再テストは最上段の1行に。以前は英検の表記が長いと、再テストが右端からはみ出した */}
+        <div className="rank-card__topline">
           <span className="rank-card__eyebrow">現在のランク</span>
-          <div className="rank-card__hero-badge">
+          {onRetest && (
+            <button
+              type="button"
+              className="rank-card__retest-link"
+              onClick={onRetest}
+              title="実力を測り直す"
+            >
+              {/* 印だけだと何のボタンか読めない。短く添える */}
+              <FaRedo aria-hidden="true" />
+              再テスト
+            </button>
+          )}
+        </div>
+
+        <div className="rank-card__hero">
+          <div className={tier ? 'rank-card__hero-badge has-tier' : 'rank-card__hero-badge'}>
             <RankBadge rankId={rank.id} size="xlarge" tier={tier} />
           </div>
         </div>
@@ -181,7 +199,15 @@ export default function RankCard({
                   {/* 「相当」が途中で改行して『相』『当』に割れないよう、
                       級と一緒のまとまりにして折り返させない */}
                   <span className="rank-card__compact-eiken">
-                    <strong>{equivalency.eikenShort}</strong>相当
+                    {/* 「準2級〜準2級プラス」のように長いときは「〜」のあとで折り返す */}
+                    <strong>
+                      {equivalency.eikenShort.split('〜').map((part, i, all) => (
+                        <React.Fragment key={part}>
+                          {part}
+                          {i < all.length - 1 && <>〜<wbr /></>}
+                        </React.Fragment>
+                      ))}
+                    </strong>相当
                   </span>
                   <span className="rank-card__compact-toeic">
                     TOEIC {equivalency.toeic.min}〜{equivalency.toeic.max} 相当
@@ -191,18 +217,6 @@ export default function RankCard({
                 <>全{RANK_LIST.length}段階の <strong>{currentIndex + 1}番目</strong></>
               )}
             </p>
-            {onRetest && (
-              <button
-                type="button"
-                className="rank-card__retest-link"
-                onClick={onRetest}
-                title="実力を測り直す"
-              >
-                {/* 印だけだと何のボタンか読めない。短く添える */}
-                <FaRedo aria-hidden="true" />
-                再テスト
-              </button>
-            )}
           </div>
           {step && (
             <p className="rank-card__next-message">
