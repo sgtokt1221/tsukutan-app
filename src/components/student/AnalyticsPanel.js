@@ -6,7 +6,7 @@ import TrendChart from './TrendChart';
 import RetentionBar from './RetentionBar';
 import RankCard from '../assessment/RankCard';
 import { abilityScoreOf, rankLabel } from '../../logic/rankLogic';
-import { retentionBreakdown } from '../../logic/retentionBreakdown';
+import { retentionBreakdown, retentionTowardGoal } from '../../logic/retentionBreakdown';
 import { abilityHistory, weeklyStudy, nextAction } from '../../logic/recordSummary';
 import './Record.css';
 
@@ -90,6 +90,7 @@ export default function AnalyticsPanel({ onNavigateTab, onStartTest }) {
   const weekWords = week.reduce((sum, d) => sum + d.words, 0);
   const next = nextAction({ history, retention, weekly: week });
   const known = progress.currentVocabulary;
+  const goalRetention = retentionTowardGoal(retention, { target: progress.targetVocabulary, reached: progress.currentVocabulary });
   const target = progress.targetVocabulary;
 
   const scores = history.map((p) => p.score);
@@ -149,10 +150,11 @@ export default function AnalyticsPanel({ onNavigateTab, onStartTest }) {
         <WeeklyBars days={week} />
       </section>
 
-      {retention && retention.total > 0 && (
+      {/* 目標の語数を分母にして、はじめから全体を見せる（習った語だけだと始めは空っぽに見えた） */}
+      {goalRetention && goalRetention.total > 0 && (
         <section className="rec-section">
           <h3 className="rec-title">定着の内訳</h3>
-          <RetentionBar breakdown={retention} />
+          <RetentionBar breakdown={goalRetention} />
         </section>
       )}
     </div>

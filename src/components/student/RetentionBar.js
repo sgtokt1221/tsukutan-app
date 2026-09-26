@@ -3,6 +3,7 @@ import './RetentionBar.css';
 
 /**
  * 定着の内訳。1本の帯で「あとどれくらいか」を見せる。
+ * 目標があれば、分母は目標の語数（retentionTowardGoal）。はじめから全体が見える。
  *
  * 円グラフにすると小さい割合が読めない。帯なら、覚えかけが
  * ほとんどを占めている状態が一目で分かる。
@@ -39,7 +40,11 @@ export default function RetentionBar({ breakdown }) {
         ))}
       </ul>
 
-      <p className="retention__total">復習リスト {breakdown.total.toLocaleString()} 語</p>
+      <p className="retention__total">
+        {breakdown.target
+          ? `目標 ${breakdown.target.toLocaleString()} 語のうち（復習リスト ${breakdown.learnedTotal.toLocaleString()} 語）`
+          : `復習リスト ${breakdown.total.toLocaleString()} 語`}
+      </p>
     </div>
   );
 }

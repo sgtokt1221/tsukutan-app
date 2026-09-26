@@ -167,3 +167,35 @@ export const withoutLearnedSpellings = (words, learnedEntries = []) => {
   const learned = new Set(learnedEntries.map(spellingOf).filter(Boolean));
   return words.filter((word) => !learned.has(spellingOf(word)));
 };
+
+/**
+ * 教材の難しさの真ん中（語のレベルの中央値。level の無い語は近くの語から見積もる）。
+ * 1語もレベルが分からなければ null。
+ */
+export const medianLevelOf = (words = []) => {
+  const levels = [...estimateLevels(words).values()].filter(Number.isFinite).sort((a, b) => a - b);
+  return levels.length ? levels[Math.floor((levels.length - 1) / 2)] : null;
+};
+
+/**
+ * 教材が目標に合うか（2026-09-26）。**選ぶのは止めない。合わないことを伝えるだけ**
+ * （学校の教科書を選びたい生徒もいる）。
+ *
+ * 目標のレベル（goals.json の targetLevel。英検2級＝5）と教材の真ん中を比べ、
+ * 2段以上離れていたら「やさしい／むずかしい」。実際の教材の真ん中：
+ * Sunshine 1年 1・2年 2・3年 3、LEAP 5、システム英単語 5、ターゲット1900 6。
+ *
+ * @returns {'fit'|'easy'|'hard'|null} 分からなければ null（印を出さない）
+ */
+export const fitForGoal = (medianLevel, targetLevel) => {
+  if (!Number.isFinite(medianLevel) || !Number.isFinite(targetLevel) || targetLevel <= 0) return null;
+  if (medianLevel < targetLevel - 1) return 'easy';
+  if (medianLevel > targetLevel + 1) return 'hard';
+  return 'fit';
+};
+
+export const FIT_TEXT = {
+  fit: '目標に合う',
+  easy: '目標よりやさしい',
+  hard: '目標よりむずかしい',
+};

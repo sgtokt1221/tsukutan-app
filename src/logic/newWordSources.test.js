@@ -144,3 +144,34 @@ describe('orderByLevelFit', () => {
     expect(ids(ordered)).toEqual(['l7', 'none']);
   });
 });
+
+describe('教材が目標に合うか（2026-09-26）', () => {
+  // eslint-disable-next-line global-require
+  const { fitForGoal, medianLevelOf } = require('./newWordSources');
+
+  test('目標から2段以上離れていたら、やさしい／むずかしい', () => {
+    expect(fitForGoal(1, 6)).toBe('easy');   // Sunshine 1年 で大学入試の最難関
+    expect(fitForGoal(6, 3)).toBe('hard');   // ターゲット1900 で英検3級
+    expect(fitForGoal(5, 5)).toBe('fit');    // LEAP で英検2級
+    expect(fitForGoal(4, 5)).toBe('fit');    // 1段の差は合う
+  });
+
+  test('目標が無い・教材のレベルが分からないときは印を出さない', () => {
+    expect(fitForGoal(5, 0)).toBeNull();
+    expect(fitForGoal(null, 5)).toBeNull();
+  });
+
+  test('教材の真ん中のレベル', () => {
+    expect(medianLevelOf([{ id: 'a', level: 1 }, { id: 'b', level: 3 }, { id: 'c', level: 5 }])).toBe(3);
+    expect(medianLevelOf([{ id: 'a' }])).toBeNull();
+  });
+});
+
+describe('選んだ教材が尽きても止めない（2026-09-26）', () => {
+  // eslint-disable-next-line global-require
+  const src = require('fs').readFileSync(require('path').join(__dirname, 'learningPlanner.js'), 'utf8');
+  test('足りないぶんは目標に合わせた教材（getNewWords）から埋め、印を残す', () => {
+    expect(src).toMatch(/newWordSource && newWordCandidates\.length < quota\.plannedNewWords/);
+    expect(src).toMatch(/newWordSourceFallback: sourceFallback/);
+  });
+});

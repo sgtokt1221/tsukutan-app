@@ -1762,7 +1762,9 @@ export default function StudentDashboard() {
               {dailyPlan.newWordSourceFinished && (
                 <p className="plan-notice" role="status">
                   「{dailyPlan.newWordSourceTitle}」の単語はすべて学習しました。
-                  「目標を再設定する」から、次の教材を選べます。
+                  {dailyPlan.newWordSourceFallback
+                    ? 'いまは目標に合わせた単語で続けています。「目標を再設定する」から次の教材も選べます。'
+                    : '「目標を再設定する」から、次の教材を選べます。'}
                 </p>
               )}
                <div className="task-cards-container">
