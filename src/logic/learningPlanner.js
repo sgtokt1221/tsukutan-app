@@ -79,6 +79,7 @@ const emptyPlan = (reason) => ({
   knowledgeHints: [],
   newWordSourceTitle: null,
   newWordSourceFinished: false,
+  newWordSourceFallback: false,
   reason,
 });
 
@@ -178,6 +179,7 @@ export const generateDailyPlan = async (userData, userId) => {
       knowledgeHints: stored.knowledgeHints || [],
       newWordSourceTitle: storedSource?.title ?? null,
       newWordSourceFinished: Boolean(storedSource && stored.newWordSourceFinished),
+      newWordSourceFallback: Boolean(storedSource && stored.newWordSourceFallback),
       dateKey,
       fromStoredPlan: true,
     };
@@ -190,9 +192,31 @@ export const generateDailyPlan = async (userData, userId) => {
   const goalIds = toGoalIds(userData?.goal?.targets);
   // 生徒が目標設定で教材を選んでいればそこから。おまかせ（未選択・知らないID）は今までどおり
   const newWordSource = getNewWordSource(userData?.goal?.newWordTextbook);
-  const { words: newWordCandidates, remainingCandidates, sourceFinished = false } = newWordSource
+  const picked = newWordSource
     ? await getNewWordsFromSource(newWordSource, quota.plannedNewWords, userLevel, allProgressEntries)
     : await getNewWords(quota.plannedNewWords, userLevel, allProgressEntries, goalIds);
+  const { sourceFinished = false } = picked;
+  let newWordCandidates = picked.words;
+  let remainingCandidates = picked.remainingCandidates;
+  /*
+    **選んだ教材が尽きても止めない**（2026-09-26）。以前は教材の語を学び終えると
+    新しい単語が0になり、「目標を再設定する」まで勉強が止まった。
+    足りないぶんは目標に合わせた教材（おまかせと同じ）から埋め、ホームでそう知らせる。
+  */
+  let sourceFallback = false;
+  if (newWordSource && newWordCandidates.length < quota.plannedNewWords) {
+    const rest = await getNewWords(quota.plannedNewWords - newWordCandidates.length, userLevel, allProgressEntries, goalIds);
+    const seen = new Set(newWordCandidates.map((word) => word.id));
+    const spellings = new Set(newWordCandidates.map((word) => String(word.word || '').trim().toLowerCase()));
+    const fresh = (list) => list.filter((word) => !seen.has(word.id)
+      && !spellings.has(String(word.word || '').trim().toLowerCase()));
+    const filled = fresh(rest.words);
+    if (filled.length > 0) {
+      newWordCandidates = [...newWordCandidates, ...filled];
+      remainingCandidates = [...remainingCandidates, ...fresh(rest.remainingCandidates || [])];
+      sourceFallback = sourceFinished;
+    }
+  }
 
   // 時間に余裕があれば「おかわり」分を用意する
   const reviewTimeInSeconds = dueForReview.length * SECONDS_PER_REVIEW_WORD;
@@ -243,6 +267,7 @@ export const generateDailyPlan = async (userData, userId) => {
     // 選んだ教材と、その語を全部学び終えていたか。**undefined を入れない**（書き込みごと拒否される）
     newWordSourceId: newWordSource?.id ?? null,
     newWordSourceFinished: sourceFinished,
+    newWordSourceFallback: sourceFallback,
     quota: {
       preferredNewWords: quota.preferredNewWords,
       requiredNewWords: quota.requiredNewWords,
@@ -267,6 +292,7 @@ export const generateDailyPlan = async (userData, userId) => {
     knowledgeHints,
     newWordSourceTitle: newWordSource?.title ?? null,
     newWordSourceFinished: sourceFinished,
+    newWordSourceFallback: sourceFallback,
     dateKey,
     fromStoredPlan: false,
   };
