@@ -176,6 +176,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       await logStudySession(user.uid, {
         sessionType: 'placement_test',
         finalLevel,
+        // 推定した力。きろくの「伸び」をランクの段まで描くのに使う（recordSummary.js）
+        ability: ability == null ? null : Math.round(ability * 100) / 100,
         estimatedVocabulary,
         totalQuestions: answers.length,
         correctCount: totalScore(finalState),

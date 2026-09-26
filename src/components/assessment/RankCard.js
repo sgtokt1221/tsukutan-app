@@ -207,7 +207,8 @@ export default function RankCard({
                           {i < all.length - 1 && <>〜<wbr /></>}
                         </React.Fragment>
                       ))}
-                    </strong>相当
+                    </strong>
+                    <span className="rank-card__nowrap">相当</span>
                   </span>
                   <span className="rank-card__compact-toeic">
                     TOEIC {equivalency.toeic.min}〜{equivalency.toeic.max} 相当

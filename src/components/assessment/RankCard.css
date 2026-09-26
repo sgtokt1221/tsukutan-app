@@ -652,3 +652,8 @@
 .rank-card__compact-eiken strong {
   white-space: nowrap;
 }
+
+/* 「相当」を「相／当」に割らない */
+.rank-card__nowrap {
+  white-space: nowrap;
+}
