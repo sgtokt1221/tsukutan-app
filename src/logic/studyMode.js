@@ -8,8 +8,9 @@
  * ## 上スワイプ（swipeUp）
  * 以前は全部のモードで「もう覚えた＝二度と出さない」になっていた。
  * 新規学習で指が少し上に流れただけで、まだ覚えていない語が消えていた。
- * **知っている語を素早く飛ばしたい復習と自由学習だけ**に残す（2026-09-23 に決めた）。
- * それ以外はボタンで外す。
+ * 2026-09-23 に**復習と自由学習だけ**に絞ったが、2026-09-27 に「戻して」と言われた。
+ * いまは全部のモードで効く。ただし新しい単語（今日の新規・おかわり・毎日みる単語）は
+ * `'strict'`＝**はっきり上へ払ったときだけ**（→ cardGestures.js の STRICT_UP_SWIPE）。
  *
  * ## 外す（remove）
  * - `graduate`   … もう覚えた。どこからも出題されなくなる
@@ -37,10 +38,10 @@ const NEW_WORDS = {
 };
 
 const MODES = {
-  daily: { ...NEW_WORDS, swipeUp: false, remove: 'graduate' },
-  extra: { ...NEW_WORDS, swipeUp: false, remove: 'graduate' },
+  daily: { ...NEW_WORDS, swipeUp: 'strict', remove: 'graduate' },
+  extra: { ...NEW_WORDS, swipeUp: 'strict', remove: 'graduate' },
   free: { ...NEW_WORDS, swipeUp: true, remove: 'graduate' },
-  bookmark: { ...NEW_WORDS, swipeUp: false, remove: 'unbookmark' },
+  bookmark: { ...NEW_WORDS, swipeUp: 'strict', remove: 'unbookmark' },
   review: {
     activity: 'review',
     shuffle: true,

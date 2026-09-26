@@ -10,7 +10,7 @@
  * （→ `useNextInterval`）。自由学習や毎日みる単語のカードは記録を持っていないので、
  * カードで計算すると、17日後に書くのに「明日」と出ていた（2026-09-26）。
  */
-import { flashcardGesture, TAP_SLOP, TEST_SWIPE } from './cardGestures';
+import { flashcardGesture, TAP_SLOP, TEST_SWIPE, isUpward, STRICT_UP_SWIPE } from './cardGestures';
 import { ANSWER_QUALITY, nextSchedule } from './reviewScheduling';
 import { getMotivationConfig } from '../config';
 
@@ -31,13 +31,15 @@ export function swipeIntentAt(dx, dy, allowSwipeUp) {
   if (ax > ay && ax >= SHOW_FROM) {
     kind = dx > 0 ? 'good' : 'again';
     dist = ax;
-  } else if (allowSwipeUp && dy < 0 && ay > ax && ay >= SHOW_FROM) {
+  } else if (isUpward(dx, dy, allowSwipeUp) && ay >= SHOW_FROM) {
     kind = 'remove';
     dist = ay;
   }
   if (!kind) return null;
   const locked = flashcardGesture(dx, dy, allowSwipeUp) === kind;
-  return { kind, progress: locked ? 1 : Math.min(0.95, dist / COMMIT_AT), locked };
+  // 新しい単語の上スワイプは長く払う（→ STRICT_UP_SWIPE）。札の満ち方もそれに合わせる
+  const commitAt = kind === 'remove' && allowSwipeUp === 'strict' ? STRICT_UP_SWIPE : COMMIT_AT;
+  return { kind, progress: locked ? 1 : Math.min(0.95, dist / commitAt), locked };
 }
 
 /**

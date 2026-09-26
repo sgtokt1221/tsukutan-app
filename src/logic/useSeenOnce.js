@@ -23,7 +23,8 @@ const readSeen = (key) => {
 };
 
 /** 単語カードの案内の鍵。動きが同じモードは同じ鍵にする */
-export const coachKeyFor = (policy) => `card.${policy.swipeUp ? 'up' : 'flat'}.${policy.remove}`;
+// 'strict'（新しい単語の上スワイプ）は説明が違うので別の鍵
+export const coachKeyFor = (policy) => `card.${policy.swipeUp === 'strict' ? 'strict' : (policy.swipeUp ? 'up' : 'flat')}.${policy.remove}`;
 
 export const WORDBOOK_COACH_KEY = 'wordbook';
 export const TEST_COACH_KEY = 'test';
