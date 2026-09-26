@@ -1,5 +1,6 @@
 // Firebase SDK
 const { onRequest, onCall, HttpsError } = require("firebase-functions/v2/https");
+const { defineSecret } = require('firebase-functions/params');
 const { logger } = require("firebase-functions");
 const admin = require("firebase-admin");
 const crypto = require("node:crypto");
@@ -918,6 +919,125 @@ exports.transcribeSpeaking = onRequest(
     serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
   },
   transcribeSpeakingApp
+);
+
+//==============================================================================
+// 英検ライティングの採点（2026-09-26）
+//==============================================================================
+
+/**
+ * Jev（TypeSafe）の鍵。**このコードベースで初めての secret**。
+ * 入れ方：firebase functions:secrets:set JEV_API_KEY --project tsukutan-58b3f
+ */
+const JEV_API_KEY = defineSecret('JEV_API_KEY');
+const { FORMATS: WRITING_FORMATS, scoreWriting } = require('./lib/writingScore');
+const { getTokyoDateKey } = require('./lib/dateKeys');
+
+/** 1人1日の採点回数の上限。使いすぎ（連打・自動化）で請求が膨らまないように */
+const WRITING_DAILY_LIMIT = 30;
+const MAX_ANSWER_CHARS = 3000;
+
+const scoreWritingApp = express();
+scoreWritingApp.use(cors({ origin: true }));
+scoreWritingApp.use(express.json({ limit: '64kb' }));
+
+/** ID トークンを確かめて uid を返す。だめなら 401 を返して null */
+const verifiedUid = async (req, res) => {
+  const idToken = req.get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return null;
+  }
+  try {
+    return (await admin.auth().verifyIdToken(idToken)).uid;
+  } catch (error) {
+    logger.error('scoreWriting: トークンを検証できませんでした', error);
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return null;
+  }
+};
+
+/** 問題の文面は画面から来る。長さと型だけ確かめて、採点に要る欄だけ残す */
+const cleanPrompt = (prompt = {}) => {
+  const str = (v, max) => (typeof v === 'string' ? v.slice(0, max) : undefined);
+  return {
+    id: str(prompt.id, 40),
+    question: str(prompt.question, 600),
+    points: Array.isArray(prompt.points) ? prompt.points.slice(0, 6).map((p) => str(p, 60)).filter(Boolean) : undefined,
+    body: str(prompt.body, 2000),
+    title: str(prompt.title, 200),
+    passage: Array.isArray(prompt.passage) ? prompt.passage.slice(0, 6).map((p) => str(p, 2000)).filter(Boolean) : undefined,
+  };
+};
+
+scoreWritingApp.post('/', async (req, res) => {
+  const uid = await verifiedUid(req, res);
+  if (!uid) return undefined;
+
+  const grade = String(req.body?.grade || '');
+  const task = String(req.body?.task || '');
+  const answer = typeof req.body?.answer === 'string' ? req.body.answer.slice(0, MAX_ANSWER_CHARS) : '';
+  if (!WRITING_FORMATS[grade]?.[task]) return res.status(400).json({ error: '問題の種類が分かりません。' });
+  if (!answer.trim()) return res.status(400).json({ error: '英文を書いてから提出してください。' });
+  const prompt = cleanPrompt(req.body?.prompt);
+
+  // 回数を先に数える（採点に失敗したら戻す）
+  const usageRef = db.doc(`users/${uid}/writingUsage/${getTokyoDateKey(new Date())}`);
+  try {
+    await db.runTransaction(async (tx) => {
+      const snap = await tx.get(usageRef);
+      const count = snap.exists ? snap.data().count || 0 : 0;
+      if (count >= WRITING_DAILY_LIMIT) {
+        const error = new Error('limit');
+        error.code = 'limit';
+        throw error;
+      }
+      tx.set(usageRef, { count: count + 1, updatedAt: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    });
+  } catch (error) {
+    if (error.code === 'limit') {
+      return res.status(429).json({ error: `今日の採点は${WRITING_DAILY_LIMIT}回までです。明日また出してください。` });
+    }
+    logger.error('scoreWriting: 回数を数えられませんでした', error);
+    return res.status(500).json({ error: '採点できませんでした。もう一度出してください。' });
+  }
+
+  let result;
+  try {
+    result = await scoreWriting({ grade, task, prompt, answer }, { apiKey: JEV_API_KEY.value() });
+  } catch (error) {
+    logger.error('scoreWriting: 採点に失敗しました', error);
+    await usageRef.set({ count: admin.firestore.FieldValue.increment(-1) }, { merge: true }).catch(() => {});
+    return res.status(502).json({ error: '採点できませんでした。少し待ってからもう一度出してください。' });
+  }
+
+  // 結果はサーバで残す（画面から点を書き換えられないように。firestore.rules でも本人は書けない）
+  const attempt = {
+    grade,
+    task,
+    promptId: prompt.id || null,
+    answer,
+    scores: result.scores,
+    total: result.total,
+    max: result.max,
+    flags: result.flags,
+    words: result.words,
+    model: result.model,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  };
+  const ref = await db.collection(`users/${uid}/writingAttempts`).add(attempt);
+  return res.status(200).json({ id: ref.id, ...attempt, createdAt: new Date().toISOString(), contractions: result.contractions });
+});
+
+exports.scoreWriting = onRequest(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    secrets: [JEV_API_KEY],
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  scoreWritingApp
 );
 
 //==============================================================================
