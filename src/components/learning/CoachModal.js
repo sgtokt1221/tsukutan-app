@@ -60,6 +60,14 @@ export const TEST_COACH_STEPS = [
   },
 ];
 
+/** 英検ライティング（2026-09-26）。見本の動きは無し、手順だけ */
+export const WRITING_COACH_STEPS = [
+  { key: 'read', title: '問題を読む', text: '本番と同じ形式。語数の目安も本番どおり' },
+  { key: 'card', title: '右の「カンペ」を引く', text: '塾の重要表現・構文が並んでいる。見ながら書いてよい' },
+  { key: 'write', title: '語数が緑になるまで書く', text: "短縮形（I'm, It's）は使わない" },
+  { key: 'submit', title: '提出して採点', text: '内容・構成・語彙・文法を0〜4点で、堅めに採点する' },
+];
+
 export const WORDBOOK_COACH_STEPS = [
   { key: 'list', title: '一覧で見わたす', text: '1枚ずつめくらず、並んだまま次々に確かめられる' },
   { key: 'reveal', title: '赤い部分をタップ', text: '答えが出る。もう一度押すと隠れる' },
@@ -162,14 +170,14 @@ function WordbookDemo({ stepKey }) {
   );
 }
 
-const TITLES = { card: 'カードの使い方', wordbook: '単語帳の使い方', test: '単語力チェックテストの受け方' };
+const TITLES = { card: 'カードの使い方', wordbook: '単語帳の使い方', test: '単語力チェックテストの受け方', writing: 'ライティングの進め方' };
 
 /**
  * @param {{ kind: 'card'|'wordbook'|'test', policy?: object, onClose: () => void }} props
  *   policy は card と wordbook のときだけ要る（studyModePolicy）
  */
 export default function CoachModal({ kind, policy, onClose }) {
-  let steps = TEST_COACH_STEPS;
+  let steps = kind === 'writing' ? WRITING_COACH_STEPS : TEST_COACH_STEPS;
   if (kind === 'card') steps = cardCoachSteps(policy);
   if (kind === 'wordbook') {
     steps = WORDBOOK_COACH_STEPS.map((s) => (s.key === 'check' ? { ...s, text: `${policy.removeLabel}。${policy.removePlainHint}` } : s));
@@ -195,9 +203,8 @@ export default function CoachModal({ kind, policy, onClose }) {
           <h2 id="coach-modal-title" className="coach-modal__title">
             {TITLES[kind]}
           </h2>
-          {kind === 'wordbook'
-            ? <WordbookDemo stepKey={current.key} />
-            : <CardDemo stepKey={current.key} buttons={buttons} />}
+          {kind === 'wordbook' && <WordbookDemo stepKey={current.key} />}
+          {(kind === 'card' || kind === 'test') && <CardDemo stepKey={current.key} buttons={buttons} />}
           <ol className="coach-modal__steps">
             {steps.map((s, i) => (
               <li key={s.key} className={i === step ? 'coach-modal__step is-on' : 'coach-modal__step'}>

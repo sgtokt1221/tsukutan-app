@@ -578,7 +578,7 @@ const CHOICES = [
   { key: 'book', title: '教材', text: '塾の単語帳を番号の範囲で。前回の続きから' },
   { key: 'school', title: '学校の教科書', text: '学年とページを選ぶ' },
   { key: 'level', title: '中学英語・高校英語', text: 'レベル別・品詞別に', badge: true },
-  { key: 'eiken', title: '英検', text: '級ごとの単語と、二次試験（面接）の練習' },
+  { key: 'eiken', title: '英検', text: '級ごとの単語、ライティング（カンペつき）、二次試験（面接）' },
 ];
 
 function ChooseScene() {

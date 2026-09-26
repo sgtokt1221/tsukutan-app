@@ -1,0 +1,686 @@
+/* 英検ライティング（2026-09-26。→ EikenWriting.js） */
+
+/* ---- 一覧 ---- */
+.wr-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  max-width: var(--width-reading);
+  margin: 0 auto;
+}
+
+.wr-list__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.wr-list__title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  color: var(--color-ink-olive);
+}
+
+.wr-tabs {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.wr-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: var(--tap-target);
+  padding: var(--space-8);
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+/* 選んでいるものはベタ塗り＋白抜き */
+.wr-tab.is-on {
+  border-color: var(--color-ink-olive);
+  background: var(--color-ink-olive);
+  color: #ffffff;
+}
+
+.wr-tab__words {
+  font-size: var(--font-size-12);
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.wr-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wr-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-12);
+  border: none;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  text-align: left;
+  font-family: var(--font-family-body);
+  cursor: pointer;
+}
+
+.wr-item__theme {
+  padding: 2px var(--space-8);
+  border-radius: var(--radius-pill);
+  background: var(--color-lime-soft);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  white-space: nowrap;
+}
+
+.wr-item__text {
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wr-item__best {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  color: #0d6b50;
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-item__best small {
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.wr-item__best.is-none {
+  font-size: var(--font-size-14);
+  color: var(--color-olive-subtle);
+}
+
+/* ---- 解く画面：全面 ---- */
+.wr-exam {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100dvh;
+  padding: calc(env(safe-area-inset-top, 0px) + var(--space-8)) var(--space-16)
+    calc(env(safe-area-inset-bottom, 0px) + var(--space-12));
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--color-canvas-lime);
+}
+
+.wr-exam--result {
+  overflow-y: auto;
+}
+
+.wr-exam__top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.wr-exam__task {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.wr-exam__time {
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-prompt {
+  flex: 0 1 auto;
+  max-height: 42dvh;
+  overflow-y: auto;
+  padding: var(--space-12);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.wr-prompt.is-folded {
+  max-height: none;
+  padding: var(--space-4) var(--space-12);
+}
+
+.wr-prompt__toggle {
+  float: right;
+  min-height: 32px;
+  padding: 0 var(--space-8);
+  border: none;
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-accent-blue);
+  cursor: pointer;
+}
+
+.wr-prompt__instructions {
+  margin: 0 0 var(--space-8);
+  padding-left: 1.1em;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  line-height: 1.5;
+}
+
+.wr-prompt__q {
+  margin: 0;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  line-height: 1.5;
+}
+
+.wr-prompt__points {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.wr-prompt__points-label {
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  margin-right: var(--space-4);
+}
+
+.wr-point {
+  padding: 2px var(--space-8);
+  border-radius: var(--radius-pill);
+  background: var(--color-ink-olive);
+  color: #ffffff;
+  font-size: var(--font-size-12);
+  font-weight: 700;
+}
+
+.wr-prompt__mail p,
+.wr-prompt__passage p {
+  margin: 0 0 var(--space-8);
+  font-size: var(--font-size-14);
+  line-height: 1.6;
+  color: var(--color-ink-olive);
+}
+
+.wr-prompt__mail u {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  font-weight: 700;
+}
+
+.wr-prompt__title {
+  font-weight: 700;
+}
+
+.wr-editor {
+  flex: 1;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-card);
+  background: #ffffff;
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+
+.wr-editor__area {
+  flex: 1;
+  width: 100%;
+  /* 右はカンペのつまみのぶん空ける */
+  padding: var(--space-12) 48px var(--space-12) var(--space-12);
+  border: none;
+  resize: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  line-height: 1.6;
+  color: var(--color-ink-olive);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.wr-editor__area:focus {
+  outline: none;
+}
+
+.wr-editor__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  border-top: 1px solid var(--color-olive-divider);
+}
+
+.wr-count {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-count.is-ok { color: #0d6b50; }
+.wr-count.is-short { color: var(--color-danger-ink); }
+.wr-count.is-long { color: var(--color-warning-ink); }
+
+.wr-count__range {
+  font-size: var(--font-size-12);
+  font-weight: 400;
+  color: var(--color-olive-muted);
+}
+
+.wr-warn {
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-warning-ink);
+}
+
+.wr-error {
+  margin: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-danger-ink);
+}
+
+.wr-submit {
+  min-height: 52px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink-olive);
+  color: #ffffff;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wr-submit:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---- カンペ ---- */
+/* 右端の真ん中に縦のつまみ（上の帯の時計と重ならない位置） */
+.cheat-tab {
+  position: fixed;
+  top: 44%;
+  right: 0;
+  z-index: 910;
+  min-width: var(--tap-target);
+  padding: var(--space-16) var(--space-8);
+  border: none;
+  border-radius: var(--radius-control) 0 0 var(--radius-control);
+  writing-mode: vertical-rl;
+  letter-spacing: 0.2em;
+  background: #e5484d;
+  color: #ffffff;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  box-shadow: var(--shadow-2);
+  cursor: pointer;
+}
+
+.cheat-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 920;
+  background: var(--color-scrim);
+}
+
+.cheat-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 930;
+  display: flex;
+  flex-direction: column;
+  width: min(88vw, 420px);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-3);
+  touch-action: pan-y;
+}
+
+.cheat-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-8) var(--space-8) 0 var(--space-16);
+}
+
+.cheat-drawer__title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.cheat-drawer__close {
+  display: grid;
+  place-items: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border: none;
+  background: none;
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-18);
+  cursor: pointer;
+}
+
+.cheat-drawer__tabs {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-16);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--color-olive-divider);
+}
+
+.cheat-chip {
+  flex: none;
+  min-height: 36px;
+  padding: 0 var(--space-12);
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  cursor: pointer;
+}
+
+.cheat-chip.is-on {
+  border-color: var(--color-ink-olive);
+  background: var(--color-ink-olive);
+  color: #ffffff;
+}
+
+.cheat-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-12) var(--space-16) var(--space-24);
+}
+
+.cheat-lead,
+.cheat-empty {
+  margin: 0 0 var(--space-12);
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+  line-height: 1.5;
+}
+
+.cheat-group + .cheat-group {
+  margin-top: var(--space-16);
+}
+
+.cheat-group__title {
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+}
+
+.cheat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cheat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--color-canvas-lime);
+}
+
+/* 教材で赤の「特に重要」。ベタ塗りで目立たせる（左の色帯は使わない） */
+.cheat-item.is-important {
+  background: #fde8e8;
+}
+
+.cheat-item__en {
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  line-height: 1.4;
+}
+
+.cheat-item.is-important .cheat-item__en {
+  color: #b42318;
+}
+
+.cheat-item__ja {
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}
+
+.cheat-item__example {
+  font-size: var(--font-size-12);
+  font-style: italic;
+  color: var(--color-ink-olive);
+  line-height: 1.5;
+}
+
+.cheat-item__example-ja {
+  display: block;
+  font-style: normal;
+  color: var(--color-olive-muted);
+}
+
+.cheat-item__note {
+  font-size: var(--font-size-12);
+  color: var(--color-warning-ink);
+}
+
+/* ---- 結果 ---- */
+.wr-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-bottom: var(--space-24);
+}
+
+.wr-result__total {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: var(--space-8);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--color-ink-olive);
+  color: #ffffff;
+}
+
+.wr-result__num {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-40);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.wr-result__max {
+  font-size: var(--font-size-18);
+  opacity: 0.8;
+}
+
+.wr-result__track {
+  align-self: center;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.wr-result__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-lime);
+}
+
+.wr-aspects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  list-style: none;
+}
+
+.wr-aspect {
+  display: grid;
+  grid-template-columns: 3em 1fr 1.5em;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.wr-aspect__label {
+  font-weight: 700;
+  color: var(--color-ink-olive);
+}
+
+.wr-aspect__pips {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.wr-pip {
+  height: 14px;
+  border-radius: 4px;
+  background: var(--color-olive-divider);
+  transform-origin: bottom;
+}
+
+.wr-pip.is-on {
+  background: linear-gradient(90deg, #169b78, var(--color-brand-lime));
+}
+
+.wr-aspect__num {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-flags {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wr-flag {
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--color-warning-bg);
+  font-size: var(--font-size-14);
+  color: var(--color-warning-ink);
+}
+
+.wr-flag.is-zero {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-ink);
+  font-weight: 700;
+}
+
+.wr-answer {
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: #ffffff;
+  box-shadow: var(--shadow-1);
+}
+
+.wr-answer__label {
+  font-size: var(--font-size-12);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+}
+
+.wr-answer__text {
+  margin: var(--space-8) 0 0;
+  font-size: var(--font-size-16);
+  line-height: 1.7;
+  color: var(--color-ink-olive);
+  white-space: pre-wrap;
+}
+
+.wr-actions {
+  display: flex;
+  gap: var(--space-12);
+}
+
+.wr-btn {
+  flex: 1;
+  min-height: 48px;
+  border: 1px solid var(--color-olive-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  cursor: pointer;
+}
+
+.wr-btn--primary {
+  border-color: var(--color-ink-olive);
+  background: var(--color-ink-olive);
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wr-pip, .wr-result__fill { transition: none; }
+}

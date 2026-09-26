@@ -51,6 +51,7 @@ import { EIKEN_ORDER, easiestEikenLevel, eikenTargetOf } from './logic/eikenLeve
 // 面接モードは画像と素材を伴うので、開いたときだけ読む。
 // 起動時の塊に入れると、使わない生徒の起動まで遅くなる。
 const EikenInterview = React.lazy(() => import('./components/eiken/EikenInterview'));
+const EikenWriting = React.lazy(() => import('./components/eiken/writing/EikenWriting'));
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
 // 英検の級の並び・語の級・教材IDからの級は logic/eikenLevels.js に移した（日々の新しい単語でも使う）
@@ -305,6 +306,8 @@ export default function StudentDashboard() {
   const [selectionMode, setSelectionMode] = useState('main');
   // 面接モードを開いている級。null なら開いていない。
   const [interviewGrade, setInterviewGrade] = useState(null);
+  // 英検ライティングの級（選んでいるあいだは画面を占有する。面接と同じ扱い）
+  const [writingGrade, setWritingGrade] = useState(null);
   const [testResultLevel, setTestResultLevel] = useState(0);
   // テストで保存した推定語彙数（結果画面に出す）
   const [testResultVocabulary, setTestResultVocabulary] = useState(null);
@@ -1843,6 +1846,14 @@ export default function StudentDashboard() {
       );
     }
 
+    if (writingGrade) {
+      return (
+        <Suspense fallback={<p className="interview-lead">読み込んでいます…</p>}>
+          <EikenWriting grade={writingGrade} onExit={() => setWritingGrade(null)} />
+        </Suspense>
+      );
+    }
+
     // 先生からの小テストを解いているときは、タブに関係なくその画面
     if (viewMode === 'assigned-quiz' && activeQuiz) {
       return (
@@ -1926,6 +1937,7 @@ export default function StudentDashboard() {
     eiken: '英検',
     'eiken-words': '英検の単語',
     'eiken-interview': '英検 二次試験（面接）',
+    'eiken-writing': '英検 ライティング',
     books: '教材で選ぶ',
     'textbook-grade': '学校の教科書',
     'textbook-pages': `Sunshine ${gradeOfSunshineId(selectedTextbookId) ?? ''}年`,
@@ -1973,6 +1985,7 @@ export default function StudentDashboard() {
                   recommendationOf={recommendationOf}
                   onSelectTextbook={handleSelectTextbook}
                   onSelectInterview={setInterviewGrade}
+                  onSelectWriting={setWritingGrade}
                   onSelectBook={handleSelectBook}
                   onSelectRange={startBookRange}
                   textbookCards={textbookCards}
@@ -2442,7 +2455,7 @@ export default function StudentDashboard() {
 
   // フラッシュカード・単語帳・面接では下部タブを出さない。出さないなら、
   // タブのぶんの余白（.dashboard-container の padding-bottom）も空けない。
-  const showTabBar = !interviewGrade
+  const showTabBar = !interviewGrade && !writingGrade
     && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result';
 
   return (

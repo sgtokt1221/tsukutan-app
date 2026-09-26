@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaBook, FaBookOpen, FaChevronRight, FaGraduationCap, FaMicrophone, FaSchool, FaStar } from 'react-icons/fa';
+import { FaBook, FaBookOpen, FaChevronRight, FaGraduationCap, FaMicrophone, FaPen, FaSchool, FaStar } from 'react-icons/fa';
 import RecommendationBadge from './RecommendationBadge';
 import { rangesOf } from '../../logic/bookWords';
 import { SUNSHINE } from '../../logic/textbookPages';
@@ -22,7 +22,8 @@ import './FreeStudyMenu.css';
  *    ├ 高校英語  → onSelectTextbook
  *    └ eiken     [単語を覚える] [二次試験（面接）]
  *         ├ eiken-words     → 級を選ぶ → onSelectTextbook
- *         └ eiken-interview → 級を選ぶ → onSelectInterview
+ *         ├ eiken-interview → 級を選ぶ → onSelectInterview
+ *         └ eiken-writing → 級を選ぶ → onSelectWriting（2026-09-26）
  *
  * **教材だけ絞り込み画面（filter）を通さない。** 単語帳はレベルでも品詞でもなく
  * **通し番号**で進めるものなので、番号の帯から直接カードへ行く。
@@ -43,6 +44,7 @@ export const freeStudyBackTarget = (mode, textbookId) => ({
   eiken: 'main',
   'eiken-words': 'eiken',
   'eiken-interview': 'eiken',
+  'eiken-writing': 'eiken',
   books: 'main',
   'book-range': 'books',
   'textbook-grade': 'main',
@@ -104,6 +106,7 @@ export default function FreeStudyMenu({
   recommendationOf,
   onSelectTextbook,
   onSelectInterview,
+  onSelectWriting,
   onSelectBook,
   onSelectRange,
   // 学校の教科書。cards は読み込み前 null、読めなければ textbookError
@@ -186,6 +189,12 @@ export default function FreeStudyMenu({
           description="入室から退室までを通しで練習します"
           onClick={() => onNavigate('eiken-interview')}
         />
+        <MenuCard
+          Icon={FaPen}
+          title="ライティング"
+          description="本番と同じ形式。カンペを見ながら書いて採点"
+          onClick={() => onNavigate('eiken-writing')}
+        />
       </div>
     );
   }
@@ -218,6 +227,24 @@ export default function FreeStudyMenu({
             </button>
           );
         })}
+      </div>
+    );
+  }
+
+  if (mode === 'eiken-writing') {
+    return (
+      <div className="list-group">
+        {interviewGrades.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            className="tile-button"
+            onClick={() => onSelectWriting(id)}
+          >
+            <span className="tile-button__label">{label}</span>
+            <span className="tile-button__count">{id === '3' || id === 'pre2' ? 'Eメール・意見' : '要約・意見'}</span>
+          </button>
+        ))}
       </div>
     );
   }
