@@ -83,7 +83,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
-  const cardColor = useTransform(x, [-100, 0, 100], ['#fecaca', '#ffffff', '#d9f99d']);
+  // 答えになる距離（TEST_SWIPE）で色が振り切れる。札の円が一周するのと同じところ
+  const cardColor = useTransform(x, [-TEST_SWIPE, 0, TEST_SWIPE], ['#fecaca', '#ffffff', '#d9f99d']);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((id) => clearTimeout(id));
@@ -249,6 +250,9 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     finishReveal();
   }, [questions, questionIndex, engine, questionStartTime, isSaving, finishReveal, x, y]);
 
+  // 答えたら札は出さない。離したあとカードが戻る動きで、円が減っていくように見えた
+  const intentAt = useCallback((dx) => (phase === 'ask' ? testIntentAt(dx) : null), [phase]);
+
   const handleDragEnd = (event, info) => {
     // 閾値は札（SwipeIntent）と同じ定数。ずれると札は「決まり」なのに答えにならない
     if (Math.abs(info.offset.x) < TEST_SWIPE) {
@@ -367,11 +371,18 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
 
       <div id="flashcard-container">
         {/* 動かしている最中の「離すとどうなるか」（学習カードと同じ札） */}
-        <SwipeIntent x={x} y={y} intentAt={testIntentAt} textOf={testIntentText} />
+        <SwipeIntent x={x} y={y} intentAt={intentAt} textOf={testIntentText} />
         <motion.div
           key={currentWord.id}
           id="flashcard"
           drag={phase === 'ask' ? 'x' : false}
+          /*
+            **カードを指と同じだけ動かす**（2026-09-26）。既定の弾性だと指の約1/3しか動かず、
+            指は答えの距離を越えているのに、カードの位置を見る札の円が埋まらなかった
+          */
+          dragElastic={1}
+          // 離したら素早く戻す。ゆっくり戻すと、めくれながら横滑りして見える
+          dragTransition={{ bounceStiffness: 900, bounceDamping: 60 }}
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           style={{ x, y, rotate, backgroundColor: cardColor }}
           onDragEnd={handleDragEnd}
