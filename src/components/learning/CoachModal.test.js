@@ -31,3 +31,11 @@ describe('カードの使い方（モーダル）', () => {
     expect(screen.getByText('一覧で見わたす')).toBeInTheDocument();
   });
 });
+
+describe('単語力チェックテストの受け方（モーダル）', () => {
+  it('わかる／わからないで説明する', () => {
+    render(<CoachModal kind="test" onClose={() => {}} />);
+    expect(screen.getByRole('dialog', { name: '単語力チェックテストの受け方' })).toBeInTheDocument();
+    expect(screen.getAllByText('わかる').length).toBeGreaterThan(0);
+  });
+});

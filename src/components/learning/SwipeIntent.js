@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useMotionValueEvent } from 'framer-motion';
-import { swipeIntentAt, intentText } from '../../logic/swipeIntent';
 import './SwipeIntent.css';
 
 /**
@@ -11,6 +10,9 @@ import './SwipeIntent.css';
  *
  * カードの位置（x, y）を直接見て、この札だけを描き直す。
  * 学習画面全体の state にすると、指が動くたびに 800行の部品が描き直される。
+ *
+ * 何を出すかは呼ぶ側が渡す（学習カードと単語力チェックテストで決まりが違う）。
+ * `intentAt(dx, dy)` → `{ kind, progress, locked } | null`、`textOf(kind)` → `{ title, detail }`
  */
 
 const RING = 2 * Math.PI * 13;
@@ -19,15 +21,15 @@ const sameIntent = (a, b) => (
   a === b || (a && b && a.kind === b.kind && a.locked === b.locked && a.progress === b.progress)
 );
 
-export default function SwipeIntent({ x, y, allowSwipeUp, word, policy }) {
+export default function SwipeIntent({ x, y, intentAt, textOf }) {
   const [intent, setIntent] = useState(null);
 
   const update = useCallback(() => {
-    const next = swipeIntentAt(x.get(), y.get(), allowSwipeUp);
+    const next = intentAt(x.get(), y.get());
     // 円は5%刻みで十分。細かく刻むと指の1px ごとに描き直す
     const rounded = next && { ...next, progress: Math.round(next.progress * 20) / 20 };
     setIntent((prev) => (sameIntent(prev, rounded) ? prev : rounded));
-  }, [x, y, allowSwipeUp]);
+  }, [x, y, intentAt]);
   useMotionValueEvent(x, 'change', update);
   useMotionValueEvent(y, 'change', update);
 
@@ -35,7 +37,7 @@ export default function SwipeIntent({ x, y, allowSwipeUp, word, policy }) {
   const lastRef = useRef(null);
   if (intent) lastRef.current = intent;
   const shown = intent || lastRef.current;
-  const text = shown ? intentText(shown.kind, { word, policy }) : null;
+  const text = shown ? textOf(shown.kind) : null;
 
   return (
     <div

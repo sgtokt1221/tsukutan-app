@@ -732,7 +732,7 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleLearningBack = async (incorrectWords, newlyLearnedCount) => {
+  const handleLearningBack = (incorrectWords, newlyLearnedCount) => {
     const user = auth.currentUser;
     if (!user) return;
 
@@ -744,16 +744,18 @@ export default function StudentDashboard() {
     // 到達語数は increment で足さない。実力テストが判定レベル以下を
     // 一括計上しているところへ重ねると二重加算になり、収録語数を超える。
     // updateProgressPercentage が和集合で数え直す。
-    if (newlyLearnedCount > 0) {
-      try {
-        await updateProgressPercentage(user.uid);
-      } catch (error) {
-        console.error('進捗の更新に失敗しました:', error);
-      }
-    }
-
-    // Refresh dashboard data and reset view
+    /*
+      **画面を先に戻す。数え直しは待たない**（2026-09-26）。数え直しは単語データ（約2.3MB）と
+      復習リストを全件読んで書くので、携帯では数秒かかる。以前はそれを待ってから戻していたので
+      「終了がかなり遅い」になった。書き込みは捨てていない——終わったらホームを読み直して、
+      新しい到達語数を出す（今日のタスクはすぐ読み直す）。
+    */
     refreshDashboardData(user.uid);
+    if (newlyLearnedCount > 0) {
+      updateProgressPercentage(user.uid)
+        .then(() => refreshDashboardData(user.uid))
+        .catch((error) => console.error('進捗の更新に失敗しました:', error));
+    }
     // 学習中に登録／解除したぶんをホームの枚数へ反映する
     reloadBookmarks();
     setViewMode('select');

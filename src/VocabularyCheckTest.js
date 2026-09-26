@@ -8,6 +8,11 @@ import { logStudySession } from './logic/studyLogger';
 import { initialize, speakSequence, stopSpeaking } from './logic/speechUtils';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
+import SwipeIntent from './components/learning/SwipeIntent';
+import CoachModal from './components/learning/CoachModal';
+import { TEST_SWIPE } from './logic/cardGestures';
+import { testIntentAt, testIntentText } from './logic/swipeIntent';
+import { useSeenOnce, TEST_COACH_KEY } from './logic/useSeenOnce';
 import {
   MAX_STAGES,
   createInitialState,
@@ -52,6 +57,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   );
 
   const [engine, setEngine] = useState(() => createInitialState());
+  const [coachSeen, markCoachSeen] = useSeenOnce(TEST_COACH_KEY);
   const [questions, setQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -247,7 +253,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   }, [questions, questionIndex, engine, questionStartTime, isSaving, finishReveal, x, y]);
 
   const handleDragEnd = (event, info) => {
-    if (Math.abs(info.offset.x) < 50) {
+    // 閾値は札（SwipeIntent）と同じ定数。ずれると札は「決まり」なのに答えにならない
+    if (Math.abs(info.offset.x) < TEST_SWIPE) {
       x.set(0);
       return;
     }
@@ -363,6 +370,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       </div>
 
       <div id="flashcard-container">
+        {/* 動かしている最中の「離すとどうなるか」（学習カードと同じ札） */}
+        <SwipeIntent x={x} y={y} intentAt={testIntentAt} textOf={testIntentText} />
         <motion.div
           key={currentWord.id}
           id="flashcard"
@@ -413,6 +422,9 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
           わかる
         </button>
       </div>
+
+      {/* 初めて受けるときだけ、受け方をモーダルで出す（学習カードと同じ形） */}
+      {!coachSeen && <CoachModal kind="test" onClose={markCoachSeen} />}
 
       <div className="test-nav-buttons">
         <button

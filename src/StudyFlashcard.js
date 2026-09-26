@@ -15,6 +15,8 @@ import WordbookList from './components/learning/WordbookList';
 import SwipeIntent from './components/learning/SwipeIntent';
 import CoachModal from './components/learning/CoachModal';
 import { useSeenOnce, coachKeyFor, WORDBOOK_COACH_KEY } from './logic/useSeenOnce';
+import { swipeIntentAt, intentText } from './logic/swipeIntent';
+import { useNextInterval } from './logic/useNextInterval';
 import { studyModePolicy, sessionTitle } from './logic/studyMode';
 import { finishedLog, leftLog } from './logic/studyLog';
 import { flashcardGesture, wordbookGesture, findCardAtPoint } from './logic/cardGestures';
@@ -239,6 +241,10 @@ export default function StudyFlashcard({
   }, [viewMode, cards, sessionInfo, policy.storageKey]);
 
   const currentWord = cards[currentIndex];
+  // 札の「次は何日後」。保存済みの記録から（→ logic/useNextInterval.js）
+  const nextDays = useNextInterval(uid, currentWord);
+  const intentAt = useCallback((dx, dy) => swipeIntentAt(dx, dy, allowSwipeUp), [allowSwipeUp]);
+  const intentTextOf = useCallback((kind) => intentText(kind, { days: nextDays, policy }), [nextDays, policy]);
 
   // ---- 閉じる ----
 
@@ -753,7 +759,7 @@ export default function StudyFlashcard({
 
       <div id="flashcard-container">
         {/* 動かしている最中の「離すとどうなるか」。毎回出す */}
-        <SwipeIntent x={x} y={y} allowSwipeUp={allowSwipeUp} word={currentWord} policy={policy} />
+        <SwipeIntent x={x} y={y} intentAt={intentAt} textOf={intentTextOf} />
         <motion.div
           key={currentIndex}
           id="flashcard"
