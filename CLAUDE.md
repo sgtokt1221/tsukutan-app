@@ -41,6 +41,9 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `src/AdminMoved.js` | 管理者が入ったときの案内だけ。**生徒を見る場所・小テストと長文の印刷はつくばホームの管理者ポータル「つくつく」タブに一本化した**（2026-09-23。旧 AdminDashboard は削除）。あちらは `staffStudentMaterials`（`functions/lib/staffMaterials.js`：管理者＝全校舎／講師＝自校舎）で教材を読む。`importUsers` / `manageStudents` は画面から呼ばれないが、旧アカウントの片付け用に残してある |
 | `src/StudyFlashcard.js` | 単語カード（新規・復習とも。2026-09-23 に2本を1つにまとめた）。部品は `components/learning/`、指の判定は `logic/cardGestures.js`、記録の形は `logic/studyLog.js` |
 | `src/logic/studyMode.js` | モードごとの決まり（上スワイプ・外す・見出し・新規/復習の数え方）。**「復習なら」を部品に書かず、ここに足す** |
+| `src/components/onboarding/Onboarding.js` / `OnboardingScenes.js` | 初回の案内（12枚のアニメ。仕組み・ホーム・カード・えらぶ・長文・きろく）。**機能を足したらここにも1枚足す**。指の動かし方は書かない。図の日数は `reviewGaps`（実際の `nextSchedule`）から出す。中身を大きく変えたら `useOnboarding.js` の版を上げる |
+| `src/components/learning/FlashcardCoach.js` / `WordbookCoach.js` | 学習画面の中の案内。動きの違いごとに初回だけ、本物のカードを動かして見せる（見たかは `logic/useSeenOnce.js`） |
+| `src/components/learning/SwipeIntent.js` | ドラッグ中の「離すとどうなるか」の札（毎回）。「決まり」の判定は `flashcardGesture` に聞く（`logic/swipeIntent.js`） |
 | `src/VocabularyCheckTest.js` | 語彙力チェックテスト（975行） |
 | `src/GoalSetter.js` | 目標設定コンポーネント。**未使用（デッドコード）** — 実体は `App.js` 内の `/set-goal` ルート |
 | `src/PrintableQuiz.js` / `PrintableStory.js` | 印刷用ビュー |

@@ -192,15 +192,14 @@
 
 /* **つくばホームのアンダータブと同じ寸法**（`admin/styles/mobile-core.css` の
    `.under-tab`）。ここだけ低いと、同じ塾のアプリなのに別物に見える。
-   選択中の下線を行の枠線に重ねるため、2px ぶん食い込ませる。 */
+   選択中は下線でなくベタ塗り＋白抜き文字（2026-09-26）。 */
 .reading-mode {
   flex: 1;
   min-width: 0;
   min-height: var(--tap-target);
   padding: 10px var(--space-4) 8px;
   border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  border-radius: var(--radius-control) var(--radius-control) 0 0;
   background: none;
   color: var(--color-olive-muted);
   font-family: inherit;
@@ -209,9 +208,10 @@
   cursor: pointer;
 }
 
+/* 選択中はベタ塗り＋白抜き文字（下線は使わない。2026-09-26 に決めた） */
 .reading-mode.is-active {
-  border-bottom-color: var(--color-brand-lime);
-  color: var(--color-ink-olive);
+  background-color: var(--color-ink-olive);
+  color: #ffffff;
   font-weight: 700;
 }
 

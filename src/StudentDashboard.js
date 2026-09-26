@@ -359,7 +359,7 @@ export default function StudentDashboard() {
   const [masterWords, setMasterWords] = useState([]);
   // 単語データの保存の進み具合（0〜1）。初回の案内画面で出す。
   const [wordDataProgress, setWordDataProgress] = useState(0);
-  const [showOnboarding, finishOnboarding] = useOnboarding();
+  const [showOnboarding, finishOnboarding, reopenOnboarding] = useOnboarding();
   const [wordDataError, setWordDataError] = useState(null);
   const [textbookCounts, setTextbookCounts] = useState({});
   
@@ -1478,7 +1478,7 @@ export default function StudentDashboard() {
       <>
         {onboardingOverlay}
         <div className="dashboard-container">
-          <StudentHeader userName={userData?.name} onLogout={handleLogout} />
+          <StudentHeader userName={userData?.name} onLogout={handleLogout} onShowGuide={reopenOnboarding} />
           <main className="card-main">
             <DashboardSkeleton />
           </main>
@@ -2440,7 +2440,7 @@ export default function StudentDashboard() {
       {/* 初回だけ。読み込みを待つ間に、操作を一度だけ見せる。 */}
       {onboardingOverlay}
 
-      <StudentHeader userName={userData?.name} onLogout={handleLogout} />
+      <StudentHeader userName={userData?.name} onLogout={handleLogout} onShowGuide={reopenOnboarding} />
       
       {/* 初回テストと学習計画最適化のボタン */}
       {testResultLevel === 0 && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && (
