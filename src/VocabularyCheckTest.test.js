@@ -75,7 +75,16 @@ const progress = () => {
   const match = screen.getByText(/^\d+ \/ \d+$/).textContent.match(/(\d+) \/ (\d+)/);
   return { index: Number(match[1]), total: Number(match[2]) };
 };
-const stageLabel = () => screen.getByText(/^ステージ \d+ \/ 10$/).textContent;
+/** 画面に文字では出さなくなった状態（2026-09-26）。画面のいちばん外側の data 属性から読む */
+const state = () => {
+  const root = screen.getByTestId('check-test');
+  return {
+    stage: Number(root.dataset.stage),
+    level: Number(root.dataset.level),
+    answered: Number(root.dataset.answered),
+    correct: Number(root.dataset.correct),
+  };
+};
 /** カードは表と裏の両方に語を持つので、先頭（表）だけを読む */
 const currentWordText = () => screen.getAllByText(/^word-/)[0].textContent;
 
@@ -96,7 +105,7 @@ describe('出題', () => {
   test('ステージ1は5問で始まる', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     expect(progress()).toEqual({ index: 1, total: 5 });
-    expect(stageLabel()).toBe('ステージ 1 / 10');
+    expect(state().stage).toBe(1);
   });
 
   test('pre1 / pre2 を含むデータでも例外にならず出題される', () => {
@@ -123,29 +132,29 @@ describe('ステージ途中でリセットされない', () => {
     }
     // 5問目に到達している
     expect(progress()).toEqual({ index: 5, total: 5 });
-    expect(screen.getByText(/これまでの正答率: 100%（4問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 4, correct: 4 });
   });
 
   test('ステージ1を終えるとステージ2の10問に進み、履歴は残る', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     for (let i = 0; i < 5; i += 1) clickKnow();
 
-    expect(stageLabel()).toBe('ステージ 2 / 10');
+    expect(state().stage).toBe(2);
     expect(progress()).toEqual({ index: 1, total: 10 });
-    expect(screen.getByText(/これまでの正答率: 100%（5問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 5, correct: 5 });
   });
 
   test('全問正解するとステージ2の出題レベルが上がる', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
-    expect(screen.getByText(/出題レベル: 3 \/ 7/)).toBeInTheDocument();
+    expect(state().level).toBe(3);
     for (let i = 0; i < 5; i += 1) clickKnow();
-    expect(screen.getByText(/出題レベル: 4 \/ 7/)).toBeInTheDocument();
+    expect(state().level).toBe(4);
   });
 
   test('全問不正解するとステージ2の出題レベルが下がる', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     for (let i = 0; i < 5; i += 1) clickDontKnow();
-    expect(screen.getByText(/出題レベル: 2 \/ 7/)).toBeInTheDocument();
+    expect(state().level).toBe(2);
   });
 });
 
@@ -177,11 +186,11 @@ describe('前の問題へ戻る', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     clickKnow();
     clickKnow();
-    expect(screen.getByText(/これまでの正答率: 100%（2問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 2, correct: 2 });
 
     fireEvent.click(screen.getByRole('button', { name: /前の問題/ }));
     expect(progress().index).toBe(2);
-    expect(screen.getByText(/これまでの正答率: 100%（1問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 1, correct: 1 });
   });
 });
 

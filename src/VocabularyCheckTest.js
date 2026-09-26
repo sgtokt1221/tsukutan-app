@@ -6,14 +6,16 @@ import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { logStudySession } from './logic/studyLogger';
 import { updateProgressPercentage } from './logic/progressLogic';
-import { FaUndo, FaArrowLeft } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaRegCircle } from 'react-icons/fa';
+import {
+  CheckTestTopBar, DifficultyMeter, StageBanner, Deck, Burst,
+} from './components/assessment/CheckTestParts';
 import SwipeIntent from './components/learning/SwipeIntent';
 import CoachModal from './components/learning/CoachModal';
 import { TEST_SWIPE, HOLD_MS, TAP_SLOP } from './logic/cardGestures';
 import { testIntentAt, testIntentText } from './logic/swipeIntent';
 import { useSeenOnce, TEST_COACH_KEY } from './logic/useSeenOnce';
 import {
-  MAX_STAGES,
   createInitialState,
   selectQuestions,
   recordAnswer,
@@ -24,6 +26,7 @@ import {
   totalScore,
   computeResultLevel,
   resultAbility,
+  estimateRemaining,
 } from './logic/placementTestEngine';
 import { expectedVocabulary } from './logic/abilityEstimate';
 
@@ -33,6 +36,8 @@ import { expectedVocabulary } from './logic/abilityEstimate';
  * 以前は英語→意味を読み終えるまで待っていて、1問ごとに数秒かかっていた。
  */
 export const REVEAL_PAUSE_MS = 900;
+/** そのうち最後のこれだけの時間で、カードを払った向きへ飛ばす（ミリ秒） */
+const LEAVE_MS = 260;
 
 /**
  * 単語力チェックテスト。
@@ -69,6 +74,11 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     のぞけるのに満点で数えると、見てから「わかる」を押すだけでランクが上がる
   */
   const [peeking, setPeeking] = useState(false);
+  // 答えたカードが飛んでいく向き（'good' は右、'again' は左）。次の問題で消す
+  const [leaving, setLeaving] = useState(null);
+  // 「わかる」の花火。数を変えると1回鳴る
+  const [burst, setBurst] = useState(0);
+
   const peekTimerRef = useRef(null);
   const peekedRef = useRef(false);
   const [questionStartTime, setQuestionStartTime] = useState(null);
@@ -199,6 +209,12 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     if (!pending || pending.finishing) return;
     pending.finishing = true;
     clearTimers();
+    // 見せ終わる少し前に、払った向きへ飛ばす
+    const lastAnswer = pending.next.allAnswers[pending.next.allAnswers.length - 1];
+    timersRef.current.push(setTimeout(
+      () => setLeaving(lastAnswer?.isCorrect ? 'good' : 'again'),
+      Math.max(0, REVEAL_PAUSE_MS - LEAVE_MS),
+    ));
     timersRef.current.push(setTimeout(async () => {
       pendingRef.current = null;
       let { next } = pending;
@@ -256,6 +272,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     };
 
     // めくって答えを見せ、すぐ次へ（読み上げはしない）
+    if (isCorrect) setBurst((n) => n + 1);
     setLastAnswer(isCorrect);
     setPhase('reveal');
     setIsFlipped(true);
@@ -280,6 +297,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   useEffect(() => {
     peekedRef.current = false;
     setPeeking(false);
+    setLeaving(null);
   }, [questionIndex, questions]);
   useEffect(() => () => clearTimeout(peekTimerRef.current), []);
 
@@ -390,101 +408,105 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   }
 
   const currentWord = questions[questionIndex];
-  const answeredCount = engine.allAnswers.length;
-  const accuracy = answeredCount > 0 ? Math.round((totalScore(engine) / answeredCount) * 100) : 0;
+  const remaining = estimateRemaining(engine);
+  const leaveX = leaving === 'good' ? 480 : leaving === 'again' ? -480 : 0;
 
   return (
-    <>
-      <div className="test-header">
-        <h3>単語力チェックテスト (ステージ {engine.stage} / {MAX_STAGES})</h3>
-        <p className="test-header-note">
-          出題レベル: {engine.targetLevel} / 7　これまでの正答率: {accuracy}%（{answeredCount}問）
-        </p>
-      </div>
+    <div
+      className="vct"
+      data-testid="check-test"
+      // 画面に文字では出さない状態。読み上げとテストのために残す
+      data-stage={engine.stage}
+      data-level={engine.targetLevel}
+      data-answered={engine.allAnswers.length}
+      data-correct={totalScore(engine)}
+    >
+      <CheckTestTopBar
+        answered={engine.allAnswers.length}
+        remaining={remaining}
+        onQuit={handleLeave}
+        onBack={handlePrevQuestion}
+        canGoBack={canGoBack && phase === 'ask'}
+      />
+      <DifficultyMeter level={engine.targetLevel} />
+      {/* 読み上げ用。画面には出さない（文字を減らす） */}
+      <span className="visually-hidden" aria-live="polite">{questionIndex + 1} / {questions.length}</span>
 
       <div id="flashcard-container">
         {/* 動かしている最中の「離すとどうなるか」（学習カードと同じ札） */}
         <SwipeIntent x={x} y={y} intentAt={intentAt} textOf={testIntentText} />
-        <motion.div
-          key={currentWord.id}
-          id="flashcard"
-          drag={phase === 'ask' ? 'x' : false}
-          /*
-            **カードを指と同じだけ動かす**（2026-09-26）。既定の弾性だと指の約1/3しか動かず、
-            指は答えの距離を越えているのに、カードの位置を見る札の円が埋まらなかった
-          */
-          dragElastic={1}
-          // 離したら素早く戻す。ゆっくり戻すと、めくれながら横滑りして見える
-          dragTransition={{ bounceStiffness: 900, bounceDamping: 60 }}
-          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          style={{ x, y, rotate, backgroundColor: cardColor }}
-          onDragEnd={(event, info) => { stopPeek(); handleDragEnd(event, info); }}
-          onDrag={(event, info) => { if (Math.abs(info.offset.x) > TAP_SLOP) clearTimeout(peekTimerRef.current); }}
-          onPointerDown={startPeek}
-          onPointerUp={stopPeek}
-          onPointerCancel={stopPeek}
-          onPointerLeave={stopPeek}
-          animate={{ rotateY: isFlipped || peeking ? 180 : 0 }}
-          data-peeking={peeking ? 'true' : undefined}
-          transition={{ duration: 0.4 }}
-        >
-          <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
-            <p id="card-front-text">{currentWord.word}</p>
-          </div>
-          <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
-            {lastAnswer !== null && (
-              <p className={lastAnswer ? 'test-your-answer is-yes' : 'test-your-answer is-no'} data-testid="your-answer">
-                あなたの答え：{lastAnswer ? 'わかる' : 'わからない'}
-              </p>
-            )}
-            <h3 id="card-back-word">{currentWord.word}</h3>
-            <p id="card-back-meaning">{currentWord.meaning || currentWord.japanese}</p>
-            {(currentWord.example || currentWord.exampleJa) && <hr />}
-            <p className="example-text">{currentWord.example}</p>
-            <p className="example-text-ja">{currentWord.exampleJa}</p>
-          </div>
-        </motion.div>
-      </div>
-
-      <div className="test-progress">
-        <div className="test-progress-labels">
-          <span>{questionIndex + 1} / {questions.length}</span>
-          <span>ステージ {engine.stage} / {MAX_STAGES}</span>
+        <div className="vct-stack">
+          <Deck remaining={remaining} />
+          {/* 飛んでいく・デッキから出てくるのは外の枠。カードの x は指で動かすぶんだけ
+              （同じ x で飛ばすと、次のカードが画面の外に置き去りになった） */}
+          <motion.div
+            key={currentWord.id}
+            className="vct-card-wrap"
+            initial={{ scale: 0.9, y: 16, opacity: 0 }}
+            animate={leaving
+              ? { x: leaveX, rotate: leaveX / 24, opacity: 0, scale: 1, y: 0 }
+              : { x: 0, rotate: 0, scale: 1, y: 0, opacity: 1 }}
+            transition={leaving ? { duration: LEAVE_MS / 1000, ease: 'easeIn' } : { duration: 0.35, ease: [0.22, 0.9, 0.24, 1] }}
+          >
+          <motion.div
+            id="flashcard"
+            drag={phase === 'ask' ? 'x' : false}
+            /*
+              **カードを指と同じだけ動かす**（2026-09-26）。既定の弾性だと指の約1/3しか動かず、
+              指は答えの距離を越えているのに、カードの位置を見る札の円が埋まらなかった
+            */
+            dragElastic={1}
+            // 離したら素早く戻す。ゆっくり戻すと、めくれながら横滑りして見える
+            dragTransition={{ bounceStiffness: 900, bounceDamping: 60 }}
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            style={{ x, y, rotate, backgroundColor: cardColor }}
+            onDragEnd={(event, info) => { stopPeek(); handleDragEnd(event, info); }}
+            onDrag={(event, info) => { if (Math.abs(info.offset.x) > TAP_SLOP) clearTimeout(peekTimerRef.current); }}
+            onPointerDown={startPeek}
+            onPointerUp={stopPeek}
+            onPointerCancel={stopPeek}
+            onPointerLeave={stopPeek}
+            animate={{ rotateY: isFlipped || peeking ? 180 : 0 }}
+            transition={{ duration: 0.35 }}
+            data-peeking={peeking ? 'true' : undefined}
+          >
+            <div className="card-face card-front" style={{ backgroundColor: 'transparent' }}>
+              <p id="card-front-text">{currentWord.word}</p>
+            </div>
+            <div className="card-face card-back" style={{ backgroundColor: 'transparent' }}>
+              {lastAnswer !== null && (
+                <p className={lastAnswer ? 'vct-stamp is-yes' : 'vct-stamp is-no'} data-testid="your-answer">
+                  {lastAnswer ? <FaRegCircle aria-hidden="true" /> : <FaTimes aria-hidden="true" />}
+                  <span className="visually-hidden">あなたの答え：{lastAnswer ? 'わかる' : 'わからない'}</span>
+                </p>
+              )}
+              <h3 id="card-back-word">{currentWord.word}</h3>
+              <p id="card-back-meaning">{currentWord.meaning || currentWord.japanese}</p>
+              {(currentWord.example || currentWord.exampleJa) && <hr />}
+              <p className="example-text">{currentWord.example}</p>
+              <p className="example-text-ja">{currentWord.exampleJa}</p>
+            </div>
+          </motion.div>
+          </motion.div>
+          <Burst trigger={burst} />
         </div>
-        <div className="test-progress-bar">
-          <div
-            className="test-progress-fill"
-            style={{ width: `${((questionIndex + 1) / questions.length) * 100}%` }}
-          />
-        </div>
+        <StageBanner stage={engine.stage} level={engine.targetLevel} />
       </div>
 
       {/* スワイプできない環境でも進められるようにボタンを置く（計画書13.3） */}
-      <div className="test-answer-buttons">
-        <button type="button" className="test-answer-btn incorrect" onClick={() => answerCurrent(false)} disabled={phase !== 'ask'}>
+      <div className="vct-answers">
+        <button type="button" className="vct-answer vct-answer--no" onClick={() => answerCurrent(false)} disabled={phase !== 'ask'}>
+          <span className="vct-answer__circle"><FaTimes aria-hidden="true" /></span>
           わからない
         </button>
-        <button type="button" className="test-answer-btn correct" onClick={() => answerCurrent(true)} disabled={phase !== 'ask'}>
+        <button type="button" className="vct-answer vct-answer--yes" onClick={() => answerCurrent(true)} disabled={phase !== 'ask'}>
+          <span className="vct-answer__circle"><FaCheck aria-hidden="true" /></span>
           わかる
         </button>
       </div>
 
       {/* 初めて受けるときだけ、受け方をモーダルで出す（学習カードと同じ形） */}
       {!coachSeen && <CoachModal kind="test" onClose={markCoachSeen} />}
-
-      <div className="test-nav-buttons">
-        <button
-          type="button"
-          className="test-nav-btn"
-          onClick={handlePrevQuestion}
-          disabled={!canGoBack || phase !== 'ask'}
-        >
-          <FaUndo /> 前の問題
-        </button>
-        <button type="button" className="test-nav-btn leave" onClick={handleLeave}>
-          <FaArrowLeft /> 前の画面に戻る
-        </button>
-      </div>
-    </>
+    </div>
   );
 }
