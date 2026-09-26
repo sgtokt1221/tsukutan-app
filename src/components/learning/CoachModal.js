@@ -48,7 +48,7 @@ export function cardCoachSteps(policy) {
 export const TEST_COACH_STEPS = [
   { key: 'good', title: '右へ払う', text: 'わかる' },
   { key: 'again', title: '左へ払う', text: 'わからない。知らない語は迷わずこちらへ' },
-  { key: 'flip', title: '答えを見る', text: '答えるとカードがめくれて、意味を読み上げる。次の問題へは自動で進む' },
+  { key: 'flip', title: '答えを見る', text: '答えるとカードがめくれて意味が出る。すぐ次の問題へ進む' },
   {
     key: 'rest',
     title: 'ステージごとに難しさが変わる',

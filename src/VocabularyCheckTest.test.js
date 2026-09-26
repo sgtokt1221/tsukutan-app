@@ -45,7 +45,7 @@ jest.mock('./logic/speechUtils', () => ({
 }));
 
 // eslint-disable-next-line import/first
-import VocabularyCheckTest, { REVEAL_PAUSE_MS, REVEAL_MAX_MS } from './VocabularyCheckTest';
+import VocabularyCheckTest, { REVEAL_PAUSE_MS } from './VocabularyCheckTest';
 
 /** eikenLevels に文字列を混ぜた単語データ */
 const WORDS = [];
@@ -62,7 +62,7 @@ for (let level = 1; level <= 7; level += 1) {
   }
 }
 
-/** 答えて、めくって読み上げ終わり、間が過ぎて次のカードが出るまで */
+/** 答えて、めくって答えを見せ、間が過ぎて次のカードが出るまで */
 const answerAndWait = (name) => {
   fireEvent.click(screen.getByRole('button', { name }));
   act(() => { jest.advanceTimersByTime(REVEAL_PAUSE_MS); });
@@ -248,18 +248,17 @@ describe('保存', () => {
 });
 
 /*
-  **答えたら毎回めくれて読み上げる**（2026-09-24）。答える前にはめくれない。
-  判定が終わる前にやめた結果は保存しない。ここは「読み終えた」を手で出す。
+  **答えたら毎回めくれて答えを見せる。読み上げはしない**（2026-09-26。テンポを優先。
+  以前は読み上げが終わるまで待っていた）。答える前にはめくれない。
+  判定が終わる前にやめた結果は保存しない。
 */
-describe('答えたらめくれて読み上げる', () => {
+describe('答えたらめくれて、読み上げずに次へ', () => {
   const show = (props = {}) => render(<VocabularyCheckTest allWords={WORDS} onCancel={() => {}} {...props} />);
   const card = () => document.getElementById('flashcard');
   const front = () => document.getElementById('card-front-text').textContent;
   const answer = (name) => act(() => { fireEvent.click(screen.getByRole('button', { name })); });
-  /** 読み上げが終わった知らせを出し、間を進める */
-  const finishSpeech = async () => {
-    const call = mockSequence.mock.calls[mockSequence.mock.calls.length - 1];
-    await act(async () => { call[1].onDone(); });
+  /** 答えを見せる間を進める */
+  const finishReveal = async () => {
     await act(async () => { jest.advanceTimersByTime(REVEAL_PAUSE_MS); });
   };
 
@@ -272,35 +271,24 @@ describe('答えたらめくれて読み上げる', () => {
     expect(mockSequence).not.toHaveBeenCalled();
   });
 
-  test('**答えるとめくれて、自分の答えと英語→意味の読み上げが出る**', () => {
+  test('**答えるとめくれて自分の答えが出る。読み上げはしない**', () => {
     show();
-    const word = front();
     answer('わかる');
     expect(screen.getByTestId('your-answer').textContent).toBe('あなたの答え：わかる');
-    expect(mockSequence).toHaveBeenCalledTimes(1);
-    const [items] = mockSequence.mock.calls[0];
-    expect(items[0]).toEqual({ text: word, lang: 'en-US' });
-    expect(items[1].lang).toBe('ja-JP');
+    expect(mockSequence).not.toHaveBeenCalled();
   });
 
-  test('**読み終えたら少し置いて次のカードへ**', async () => {
+  test('**答えを少し見せたら、待たずに次のカードへ**（1秒以内）', async () => {
     show();
     const first = front();
     answer('わからない');
-    expect(front()).toBe(first); // まだ進まない
-    await finishSpeech();
+    expect(front()).toBe(first); // めくった直後はまだ進まない
+    expect(REVEAL_PAUSE_MS).toBeLessThanOrEqual(1000);
+    await finishReveal();
     expect(front()).not.toBe(first);
     expect(screen.queryByTestId('your-answer')).toBeNull();
     // わからない語は復習リストへ
     expect(mockUpdateUserWordProgress).toHaveBeenCalledTimes(1);
-  });
-
-  test('**読み上げが返らなくても、上限で次へ進む**', async () => {
-    show();
-    const first = front();
-    answer('わかる');
-    await act(async () => { jest.advanceTimersByTime(REVEAL_MAX_MS + REVEAL_PAUSE_MS); });
-    expect(front()).not.toBe(first);
   });
 
   test('**めくっている間は答えを受け付けない**（連打で1問飛ばない）', async () => {
@@ -308,9 +296,9 @@ describe('答えたらめくれて読み上げる', () => {
     answer('わかる');
     answer('わかる');
     answer('わからない');
-    expect(mockSequence).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('your-answer').textContent).toBe('あなたの答え：わかる');
     expect(screen.getByRole('button', { name: 'わかる' })).toBeDisabled();
-    await finishSpeech();
+    await finishReveal();
     expect(screen.getByText(/^2 \//)).toBeInTheDocument();
   });
 
@@ -318,7 +306,7 @@ describe('答えたらめくれて読み上げる', () => {
     show();
     for (let i = 0; i < 16; i += 1) {
       answer('わかる');
-      await finishSpeech();
+      await finishReveal();
     }
     answer('前の画面に戻る');
     expect(screen.getByText('結果は保存されません')).toBeInTheDocument();
@@ -334,7 +322,7 @@ describe('答えたらめくれて読み上げる', () => {
       const btn = screen.queryByRole('button', { name: 'わかる' });
       if (!btn) break;
       answer('わかる');
-      await finishSpeech();
+      await finishReveal();
     }
     expect(mockUpdateDoc).toHaveBeenCalledTimes(1);
     expect(onTestComplete).toHaveBeenCalledTimes(1);
