@@ -14,7 +14,8 @@ export default function AnswerControls({
   onCorrect,
   onIncorrect,
   onHard,
-  // 中央に置く「もう覚えた」（上スワイプと同じ）。`{ label, fullLabel, hint, onClick }`
+  // 中央に置く「もう覚えた」（上スワイプと同じ）。`{ label, fullLabel, hint, onClick, coached }`
+  // coached は初回の案内で「ここを押す」と光らせるとき
   middle,
   disabled = false,
   correctLabel = 'わかった',
@@ -47,7 +48,7 @@ export default function AnswerControls({
         {middle && (
           <button
             type="button"
-            className="answer-btn answer-btn--graduate"
+            className={middle.coached ? 'answer-btn answer-btn--graduate is-coached' : 'answer-btn answer-btn--graduate'}
             onClick={middle.onClick}
             disabled={disabled}
             aria-label={middle.fullLabel || middle.label}

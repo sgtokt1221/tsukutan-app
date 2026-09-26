@@ -12,6 +12,10 @@ import AutoPlaySpeed from './components/learning/AutoPlaySpeed';
 import BookmarkButton from './components/learning/BookmarkButton';
 import CardFace from './components/learning/CardFace';
 import WordbookList from './components/learning/WordbookList';
+import SwipeIntent from './components/learning/SwipeIntent';
+import FlashcardCoach from './components/learning/FlashcardCoach';
+import WordbookCoach from './components/learning/WordbookCoach';
+import { useSeenOnce, coachKeyFor, WORDBOOK_COACH_KEY } from './logic/useSeenOnce';
 import { studyModePolicy, sessionTitle } from './logic/studyMode';
 import { finishedLog, leftLog } from './logic/studyLog';
 import { flashcardGesture, wordbookGesture, findCardAtPoint } from './logic/cardGestures';
@@ -131,6 +135,20 @@ export default function StudyFlashcard({
   const y = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
   const cardColor = useTransform([x, y], ([lx, ly]) => cardColorAt(lx, ly, allowSwipeUp));
+
+  /*
+    **案内。** そのモードを初めて開いた1枚目で、カードが自分で動いて見せる（'demo'）。
+    終わったら「やってみよう」（'try'）を出し、1回答えたら消す。鍵は動きの違いごと（→ useSeenOnce.js）
+  */
+  const [cardCoachSeen, markCardCoachSeen] = useSeenOnce(coachKeyFor(policy));
+  const [coachPhase, setCoachPhase] = useState(() => (cardCoachSeen ? null : 'demo'));
+  const [coachLine, setCoachLine] = useState('');
+  const [coachRemove, setCoachRemove] = useState(false);
+  const endCoachDemo = useCallback(() => {
+    setCoachPhase((phase) => (phase === 'demo' ? 'try' : phase));
+    markCardCoachSeen();
+  }, [markCardCoachSeen]);
+  const [wordbookCoachSeen, markWordbookCoachSeen] = useSeenOnce(WORDBOOK_COACH_KEY);
 
   const resetCard = useCallback(() => {
     setIsFlipped(false);
@@ -292,6 +310,7 @@ export default function StudyFlashcard({
   const handleAnswer = useCallback(async (quality) => {
     // **手を動かした印。** 放置の判定と、つくばホームへ送る新規語数／復習語数の分かれ目
     noteActivity(policy.activity);
+    setCoachPhase(null);
     const word = cards[currentIndex];
     // 答えを見てから「わかった」を押しても茶々は入れない（2026-09-24 に吹き出しを外した）
 
@@ -351,6 +370,7 @@ export default function StudyFlashcard({
   const handleRemoveCurrent = useCallback(async () => {
     const word = cards[currentIndex];
     if (!word) return;
+    setCoachPhase(null);
     removeWord(word);
     resetCard();
     if (currentIndex >= cards.length - 1) await finishSession(currentIndex);
@@ -679,6 +699,14 @@ export default function StudyFlashcard({
           }}
         />
 
+        {!wordbookCoachSeen && (
+          <WordbookCoach
+            shellRef={wordbookShellRef}
+            removeLabel={policy.removeLabel}
+            onDone={markWordbookCoachSeen}
+          />
+        )}
+
         {/* 上に戻るボタン。カードに被らないよう右下の余白へ寄せる */}
         <div className="wordbook-to-top">
           <button
@@ -738,6 +766,21 @@ export default function StudyFlashcard({
       </ModeTabs>
 
       <div id="flashcard-container">
+        {/* 動かしている最中の「離すとどうなるか」。毎回出す */}
+        <SwipeIntent x={x} y={y} allowSwipeUp={allowSwipeUp} word={currentWord} policy={policy} />
+        {coachPhase && (
+          <FlashcardCoach
+            phase={coachPhase}
+            x={x}
+            y={y}
+            allowSwipeUp={allowSwipeUp}
+            removeCoachText={policy.removeCoach}
+            onFlip={setIsFlipped}
+            onHighlightRemove={setCoachRemove}
+            onDemoEnd={endCoachDemo}
+            onLine={setCoachLine}
+          />
+        )}
         <motion.div
           key={currentIndex}
           id="flashcard"
@@ -789,7 +832,18 @@ export default function StudyFlashcard({
           fullLabel: policy.removeLabel,
           hint: policy.removeHint,
           onClick: handleRemoveCurrent,
+          coached: coachRemove,
         }}
+        hint={coachPhase && coachLine ? (
+          <span className="coach-line" key={coachLine}>
+            {coachLine}
+            {coachPhase === 'demo' && (
+              <button type="button" className="coach-skip" data-coach-skip onClick={endCoachDemo}>
+                とばす
+              </button>
+            )}
+          </span>
+        ) : undefined}
       />
 
       {/* 進捗はヘッダーに出しているので、ここでは操作だけ置く。

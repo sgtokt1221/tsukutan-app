@@ -2219,12 +2219,11 @@ input[type="file"] { display: none; }
 }
 
 .tab-item.active {
-  /* ライム背景に白文字はコントラストが足りない。オリーブ文字にする（計画書5.2）。
-     色だけに頼らないよう、太字と下線でも現在地を示す（計画書13.3）。 */
-  background: var(--color-brand-lime);
-  color: var(--color-ink-olive);
+  /* 選択中はベタ塗り＋白抜き文字（下線は使わない。2026-09-26 に決めた）。
+     ライム地に白は薄すぎるので、濃紺の地にする（白で 12:1 以上）。太字でも現在地を示す */
+  background: var(--color-ink-olive);
+  color: #ffffff;
   font-weight: 700;
-  box-shadow: inset 0 -3px 0 var(--color-ink-olive);
 }
 
 .tab-label {
@@ -2955,10 +2954,10 @@ select:focus-visible,
 }
 
 .free-study-tab {
-  padding: var(--space-8) var(--space-12);
+  margin: var(--space-4) 0;
+  padding: var(--space-4) var(--space-12);
   border: none;
-  /* 選択中の下線ぶんを常に確保して、切り替えても行が動かないようにする */
-  border-bottom: 2px solid transparent;
+  border-radius: var(--radius-pill);
   background: none;
   font-family: var(--font-family-body);
   font-size: var(--font-size-14);
@@ -2972,9 +2971,11 @@ select:focus-visible,
   color: var(--color-ink-olive);
 }
 
+/* 選択中はベタ塗り＋白抜き文字（下線は使わない。2026-09-26 に決めた） */
 .free-study-tab[aria-selected="true"] {
-  color: var(--color-ink-olive);
-  border-bottom-color: var(--color-brand-lime);
+  background-color: var(--color-ink-olive);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 /* ===== 自由学習のレベルカード =====
@@ -3185,21 +3186,11 @@ select:focus-visible,
   color: var(--color-olive-subtle);
 }
 
+/* 選択中はベタ塗り＋白抜き文字。下の短い線は使わない（2026-09-26 に決めた） */
 .tab-item.active {
-  background: var(--color-lime-soft);
-  color: #12775d;
+  background: var(--color-ink-olive);
+  color: #ffffff;
   box-shadow: none;
-}
-
-.tab-item.active::after {
-  content: '';
-  position: absolute;
-  left: 28%;
-  right: 28%;
-  bottom: 3px;
-  height: 3px;
-  border-radius: var(--radius-pill);
-  background: #169b78;
 }
 
 /* ===== スマホ表示の安定化 =====

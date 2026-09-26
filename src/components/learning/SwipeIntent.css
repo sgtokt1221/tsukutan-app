@@ -1,0 +1,78 @@
+/* 離すとどうなるかの札。カードの上に浮かせる */
+
+#flashcard-container {
+  position: relative;
+}
+
+.swipe-intent {
+  position: absolute;
+  top: var(--space-8);
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  max-width: calc(100% - var(--space-32));
+  padding: var(--space-8) var(--space-16) var(--space-8) var(--space-8);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-2);
+  color: var(--color-ink-olive);
+  opacity: 0;
+  transform: translate(-50%, -6px);
+  transition: opacity var(--motion-fast) var(--ease-standard),
+              transform var(--motion-standard) var(--ease-standard),
+              background-color var(--motion-standard) var(--ease-standard);
+  pointer-events: none;
+}
+
+.swipe-intent.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* 色はスワイプ中のカードと同じ（→ logic/swipeFeedback.js） */
+.swipe-intent--good { background-color: #d9f99d; }
+.swipe-intent--again { background-color: #fecaca; color: var(--color-danger-ink); }
+.swipe-intent--remove { background-color: #fef08a; color: #713f12; }
+
+.swipe-intent__ring {
+  flex: none;
+  width: 34px;
+  height: 34px;
+}
+
+.swipe-intent__ring circle {
+  fill: none;
+  stroke-width: 4;
+}
+
+.swipe-intent__track {
+  stroke: rgba(24, 49, 83, 0.12);
+}
+
+.swipe-intent__fill {
+  stroke: currentColor;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset var(--motion-fast) linear;
+}
+
+.swipe-intent__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.swipe-intent__text strong {
+  font-size: var(--font-size-16);
+}
+
+.swipe-intent__text span {
+  font-size: var(--font-size-14);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

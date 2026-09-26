@@ -19,14 +19,14 @@ export const STUDENT_TABS = [
   { id: 'analytics', label: 'きろく', Icon: FaChartLine },
 ];
 
-export function StudentHeader({ userName, avatarUrl, onLogout }) {
+export function StudentHeader({ userName, avatarUrl, onLogout, onShowGuide }) {
   return (
     <header className="student-header">
       <BrandLogo placement="student-header" priority decorative />
       {/* ロゴ画像が読めない環境でも製品名が分かるようにする */}
       <h1 className="visually-hidden">つくつく</h1>
 
-      <UserMenu userName={userName} avatarUrl={avatarUrl} onLogout={onLogout} />
+      <UserMenu userName={userName} avatarUrl={avatarUrl} onLogout={onLogout} onShowGuide={onShowGuide} />
     </header>
   );
 }
