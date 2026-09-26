@@ -12,6 +12,9 @@ export const TAP_SLOP = 10;
 /** フラッシュカードで、採点・外すとみなす距離。px */
 export const FLASHCARD_SWIPE = 100;
 
+/** 単語力チェックテストで、答えとみなす距離。px（横にしか動かない） */
+export const TEST_SWIPE = 50;
+
 /** 単語帳の一覧で、採点とみなす距離。px（一覧は縦にたぐるので短め） */
 export const WORDBOOK_SWIPE = 50;
 

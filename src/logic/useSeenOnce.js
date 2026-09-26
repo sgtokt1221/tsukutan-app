@@ -22,6 +22,7 @@ const readSeen = (key) => {
 export const coachKeyFor = (policy) => `card.${policy.swipeUp ? 'up' : 'flat'}.${policy.remove}`;
 
 export const WORDBOOK_COACH_KEY = 'wordbook';
+export const TEST_COACH_KEY = 'test';
 
 /** 学習画面の中の案内を、全部もう一度出すようにする（メニューの「使い方を見る」） */
 export function resetAllCoaches() {

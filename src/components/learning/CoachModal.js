@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MotionConfig, motion } from 'framer-motion';
 import { FaHandPointer } from 'react-icons/fa';
+import { QUESTIONS_STAGE_1, QUESTIONS_PER_STAGE } from '../../logic/placementTestEngine';
 import './Coach.css';
 
 /**
- * 学習画面の中の案内。**そのモードを初めて開いたとき、モーダルで出す。**
+ * 学習画面・単語力チェックテストの中の案内。**そのモードを初めて開いたとき、モーダルで出す。**
  *
  * 以前は本物のカードを自分で動かして見せていたが、「勝手に動いているように見える」
  * （2026-09-26）。本物のカードは生徒が触るまで動かさない。見本はモーダルの中の小さなカードで。
@@ -23,6 +24,8 @@ const CARD_STEPS = {
   again: { pose: { x: -70, y: 0, rotate: -8, backgroundColor: '#fecaca' }, hand: { x: -70, y: 0 } },
   up: { pose: { x: 0, y: -46, rotate: 0, backgroundColor: '#fef08a' }, hand: { x: 0, y: -46 } },
   button: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, button: true },
+  flip: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, flip: true },
+  rest: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' } },
 };
 
 /** モードに合わせた手順。**文言は studyMode.js の表から** */
@@ -41,6 +44,18 @@ export function cardCoachSteps(policy) {
   return steps;
 }
 
+/** 単語力チェックテスト（VocabularyCheckTest）。問題数は placementTestEngine の定数から */
+export const TEST_COACH_STEPS = [
+  { key: 'good', title: '右へ払う', text: 'わかる' },
+  { key: 'again', title: '左へ払う', text: 'わからない。知らない語は迷わずこちらへ' },
+  { key: 'flip', title: '答えを見る', text: '答えるとカードがめくれて、意味を読み上げる。次の問題へは自動で進む' },
+  {
+    key: 'rest',
+    title: 'ステージごとに難しさが変わる',
+    text: `最初は${QUESTIONS_STAGE_1}問、そのあと${QUESTIONS_PER_STAGE}問ずつ。力が見えたところで終わり、ランクが決まって保存される（途中でやめると保存されない）`,
+  },
+];
+
 export const WORDBOOK_COACH_STEPS = [
   { key: 'list', title: '一覧で見わたす', text: '1枚ずつめくらず、並んだまま次々に確かめられる' },
   { key: 'reveal', title: '赤い部分をタップ', text: '答えが出る。もう一度押すと隠れる' },
@@ -57,7 +72,7 @@ function useStepCycle(count) {
   return step;
 }
 
-function CardDemo({ stepKey, policy }) {
+function CardDemo({ stepKey, buttons }) {
   const s = CARD_STEPS[stepKey];
   return (
     <div className="coach-demo">
@@ -70,8 +85,8 @@ function CardDemo({ stepKey, policy }) {
           <span className="coach-demo__word">follow</span>
           <motion.span
             className="coach-demo__meaning"
-            animate={{ opacity: stepKey === 'tap' ? 1 : 0 }}
-            transition={{ delay: stepKey === 'tap' ? 0.5 : 0, duration: 0.25 }}
+            animate={{ opacity: s.flip ? 1 : 0 }}
+            transition={{ delay: s.flip ? 0.5 : 0, duration: 0.25 }}
           >
             ～の後に続く
           </motion.span>
@@ -90,9 +105,11 @@ function CardDemo({ stepKey, policy }) {
         )}
       </div>
       <div className="coach-demo__buttons" aria-hidden="true">
-        <span className="coach-demo__btn coach-demo__btn--again">もう一度</span>
-        <span className={`coach-demo__btn coach-demo__btn--remove${s.button ? ' is-coached' : ''}`}>{policy.removeShort}</span>
-        <span className="coach-demo__btn coach-demo__btn--good">わかった</span>
+        {buttons.map((b) => (
+          <span key={b.kind} className={`coach-demo__btn coach-demo__btn--${b.kind}${b.kind === 'remove' && s.button ? ' is-coached' : ''}`}>
+            {b.label}
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -141,13 +158,21 @@ function WordbookDemo({ stepKey }) {
   );
 }
 
+const TITLES = { card: 'カードの使い方', wordbook: '単語帳の使い方', test: '単語力チェックテストの受け方' };
+
 /**
- * @param {{ kind: 'card'|'wordbook', policy: object, onClose: () => void }} props
+ * @param {{ kind: 'card'|'wordbook'|'test', policy?: object, onClose: () => void }} props
+ *   policy は card と wordbook のときだけ要る（studyModePolicy）
  */
 export default function CoachModal({ kind, policy, onClose }) {
-  const steps = kind === 'card'
-    ? cardCoachSteps(policy)
-    : WORDBOOK_COACH_STEPS.map((s) => (s.key === 'check' ? { ...s, text: `${policy.removeLabel}。${policy.removePlainHint}` } : s));
+  let steps = TEST_COACH_STEPS;
+  if (kind === 'card') steps = cardCoachSteps(policy);
+  if (kind === 'wordbook') {
+    steps = WORDBOOK_COACH_STEPS.map((s) => (s.key === 'check' ? { ...s, text: `${policy.removeLabel}。${policy.removePlainHint}` } : s));
+  }
+  const buttons = kind === 'test'
+    ? [{ kind: 'again', label: 'わからない' }, { kind: 'good', label: 'わかる' }]
+    : [{ kind: 'again', label: 'もう一度' }, { kind: 'remove', label: policy?.removeShort }, { kind: 'good', label: 'わかった' }];
   const step = useStepCycle(steps.length);
   const current = steps[step];
   const buttonRef = useRef(null);
@@ -164,11 +189,11 @@ export default function CoachModal({ kind, policy, onClose }) {
       <div className="coach-modal" role="dialog" aria-modal="true" aria-labelledby="coach-modal-title">
         <div className="coach-modal__sheet">
           <h2 id="coach-modal-title" className="coach-modal__title">
-            {kind === 'card' ? 'カードの使い方' : '単語帳の使い方'}
+            {TITLES[kind]}
           </h2>
-          {kind === 'card'
-            ? <CardDemo stepKey={current.key} policy={policy} />
-            : <WordbookDemo stepKey={current.key} />}
+          {kind === 'wordbook'
+            ? <WordbookDemo stepKey={current.key} />
+            : <CardDemo stepKey={current.key} buttons={buttons} />}
           <ol className="coach-modal__steps">
             {steps.map((s, i) => (
               <li key={s.key} className={i === step ? 'coach-modal__step is-on' : 'coach-modal__step'}>

@@ -1,5 +1,5 @@
-import { swipeIntentAt, nextIntervalDays, reviewGaps, intentText, daysText } from './swipeIntent';
-import { flashcardGesture } from './cardGestures';
+import { swipeIntentAt, testIntentAt, nextIntervalDays, reviewGaps, intentText, daysText } from './swipeIntent';
+import { flashcardGesture, TEST_SWIPE } from './cardGestures';
 import { studyModePolicy } from './studyMode';
 
 describe('離すとどうなるかの札', () => {
@@ -40,9 +40,19 @@ describe('離すとどうなるかの札', () => {
 });
 
 describe('次は何日後', () => {
-  it('新しい語は明日', () => {
-    expect(nextIntervalDays({ word: 'follow' })).toBe(1);
+  it('記録の無い語（はじめて）は明日', () => {
+    expect(nextIntervalDays(null)).toBe(1);
     expect(daysText(1)).toBe('明日また出る');
+  });
+
+  it('**記録を読み終えるまでは日数を言わない**', () => {
+    expect(daysText(null)).toBe('次に出るまでの間があく');
+    expect(intentText('good', { days: null, policy: studyModePolicy('free') }).detail).toBe('次に出るまでの間があく');
+  });
+
+  it('記録があれば、その記録から計算する（3回目のわかったは17日後）', () => {
+    expect(nextIntervalDays({ interval: 6, repetitions: 2, easeFactor: 2.7 })).toBe(17);
+    expect(intentText('good', { days: 17, policy: studyModePolicy('free') }).detail).toBe('17日後にまた出る');
   });
 
   it('2回目のわかったは6日後（実際に書く計算と同じ）', () => {
@@ -59,5 +69,14 @@ describe('札の文言', () => {
     const text = intentText('remove', { policy: studyModePolicy('review') });
     expect(text.title).toBe('もう覚えた');
     expect(text.detail).toBe('もう出題されなくなります');
+  });
+});
+
+describe('単語力チェックテストの札', () => {
+  it('**「決まり」は答えになる距離（TEST_SWIPE）と一致する**', () => {
+    expect(testIntentAt(TEST_SWIPE - 1).locked).toBe(false);
+    expect(testIntentAt(TEST_SWIPE).locked).toBe(true);
+    expect(testIntentAt(-TEST_SWIPE).kind).toBe('again');
+    expect(testIntentAt(5)).toBeNull();
   });
 });

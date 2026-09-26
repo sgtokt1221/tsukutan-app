@@ -6,9 +6,11 @@
  *
  * 「次は何日後」は、離したときに実際に書く計算（`nextSchedule`）と同じもので出す。
  * 学習画面は `updateUserWordProgress` をやる気レベル無しで呼ぶので、ここも普通で計算する。
- * カードの語が間隔の記録を持っていない（新しい語）ときは「はじめて」として計算する。
+ * **元にするのは保存済みの記録（reviewWords の文書）。カードの語ではない**
+ * （→ `useNextInterval`）。自由学習や毎日みる単語のカードは記録を持っていないので、
+ * カードで計算すると、17日後に書くのに「明日」と出ていた（2026-09-26）。
  */
-import { flashcardGesture, TAP_SLOP } from './cardGestures';
+import { flashcardGesture, TAP_SLOP, TEST_SWIPE } from './cardGestures';
 import { ANSWER_QUALITY, nextSchedule } from './reviewScheduling';
 import { getMotivationConfig } from '../config';
 
@@ -38,9 +40,23 @@ export function swipeIntentAt(dx, dy, allowSwipeUp) {
   return { kind, progress: locked ? 1 : Math.min(0.95, dist / COMMIT_AT), locked };
 }
 
-/** 「わかった」にしたら、次に出るのは何日後か */
-export function nextIntervalDays(word) {
-  const { interval } = nextSchedule(word || {}, ANSWER_QUALITY.good, getMotivationConfig());
+/**
+ * 単語力チェックテストの札。横にしか動かず、`TEST_SWIPE` 以上で答えになる
+ * （VocabularyCheckTest の handleDragEnd と同じ閾値）。
+ */
+export function testIntentAt(dx) {
+  const ax = Math.abs(dx);
+  if (ax < SHOW_FROM) return null;
+  const locked = ax >= TEST_SWIPE;
+  return { kind: dx > 0 ? 'good' : 'again', progress: locked ? 1 : Math.min(0.95, ax / TEST_SWIPE), locked };
+}
+
+/**
+ * 「わかった」にしたら、次に出るのは何日後か。
+ * @param {object|null} saved 保存済みの記録（reviewWords の文書）。無ければはじめての語
+ */
+export function nextIntervalDays(saved) {
+  const { interval } = nextSchedule(saved || {}, ANSWER_QUALITY.good, getMotivationConfig());
   return interval;
 }
 
@@ -60,16 +76,26 @@ export function reviewGaps(count) {
   return gaps;
 }
 
-/** 日数を言葉に */
-export const daysText = (days) => (days <= 1 ? '明日また出る' : `${days}日後にまた出る`);
+/** 日数を言葉に。まだ分からない（記録を読んでいる）ときは日数を言わない */
+export const daysText = (days) => {
+  if (!Number.isFinite(days)) return '次に出るまでの間があく';
+  return days <= 1 ? '明日また出る' : `${days}日後にまた出る`;
+};
 
 /**
  * 札の文言。
  * @param {'good'|'again'|'remove'} kind
- * @param {{ word?: object, policy: { removeShort: string, removePlainHint: string } }} ctx
+ * @param {{ days: number|null, policy: { removeShort: string, removePlainHint: string } }} ctx
  */
-export function intentText(kind, { word, policy }) {
-  if (kind === 'good') return { title: 'わかった', detail: daysText(nextIntervalDays(word)) };
+export function intentText(kind, { days, policy }) {
+  if (kind === 'good') return { title: 'わかった', detail: daysText(days) };
   if (kind === 'again') return { title: 'もう一度', detail: '今日のうちに、また出る' };
   return { title: policy.removeShort, detail: policy.removePlainHint };
+}
+
+/** 単語力チェックテストの札の文言 */
+export function testIntentText(kind) {
+  return kind === 'good'
+    ? { title: 'わかる', detail: '答えを見て、次の問題へ' }
+    : { title: 'わからない', detail: '答えを見て、次の問題へ' };
 }
