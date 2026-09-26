@@ -1,0 +1,84 @@
+{
+  "id": "eiken-p2-005",
+  "grade": "pre2",
+  "title": "Zoos Today",
+  "passage": {
+    "text": "Zoos are popular places for families on weekends. Some zoos hold events in which visitors can watch keepers feeding the animals, and in this way, they teach people about wild animals. Zoos are also working together to protect animals that may disappear in the future.",
+    "hintPhrase": "in this way",
+    "wordCount": 45
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p2-005-a.webp",
+      "caption": "動物園。5人が別々の動作（象に餌をやる飼育員／カメラで写真を撮る男の子／売店でアイスを買う女性／スケッチブックにキリンを描く女の子／ベビーカーを押す男性）。"
+    },
+    {
+      "id": "b",
+      "file": "eiken-p2-005-b.webp",
+      "caption": "小さなケーキ屋のカウンター。ショーケースは空で SOLD OUT の札だけ。店員が頭を下げている。吹き出しにいちごのケーキを持つ姿、赤い斜線。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do some zoos teach people about wild animals?",
+      "modelAnswer": "By holding events in which visitors can watch keepers feeding the animals.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the people in Picture A. They are doing different things. Tell me as much as you can about what they are doing.",
+      "modelAnswer": "A keeper is feeding an elephant. A boy is taking a photo. A woman is buying ice cream. A girl is drawing a giraffe. A man is pushing a baby stroller.",
+      "answerSeconds": 45
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, look at the person in Picture B. Please describe the situation.",
+      "modelAnswer": "The girl can't buy a strawberry cake because the shop has sold out of everything.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think zoos are good places for animals?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Zoos protect animals that are disappearing in the wild. Visitors also learn to care about them."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "The cages are too small for large animals. Animals should live where they were born."
+        }
+      }
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "cardVisible": false,
+      "prompt": "These days, many shops sell sweets made in their own kitchens. Do you often eat sweets?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I eat chocolate almost every day. My favorite is the ice cream at the shop near my house."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "I'm trying not to eat too much sugar. I usually eat fruit instead."
+        }
+      }
+    }
+  ]
+}

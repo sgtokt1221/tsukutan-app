@@ -52,3 +52,7 @@ ui-debug.log*
 
 # 配信しない作業用ファイル（教室資料など）
 /local
+local/
+
+# 生成した音声。数百MBあるのでリポジトリには入れない（scripts/build-audio.js）
+local/

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import './Analytics.css';
@@ -6,52 +6,56 @@ import { collection, getDocs, doc, getDoc, setDoc, query, orderBy, updateDoc, wh
 import { generateDailyPlan } from './logic/learningPlanner';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { logStudySession } from './logic/studyLogger';
-import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress } from './logic/freeStudyProgress';
+import { saveFreeStudyProgress, getFreeStudyProgress, getAllFreeStudyProgress, levelProgressKey } from './logic/freeStudyProgress';
 import VocabularyCheckTest from './VocabularyCheckTest';
 import TestResult from './TestResult';
-import LearningFlashcard from './LearningFlashcard';
+// 新規も復習も同じ単語カード。違いは learningMode（→ logic/studyMode.js）
+import StudyFlashcard from './StudyFlashcard';
 import { buildThemeGroups, themeLabels, themeDescriptions } from './logic/themeMatcher';
 import AnalyticsPanel from './components/student/AnalyticsPanel';
 import StoryPanel from './components/student/StoryPanel';
 import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
-import ReviewFlashcard from './ReviewFlashcard';
 import RankCard from './components/assessment/RankCard';
+import LevelNudge from './components/assessment/LevelNudge';
+import ReadingPanel from './components/reading/ReadingPanel';
+import { isAheadOfAssessment } from './logic/estimatedLevel';
+import { setStudyRank, noteDeck } from './logic/studySession';
+import { BOOKS, isBookId, getBook, bookWordsUrl } from './config/books';
+import { wordsInRange, rangeKeyOf } from './logic/bookWords';
+import {
+  loadSunshineCards, sunshineTextbookId, isSunshineTextbookId, gradeOfSunshineId, wordsInPages, pageRangeKey, pageLabel,
+} from './logic/textbookPages';
+import { loadPendingQuizzes } from './logic/assignedQuiz';
+import AssignedQuiz from './components/quiz/AssignedQuiz';
+import AssignedQuizCard from './components/quiz/AssignedQuizCard';
+import ExamMissedNotice from './components/quiz/ExamMissedNotice';
+import { syncExamSupportMissed, reviewEntryOf, cardsForRefs } from './logic/examSupportMissed';
+import ExamPracticeCard from './components/quiz/ExamPracticeCard';
+import Onboarding from './components/onboarding/Onboarding';
+import DashboardSkeleton from './components/student/DashboardSkeleton';
+import { useOnboarding } from './logic/useOnboarding';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
+import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStudyMenu';
+import RecommendationBadge from './components/student/RecommendationBadge';
 import { getTodayKey, getCurrentMonthKey, getTokyoDateKey, parseLocalDate } from './logic/dateKeys';
 import { getRecommendedTextbooks, toGoalIds, getMotivationConfig, getGoal, LEVELS } from './config';
-import { bestRankOf, rankForScore, scoreFromLegacyLevel } from './logic/rankLogic';
+import { bestRankOf, rankForScore, abilityScoreOf, tierForScore } from './logic/rankLogic';
 import { normalizeStory, isDisplayableStory } from './logic/storyView';
 import { StudentHeader, StudentBottomNav } from './components/layout/StudentShell';
-import { loadWordMaster, loadManifest } from './logic/wordMaster';
+import { loadWordMaster, loadManifest, loadTextbookWords } from './logic/wordMaster';
+import { INTERVIEW_GRADES } from './logic/interviewContent';
 import logger from './logic/logger';
+import { EIKEN_ORDER, easiestEikenLevel, eikenTargetOf } from './logic/eikenLevels';
+
+// 面接モードは画像と素材を伴うので、開いたときだけ読む。
+// 起動時の塊に入れると、使わない生徒の起動まで遅くなる。
+const EikenInterview = React.lazy(() => import('./components/eiken/EikenInterview'));
+const EikenWriting = React.lazy(() => import('./components/eiken/writing/EikenWriting'));
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
-/** 英検の級を、やさしい順に並べたもの。実データに1級の語は無い。 */
-export const EIKEN_ORDER = [5, 4, 3, 'pre2', 2, 'pre1'];
-
-/**
- * その単語が属する英検の級。複数の級に入っている語は
- * 一番やさしい級のものとして扱う。
- *
- * 実データでは 2,462 件が複数の級に属していて（"a lot of" は 3級・4級・5級）、
- * 級ごとに数えると同じ語を何度も数えてしまう。準1級だと合計 7,867 語と、
- * 実際の収録 4,478 語の倍近くになっていた。
- */
-export const easiestEikenLevel = (word) => {
-  if (!Array.isArray(word?.eikenLevels)) return null;
-  const known = word.eikenLevels.filter((level) => EIKEN_ORDER.includes(level));
-  if (known.length === 0) return null;
-  return known.reduce((a, b) => (EIKEN_ORDER.indexOf(a) < EIKEN_ORDER.indexOf(b) ? a : b));
-};
-
-/** 教材ID（eiken-3 / eiken-pre2 など）からその級を取り出す。 */
-export const eikenTargetOf = (textbookId = '') => {
-  const levelPart = textbookId.split('-')[1];
-  if (levelPart === 'pre2' || levelPart === 'pre1') return levelPart;
-  const numeric = parseInt(levelPart, 10);
-  return Number.isNaN(numeric) ? null : numeric;
-};
+// 英検の級の並び・語の級・教材IDからの級は logic/eikenLevels.js に移した（日々の新しい単語でも使う）
+export { EIKEN_ORDER, easiestEikenLevel, eikenTargetOf };
 
 /**
  * 英検教材に収録する語。その級以下（＝その級までにやさしい側）の語を集める。
@@ -92,20 +96,13 @@ const getTextbookWordCount = (textbookId, wordsData = [], textbookCounts = {}) =
   
   switch (textbookId) {
     case 'osaka-koukou-nyuushi':
+    case 'highschool-english':
       // 固定値 1969 が書かれていたが、Firestore の収録分をマスターへ
       // 取り込んだあとは 3,193 語になり、表示だけ古いままだった。
       // 教材ごとの件数は manifest から取る。
+      // 高校英語も「マスターのレベル5〜7」ではなく教材ファイルへの所属で数える
+      // （2026-09-24 にレベルを付け直し、高校英語の語は1〜7に散った）。
       return textbookCounts[textbookId] ?? 0;
-    
-    case 'highschool-english':
-      // 高校英語：wordsData.jsonからレベル5-7の単語をカウント
-      if (!wordsData.length) return 0;
-      const highschoolCount = wordsData.filter(word => {
-        const level = word.level || 1;
-        return level >= 5 && level <= 7;
-      }).length;
-      logger.debug('🎓 高校英語単語数:', highschoolCount);
-      return highschoolCount;
     
     
     default:
@@ -194,30 +191,6 @@ const isRecommendedLevel = (level, testLevel) => {
   return isRecommended;
 };
 
-  // 子レベルの推奨判定関数
-  const isRecommendedSubLevel = (subLevel, parentLevel, testLevel) => {
-    if (!testLevel || testLevel === 0) return false;
-    
-    // 親レベルが推奨されている場合、その子レベルも推奨
-    if (isRecommendedLevel(parentLevel, testLevel)) {
-      return true;
-    }
-    
-    // 特定のサブレベルが推奨される場合（例：7Aは2級レベル）
-    const subLevelMapping = {
-      '5A': 4, '5B': 5, '5C': 5,
-      '6A': 5, '6B': 6, '6C': 6,
-      '7A': 6, '7B': 7, '7C': 7
-    };
-    
-    const mappedLevel = subLevelMapping[subLevel];
-    if (mappedLevel && Math.abs(mappedLevel - testLevel) <= 1) {
-      return true;
-    }
-    
-    return false;
-  };
-
   // 大阪府公立入試教材を推奨すべき目標かどうか。
   // 旧IDの手書きリスト（hs1〜hs5）ではなく、共通定義の recommendedTextbooks を見る。
   const isHighSchoolExamTarget = (userData) => {
@@ -227,88 +200,23 @@ const isRecommendedLevel = (level, testLevel) => {
     return getRecommendedTextbooks(toGoalIds(userData.goal.targets)).includes('osaka-koukou-nyuushi');
   };
 
-// 推奨バッジコンポーネント（カード内部表示用）
-const RecommendationBadge = ({ type, priority = 'medium' }) => {
-  const getBadgeStyle = () => {
-    switch (priority) {
-      case 'high':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
-          color: 'white',
-          text: '推奨',
-          icon: null,
-          borderColor: '#dc2626'
-        };
-      case 'medium':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-          color: 'white',
-          text: 'おすすめ',
-          icon: null,
-          borderColor: '#d97706'
-        };
-      case 'low':
-        return {
-          backgroundColor: 'linear-gradient(135deg, #10b981, #059669)',
-          color: 'white',
-          text: '復習',
-          icon: null,
-          borderColor: '#047857'
-        };
-      default:
-        return {
-          backgroundColor: 'linear-gradient(135deg, #6b7280, #4b5563)',
-          color: 'white',
-          text: '推奨',
-          icon: null,
-          borderColor: '#374151'
-        };
-    }
-  };
-
-  const badgeStyle = getBadgeStyle();
-
-  return (
-    <div
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        background: badgeStyle.backgroundColor,
-        color: badgeStyle.color,
-        fontSize: '11px',
-        fontWeight: '600',
-        padding: '4px 8px',
-        borderRadius: '12px',
-        border: `1px solid ${badgeStyle.borderColor}`,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        whiteSpace: 'nowrap',
-        textShadow: '0 1px 2px rgba(0,0,0,0.1)',
-        letterSpacing: '0.025em'
-      }}
-    >
-      {/* 記号を出さず、文言と枠の色だけで区別する（絵文字を使わない方針） */}
-      <span>{badgeStyle.text}</span>
-    </div>
-  );
-};
-
 // 既存の定数やヘルパー関数（すべて維持）
-/** 教材のまとまり。学年で選ぶ人と、受ける級で選ぶ人がいる。 */
-export const FREE_STUDY_GROUPS = [
-  { id: 'school', label: '学年で選ぶ' },
-  { id: 'eiken', label: '英検で選ぶ' },
-];
-
 const freeStudyOptions = [
   { id: 'osaka-koukou-nyuushi', group: 'school', label: '中学英語（大阪府公立入試）', textbooks: ['osaka-koukou-nyuushi'], levels: [1, 2, 3, 4, 5, 6, 7] },
-  { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3] },
+  { id: 'highschool-english', group: 'school', label: '高校英語', textbooks: ['highschool-english'], levels: [1, 2, 3, 4, 5, 6, 7] },
   { id: 'eiken-5', group: 'eiken', label: '英検5級', textbooks: ['highschool-english'] },
   { id: 'eiken-4', group: 'eiken', label: '英検4級', textbooks: ['highschool-english'] },
   { id: 'eiken-3', group: 'eiken', label: '英検3級', textbooks: ['highschool-english'] },
   { id: 'eiken-pre2', group: 'eiken', label: '英検準2級', textbooks: ['highschool-english'] },
   { id: 'eiken-2', group: 'eiken', label: '英検2級', textbooks: ['highschool-english'] },
-  { id: 'eiken-pre1', group: 'eiken', label: '英検準1級', textbooks: ['highschool-english'] }
+  { id: 'eiken-pre1', group: 'eiken', label: '英検準1級', textbooks: ['highschool-english'] },
+  /*
+    塾が配っている市販の単語帳。**定義の正本は `src/config/books.js`**
+    （表紙・収録語数・単語ファイルの場所まで持っている）。ここに並べるのは、
+    タイトル表示（`freeStudyTitle` / `handleSaveLog`）が
+    `freeStudyOptions` を引くため。**中身を二重に書かない。**
+  */
+  ...BOOKS.map((book) => ({ id: book.id, group: 'book', label: book.title }))
   // 英検1級は置かない。実データに eikenLevels: 1 の単語が1語も無く、
   // 常に「0語」のカードになる（src/config/levels.json も準1級まで）。
 ];
@@ -323,56 +231,17 @@ const levelDescriptions = toDescriptionMap((entry) => ({
   wordsRequired: entry.wordsRequired,
 }));
 
-// 高校英語専用のレベル定義
+/*
+  高校英語のカード。教材ファイルの語はレベル1〜7に散っているが（2026-09-24 に付け直した）、
+  1・2は数十語しかないので、1〜3を「中学の復習」1枚にまとめて見せる。
+  カードの鍵は 3（続きの鍵も r2-3）。
+*/
 const highschoolLevelDescriptions = {
-    1: { label: "高校基礎", equivalent: "英検準2級 / A2-B1", wordsRequired: 1335 },
-    2: { label: "高校標準", equivalent: "英検2級 / B1-B2", wordsRequired: 2941 },
-    3: { label: "高校応用", equivalent: "英検準1級 / B2-C1", wordsRequired: 1658 }
+  3: { label: '中学の復習', equivalent: '英検5級〜3級 / Pre-A1〜A2' },
+  ...Object.fromEntries([4, 5, 6, 7].map((level) => [level, levelDescriptions[level]])),
 };
-
-
-/**
- * 高校英語で、A/B/C の区分が付いていない語のグループか。
- *
- * マスターには subLevel を持たない語が各レベルに残っている
- * （5:186語 / 6:126語 / 7:166語）。これらは「7」のように
- * 数字だけのキーでまとまる。
- */
-const isUnlabeledSubLevel = (subLevel) => /^\d+$/.test(String(subLevel));
-
-// 高校英語のサブレベル説明を生成する関数
-const getHighschoolSubLevelDescription = (subLevel) => {
-  const level = parseInt(subLevel.substring(0, 1));
-  const subLevelLetter = subLevel.substring(1);
-
-  // 区分なしの語。以前は subLevelNames[''] を引いて
-  // 「英検準1級undefined」と表示されていた。
-  if (isUnlabeledSubLevel(subLevel)) {
-    const bandNames = { 5: '英検準2級', 6: '英検2級', 7: '英検準1級' };
-    return `${bandNames[level] || '高校英語'}その他`;
-  }
-
-  if (level === 5) {
-    // レベル5: 英検準2級レベル
-    const subLevelNames = { A: '基礎', B: '標準', C: '応用' };
-    return `英検準2級${subLevelNames[subLevelLetter]}`;
-  } else if (level === 6) {
-    // レベル6: 英検2級レベル
-    const subLevelNames = { A: '基礎', B: '標準', C: '応用' };
-    return `英検2級${subLevelNames[subLevelLetter]}`;
-  } else if (level === 7) {
-    // レベル7: 7Aは英検2級、7B・7Cは英検準1級
-    if (subLevelLetter === 'A') {
-      return '英検2級応用';
-    } else {
-      const subLevelNames = { B: '基礎', C: '応用' };
-      return `英検準1級${subLevelNames[subLevelLetter]}`;
-    }
-  }
-  
-  return `高校英語${subLevel}`;
-};
-
+const inHighschoolCard = (word, card) =>
+  (Number(card) === 3 ? word.level <= 3 : word.level === Number(card));
 
 // 英検教材用のレベル定義
 // 英検教材の表示。以前はここだけ「レベル7 = 英検1級」としていたが、
@@ -435,7 +304,14 @@ export default function StudentDashboard() {
   const [dashboardError, setDashboardError] = useState(null);
   const [viewMode, setViewMode] = useState('select');
   const [selectionMode, setSelectionMode] = useState('main');
+  // 面接モードを開いている級。null なら開いていない。
+  const [interviewGrade, setInterviewGrade] = useState(null);
+  // 英検ライティングの級（選んでいるあいだは画面を占有する。面接と同じ扱い）
+  const [writingGrade, setWritingGrade] = useState(null);
   const [testResultLevel, setTestResultLevel] = useState(0);
+  // テストで保存した推定語彙数（結果画面に出す）
+  const [testResultVocabulary, setTestResultVocabulary] = useState(null);
+  const [testResultAbility, setTestResultAbility] = useState(null);
   
   // デバッグログ: testResultLevelの値を監視
   useEffect(() => {
@@ -458,8 +334,15 @@ export default function StudentDashboard() {
     return names.length === 1 ? names[0] : `${names[0]} ほか${names.length - 1}件`;
   })();
 
-  // 能力スコアとランク。現行の level からの暫定換算（計画書12 フェーズ1）。
-  const abilityScore = scoreFromLegacyLevel(testResultLevel);
+  // 能力スコアとランク。テストで推定した力があればそこから（ランク内の初級・中級・上級まで出る）。
+  // 受けた直後は userData の読み直しより先に画面が変わるので、テストが返した値を先に使う
+  const abilityScore = abilityScoreOf({
+    level: testResultLevel,
+    ability: testResultAbility ?? userData?.progress?.assessedAbility,
+  });
+  // 復習の卒業ぐあいから見たレベル（progressLogic が書く）。表示だけに使う。
+  const estimatedLevel = userData?.progress?.estimatedLevel || null;
+  const levelAhead = isAheadOfAssessment(estimatedLevel, testResultLevel);
   const currentRankId = rankForScore(abilityScore)?.id ?? null;
   // 自己ベストは下がっても消さない。保存済みが無ければ現在値を使う。
   const bestRankId = bestRankOf(userData?.assessment?.bestRank ?? null, currentRankId);
@@ -482,6 +365,9 @@ export default function StudentDashboard() {
   const [freeStudyProgress, setFreeStudyProgress] = useState({});
   const [storyError, setStoryError] = useState(null);
   const [masterWords, setMasterWords] = useState([]);
+  // 単語データの保存の進み具合（0〜1）。初回の案内画面で出す。
+  const [wordDataProgress, setWordDataProgress] = useState(0);
+  const [showOnboarding, finishOnboarding, reopenOnboarding] = useOnboarding();
   const [wordDataError, setWordDataError] = useState(null);
   const [textbookCounts, setTextbookCounts] = useState({});
   
@@ -497,9 +383,11 @@ export default function StudentDashboard() {
   // ここで画面全体を止めると、単語データだけの問題で今日の学習まで開けなくなる。
   const loadMasterWords = useCallback(({ force = false } = {}) => {
     setWordDataError(null);
-    return loadWordMaster({ force })
+    // 初回だけ端末に保存する。その進み具合を案内画面に出す。
+    return loadWordMaster({ force, onProgress: setWordDataProgress })
       .then((words) => {
         setMasterWords(words);
+        setWordDataProgress(1);
         return words;
       })
       .catch((error) => {
@@ -512,6 +400,19 @@ export default function StudentDashboard() {
   useEffect(() => {
     loadMasterWords().catch(() => {});
   }, [loadMasterWords]);
+
+  /*
+    **いまのランクを、勉強を送るときに添えられるようにしておく**（2026-09-22）。
+    つくばホームの一覧に紋章を出すため。
+
+    **自己ベスト（`bestRankId`）ではなく現在のランクを渡す。** 塾が見たいのは
+    「いま何が読めるか」で、いちばん良かったときの記録ではない。
+  */
+  // 段（初級・中級・上級）も一緒に送る（2026-09-26。つくばホームの生徒詳細に「B 上級」と出す）
+  const currentTierId = currentRankId ? tierForScore(abilityScore)?.id ?? null : null;
+  useEffect(() => {
+    setStudyRank(currentRankId, currentTierId);
+  }, [currentRankId, currentTierId]);
 
   // 教材ごとの収録語数は manifest を正とする。画面に数値を書かない。
   useEffect(() => {
@@ -633,28 +534,31 @@ export default function StudentDashboard() {
         });
         setTestResultLevel(levelToSet);
         
-        const plan = await generateDailyPlan(data, uid);
-        setDailyPlan(plan);
-
-        // Check for daily completion
+        // 今日の計画・完了フラグ・直近のログは互いに関係が無い。
+        // 順番に待つと往復のぶんだけ起動が遅くなるので、まとめて投げる。
         const todayStr = getTodayKey();
-        const dailyCompletionDocRef = doc(db, 'users', uid, 'dailyCompletion', todayStr);
-        const dailyCompletionDoc = await getDoc(dailyCompletionDocRef);
-        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
-
-        // Pace analysis from recent logs (過去5日)
         const lookbackDate = new Date();
         lookbackDate.setDate(lookbackDate.getDate() - 5);
 
+        const [plan, dailyCompletionDoc, logsResult] = await Promise.all([
+          generateDailyPlan(data, uid),
+          getDoc(doc(db, 'users', uid, 'dailyCompletion', todayStr)),
+          getDocs(query(
+            collection(db, 'users', uid, 'logs'),
+            where('timestamp', '>=', lookbackDate),
+            orderBy('timestamp', 'desc'),
+          )).catch((paceError) => {
+            console.error('Failed to load recent logs:', paceError);
+            return null;
+          }),
+        ]);
+
+        setDailyPlan(plan);
+        setIsDailyTaskCompleted(dailyCompletionDoc.exists());
+
         try {
-          const logsRef = collection(db, 'users', uid, 'logs');
-          const logsSnapshot = await getDocs(
-            query(
-              logsRef,
-              where('timestamp', '>=', lookbackDate),
-              orderBy('timestamp', 'desc')
-            )
-          );
+          if (!logsResult) throw new Error('recent logs unavailable');
+          const logsSnapshot = logsResult;
 
           const dailyNewMap = new Map();
 
@@ -770,9 +674,11 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleTestComplete = (finalLevel, responseTimes = []) => {
+  const handleTestComplete = (finalLevel, responseTimes = [], estimatedVocabulary = null, ability = null) => {
     logger.debug('🎯 テスト完了処理開始:', finalLevel, responseTimes);
     setTestResultLevel(finalLevel);
+    setTestResultVocabulary(estimatedVocabulary);
+    setTestResultAbility(ability);
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
     }
@@ -800,10 +706,20 @@ export default function StudentDashboard() {
       // 学習ログを保存
       logStudySession(user.uid, logData);
       
-      // 自由学習の場合、進捗も保存
-      if (currentLearningMode === 'free' && currentSessionInfo?.filterType === 'level' && selectedTextbookId) {
+      /*
+        自由学習の場合、進捗も保存。
+
+        **教材（番号の帯）も保存する**（2026-09-22）。100語を2回に分けてやるのは
+        普通なので、ここを `level` だけにしておくと**毎回1番から**になる。
+        鍵に使う名前は `filterValue`（`1〜100`）ではなく `rangeKey`
+        （`1-100`）——`〜` を Firestore のドキュメントIDに入れない。
+      */
+      const isRange = currentSessionInfo?.filterType === 'range';
+      if (currentLearningMode === 'free' && (currentSessionInfo?.filterType === 'level' || isRange) && selectedTextbookId) {
         const lastIndex = logData.index || 0;
-        const level = currentSessionInfo.filterValue.replace('レベル', '');
+        const level = isRange
+          ? currentSessionInfo.rangeKey
+          : levelProgressKey(selectedTextbookId, currentSessionInfo.filterValue.replace('レベル', ''));
         
         logger.debug('進捗保存:', {
           userId: user.uid,
@@ -827,7 +743,7 @@ export default function StudentDashboard() {
     }
   };
 
-  const handleLearningBack = async (incorrectWords, newlyLearnedCount) => {
+  const handleLearningBack = (incorrectWords, newlyLearnedCount) => {
     const user = auth.currentUser;
     if (!user) return;
 
@@ -839,32 +755,44 @@ export default function StudentDashboard() {
     // 到達語数は increment で足さない。実力テストが判定レベル以下を
     // 一括計上しているところへ重ねると二重加算になり、収録語数を超える。
     // updateProgressPercentage が和集合で数え直す。
-    if (newlyLearnedCount > 0) {
-      try {
-        await updateProgressPercentage(user.uid);
-      } catch (error) {
-        console.error('進捗の更新に失敗しました:', error);
-      }
-    }
-
-    // Refresh dashboard data and reset view
+    /*
+      **画面を先に戻す。数え直しは待たない**（2026-09-26）。数え直しは単語データ（約2.3MB）と
+      復習リストを全件読んで書くので、携帯では数秒かかる。以前はそれを待ってから戻していたので
+      「終了がかなり遅い」になった。書き込みは捨てていない——終わったらホームを読み直して、
+      新しい到達語数を出す（今日のタスクはすぐ読み直す）。
+    */
     refreshDashboardData(user.uid);
+    if (newlyLearnedCount > 0) {
+      updateProgressPercentage(user.uid)
+        .then(() => refreshDashboardData(user.uid))
+        .catch((error) => console.error('進捗の更新に失敗しました:', error));
+    }
     // 学習中に登録／解除したぶんをホームの枚数へ反映する
     reloadBookmarks();
     setViewMode('select');
     
-    // 自由学習モードの場合は教材のレベル別ページに戻る
+    // 自由学習モードの場合は教材のレベル別ページに戻る。
+    // **教材は番号の帯へ戻す**——絞り込み画面は通っていないので、
+    // そこへ返すと行ったことのない画面に着地する（2026-09-22）
     if (currentLearningMode === 'free' && selectedTextbookId) {
-      setSelectionMode('filter');
+      setSelectionMode(
+        isBookId(selectedTextbookId) ? 'book-range'
+          : isSunshineTextbookId(selectedTextbookId) ? 'textbook-pages'
+            : 'filter'
+      );
     } else {
       setSelectionMode('main');
     }
   };
 
   const handleReviewComplete = () => {
+    // 受験サポートのまちがえた語だけで復習していたら、次は今日の計画の復習に戻す
+    setReviewOverride(null);
     if (auth.currentUser) {
       refreshDashboardData(auth.currentUser.uid);
     }
+    // 復習中に★を付け外ししても、ホームの「毎日みる単語」の数に出るように
+    reloadBookmarks();
     setViewMode('select');
   };
 
@@ -905,22 +833,13 @@ export default function StudentDashboard() {
             throw new Error('大阪府公立入試英単語データの読み込みに失敗しました');
           }
         } else if (textbookId === 'highschool-english') {
-          // 高校英語はマスターのレベル5〜7
-          const master = masterWords.length > 0 ? masterWords : await loadMasterWords();
-
-          const highschoolWords = master.filter(word => {
-            const level = word.level || 1;
-            return level >= 5 && level <= 7;
-          });
-          
-          logger.debug('📚 高校英語単語フィルタ成功:', {
-            高校英語単語数: highschoolWords.length,
-            サンプル単語: highschoolWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
-          });
-          
-          const words = highschoolWords.map((word) => ({ 
-            sourceTextbook: 'highschool-english', 
-            ...word 
+          // 高校英語は教材ファイル（words-highschool.json）に入っている語。
+          // 以前は「マスターのレベル5〜7」で拾っていたが、レベルを付け直した
+          // （2026-09-24）ので、高校英語の語は1〜7に散っている。
+          const highschoolWords = await loadTextbookWords('highschool-english');
+          const words = highschoolWords.map((word) => ({
+            sourceTextbook: 'highschool-english',
+            ...word
           }));
           combinedWords.push(...words);
           logger.debug(`高校英語から取得した単語数:`, words.length);
@@ -968,18 +887,9 @@ export default function StudentDashboard() {
             サンプル単語: filteredWords.slice(0, 5).map(w => ({ word: w.word, level: w.level }))
           });
           
-          if (textbookId === 'highschool-english') {
-            // 高校英語の場合はレベル5-7の単語を保持（レベル1-3は表示用）
-            filteredWords = filteredWords.filter(word => {
-              const level = word.level || 1;
-              return level >= 5 && level <= 7;
-            });
-            logger.debug('高校英語: レベル5-7の単語を保持、単語数:', filteredWords.length);
-          } else {
-            filteredWords = filteredWords.filter(word => {
-              return option.levels.includes(word.level);
-            });
-          }
+          filteredWords = filteredWords.filter(word => {
+            return option.levels.includes(word.level);
+          });
           
           logger.debug('レベルフィルタ後:', {
             フィルタ後単語数: filteredWords.length,
@@ -1022,7 +932,8 @@ export default function StudentDashboard() {
 
         if (filteredWords.length === 0) {
           alert('このメニューには該当する単語がまだ登録されていません。別のメニューを選んでください。');
-          setSelectionMode('main');
+          // 選ぶ前の一覧に置いたままにする。main へ戻すと、英検の級を選んだ人が
+          // 3カードまで放り出されて、隣の級を試すのに辿り直しになる。
           setSelectedTextbookId(null);
           setAllWords([]);
           return;
@@ -1036,8 +947,9 @@ export default function StudentDashboard() {
     }
   };
 
+  /** 自由学習で一段だけ戻る。行き先は freeStudyBackTarget が決める。 */
   const handleBackToMainMenu = () => {
-    setSelectionMode('main');
+    setSelectionMode(freeStudyBackTarget(selectionMode, selectedTextbookId));
     setSelectedTextbookId(null);
     setAllWords([]);
   };
@@ -1049,15 +961,9 @@ export default function StudentDashboard() {
     logger.debug('親レベル選択:', parentLevel);
   };
 
-  // サブレベル選択の処理
+  // サブレベル選択の処理（英検の級の中のレベル）
   const handleSubLevelClick = (subLevel) => {
-    if (selectedTextbookId === 'highschool-english') {
-      // 高校英語の場合はサブレベル（5A, 5B, 5Cなど）をそのまま渡す
-      startLearning('sublevel', subLevel);
-    } else {
-      // その他の教材の場合は通常のレベル番号を渡す
-      startLearning('level', subLevel);
-    }
+    startLearning('level', subLevel);
   };
 
   // 親レベル選択をリセット
@@ -1067,6 +973,7 @@ export default function StudentDashboard() {
   };
 
   const startLearning = async (filterType, value) => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     let filtered = [];
     let sessionLabel = '';
     let startIndex = 0;
@@ -1080,7 +987,7 @@ export default function StudentDashboard() {
       selectedParentLevel
     });
     
-    if (filterType === 'level' || filterType === 'sublevel') {
+    if (filterType === 'level') {
         // サブレベル選択時（親レベル選択後）の場合は、親レベル範囲内からlevelフィールドでフィルタ
         if (showSubLevels && selectedParentLevel) {
           // まず親レベル範囲内の単語を取得
@@ -1116,33 +1023,15 @@ export default function StudentDashboard() {
               
               return false;
             });
-          } else if (selectedTextbookId === 'highschool-english') {
-            // 高校英語の場合：選択された親レベル内の英単語を取得
-            const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
-            const targetLevel = highschoolLevelMapping[selectedParentLevel];
-            
-            parentLevelWords = allWords.filter(word => word.level === targetLevel);
           } else {
             // その他の教材の場合：選択された親レベルの単語を取得
             parentLevelWords = allWords.filter(word => word.level === selectedParentLevel);
           }
           
-          // 親レベル範囲内から、指定されたlevelまたはsublevelの単語をフィルタ
-          if (filterType === 'sublevel' && selectedTextbookId === 'highschool-english') {
-            // 高校英語のサブレベルの場合（5A, 5B, 5Cなど）。
-            // 「7」のような数字だけのキーは A/B/C が付いていない語のまとまりで、
-            // subLevel === '7' では1語も当たらず「単語が見つかりません」になっていた。
-            filtered = isUnlabeledSubLevel(value)
-              ? parentLevelWords.filter(word => !word.subLevel)
-              : parentLevelWords.filter(word => word.subLevel === value);
-            logger.debug(`🎓 高校英語サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
-            sessionLabel = `サブレベル${value}`;
-          } else {
-            // 通常のレベルの場合
-            filtered = parentLevelWords.filter(word => word.level === Number(value));
-            logger.debug(`サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
-            sessionLabel = `レベル${value}`;
-          }
+          // 親レベル範囲内から、指定されたlevelの単語をフィルタ
+          filtered = parentLevelWords.filter(word => word.level === Number(value));
+          logger.debug(`サブレベル${value}から取得した単語数:`, filtered.length, `(親レベル範囲内: ${parentLevelWords.length}語)`);
+          sessionLabel = `レベル${value}`;
         }
         // レベル別学習の場合、教材に応じてフィルタリング
         else if (selectedTextbookId && selectedTextbookId.startsWith('eiken-')) {
@@ -1158,6 +1047,10 @@ export default function StudentDashboard() {
           }
           logger.debug(`英検${targetEikenLevel}級以下から取得した単語数:`, filtered.length);
           sessionLabel = `英検${targetEikenLevel}級以下`;
+        } else if (selectedTextbookId === 'highschool-english') {
+          filtered = allWords.filter(word => inHighschoolCard(word, value));
+          // 見出しは他の教材と同じ「レベルN」。続きの鍵をここから作っている（handleSaveLog）
+          sessionLabel = `レベル${value}`;
         } else if (selectedTextbookId === 'osaka-koukou-nyuushi') {
           // 大阪府公立入試英単語の場合はlevelフィールドを基準にフィルタ
           filtered = allWords.filter(word => word.level === Number(value));
@@ -1172,7 +1065,7 @@ export default function StudentDashboard() {
         
         // 前回の進捗を取得
         if (selectedTextbookId) {
-          startIndex = await getFreeStudyProgress(auth.currentUser.uid, selectedTextbookId, String(value));
+          startIndex = await getFreeStudyProgress(auth.currentUser.uid, selectedTextbookId, levelProgressKey(selectedTextbookId, value));
           logger.debug('進捗取得:', {
             userId: auth.currentUser.uid,
             textbookId: selectedTextbookId,
@@ -1225,6 +1118,7 @@ export default function StudentDashboard() {
   };
 
   const startDailyNewWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (!dailyPlan.newWords || dailyPlan.newWords.length === 0) {
       alert('今日の新規単語はありません。');
       return;
@@ -1241,6 +1135,7 @@ export default function StudentDashboard() {
   };
 
   const startExtraNewWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (!dailyPlan.extraNewWords || dailyPlan.extraNewWords.length === 0) {
       alert('追加の単語はありません。お疲れ様でした！');
       return;
@@ -1256,7 +1151,197 @@ export default function StudentDashboard() {
     setViewMode('learn');
   };
 
+  /**
+   * 教材（市販の単語帳）を選んだ。**番号の帯の一覧へ進む。**
+   *
+   * 単語はここでは読まない。帯を押した時点で読む——4冊ぶんを先読みすると
+   * 選ばない本まで落ちてくる。
+   */
+  const handleSelectBook = (book) => {
+    setSelectedTextbookId(book.id);
+    setSelectionMode('book-range');
+  };
+
+  /**
+   * 番号の帯を押した。**その場で読んで、そのままカードへ。**
+   *
+   * 絞り込み画面（レベル・品詞・意味）は通さない。単語帳は通し番号で進めるもので、
+   * レベルで切り直すと本と別の並びになる。
+   */
+  const startBookRange = async (book, range) => {
+    // 練習した時間を受験サポートのタスクに付けるため、単語帳を記録に付ける
+    noteDeck(book.deckId);
+    try {
+      const response = await fetch(bookWordsUrl(book));
+      // SPA の書き換えで index.html が 200 で返ることがある（wordMaster.js と同じ用心）
+      if (!response.ok) throw new Error(`${response.status}`);
+      const all = await response.json();
+      const words = wordsInRange(all, range.from, range.to);
+      if (words.length === 0) {
+        alert('この範囲の単語が読み込めませんでした。電波の良いところで試してください。');
+        return;
+      }
+
+      const rangeKey = rangeKeyOf(range.from, range.to);
+      const uid = auth.currentUser?.uid;
+      // **前回の続きから。** 100語を2回に分けるのは普通の使い方
+      const startIndex = uid ? await getFreeStudyProgress(uid, book.id, rangeKey) : 0;
+
+      setCurrentSessionInfo({
+        textbookId: book.title,
+        filterType: 'range',
+        filterValue: range.label,
+        // 進捗の鍵。**`〜` を Firestore のドキュメントIDに入れない**
+        rangeKey,
+        startIndex: startIndex < words.length ? startIndex : 0,
+      });
+      setCurrentLearningMode('free');
+      setLearningWords(words);
+      setViewMode('learn');
+    } catch (error) {
+      logger.warn('教材の単語を読めませんでした', error);
+      alert('教材を読み込めませんでした。電波の良いところで試してください。');
+    }
+  };
+
+  /*
+    学校の教科書（Sunshine）。**選んだときだけ読む**（起動には乗せない。単語帳と同じ）。
+    選んだ学年は selectedTextbookId に `sunshine-1` の形で持つ。戻る先と進捗の鍵がそこから決まる
+  */
+  const [textbookCards, setTextbookCards] = useState(null);
+  const [textbookError, setTextbookError] = useState('');
+  useEffect(() => {
+    if (!String(selectionMode).startsWith('textbook') || textbookCards) return;
+    setTextbookError('');
+    loadSunshineCards()
+      .then(setTextbookCards)
+      .catch((error) => {
+        logger.warn('教科書の単語を読めませんでした', error);
+        setTextbookError('教科書の単語を読み込めませんでした。電波の良いところで、もう一度開いてください。');
+      });
+  }, [selectionMode, textbookCards]);
+
+  /*
+    先生が出した小テスト。ホームのいちばん上にカードで出す。
+    **解いたらサーバから読み直してカードを消す**（手元で消さない。楽観的更新をしない）
+  */
+  const [pendingQuizzes, setPendingQuizzes] = useState([]);
+  const [activeQuiz, setActiveQuiz] = useState(null);
+  const refreshQuizzes = useCallback(async (uid) => {
+    try {
+      setPendingQuizzes(await loadPendingQuizzes(uid));
+    } catch (error) {
+      // 読めなかったときはカードを出さないだけ（ホームの他の部分は使えるようにする）
+      logger.warn('先生からの小テストを読めませんでした', error);
+    }
+  }, []);
+  useEffect(() => {
+    if (userId) refreshQuizzes(userId);
+  }, [userId, refreshQuizzes]);
+  /*
+    受験サポートのテストでまちがえた語を、毎日の復習に入れる（2026-09-24。→ logic/examSupportMissed.js）。
+    起動と並行して1回。**失敗しても画面は止めない**（次に開いたときに取り直す）
+  */
+  const [examMissed, setExamMissed] = useState([]);
+  const [reviewOverride, setReviewOverride] = useState(null);
+  // 受験サポートで出されたテスト範囲（まだ合格していないもの）。ホームで練習できる
+  const [examPractice, setExamPractice] = useState([]);
+  const [practiceBusy, setPracticeBusy] = useState('');
+  useEffect(() => {
+    if (!userId) return;
+    syncExamSupportMissed(userId)
+      .then(({ missed, practice }) => {
+        if (missed.length > 0) setExamMissed(missed);
+        setExamPractice(practice);
+      })
+      .catch((error) => logger.warn('受験サポートのまちがえた語を取り込めませんでした', error));
+  }, [userId]);
+
+  /**
+   * テスト範囲を練習する。**自由学習の単語帳と同じカードの画面**へ。
+   * 範囲（番号の帯）なら単語帳の「前回の続き」と同じ鍵で再開する（同じ範囲を単語帳から開いても続きになる）
+   */
+  const startExamPractice = async (p) => {
+    setPracticeBusy(p.assignmentId);
+    try {
+      const cards = await cardsForRefs(p.words);
+      if (cards.length === 0) return;
+      const deckIds = [...new Set((p.words || []).map((w) => w.deckId))];
+      // 練習した時間を受験サポートのタスクに付けるため、単語帳を記録に付ける（1冊のときだけ）
+      noteDeck(deckIds.length === 1 ? deckIds[0] : null);
+      const book = p.range ? BOOKS.find((b) => b.deckId === p.range.deckId) : null;
+      const rangeKey = book ? rangeKeyOf(p.range.from, p.range.to) : null;
+      const uid = auth.currentUser?.uid;
+      const startIndex = book && uid ? await getFreeStudyProgress(uid, book.id, rangeKey) : 0;
+      setSelectedTextbookId(book ? book.id : null);
+      setCurrentSessionInfo({
+        textbookId: '受験サポート',
+        filterType: book ? 'range' : 'テスト範囲',
+        filterValue: p.title,
+        ...(rangeKey ? { rangeKey } : {}),
+        startIndex: startIndex < cards.length ? startIndex : 0,
+      });
+      setCurrentLearningMode('free');
+      setLearningWords(cards);
+      setViewMode('learn');
+    } catch (error) {
+      logger.warn('テスト範囲の単語を読めませんでした', error);
+    } finally {
+      setPracticeBusy('');
+    }
+  };
+  /** 知らせの「今すぐ復習する」。今日の計画ではなく、取り込んだ語だけで復習する */
+  const startExamMissedReview = () => {
+    noteDeck(null);
+    setReviewOverride(examMissed.map(reviewEntryOf));
+    setCurrentSessionInfo({
+      textbookId: '受験サポート',
+      filterType: 'まちがえた語',
+      filterValue: `${examMissed.length}語`,
+      startIndex: 0,
+    });
+    setExamMissed([]);
+    setViewMode('review');
+  };
+
+  const startAssignedQuiz = (quiz) => {
+    setActiveQuiz(quiz);
+    setViewMode('assigned-quiz');
+  };
+  const closeAssignedQuiz = (finished) => {
+    setActiveQuiz(null);
+    setViewMode('select');
+    if (finished && userId) refreshQuizzes(userId);
+  };
+
+  const handleSelectTextbookGrade = (grade) => {
+    setSelectedTextbookId(sunshineTextbookId(grade));
+    setSelectionMode('textbook-pages');
+  };
+
+  /** ページの範囲を選んだ。**そのままカードへ**（絞り込み画面は通さない。単語帳と同じ） */
+  const startTextbookPages = async (grade, from, to) => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
+    const words = wordsInPages(textbookCards, grade, from, to);
+    if (words.length === 0) return;
+    const textbookId = sunshineTextbookId(grade);
+    const rangeKey = pageRangeKey(from, to);
+    const uid = auth.currentUser?.uid;
+    const startIndex = uid ? await getFreeStudyProgress(uid, textbookId, rangeKey) : 0;
+    setCurrentSessionInfo({
+      textbookId: `Sunshine ${grade}年`,
+      filterType: 'range',
+      filterValue: pageLabel(from, to),
+      rangeKey,
+      startIndex: startIndex < words.length ? startIndex : 0,
+    });
+    setCurrentLearningMode('free');
+    setLearningWords(words);
+    setViewMode('learn');
+  };
+
   const startBookmarkWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (bookmarks.length === 0) return;
     setCurrentSessionInfo({
       textbookId: '毎日みる単語',
@@ -1272,6 +1357,7 @@ export default function StudentDashboard() {
   };
 
   const startDailyReviewWords = () => {
+    noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     if (!dailyPlan.reviewWords || dailyPlan.reviewWords.length === 0) {
       alert('今日の復習単語はありません。');
       return;
@@ -1388,13 +1474,37 @@ export default function StudentDashboard() {
   };
   
   // --- レンダリングロジック ---
+
+  // 初回の案内は、読み込みを待たずに出す。待っている間に読んでもらうのが
+  // 目的なので、Firestore を読み終えてから出したのでは意味がない。
+  const onboardingOverlay = showOnboarding ? (
+    <Onboarding
+      progress={wordDataProgress}
+      ready={(masterWords.length > 0 || Boolean(wordDataError)) && !loading}
+      onFinish={finishOnboarding}
+    />
+  ) : null;
+
   if (loading) {
-    return <div className="loading-container"><div className="spinner"></div></div>;
+    // 真っ白にスピナーだけだと壊れて見える。出来上がりと同じ形を先に描く。
+    return (
+      <>
+        {onboardingOverlay}
+        <div className="dashboard-container">
+          <StudentHeader userName={userData?.name} onLogout={handleLogout} onShowGuide={reopenOnboarding} />
+          <main className="card-main">
+            <DashboardSkeleton />
+          </main>
+          <StudentBottomNav activeTab="home" onChange={() => {}} />
+        </div>
+      </>
+    );
   }
 
   if (dashboardError) {
     return (
       <div className="loading-container">
+        {onboardingOverlay}
         <div className="app-status-card">
           <h1 className="app-status-title">今日の学習を開けませんでした</h1>
           <p className="app-status-message">{dashboardError}</p>
@@ -1418,14 +1528,15 @@ export default function StudentDashboard() {
   const renderContent = () => {
     switch (viewMode) {
       case 'learn':
-        return <LearningFlashcard
+        return <StudyFlashcard
                   words={learningWords}
                   onBack={handleLearningBack}
                   initialIndex={currentSessionInfo?.startIndex || 0}
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
                   onFirstCompletion={currentLearningMode === 'daily' ? () => markDailyTaskAsCompleted(auth.currentUser.uid) : null}
-                  title={currentLearningMode === 'bookmark' ? '毎日みる単語' : undefined}
+                  learningMode={currentLearningMode}
+                  motivationLevel={userData?.goal?.motivationLevel}
                   onWordAnswered={
                     (currentLearningMode === 'daily' || currentLearningMode === 'extra') && dailyPlan.dateKey
                       ? (wordId) => markNewWordAnswered(auth.currentUser?.uid, dailyPlan.dateKey, wordId)
@@ -1433,11 +1544,13 @@ export default function StudentDashboard() {
                   }
                 />;
       case 'review':
-        return <ReviewFlashcard 
-                  words={dailyPlan.reviewWords} 
-                  onBack={handleReviewComplete} 
+        return <StudyFlashcard
+                  words={reviewOverride || dailyPlan.reviewWords}
+                  onBack={handleReviewComplete}
                   onSaveLog={handleSaveLog}
                   sessionInfo={currentSessionInfo}
+                  learningMode="review"
+                  motivationLevel={userData?.goal?.motivationLevel}
                 />;
       case 'test':
         return (
@@ -1449,13 +1562,27 @@ export default function StudentDashboard() {
         );
       case 'result':
         const lastResponseTimes = JSON.parse(localStorage.getItem('lastTestResponseTimes') || '[]');
-        return <TestResult level={testResultLevel} onRestart={() => {}} responseTimes={lastResponseTimes} />;
+        return (
+          <TestResult
+            level={testResultLevel}
+            onRestart={() => {}}
+            responseTimes={lastResponseTimes}
+            // 再読み込みしたときは保存済みの値（progress.assessedVocabulary）に戻る
+            estimatedVocabulary={testResultVocabulary ?? userData?.progress?.assessedVocabulary}
+            ability={testResultAbility ?? userData?.progress?.assessedAbility}
+          />
+        );
       case 'select':
       default:
         const progressPercentage = userData?.progress?.percentage || 0;
 
         return (
           <>
+            {/* 先生からの小テストは、目標より上に置く（出されたものを最初にやってほしい） */}
+            <AssignedQuizCard quizzes={pendingQuizzes} onStart={startAssignedQuiz} />
+            <ExamMissedNotice words={examMissed} onReview={startExamMissedReview} onClose={() => setExamMissed([])} />
+            <ExamPracticeCard practice={examPractice} onStart={startExamPractice} busyId={practiceBusy} />
+
             {/* 上から 目標 → ランク → タスク の順に置く。
                 何のために学んでいるかを最初に見せる。 */}
             <div className="section-card goal-card">
@@ -1497,12 +1624,27 @@ export default function StudentDashboard() {
               <RankCard
                 score={abilityScore}
                 bestRankId={bestRankId}
-                onRetest={testResultLevel > 0 ? startCheckTest : undefined}
+                /* **測る前も出す。** 以前は測ったあとだけ渡していたので、
+                   まだ受けていない生徒の画面に入口が1つも無かった。 */
+                onRetest={startCheckTest}
                 compact
               />
 
-              {/* 学習計画最適化ボタン */}
-              {showRetestPrompt && (
+              {/* 覚えたぶんがテストの値を追い越したら、そう伝える。
+                  レベルはテストでしか動かないので、黙っていると進んだ実感が
+                  出ない。出題の範囲は測った値のままにしてある。 */}
+              {levelAhead && (
+                <LevelNudge
+                  assessedLevel={testResultLevel}
+                  estimatedLevel={estimatedLevel}
+                  nextRatio={userData?.progress?.estimatedNextRatio || 0}
+                  onRetest={startCheckTest}
+                />
+              )}
+
+              {/* 学習計画最適化ボタン。見積もりの知らせを出しているときは、
+                  同じ「テストを受けて」を二重に出さない。 */}
+              {!levelAhead && showRetestPrompt && (
                 <div style={{ 
                   marginTop: '12px', 
                   padding: '8px 12px', 
@@ -1511,9 +1653,12 @@ export default function StudentDashboard() {
                   borderRadius: '6px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  // 390px では「最適化」が「最適／化」に割れる。折り返しを許す。
+                  flexWrap: 'wrap',
+                  gap: '8px'
                 }}>
-                  <div style={{ fontSize: '0.85rem', color: '#92400e' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#92400e', flex: '1 1 180px', minWidth: 0 }}>
                     <span style={{ fontWeight: '500' }}>学習計画を最適化</span>
                     <span style={{ marginLeft: '8px', opacity: 0.8 }}>しばらく実力テストを受けていません</span>
                   </div>
@@ -1528,7 +1673,9 @@ export default function StudentDashboard() {
                       fontSize: '0.8rem',
                       fontWeight: '500',
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      transition: 'all 0.2s',
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap'
                     }}
                     onMouseOver={(e) => {
                       e.target.style.backgroundColor = '#d97706';
@@ -1611,6 +1758,15 @@ export default function StudentDashboard() {
                   {' '}{dailyPlan.plannedNewWords} 語を出しています。
                 </p>
               )}
+              {/* 選んだ教材の語を全部学び終えた。**黙って新規0にしない** */}
+              {dailyPlan.newWordSourceFinished && (
+                <p className="plan-notice" role="status">
+                  「{dailyPlan.newWordSourceTitle}」の単語はすべて学習しました。
+                  {dailyPlan.newWordSourceFallback
+                    ? 'いまは目標に合わせた単語で続けています。「目標を再設定する」から次の教材も選べます。'
+                    : '「目標を再設定する」から、次の教材を選べます。'}
+                </p>
+              )}
                <div className="task-cards-container">
                   {/* 今日のぶんが終わっていても、前倒しできる語が無ければ
                       「おかわり 0」を出さない。押しても
@@ -1648,7 +1804,7 @@ export default function StudentDashboard() {
               <div className="section-card word-data-error" role="alert">
                 <p>{wordDataError}</p>
                 <p className="field-error">
-                  単語力チェックと自由学習が使えません。今日の学習プランはそのまま進められます。
+                  単語力チェックと「えらぶ」が使えません。今日の学習プランはそのまま進められます。
                 </p>
                 <button
                   type="button"
@@ -1685,6 +1841,35 @@ export default function StudentDashboard() {
 
   // タブ別コンテンツのレンダリング
   const renderTabContent = () => {
+    // 面接モードは1画面を占有する。学習カードと同じ扱い。
+    if (interviewGrade) {
+      return (
+        <Suspense fallback={<p className="interview-lead">読み込んでいます…</p>}>
+          <EikenInterview grade={interviewGrade} onExit={() => setInterviewGrade(null)} />
+        </Suspense>
+      );
+    }
+
+    if (writingGrade) {
+      return (
+        <Suspense fallback={<p className="interview-lead">読み込んでいます…</p>}>
+          <EikenWriting grade={writingGrade} onExit={() => setWritingGrade(null)} />
+        </Suspense>
+      );
+    }
+
+    // 先生からの小テストを解いているときは、タブに関係なくその画面
+    if (viewMode === 'assigned-quiz' && activeQuiz) {
+      return (
+        <AssignedQuiz
+          quiz={activeQuiz}
+          uid={userId}
+          onExit={() => closeAssignedQuiz(false)}
+          onFinished={() => closeAssignedQuiz(true)}
+        />
+      );
+    }
+
     // フラッシュカードページの場合は、タブに関係なく適切なコンテンツを表示
     if (viewMode === 'learn' || viewMode === 'review' || viewMode === 'test' || viewMode === 'result') {
       return renderContent();
@@ -1696,14 +1881,27 @@ export default function StudentDashboard() {
         return renderContent();
       case 'story':
         return (
-          <StoryPanel
-            monthlyStory={monthlyStory}
-            pastStories={pastStories}
-            storiesLoading={storiesLoading}
-            isGeneratingStory={isGeneratingStory}
-            storyError={storyError}
-            onGenerate={handleGenerateStory}
-          />
+          <>
+            {/* 級ごと・カテゴリごとの読みもの。 */}
+            <ReadingPanel
+              schoolGrade={userData?.grade}
+              abilityLevel={testResultLevel}
+              goalTargets={userData?.goal?.targets || []}
+              userId={auth.currentUser?.uid}
+            />
+            {/* 月1本のAIストーリー。読みものが揃うまでは出さない。
+                消していないので、戻すのは false を外すだけ。 */}
+            {false && (
+              <StoryPanel
+                monthlyStory={monthlyStory}
+                pastStories={pastStories}
+                storiesLoading={storiesLoading}
+                isGeneratingStory={isGeneratingStory}
+                storyError={storyError}
+                onGenerate={handleGenerateStory}
+              />
+            )}
+          </>
         );
       case 'free-study':
         return renderFreeStudyContent();
@@ -1720,23 +1918,47 @@ export default function StudentDashboard() {
   const renderAnalyticsContent = () => (
     <AnalyticsPanel
       onNavigateTab={setActiveTab}
-      onSelectTextbook={handleSelectTextbook}
-      onStartLearning={startLearning}
+      onStartTest={startCheckTest}
     />
   );
 
   // 長文タブのコンテンツ
+
+  /** 語数。単語データを読む前は数えられないので null。0語の級を隠す判定にも使う。 */
+  const wordCountOf = (textbookId) =>
+    masterWords.length === 0 ? null : getTextbookWordCount(textbookId, masterWords, textbookCounts);
+
+  /** 「おすすめ」バッジの強さ。今の力に合っていなければ null。 */
+  const recommendationOf = (textbookId) => {
+    if (!isRecommendedTextbook(textbookId, testResultLevel, userData)) return null;
+    const match = getRecommendedLevels(testResultLevel).recommended
+      .find((rec) => isRecommendedTextbook(textbookId, rec.level, userData));
+    return match ? match.priority : 'medium';
+  };
+
+  /** 戻るボタンの右に出す、今いる場所の名前。 */
+  const freeStudyTitle = {
+    eiken: '英検',
+    'eiken-words': '英検の単語',
+    'eiken-interview': '英検 二次試験（面接）',
+    'eiken-writing': '英検 ライティング',
+    books: '教材で選ぶ',
+    'textbook-grade': '学校の教科書',
+    'textbook-pages': `Sunshine ${gradeOfSunshineId(selectedTextbookId) ?? ''}年`,
+  }[selectionMode]
+    || freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label
+    || selectedTextbookId;
 
   // 自由学習タブのコンテンツ
   const renderFreeStudyContent = () => (
     <div className="free-study-tab-content">
             <div className="section-card">
               {/* 見出しと「選択中の教材」を横に並べると、狭い幅で本文に
-                  重なっていた。縦に積んで、教材を選んだあとは説明文を出さない。 */}
+                  重なっていた。縦に積んで、先へ進んだあとは説明文を出さない。 */}
               {selectionMode === 'main' ? (
                 <div className="free-study-head">
-                  <h3 className="home-section-eyebrow">自由学習</h3>
-                  <p className="tile-caption">気になる教材を選んで、自分のペースで進められます。</p>
+                  <h3 className="home-section-eyebrow">えらぶ</h3>
+                  <p className="tile-caption">やりたいところを選んで、自分のペースで進められます。</p>
                 </div>
               ) : (
                 <div className="free-study-head free-study-head--selected">
@@ -1744,66 +1966,38 @@ export default function StudentDashboard() {
                     type="button"
                     className="free-study-back"
                     onClick={handleBackToMainMenu}
-                    aria-label="教材選択に戻る"
+                    aria-label="ひとつ前に戻る"
                   >
                     <FaArrowLeft aria-hidden="true" />
                   </button>
                   <div>
-                    <p className="home-section-eyebrow">自由学習</p>
-                    <p className="free-study-title">
-                      {freeStudyOptions.find(opt => opt.id === selectedTextbookId)?.label || selectedTextbookId}
-                    </p>
+                    <p className="home-section-eyebrow">えらぶ</p>
+                    <p className="free-study-title">{freeStudyTitle}</p>
                   </div>
                 </div>
               )}
 
-              {selectionMode === 'main' ? (
-                <div className="free-study-groups">
-                  {FREE_STUDY_GROUPS.map((group) => {
-                    const options = freeStudyOptions.filter((option) => {
-                      if (option.group !== group.id) return false;
-                      // 収録が0語の教材は出さない。選んでも何も学べない。
-                      // 単語データの読み込み前は判定できないので出したままにする。
-                      const count = getTextbookWordCount(option.id, masterWords, textbookCounts);
-                      return !(masterWords.length > 0 && count === 0);
-                    });
-                    if (options.length === 0) return null;
-
-                    return (
-                      <section key={group.id} className="free-study-group">
-                        <h4 className="home-section-eyebrow">{group.label}</h4>
-                        <div className="list-group">
-                          {options.map(({ id, label }) => {
-                            const isRecommended = isRecommendedTextbook(id, testResultLevel, userData);
-                            const recommendations = getRecommendedLevels(testResultLevel);
-                            const recommendationType = recommendations.recommended.find((rec) =>
-                              isRecommendedTextbook(id, rec.level, userData)
-                            );
-                            const priority = recommendationType ? recommendationType.priority : 'medium';
-                            const wordCount = getTextbookWordCount(id, masterWords, textbookCounts);
-
-                            return (
-                              <button
-                                key={id}
-                                type="button"
-                                className="tile-button"
-                                onClick={() => handleSelectTextbook(id)}
-                              >
-                                <span className="tile-button__label">
-                                  {label}
-                                  {isRecommended && (
-                                    <RecommendationBadge type="textbook" priority={priority} />
-                                  )}
-                                </span>
-                                <span className="tile-button__count">{wordCount.toLocaleString()}語</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </section>
-                    );
-                  })}
-                </div>
+              {selectionMode !== 'filter' ? (
+                <FreeStudyMenu
+                  mode={selectionMode}
+                  onNavigate={setSelectionMode}
+                  eikenOptions={freeStudyOptions.filter((option) => option.group === 'eiken')}
+                  interviewGrades={INTERVIEW_GRADES}
+                  books={BOOKS}
+                  selectedBook={getBook(selectedTextbookId)}
+                  wordCountOf={wordCountOf}
+                  recommendationOf={recommendationOf}
+                  onSelectTextbook={handleSelectTextbook}
+                  onSelectInterview={setInterviewGrade}
+                  onSelectWriting={setWritingGrade}
+                  onSelectBook={handleSelectBook}
+                  onSelectRange={startBookRange}
+                  textbookCards={textbookCards}
+                  textbookError={textbookError}
+                  textbookGrade={gradeOfSunshineId(selectedTextbookId)}
+                  onSelectTextbookGrade={handleSelectTextbookGrade}
+                  onStartTextbookPages={startTextbookPages}
+                />
               ) : (
                 <>
                   <div className="free-study-tabs" role="tablist" aria-label="絞り込み">
@@ -1886,15 +2080,7 @@ export default function StudentDashboard() {
                       }
                     }
                   } else if (selectedTextbookId === 'highschool-english') {
-                    // 高校英語の場合はレベルマッピングを使用してフィルタ
-                    const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
-                    const targetLevel = highschoolLevelMapping[parseInt(level)];
-                    levelWords = allWords.filter(word => word.level === targetLevel);
-                    logger.debug(`🔍 高校英語レベル${level}→${targetLevel}フィルタリング:`, {
-                      全単語数: allWords.length,
-                      フィルタ後単語数: levelWords.length,
-                      サンプル単語: levelWords.slice(0, 3).map(w => ({ word: w.word, level: w.level }))
-                    });
+                    levelWords = allWords.filter(word => inHighschoolCard(word, level));
                   } else if (selectedTextbookId === 'osaka-koukou-nyuushi') {
                     // 大阪府公立入試英単語の場合はlevelフィールドを基準にフィルタ
                     levelWords = allWords.filter(word => word.level === parseInt(level));
@@ -1913,7 +2099,7 @@ export default function StudentDashboard() {
                     });
                   }
                   
-                        const progressKey = `${selectedTextbookId}_${level}`;
+                        const progressKey = `${selectedTextbookId}_${levelProgressKey(selectedTextbookId, level)}`;
                         const lastIndex = freeStudyProgress[progressKey] || 0;
                         const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
                         
@@ -1983,8 +2169,8 @@ export default function StudentDashboard() {
                         disabled={!levelWords.length || isUnusedLevel || isEikenUnusedLevel}
                         onClick={() => {
                           if (!isUnusedLevel && !isEikenUnusedLevel) {
-                            if (selectedTextbookId && (selectedTextbookId.startsWith('eiken-') || selectedTextbookId === 'highschool-english')) {
-                              // 英検教材と高校英語の場合は親レベル選択
+                            if (selectedTextbookId && selectedTextbookId.startsWith('eiken-')) {
+                              // 英検教材の場合は親レベル選択
                               handleParentLevelClick(Number(level));
                             } else {
                               // その他の教材は直接学習開始
@@ -2071,27 +2257,6 @@ export default function StudentDashboard() {
                     // サンプル単語を表示
                     const sampleWords = parentLevelWords.slice(0, 5).map(w => w.word);
                     logger.debug(`英検${targetEikenLevel}級のサンプル単語:`, sampleWords);
-                  } else if (selectedTextbookId === 'highschool-english') {
-                    // 高校英語の場合：選択された親レベル内の英単語をサブレベル別に分けて表示
-                    // 高校英語のレベルマッピング: 1→5, 2→6, 3→7
-                    const highschoolLevelMapping = { 1: 5, 2: 6, 3: 7 };
-                    const targetLevel = highschoolLevelMapping[selectedParentLevel];
-                    
-                    logger.debug('🎓 高校英語フィルタリング:', {
-                      selectedTextbookId,
-                      selectedParentLevel,
-                      targetLevel,
-                      allWordsLength: allWords.length
-                    });
-                    
-                    // 選択された親レベル内の英単語を取得（当該レベルのみ）
-                    parentLevelWords = allWords.filter(word => word.level === targetLevel);
-                    
-                    logger.debug(`高校英語レベル${targetLevel}の単語数:`, parentLevelWords.length);
-                    
-                    // サンプル単語を表示
-                    const sampleWords = parentLevelWords.slice(0, 5).map(w => w.word);
-                    logger.debug(`高校英語レベル${targetLevel}のサンプル単語:`, sampleWords);
                   } else {
                     // その他の教材の場合：選択された親レベルの単語を取得
                     parentLevelWords = allWords.filter(word => word.level === selectedParentLevel);
@@ -2101,41 +2266,15 @@ export default function StudentDashboard() {
                   // levelに従ってランク分け
                   const levelGroups = {};
                   parentLevelWords.forEach(word => {
-                    if (selectedTextbookId === 'highschool-english' && word.subLevel) {
-                      // 高校英語の場合はサブレベル（5A, 5B, 5Cなど）でグループ化
-                      const subLevel = word.subLevel;
-                      if (!levelGroups[subLevel]) {
-                        levelGroups[subLevel] = [];
-                      }
-                      levelGroups[subLevel].push(word);
-                    } else {
-                      // その他の教材の場合は通常のレベルでグループ化
-                      const level = word.level || 1;
-                      if (!levelGroups[level]) {
-                        levelGroups[level] = [];
-                      }
-                      levelGroups[level].push(word);
+                    const level = word.level || 1;
+                    if (!levelGroups[level]) {
+                      levelGroups[level] = [];
                     }
+                    levelGroups[level].push(word);
                   });
                   
-                  // レベル順にソート（高校英語の場合はサブレベル順）
-                  const sortedLevels = Object.keys(levelGroups).sort((a, b) => {
-                    if (selectedTextbookId === 'highschool-english') {
-                      // サブレベルの場合（5A, 5B, 5C, 6A, 6B, 6C, 7A, 7B, 7C）
-                      const aLevel = parseInt(a.substring(0, 1));
-                      const bLevel = parseInt(b.substring(0, 1));
-                      if (aLevel !== bLevel) {
-                        return aLevel - bLevel;
-                      }
-                      // 区分なし（「その他」）は A・B・C のあとに置く
-                      if (isUnlabeledSubLevel(a) !== isUnlabeledSubLevel(b)) {
-                        return isUnlabeledSubLevel(a) ? 1 : -1;
-                      }
-                      return a.localeCompare(b); // A, B, Cの順
-                    } else {
-                      return parseInt(a) - parseInt(b);
-                    }
-                  });
+                  // レベル順にソート
+                  const sortedLevels = Object.keys(levelGroups).sort((a, b) => parseInt(a) - parseInt(b));
                   
                   logger.debug('サブレベル表示のランク分け:', {
                     selectedTextbookId,
@@ -2176,7 +2315,7 @@ export default function StudentDashboard() {
                       {/* サブレベルカード */}
                       {sortedLevels.map(level => {
                         const levelWords = levelGroups[level];
-                        const progressKey = `${selectedTextbookId}_${level}`;
+                        const progressKey = `${selectedTextbookId}_${levelProgressKey(selectedTextbookId, level)}`;
                         const lastIndex = freeStudyProgress[progressKey] || 0;
                         const progressText = lastIndex > 0 ? `前回: ${lastIndex + 1}/${levelWords.length}単語まで` : '未学習';
                         
@@ -2189,10 +2328,11 @@ export default function StudentDashboard() {
                         const isEikenUnusedLevel = false;
                         
                         // 推奨判定
-                        const isRecommended = isRecommendedSubLevel(level, selectedParentLevel, testResultLevel);
+                        // 親レベル（英検の級）が推奨されていれば、その中のレベルも推奨
+                        const isRecommended = isRecommendedLevel(selectedParentLevel, testResultLevel);
                         const recommendations = getRecommendedLevels(testResultLevel);
                         const recommendationType = recommendations.recommended.find(rec => 
-                          isRecommendedSubLevel(level, selectedParentLevel, rec.level)
+                          isRecommendedLevel(selectedParentLevel, rec.level)
                         );
                         const priority = recommendationType ? recommendationType.priority : 'medium';
                         
@@ -2227,7 +2367,7 @@ export default function StudentDashboard() {
                               flexWrap: 'wrap'
                             }}>
                               <span className="selection-card-level">
-                                {selectedTextbookId === 'highschool-english' ? level : `レベル ${level}`}
+                                {`レベル ${level}`}
                               </span>
                               {isRecommended && !isUnusedLevel && !isEikenUnusedLevel ? (
                                 <RecommendationBadge type="sublevel" priority={priority} />
@@ -2245,9 +2385,7 @@ export default function StudentDashboard() {
                               )}
                             </div>
                             <span className="selection-card-desc">
-                              {selectedTextbookId === 'highschool-english' 
-                                ? getHighschoolSubLevelDescription(level)
-                                : selectedTextbookId && selectedTextbookId.startsWith('eiken-') 
+                              {selectedTextbookId && selectedTextbookId.startsWith('eiken-') 
                                 ? `英検${selectedTextbookId.split('-')[1]}級レベル内`
                                 : `レベル${selectedParentLevel}内`
                               }
@@ -2319,9 +2457,17 @@ export default function StudentDashboard() {
     </div>
   );
 
+  // フラッシュカード・単語帳・面接では下部タブを出さない。出さないなら、
+  // タブのぶんの余白（.dashboard-container の padding-bottom）も空けない。
+  const showTabBar = !interviewGrade && !writingGrade
+    && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result';
+
   return (
-    <div className="dashboard-container">
-      <StudentHeader userName={userData?.name} onLogout={handleLogout} />
+    <div className={showTabBar ? 'dashboard-container' : 'dashboard-container has-no-tab-bar'}>
+      {/* 初回だけ。読み込みを待つ間に、操作を一度だけ見せる。 */}
+      {onboardingOverlay}
+
+      <StudentHeader userName={userData?.name} onLogout={handleLogout} onShowGuide={reopenOnboarding} />
       
       {/* 初回テストと学習計画最適化のボタン */}
       {testResultLevel === 0 && viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && (
@@ -2329,14 +2475,18 @@ export default function StudentDashboard() {
           backgroundColor: '#3b82f6',
           color: 'white',
           padding: '16px 20px',
-          margin: '0 20px 20px 20px',
+          margin: '0 15px 20px 15px',   // .card-main の padding と揃える（20px だと他のカードと5pxズレる）
           borderRadius: '12px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          // 390px では横に並びきらず、ボタンが「テスト／を開始」と2行に割れる。
+          // 折り返しを許して、入らないときはボタンを次の行へ送る。
+          flexWrap: 'wrap',
+          gap: '12px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
         }}>
-          <div>
+          <div style={{ flex: '1 1 180px', minWidth: 0 }}>
             <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', fontWeight: 'bold' }}>
               単語力チェックテスト
             </h3>
@@ -2356,6 +2506,8 @@ export default function StudentDashboard() {
               fontWeight: 'bold',
               cursor: 'pointer',
               transition: 'all 0.2s',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
             }}
             onMouseOver={(e) => {
@@ -2377,8 +2529,8 @@ export default function StudentDashboard() {
       <main className="card-main">
         {renderTabContent()}
       </main>
-      {/* フラッシュカードページではタブバーを非表示 */}
-      {viewMode !== 'learn' && viewMode !== 'review' && viewMode !== 'test' && viewMode !== 'result' && <TabBar />}
+      {/* フラッシュカードページと面接モードではタブバーを非表示 */}
+      {showTabBar && <TabBar />}
     </div>
   );
 }

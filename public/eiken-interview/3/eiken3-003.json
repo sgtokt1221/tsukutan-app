@@ -1,0 +1,58 @@
+{
+  "id": "eiken3-003",
+  "grade": "3",
+  "title": "Parks in the City",
+  "passage": {
+    "text": "City parks are popular places for people to relax. Some people ride bicycles in parks on weekends. By doing so, they can enjoy fresh air and get some exercise at the same time.",
+    "hintPhrase": "By doing so",
+    "wordCount": 33
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken3-003-a.webp",
+      "caption": "昼下がりの公園。女性がベンチでおにぎりを食べ、男性が木の写真を撮り、少年が自転車の横でヘルメットを持って立っている（吹き出しで自転車に乗る姿）。地面に鳥が4羽。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "prompt": "Please look at the passage. How can some people enjoy fresh air and get some exercise at the same time?",
+      "modelAnswer": "By riding bicycles in parks on weekends."
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "prompt": "Please look at the picture. What is the boy going to do?",
+      "modelAnswer": "He's going to ride his bicycle."
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "prompt": "How many birds are there on the ground?",
+      "modelAnswer": "There are four birds."
+    },
+    {
+      "no": 4,
+      "type": "personal",
+      "prompt": "What do you like to do in a park?",
+      "modelAnswer": "I like to play soccer with my friends."
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "prompt": "Do you often take pictures?",
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I take pictures of my cat with my phone. I show them to my friends."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "I don't have a camera. I just look at things and remember them."
+        }
+      }
+    }
+  ]
+}

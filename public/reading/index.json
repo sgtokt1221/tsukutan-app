@@ -1,0 +1,388 @@
+{
+  "categories": [
+    {
+      "id": "daily",
+      "label": "毎日のこと"
+    },
+    {
+      "id": "school",
+      "label": "学校"
+    },
+    {
+      "id": "town",
+      "label": "まちと行事"
+    },
+    {
+      "id": "nature",
+      "label": "自然と環境"
+    },
+    {
+      "id": "society",
+      "label": "社会のしくみ"
+    },
+    {
+      "id": "science",
+      "label": "科学とからだ"
+    },
+    {
+      "id": "culture",
+      "label": "文化と歴史"
+    },
+    {
+      "id": "sports",
+      "label": "スポーツ"
+    },
+    {
+      "id": "work",
+      "label": "仕事とお金"
+    },
+    {
+      "id": "technology",
+      "label": "技術とインターネット"
+    }
+  ],
+  "grades": [
+    {
+      "id": "5",
+      "label": "英検5級",
+      "readings": [
+        {
+          "id": "eiken5-daily-01",
+          "title": "My Morning",
+          "titleJa": "わたしの朝",
+          "category": "daily"
+        },
+        {
+          "id": "eiken5-school-01",
+          "title": "My Dog and I",
+          "titleJa": "わたしと犬",
+          "category": "school"
+        },
+        {
+          "id": "eiken5-sports-01",
+          "title": "I Play Soccer",
+          "titleJa": "サッカーをする",
+          "category": "sports"
+        },
+        {
+          "id": "eiken5-daily-02",
+          "title": "My Room",
+          "titleJa": "わたしの部屋",
+          "category": "daily"
+        },
+        {
+          "id": "eiken5-nature-01",
+          "title": "The Cat and the Tree",
+          "titleJa": "ネコと木",
+          "category": "nature"
+        },
+        {
+          "id": "eiken5-town-01",
+          "title": "The Shop by the Station",
+          "titleJa": "駅のそばの店",
+          "category": "town"
+        },
+        {
+          "id": "eiken5-culture-01",
+          "title": "The Summer Festival",
+          "titleJa": "夏祭り",
+          "category": "culture"
+        },
+        {
+          "id": "eiken5-school-02",
+          "title": "The New Student",
+          "titleJa": "新しい生徒",
+          "category": "school"
+        },
+        {
+          "id": "eiken5-daily-03",
+          "title": "My Bike",
+          "titleJa": "わたしの自転車",
+          "category": "daily"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "label": "英検4級",
+      "readings": [
+        {
+          "id": "eiken4-school-01",
+          "title": "The School Festival",
+          "titleJa": "学校の文化祭",
+          "category": "school"
+        },
+        {
+          "id": "eiken4-town-01",
+          "title": "The Old Bookstore",
+          "titleJa": "古い本屋さん",
+          "category": "town"
+        },
+        {
+          "id": "eiken4-work-01",
+          "title": "My Mother's Work",
+          "titleJa": "母の仕事",
+          "category": "work"
+        },
+        {
+          "id": "eiken4-culture-01",
+          "title": "New Year at My Grandmother's House",
+          "titleJa": "おばあちゃんの家のお正月",
+          "category": "culture"
+        },
+        {
+          "id": "eiken4-technology-01",
+          "title": "My First Phone",
+          "titleJa": "はじめての電話",
+          "category": "technology"
+        },
+        {
+          "id": "eiken4-nature-01",
+          "title": "The Mountain in Winter",
+          "titleJa": "冬の山",
+          "category": "nature"
+        },
+        {
+          "id": "eiken4-sports-01",
+          "title": "The Last Runner",
+          "titleJa": "最後の走者",
+          "category": "sports"
+        },
+        {
+          "id": "eiken4-town-02",
+          "title": "The Bus Stop in the Rain",
+          "titleJa": "雨のバス停",
+          "category": "town"
+        },
+        {
+          "id": "eiken4-daily-01",
+          "title": "Cooking with My Father",
+          "titleJa": "父と料理する",
+          "category": "daily"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "label": "英検3級",
+      "readings": [
+        {
+          "id": "eiken3-town-01",
+          "title": "The Morning Market",
+          "titleJa": "朝の市場",
+          "category": "town"
+        },
+        {
+          "id": "eiken3-nature-01",
+          "title": "The River Behind Our School",
+          "titleJa": "学校のうしろの川",
+          "category": "nature"
+        },
+        {
+          "id": "eiken3-daily-01",
+          "title": "The Notebook I Kept",
+          "titleJa": "続けたノート",
+          "category": "daily"
+        },
+        {
+          "id": "eiken3-school-01",
+          "title": "The Speech I Did Not Want to Give",
+          "titleJa": "したくなかったスピーチ",
+          "category": "school"
+        },
+        {
+          "id": "eiken3-technology-01",
+          "title": "The Robot at the Supermarket",
+          "titleJa": "スーパーのロボット",
+          "category": "technology"
+        },
+        {
+          "id": "eiken3-culture-01",
+          "title": "The Letters My Grandfather Kept",
+          "titleJa": "祖父が取っておいた手紙",
+          "category": "culture"
+        },
+        {
+          "id": "eiken3-work-01",
+          "title": "The Man Who Fixes Shoes",
+          "titleJa": "くつを直す人",
+          "category": "work"
+        },
+        {
+          "id": "eiken3-society-01",
+          "title": "The House Next Door",
+          "titleJa": "となりの家",
+          "category": "society"
+        },
+        {
+          "id": "eiken3-sports-01",
+          "title": "The Team That Kept Losing",
+          "titleJa": "負け続けたチーム",
+          "category": "sports"
+        }
+      ]
+    },
+    {
+      "id": "pre2",
+      "label": "英検準2級",
+      "readings": [
+        {
+          "id": "eikenp2-society-01",
+          "title": "The Bus That Came Back",
+          "titleJa": "戻ってきたバス",
+          "category": "society"
+        },
+        {
+          "id": "eikenp2-science-01",
+          "title": "Why We Forget",
+          "titleJa": "なぜ忘れるのか",
+          "category": "science"
+        },
+        {
+          "id": "eikenp2-sports-01",
+          "title": "The Runner Who Stopped",
+          "titleJa": "止まった走者",
+          "category": "sports"
+        },
+        {
+          "id": "eikenp2-nature-01",
+          "title": "The Bees Came Back",
+          "titleJa": "ミツバチが戻ってきた",
+          "category": "nature"
+        },
+        {
+          "id": "eikenp2-culture-01",
+          "title": "The Streets Without Names",
+          "titleJa": "名前のない道",
+          "category": "culture"
+        },
+        {
+          "id": "eikenp2-technology-01",
+          "title": "The Map That Everyone Draws",
+          "titleJa": "みんなで描く地図",
+          "category": "technology"
+        },
+        {
+          "id": "eikenp2-work-01",
+          "title": "The Job That Did Not Exist",
+          "titleJa": "なかった仕事",
+          "category": "work"
+        },
+        {
+          "id": "eikenp2-school-01",
+          "title": "Should Schools Have Uniforms?",
+          "titleJa": "制服は必要か",
+          "category": "school"
+        },
+        {
+          "id": "eikenp2-daily-01",
+          "title": "The Cost of Being Always Reachable",
+          "titleJa": "いつでもつながる代償",
+          "category": "daily"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "label": "英検2級",
+      "readings": [
+        {
+          "id": "eiken2-technology-01",
+          "title": "The Language That Machines Learned",
+          "titleJa": "機械が覚えた言葉",
+          "category": "technology"
+        },
+        {
+          "id": "eiken2-culture-01",
+          "title": "The Bowl That Was Broken",
+          "titleJa": "割れた器",
+          "category": "culture"
+        },
+        {
+          "id": "eiken2-science-01",
+          "title": "What Sleep Does at Night",
+          "titleJa": "夜、眠りがしていること",
+          "category": "science"
+        },
+        {
+          "id": "eiken2-society-01",
+          "title": "Who Decides the Price?",
+          "titleJa": "値段を決めるのはだれか",
+          "category": "society"
+        },
+        {
+          "id": "eiken2-nature-01",
+          "title": "The Forest That Grows in the Sea",
+          "titleJa": "海に育つ森",
+          "category": "nature"
+        },
+        {
+          "id": "eiken2-work-01",
+          "title": "The Price of a Cheap Shirt",
+          "titleJa": "安いシャツの値段",
+          "category": "work"
+        },
+        {
+          "id": "eiken2-school-01",
+          "title": "Why Students Fall Asleep in Class",
+          "titleJa": "なぜ授業中に眠くなるのか",
+          "category": "school"
+        }
+      ]
+    },
+    {
+      "id": "pre1",
+      "label": "英検準1級",
+      "readings": [
+        {
+          "id": "eikenp1-society-01",
+          "title": "The Village That Refused to Disappear",
+          "titleJa": "消えることを拒んだ村",
+          "category": "society"
+        },
+        {
+          "id": "eikenp1-science-01",
+          "title": "The Medicine That Is Losing Its Power",
+          "titleJa": "効かなくなる薬",
+          "category": "science"
+        },
+        {
+          "id": "eikenp1-culture-01",
+          "title": "When a Language Falls Silent",
+          "titleJa": "言語が黙るとき",
+          "category": "culture"
+        },
+        {
+          "id": "eikenp1-technology-01",
+          "title": "The Face in the Crowd",
+          "titleJa": "群衆の中の顔",
+          "category": "technology"
+        },
+        {
+          "id": "eikenp1-work-01",
+          "title": "Four Days a Week",
+          "titleJa": "週に4日",
+          "category": "work"
+        },
+        {
+          "id": "eikenp1-nature-01",
+          "title": "The Return of the Wolf",
+          "titleJa": "オオカミが戻るとき",
+          "category": "nature"
+        },
+        {
+          "id": "eikenp1-school-01",
+          "title": "What a Grade Cannot Measure",
+          "titleJa": "成績が測れないもの",
+          "category": "school"
+        },
+        {
+          "id": "eikenp1-sports-01",
+          "title": "The Body as a Machine",
+          "titleJa": "機械としての体",
+          "category": "sports"
+        }
+      ]
+    }
+  ]
+}

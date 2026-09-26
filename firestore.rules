@@ -50,9 +50,12 @@ service cloud.firestore {
 
       // サブコレクション（logs / reviewWords / dailyCompletion /
       // freeStudyProgress / generatedStories など）
+      // **ライティングの採点結果と回数はサーバだけが書く**（2026-09-26）。
+      // 本人が書けると、点を画面から書き換えられる。match を別に書いても
+      // ここの allow と OR になって効かないので、ここで除く
       match /{subCollection}/{docId} {
         allow read: if isOwner(uid) || isAdmin();
-        allow write: if isOwner(uid);
+        allow write: if isOwner(uid) && !(subCollection in ['writingAttempts', 'writingUsage']);
       }
     }
 
@@ -72,6 +75,16 @@ service cloud.firestore {
         allow read: if isSignedIn();
         allow write: if false;
       }
+    }
+
+    //--------------------------------------------------------------------------
+    // 管理者が出した教科書の小テスト（2026-09-24）。
+    // 読めるのは対象の生徒だけ（targetUids に自分の uid がある文書）。書くのは Functions だけ
+    // （staffQuizAssignments）。生徒の結果は users/{uid}/quizResults に本人が書く。
+    //--------------------------------------------------------------------------
+    match /quiz_assignments/{assignmentId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.targetUids;
+      allow write: if false;
     }
 
     //--------------------------------------------------------------------------

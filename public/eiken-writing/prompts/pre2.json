@@ -1,0 +1,77 @@
+{
+  "grade": "pre2",
+  "tasks": {
+    "opinion": {
+      "label": "意見論述",
+      "minWords": 50,
+      "maxWords": 60,
+      "instructions": [
+        "Write an answer to the QUESTION.",
+        "Give TWO reasons to explain your answer.",
+        "Suggested length: 50–60 words."
+      ],
+      "items": [
+        { "id": "o1", "theme": "学校", "question": "Do you think schools should teach students more about how to manage money?" },
+        { "id": "o2", "theme": "家族", "question": "Do you think children should help with housework every day?" },
+        { "id": "o3", "theme": "テクノロジー", "question": "Do you think students should be allowed to use smartphones during lunch breaks at school?" },
+        { "id": "o4", "theme": "お店", "question": "Is it a good idea for supermarkets to be open 24 hours a day?" },
+        { "id": "o5", "theme": "日常生活", "question": "Do you think it is better to get up early on weekends?" },
+        { "id": "o6", "theme": "健康", "question": "Do you think schools should give students more time for physical exercise?" },
+        { "id": "o7", "theme": "地域", "question": "Is it a good idea for students to take part in events in their local community?" },
+        { "id": "o8", "theme": "読書", "question": "Do you think people read fewer books today than in the past?" },
+        { "id": "o9", "theme": "留学", "question": "Is it a good idea for high school students to study abroad for a short time?" },
+        { "id": "o10", "theme": "食事", "question": "Do you think families should eat dinner together every day?" }
+      ]
+    },
+    "email": {
+      "label": "Eメール",
+      "minWords": 40,
+      "maxWords": 50,
+      "instructions": [
+        "You have received an email from a foreign acquaintance.",
+        "Write a reply email to the acquaintance.",
+        "In your reply, answer the question in the email.",
+        "Also ask TWO questions about the underlined part to learn more about it.",
+        "Suggested length: 40–50 words."
+      ],
+      "items": [
+        {
+          "id": "e1",
+          "theme": "乗り物",
+          "from": "Olivia",
+          "body": "Hi,\n\nGuess what! My father bought me a [[new electric bicycle]] last month. Now I ride it to my part-time job every day. It is much faster than walking, and I don't get tired even when I go up hills. But it was expensive, so I have to take good care of it.\n\nBy the way, I want to know what you think. Do you think more people in your town should ride bicycles?\n\nYour friend,\nOlivia"
+        },
+        {
+          "id": "e2",
+          "theme": "園芸",
+          "from": "Daniel",
+          "body": "Hi,\n\nI have some news. I started a [[small vegetable garden]] on my balcony this spring. I water the plants every morning before school, and last week I picked my first tomatoes. They tasted better than the ones from the store!\n\nMy little sister wants to grow vegetables, too. Do you think it is good for children to grow vegetables at school?\n\nYour friend,\nDaniel"
+        },
+        {
+          "id": "e3",
+          "theme": "料理",
+          "from": "Sophie",
+          "body": "Hi,\n\nLast month, I joined a [[cooking class for beginners]] at the community center near my house. We meet every Saturday, and the teacher shows us how to make easy dishes. Last week, we made curry, and I cooked it again for my family.\n\nI think cooking is an important skill. Do you think young people should learn how to cook?\n\nYour friend,\nSophie"
+        },
+        {
+          "id": "e4",
+          "theme": "ボランティア",
+          "from": "Jack",
+          "body": "Hi,\n\nLast weekend, I took part in a [[beach cleanup event]] with some friends from my school. We found a lot of plastic bottles and bags on the beach. It was hard work, but I felt good after we finished.\n\nMy teacher says volunteer work is a good experience. Do you think all students should do volunteer work?\n\nYour friend,\nJack"
+        },
+        {
+          "id": "e5",
+          "theme": "語学学習",
+          "from": "Grace",
+          "body": "Hi,\n\nI want to tell you about something new. I started using a [[language exchange app]] a few weeks ago. I can chat with people from other countries, and I teach them English while they teach me their language. It is a lot of fun.\n\nI'm curious about your opinion. Do you think it is better to learn a foreign language online than at school?\n\nYour friend,\nGrace"
+        },
+        {
+          "id": "e6",
+          "theme": "お店",
+          "from": "Ryan",
+          "body": "Hi,\n\nA [[bookstore with a café]] opened near my house last month. I often go there after school. I can read books while I drink hot chocolate, and there are always many people there on weekends.\n\nMy father says fewer people buy paper books these days. Do you think people will buy fewer paper books in the future?\n\nYour friend,\nRyan"
+        }
+      ]
+    }
+  }
+}

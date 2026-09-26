@@ -1,0 +1,1456 @@
+{
+  "grade": "2",
+  "source": "爆裂ライティング道場",
+  "sections": [
+    {
+      "id": "template",
+      "label": "型",
+      "lead": "大きく分けると意見→理由→まとめの三つで構成されます。",
+      "groups": [
+        {
+          "title": "主張",
+          "items": [
+            {
+              "en": "Yes. I think that families should make time to play sports together.",
+              "ja": "主張",
+              "note": "まずは自分の意見を表明する部分。設問に書いてある表現を真似しながら書くと良い。"
+            }
+          ]
+        },
+        {
+          "title": "理由",
+          "items": [
+            {
+              "en": "I have two reasons（for feeling this way.）",
+              "ja": "理由",
+              "important": true
+            },
+            {
+              "en": "First（reason is that）___",
+              "ja": "理由1",
+              "example": "First（reason is that） it will be a good experience because it is usually difficult for them to make time to play sports together.",
+              "important": true
+            },
+            {
+              "en": "Second（reason is that）___",
+              "ja": "理由2",
+              "example": "Second（reason is that） it is good for their health.Also, it will be a good habit.",
+              "important": true,
+              "note": "理由が短すぎると最終的に語数が足りないということになりがちです。そこで、becauseやwhenなどの従属接続詞を用いてなるべく長く書くようにしましょう。また、you can see beautiful flowers. It will be a good experience.のように何かしらの文章の補足情報をIt is〜で理由として付け加えるという方法も効果的です。"
+            }
+          ]
+        },
+        {
+          "title": "まとめ",
+          "items": [
+            {
+              "en": "For the reasons mentioned above, I believe that ___.",
+              "ja": "まとめ",
+              "example": "For the reasons mentioned above, I believe that they had better make time to play sports together.",
+              "important": true,
+              "note": "まとめパートではもう一度自分の主張を表明します。ここで、主張と同じ意味の違う表現を用いると加点対象になります。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "viewpoints",
+      "label": "理由の視点",
+      "lead": "理由が思いつかないときは時間・お金・経験の三つの視点でお題を考えてみましょう。",
+      "groups": [
+        {
+          "title": "時間",
+          "items": [
+            {
+              "en": "It takes a lot of time.",
+              "ja": "それはかなり時間がかかります。",
+              "important": true
+            },
+            {
+              "en": "Students usually participate in club activities and study hard.",
+              "ja": "学生は普通部活に入っており、一生懸命勉強しています。",
+              "important": true
+            },
+            {
+              "en": "They do not have enough time for～",
+              "ja": "〜のための時間はありません。",
+              "important": true
+            }
+          ]
+        },
+        {
+          "title": "お金",
+          "items": [
+            {
+              "en": "It cost too much money.",
+              "ja": "それはお金がかかり過ぎます。",
+              "important": true
+            },
+            {
+              "en": "People cannot afford to～",
+              "ja": "人々には〜する金銭的余裕はありません。",
+              "important": true
+            },
+            {
+              "en": "High expenses make people’s lives more difficult.",
+              "ja": "高い支出は人々の生活をより困難にします。",
+              "important": true
+            }
+          ]
+        },
+        {
+          "title": "良い経験",
+          "items": [
+            {
+              "en": "It will be a good chance for 人 to～",
+              "ja": "それは・・・にとって、〜する良い機会になります。",
+              "important": true
+            },
+            {
+              "en": "The experience allows 人 to see things from different angles.",
+              "ja": "その経験によって、・・・が違った視点から物事をみることが出来るようになります。",
+              "important": true
+            },
+            {
+              "en": "It will be helpful in the future",
+              "ja": "それは将来役に立ちます。",
+              "important": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "points",
+      "label": "POINTSの使い方",
+      "lead": "各ポイント毎に思いつく限り文章を書いてみる。その中で自信のあるものを二つ選んでテンプレに載せる。",
+      "groups": [
+        {
+          "title": "使い方",
+          "items": [
+            {
+              "en": "Cost/Personal choices/The environment",
+              "ja": "こんなふうに各ポイント毎に思いつく限り文章を書いてみる。その中で自信のあるものを二つ選んでテンプレに載せる。この書き方が一番書きやすいと思う。",
+              "example": "In some cities, new houses will be required to have solar panels. Do you think the number of such cities will increase in the future?",
+              "note": "もちろんそれをするためには文法や語彙力、もっといえば社会問題に対する背景知識が必要になるけどね。"
+            }
+          ]
+        },
+        {
+          "title": "・Cost",
+          "items": [
+            {
+              "en": "Having solar panels often costs a lot of money. It will make people’s life difficult. Even if they had to, they have a right to get money support from the government.",
+              "ja": "Cost の例文1"
+            },
+            {
+              "en": "Some people will say having solar panels often costs a lot of money. However, if they can get support from the government when people have to buy them, the cost will not be so high.",
+              "ja": "Cost の例文2"
+            }
+          ]
+        },
+        {
+          "title": "・Personal choices",
+          "items": [
+            {
+              "en": "Whether people have solar panels or not should be personal choices. They should not be forced to do so.",
+              "ja": "Personal choices の例文1"
+            },
+            {
+              "en": "As all we know, we all have to deal with environmental issues. Once all people are forced to have solar panels, it will be effective.",
+              "ja": "Personal choices の例文2"
+            }
+          ]
+        },
+        {
+          "title": "・The environment",
+          "items": [
+            {
+              "en": "We all know that we have to take action on environmental issues. If people are obliged to have solar panels, it will help to reduce the emission of CO2 to some extent. Thus, it will be an effective way.",
+              "ja": "The environment の例文"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "general",
+      "label": "汎用表現",
+      "lead": "覚えておけばライティングが書けるようになるもののリストです。赤色は特に重要なものです。",
+      "groups": [
+        {
+          "title": "特に重要（赤）",
+          "items": [
+            {
+              "en": "allow 人 to- / enable 人 to-",
+              "ja": "〜するのを可能にする",
+              "example": "The app enables us to track our fitness.",
+              "exampleJa": "そのアプリは私たちが健康状態を追跡するのを可能にする。",
+              "important": true
+            },
+            {
+              "en": "It's very natural that-",
+              "ja": "〜は当たり前のこと",
+              "example": "It's very natural that students study hard.",
+              "exampleJa": "学生が一生懸命勉強するのは当たり前のことだ",
+              "important": true
+            },
+            {
+              "en": "so ～ that・・・",
+              "ja": "とても〜なので・・・だ",
+              "example": "This bag is so light that I can carry it all day.",
+              "exampleJa": "このカバンはとても軽いので、一日中持ち運ぶことができます",
+              "important": true
+            },
+            {
+              "en": "be good/bad for-",
+              "ja": "〜に良い/悪い",
+              "example": "Walking for 30 minutes a day is good for your health.",
+              "exampleJa": "1日30分のウォーキングは体に良い",
+              "important": true
+            },
+            {
+              "en": "make A B",
+              "ja": "AをBにする",
+              "example": "Exercise makes our bodies stronger.",
+              "exampleJa": "運動は私たちの体を強くする。",
+              "important": true
+            },
+            {
+              "en": "It is ～（for人) to V",
+              "ja": "Vすることは・・・にとって〜だ。",
+              "example": "It is important for students to study English.",
+              "exampleJa": "生徒にとって英語を勉強することは重要だ。",
+              "important": true,
+              "note": "虹色にしたいくらい超重要です。下のオレンジ色の形容詞を組み合わせれば表現の幅がかなり広くなります。"
+            },
+            {
+              "en": "It is ～ that SV",
+              "ja": "・・・することは〜だ。",
+              "example": "It is important that students study English.",
+              "exampleJa": "生徒が英語を勉強することは重要だ。",
+              "important": true
+            },
+            {
+              "en": "lead to ～",
+              "ja": "〜につながる",
+              "example": "Eating too much junk food can lead to health problems.",
+              "exampleJa": "ジャンクフードを食べすぎると健康問題につながることがある。",
+              "important": true
+            },
+            {
+              "en": "not only A but also B",
+              "ja": "AだけでなくBも",
+              "example": "Students should study not only English but also math.",
+              "exampleJa": "生徒は英語だけでなく数学も勉強すべきです。",
+              "important": true
+            },
+            {
+              "en": "can V easily（easier than～）",
+              "ja": "（〜より）簡単に〜できる",
+              "example": "If you live near the station, you can commute to work easily.",
+              "exampleJa": "あなたがもし駅の近くに住めば、簡単に通勤することができます",
+              "important": true,
+              "note": "一方の選択肢よりも簡単に〜できるという流れにのせられるのでかなり便利です。"
+            },
+            {
+              "en": "If it were not for～, 仮定法",
+              "ja": "もし〜がながかったら・・・",
+              "example": "If it were not for smartphones, it would be inconvenient.",
+              "exampleJa": "もしスマホがなかったら、不便だろう",
+              "important": true
+            },
+            {
+              "en": "be likely to- / be unlikely to-",
+              "ja": "〜する可能性が高い／低い",
+              "example": "Young people are likely to use smartphones.",
+              "exampleJa": "若者はスマホを使う可能性が高い。",
+              "important": true
+            },
+            {
+              "en": "It is a reasonable way to ～",
+              "ja": "それは〜するのに理にかなった方法だ",
+              "example": "It is a reasonable way to save money by cooking at home.",
+              "exampleJa": "家で料理をするのはお金を節約するのに理にかなった方法です。",
+              "important": true,
+              "note": "reasonble をeasierに変えると「〜するのにより簡単な方法」となる便利なやつです。"
+            },
+            {
+              "en": "contribute to",
+              "ja": "〜に貢献する",
+              "example": "Doctors contribute to society by helping people.",
+              "exampleJa": "医者は人々を助けることで社会に貢献している。",
+              "important": true
+            },
+            {
+              "en": "expect 人 to V",
+              "ja": "人にVすることを期待できる",
+              "example": "We can expect students to study harder with good teachers.",
+              "exampleJa": "良い先生がいれば、生徒たちがもっと一生懸命勉強することを期待できます。",
+              "important": true
+            },
+            {
+              "en": "in terms of",
+              "ja": "〜の点で、〜に関して",
+              "example": "In terms of education, Japan has a very high standard.",
+              "exampleJa": "教育の点では、日本は非常に高い基準を持っている。",
+              "important": true
+            },
+            {
+              "en": "have a [positive/negative] effect on-",
+              "ja": "〜に〇〇の影響を与える",
+              "example": "The law has a positive effect on society.",
+              "exampleJa": "その法律は社会に良い影響を与えている。",
+              "important": true
+            },
+            {
+              "en": "the 比較級 S V, the 比較級 S V",
+              "ja": "〜すればするほど、ますます・・・",
+              "example": "The more people recycle, the cleaner the environment becomes.",
+              "exampleJa": "人々がリサイクルすればするほど、環境はますますきれいになる。",
+              "important": true
+            }
+          ]
+        },
+        {
+          "title": "そのほか",
+          "items": [
+            {
+              "en": "depend on- / rely on-",
+              "ja": "〜に依存する、頼る",
+              "example": "We rely on technology in daily life.",
+              "exampleJa": "私たちは日常生活でテクノロジーに頼っている。"
+            },
+            {
+              "en": "increase / decrease（reduce）",
+              "ja": "増加する／減少する",
+              "example": "The number of users is increasing.",
+              "exampleJa": "利用者数が増加している。"
+            },
+            {
+              "en": "tend to- / be inclined to-",
+              "ja": "〜する傾向がある",
+              "example": "People tend to prefer convenience.",
+              "exampleJa": "人々は便利さを好む傾向がある。"
+            },
+            {
+              "en": "be required to-",
+              "ja": "〜することを求められる",
+              "example": "Students are required to wear uniforms.",
+              "exampleJa": "生徒たちは制服を着ることを求められている。"
+            },
+            {
+              "en": "thanks to ~",
+              "ja": "〜のおかげで",
+              "example": "Thanks to my teacher, I could understand English better.",
+              "exampleJa": "先生のおかげで、英語がよく分かるようになりました。"
+            },
+            {
+              "en": "have difficulty / trouble / a hard time -ing・struggle to-",
+              "ja": "〜するのに苦労する",
+              "example": "Many seniors have difficulty using smartphones.",
+              "exampleJa": "多くの高齢者はスマホの使用に苦労している。"
+            },
+            {
+              "en": "prevent / keep A from -ing ・hinder-",
+              "ja": "〜するのを妨げる",
+              "example": "Bad weather prevented us from going out.",
+              "exampleJa": "悪天候で外出できなかった。"
+            },
+            {
+              "en": "be bound to- / have an obligation to-",
+              "ja": "〜する義務がある",
+              "example": "We are bound to follow the rules.",
+              "exampleJa": "私たちはルールに従う義務がある。"
+            },
+            {
+              "en": "It is usually difficult for 人 to ～",
+              "ja": "〜することは・・・にとってたいてい難しい",
+              "example": "It is usually difficult for me to wake up early.",
+              "exampleJa": "早起きするのは私にとってたいてい難しい。"
+            },
+            {
+              "en": "By Ving, people can",
+              "ja": "〜することで、人々は・・・できる",
+              "example": "By studying every day, people can improve their skills.",
+              "exampleJa": "毎日勉強することで、人々はスキルを向上させることができる。"
+            },
+            {
+              "en": "make ～ easier/harder",
+              "ja": "〜を簡単にする／難しくする",
+              "example": "Technology makes our lives easier.",
+              "exampleJa": "テクノロジーは私たちの生活を楽にする。"
+            },
+            {
+              "en": "help ～ (to) do",
+              "ja": "〜が…するのを助ける",
+              "example": "Exercise helps us to stay healthy.",
+              "exampleJa": "運動は私たちが健康でいるのを助ける。"
+            },
+            {
+              "en": "play a [key/important] role in-",
+              "ja": "〜で重要な役割を果たす",
+              "example": "Education plays a key role in success.",
+              "exampleJa": "教育は成功に重要な役割を果たしている。"
+            },
+            {
+              "en": "depend on- / rely on-",
+              "ja": "〜に依存する、頼る",
+              "example": "We rely on technology in daily life.",
+              "exampleJa": "私たちは日常生活でテクノロジーに頼っている。"
+            },
+            {
+              "en": "be beneficial to-",
+              "ja": "〜に利益を与える、有益である",
+              "example": "Exercise is beneficial to both body and mind.",
+              "exampleJa": "運動は心と体の両方に有益である。"
+            },
+            {
+              "en": "pose a threat to-",
+              "ja": "〜を脅かす",
+              "example": "Climate change poses a threat to all life.",
+              "exampleJa": "気候変動はすべての生命への脅威となっている。"
+            },
+            {
+              "en": "have the right to-",
+              "ja": "〜する権利がある",
+              "example": "Everyone has the right to express their opinion.",
+              "exampleJa": "誰もが意見を表明する権利を持っている。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "adjectives",
+      "label": "形容詞",
+      "lead": "It is ～（for人) to V と組み合わせれば表現の幅がかなり広くなります。",
+      "groups": [
+        {
+          "items": [
+            {
+              "en": "comfortable",
+              "ja": "快適な",
+              "example": "It is comfortable to wear a warm jacket during cold weather.",
+              "exampleJa": "寒い天気の中では暖かいジャケットを着ることが快適です。"
+            },
+            {
+              "en": "beneficial",
+              "ja": "有益な",
+              "example": "It is beneficial to take part in team activities to improve your communication skills.",
+              "exampleJa": "コミュニケーション能力を向上させるために、チーム活動に参加することは有益です。"
+            },
+            {
+              "en": "essential",
+              "ja": "不可欠な",
+              "example": "It is essential that you get enough sleep before an important test.",
+              "exampleJa": "重要なテストの前には十分な睡眠をとることが不可欠です。"
+            },
+            {
+              "en": "reliable",
+              "ja": "信頼できる",
+              "example": "It is reliable to use online reviews before making a purchase decision.",
+              "exampleJa": "購入の決定をする前にオンラインレビューを使うのは信頼できます。"
+            },
+            {
+              "en": "valuable",
+              "ja": "価値のある",
+              "example": "It is valuable to learn from your mistakes to improve yourself.",
+              "exampleJa": "自分の失敗から学ぶことは価値があります。"
+            },
+            {
+              "en": "reasonable",
+              "ja": "妥当な",
+              "example": "It is reasonable to expect good results after studying hard.",
+              "exampleJa": "一生懸命勉強した後に良い結果を期待することは妥当です。"
+            },
+            {
+              "en": "practical",
+              "ja": "実用的な",
+              "example": "It is practical to carry a map when you are traveling in an unfamiliar area.",
+              "exampleJa": "知らない場所を旅行するときに地図を持っているのは実用的です。"
+            },
+            {
+              "en": "affordable",
+              "ja": "手頃な価格の",
+              "example": "It is affordable to buy a quality smartphone these days.",
+              "exampleJa": "最近では質の良いスマートフォンを手頃な価格で買うことができます。"
+            },
+            {
+              "en": "necessary",
+              "ja": "必要な",
+              "example": "It is necessary to stay hydrated during physical activities.",
+              "exampleJa": "体を動かす時には水分補給をすることが必要です。"
+            },
+            {
+              "en": "efficient",
+              "ja": "効率的な",
+              "example": "It is efficient to use a calendar to organize your schedule.",
+              "exampleJa": "スケジュールを整理するためにカレンダーを使うことは効率的です。"
+            },
+            {
+              "en": "flexible",
+              "ja": "柔軟な",
+              "example": "It is flexible to work from home when you have a busy schedule.",
+              "exampleJa": "忙しい時期には自宅で働くことは柔軟です。"
+            },
+            {
+              "en": "generous",
+              "ja": "寛大な",
+              "example": "It is generous to donate to charity and help those in need.",
+              "exampleJa": "慈善団体に寄付し、困っている人々を助けることは寛大です。"
+            },
+            {
+              "en": "challenging",
+              "ja": "挑戦的な（難しいという意味）",
+              "example": "It is challenging to learn a new skill, but it is rewarding.",
+              "exampleJa": "新しいスキルを学ぶのは挑戦的ですが、やりがいがあります。"
+            },
+            {
+              "en": "creative",
+              "ja": "創造的な",
+              "example": "It is creative to come up with new ideas for the project.",
+              "exampleJa": "プロジェクトのために新しいアイデアを思いつくことは創造的です。"
+            },
+            {
+              "en": "innovative",
+              "ja": "革新的な",
+              "example": "It is innovative to use new technology in solving complex problems.",
+              "exampleJa": "複雑な問題を解決するために新しい技術を使うことは革新的です。"
+            },
+            {
+              "en": "attractive",
+              "ja": "魅力的な",
+              "example": "It is attractive to present your ideas clearly in front of an audience.",
+              "exampleJa": "観客の前で自分のアイデアを明確に示すことは魅力的です。"
+            },
+            {
+              "en": "troublesome",
+              "ja": "面倒な、厄介な",
+              "example": "Getting up early is sometimes troublesome for students.",
+              "exampleJa": "早起きは生徒にとって時々面倒です。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "themes",
+      "label": "テーマ別",
+      "lead": "英検2級では環境、教育、技術、社会、経済、健康のテーマからライティング問題が出題されます。",
+      "groups": [
+        {
+          "title": "① 環境（Environment）",
+          "items": [
+            {
+              "en": "emit CO2 / greenhouse gases",
+              "ja": "二酸化炭素／温室効果ガスを排出する",
+              "example": "Factories emit large amounts of CO2.",
+              "exampleJa": "工場は大量の二酸化炭素を排出する。"
+            },
+            {
+              "en": "protect / preserve the environment",
+              "ja": "環境を保護／保存する",
+              "example": "We must protect our natural resources.",
+              "exampleJa": "私たちは自然資源を保護しなければならない。"
+            },
+            {
+              "en": "take eco-friendly actions",
+              "ja": "環境に優しい行動を取る",
+              "example": "Many people are starting to take eco-friendly actions.",
+              "exampleJa": "多くの人が環境に優しい行動を取り始めている。"
+            },
+            {
+              "en": "suffer from natural disasters",
+              "ja": "自然災害に苦しむ",
+              "example": "More people suffer from floods every year.",
+              "exampleJa": "毎年洪水に苦しむ人が増えている。"
+            },
+            {
+              "en": "run out of natural resources",
+              "ja": "天然資源が枯渇する",
+              "example": "We may run out of fossil fuels soon.",
+              "exampleJa": "化石燃料は近いうちに枯渇するかもしれない。"
+            },
+            {
+              "en": "reduce carbon emissions",
+              "ja": "二酸化炭素排出を減らす",
+              "example": "Using public transport can reduce carbon emissions.",
+              "exampleJa": "公共交通の利用は二酸化炭素の排出を減らすことができる。"
+            },
+            {
+              "en": "cause environmental damage",
+              "ja": "環境破壊を引き起こす",
+              "example": "Factories cause serious environmental damage.",
+              "exampleJa": "工場は深刻な環境破壊を引き起こしている。"
+            },
+            {
+              "en": "switch to renewable energy",
+              "ja": "再生可能エネルギーに切り替える",
+              "example": "Many countries are trying to switch to renewable energy.",
+              "exampleJa": "多くの国が再生可能エネルギーへの転換を試みている。"
+            },
+            {
+              "en": "combat climate change",
+              "ja": "気候変動と闘う",
+              "example": "We need global cooperation to combat climate change.",
+              "exampleJa": "気候変動と闘うには世界的な協力が必要だ。"
+            },
+            {
+              "en": "preserve biodiversity",
+              "ja": "生物多様性を保つ",
+              "example": "Preserving biodiversity is essential for a healthy ecosystem.",
+              "exampleJa": "生物多様性を守ることは健全な生態系に不可欠である。"
+            },
+            {
+              "en": "promote sustainability",
+              "ja": "持続可能性を促進する",
+              "example": "We must promote sustainability in all aspects of society.",
+              "exampleJa": "私たちは社会のすべての側面で持続可能性を促進しなければならない。"
+            },
+            {
+              "en": "reduce environmental harm",
+              "ja": "環境への害を減らす",
+              "example": "We need to reduce environmental harm caused by industrial activities.",
+              "exampleJa": "私たちは産業活動による環境への害を減らさなければならない。"
+            },
+            {
+              "en": "encourage eco-friendly practices",
+              "ja": "環境に優しい行動を奨励する",
+              "example": "Schools should encourage eco-friendly practices among students.",
+              "exampleJa": "学校は生徒たちに環境に優しい行動を奨励すべきだ。"
+            },
+            {
+              "en": "minimize waste",
+              "ja": "廃棄物を最小限に抑える",
+              "example": "Households should try to minimize waste by recycling and reusing products.",
+              "exampleJa": "家庭はリサイクルや再利用を通じて廃棄物を最小限に抑えるべきだ。"
+            },
+            {
+              "en": "address climate change",
+              "ja": "気候変動に対処する",
+              "example": "We must all work together to address climate change.",
+              "exampleJa": "私たちは気候変動に対処するために共に働かなければならない。"
+            },
+            {
+              "en": "support renewable energy",
+              "ja": "再生可能エネルギーを支持する",
+              "example": "Countries need to support renewable energy to reduce dependency on fossil fuels.",
+              "exampleJa": "各国は化石燃料への依存を減らすために再生可能エネルギーを支持する必要がある。"
+            },
+            {
+              "en": "encourage sustainable lifestyles",
+              "ja": "持続可能なライフスタイルを奨励する",
+              "example": "Cities should encourage sustainable lifestyles by providing access to green spaces.",
+              "exampleJa": "都市は緑地へのアクセスを提供することで持続可能なライフスタイルを奨励すべきだ。"
+            },
+            {
+              "en": "increase environmental awareness",
+              "ja": "環境意識を高める",
+              "example": "Environmental campaigns can help increase environmental awareness among the public.",
+              "exampleJa": "環境キャンペーンは一般市民の環境意識を高めるのに役立つ。"
+            },
+            {
+              "en": "transition to green technologies",
+              "ja": "環境技術への転換を進める",
+              "example": "Many companies are transitioning to green technologies to reduce their environmental impact.",
+              "exampleJa": "多くの企業は環境への影響を減らすために環境技術への転換を進めている。"
+            }
+          ]
+        },
+        {
+          "title": "② 教育（Education）",
+          "items": [
+            {
+              "en": "play an important role in education",
+              "ja": "教育において重要な役割を果たす",
+              "example": "Teachers play an important role in education.",
+              "exampleJa": "教師は教育において重要な役割を果たしている。"
+            },
+            {
+              "en": "have access to education",
+              "ja": "教育を受ける機会がある",
+              "example": "All children should have access to education.",
+              "exampleJa": "すべての子どもが教育を受ける機会を持つべきだ。"
+            },
+            {
+              "en": "be essential for future success",
+              "ja": "将来の成功に不可欠である",
+              "example": "Basic education is essential for future success.",
+              "exampleJa": "基礎教育は将来の成功に不可欠だ。"
+            },
+            {
+              "en": "develop critical thinking skills",
+              "ja": "批判的思考力を育てる",
+              "example": "Good teachers help students develop critical thinking skills.",
+              "exampleJa": "良い教師は生徒が批判的思考力を育てるのを助ける。"
+            },
+            {
+              "en": "improve academic performance",
+              "ja": "学業成績を向上させる",
+              "example": "Proper sleep can improve students’ academic performance.",
+              "exampleJa": "十分な睡眠は生徒の学業成績を向上させる。"
+            }
+          ]
+        },
+        {
+          "title": "③ テクノロジー（Technology）",
+          "items": [
+            {
+              "en": "rely on technology in daily life",
+              "ja": "日常生活でテクノロジーに頼る",
+              "example": "We rely on technology in daily life.",
+              "exampleJa": "私たちは日常生活でテクノロジーに頼っている。"
+            },
+            {
+              "en": "develop / improve technology",
+              "ja": "技術を開発する・向上させる",
+              "example": "We need to develop new technology to solve social problems.",
+              "exampleJa": "社会問題を解決するために新しい技術を開発する必要がある。"
+            },
+            {
+              "en": "be useful in daily life",
+              "ja": "日常生活で役立つ",
+              "example": "Technology is useful in many areas of our daily life.",
+              "exampleJa": "テクノロジーは私たちの日常生活の多くの分野で役立っている。"
+            },
+            {
+              "en": "become more common",
+              "ja": "より一般的になる",
+              "example": "Online interviews may become more common in the future.",
+              "exampleJa": "オンライン面接は将来より一般的になるかもしれない。"
+            },
+            {
+              "en": "save time and effort",
+              "ja": "時間と労力を節約する",
+              "example": "Technology can help us save time and effort at work.",
+              "exampleJa": "テクノロジーは仕事の時間と労力を節約してくれる。"
+            },
+            {
+              "en": "solve social / environmental problems",
+              "ja": "社会・環境問題を解決する",
+              "example": "New inventions can help solve environmental problems.",
+              "exampleJa": "新しい発明は環境問題の解決に役立つ可能性がある。"
+            },
+            {
+              "en": "make life more convenient",
+              "ja": "生活をより便利にする",
+              "example": "Smartphones have made our lives more convenient.",
+              "exampleJa": "スマートフォンは私たちの生活をより便利にしてくれた。"
+            },
+            {
+              "en": "reduce human labor",
+              "ja": "人間の労働を減らす",
+              "example": "Robots can reduce human labor in dangerous jobs.",
+              "exampleJa": "ロボットは危険な仕事で人間の労働を減らすことができる。"
+            },
+            {
+              "en": "help people communicate easily",
+              "ja": "人々のコミュニケーションを助ける",
+              "example": "Social media helps people communicate with others easily.",
+              "exampleJa": "SNSは人々が簡単に他人とやり取りするのを助ける。"
+            },
+            {
+              "en": "support learning / education",
+              "ja": "学習や教育を支える",
+              "example": "Online tools support students’ learning.",
+              "exampleJa": "オンラインツールは生徒の学習を支えている。"
+            },
+            {
+              "en": "raise security concerns",
+              "ja": "安全面での懸念を引き起こす",
+              "example": "Using new technology sometimes raises security concerns.",
+              "exampleJa": "新しい技術の使用は時に安全上の懸念を引き起こす。"
+            },
+            {
+              "en": "be used in emergencies",
+              "ja": "緊急時に使われる",
+              "example": "Rainwater systems can be used in emergencies.",
+              "exampleJa": "雨水システムは緊急時に利用されることがある。"
+            },
+            {
+              "en": "be related to privacy / security",
+              "ja": "プライバシー・セキュリティに関係する",
+              "example": "Online voting is related to privacy and security issues.",
+              "exampleJa": "オンライン投票はプライバシーやセキュリティの問題に関係している。"
+            },
+            {
+              "en": "become a part of our life",
+              "ja": "生活の一部になる",
+              "example": "Technology has become a part of our daily life.",
+              "exampleJa": "テクノロジーは私たちの日常生活の一部になっている。"
+            },
+            {
+              "en": "improve our quality of life",
+              "ja": "生活の質を向上させる",
+              "example": "New technologies have improved our quality of life.",
+              "exampleJa": "新しいテクノロジーは私たちの生活の質を向上させた。"
+            },
+            {
+              "en": "make our lives more convenient",
+              "ja": "生活をより便利にする",
+              "example": "Smartphones make our lives more convenient.",
+              "exampleJa": "スマートフォンは私たちの生活をより便利にする。"
+            },
+            {
+              "en": "lead to job loss",
+              "ja": "失業を引き起こす",
+              "example": "AI may lead to job loss in some industries.",
+              "exampleJa": "AIは一部の産業で失業を引き起こす可能性がある。"
+            },
+            {
+              "en": "create new job opportunities",
+              "ja": "新たな雇用機会を生む",
+              "example": "The IT industry has created many new job opportunities.",
+              "exampleJa": "IT業界は多くの新しい雇用機会を生んできた。"
+            },
+            {
+              "en": "be used in various fields",
+              "ja": "さまざまな分野で使われている",
+              "example": "Technology is used in various fields such as medicine and education.",
+              "exampleJa": "テクノロジーは医療や教育などのさまざまな分野で使われている。"
+            },
+            {
+              "en": "become increasingly dependent on-",
+              "ja": "〜にますます依存するようになる",
+              "example": "We are becoming increasingly dependent on digital tools.",
+              "exampleJa": "私たちはデジタルツールにますます依存するようになっている。"
+            },
+            {
+              "en": "have both advantages and disadvantages",
+              "ja": "長所と短所の両方がある",
+              "example": "Technology has both advantages and disadvantages.",
+              "exampleJa": "テクノロジーには長所と短所の両方がある。"
+            }
+          ]
+        },
+        {
+          "title": "④ 社会（Society）",
+          "items": [
+            {
+              "en": "face social problems",
+              "ja": "社会問題に直面する",
+              "example": "Many countries face serious social problems.",
+              "exampleJa": "多くの国が深刻な社会問題に直面している。"
+            },
+            {
+              "en": "solve / deal with social issues",
+              "ja": "社会問題を解決する／取り組む",
+              "example": "We should work together to solve social issues.",
+              "exampleJa": "私たちは協力して社会問題に取り組むべきだ。"
+            },
+            {
+              "en": "improve society",
+              "ja": "社会を改善する",
+              "example": "Education is important to improve society.",
+              "exampleJa": "教育は社会を改善するために重要である。"
+            },
+            {
+              "en": "support people in need",
+              "ja": "困っている人々を支援する",
+              "example": "Many people do volunteer work to support people in need.",
+              "exampleJa": "多くの人が困っている人々を支援するためにボランティア活動をしている。"
+            },
+            {
+              "en": "promote equality / fairness",
+              "ja": "平等・公正を促進する",
+              "example": "We must promote equality in the workplace.",
+              "exampleJa": "職場での平等を促進するべきだ。"
+            },
+            {
+              "en": "raise awareness of social problems",
+              "ja": "社会問題への意識を高める",
+              "example": "The media can raise awareness of social issues.",
+              "exampleJa": "メディアは社会問題への意識を高めることができる。"
+            },
+            {
+              "en": "create a better society",
+              "ja": "より良い社会を作る",
+              "example": "Young people can help create a better society.",
+              "exampleJa": "若者はより良い社会を作る手助けができる。"
+            },
+            {
+              "en": "respect different values / cultures",
+              "ja": "異なる価値観・文化を尊重する",
+              "example": "It is important to respect different values in society.",
+              "exampleJa": "社会では異なる価値観を尊重することが重要だ。"
+            },
+            {
+              "en": "have a strong sense of community",
+              "ja": "強い地域社会意識を持つ",
+              "example": "In small towns, people often have a strong sense of community.",
+              "exampleJa": "小さな町では、地域社会意識が強いことが多い。"
+            },
+            {
+              "en": "contribute to society",
+              "ja": "社会に貢献する",
+              "example": "Doctors contribute to society by helping people.",
+              "exampleJa": "医者は人々を助けることで社会に貢献している。"
+            },
+            {
+              "en": "change people’s lifestyles / opinions",
+              "ja": "人々の生活様式・考え方を変える",
+              "example": "The Internet has changed people’s lifestyles.",
+              "exampleJa": "インターネットは人々の生活様式を変えた。"
+            },
+            {
+              "en": "face population problems",
+              "ja": "人口問題に直面する",
+              "example": "Japan is facing population problems such as aging.",
+              "exampleJa": "日本は高齢化などの人口問題に直面している。"
+            },
+            {
+              "en": "reduce stress in society",
+              "ja": "社会のストレスを減らす",
+              "example": "Flexible work styles can reduce stress in society.",
+              "exampleJa": "柔軟な働き方は社会のストレスを減らすことができる。"
+            },
+            {
+              "en": "use social media wisely",
+              "ja": "SNSを賢く使う",
+              "example": "Young people should learn to use social media wisely.",
+              "exampleJa": "若者はSNSを賢く使うことを学ぶべきだ。"
+            },
+            {
+              "en": "face social problems",
+              "ja": "社会問題に直面する",
+              "example": "Many countries face serious social problems.",
+              "exampleJa": "多くの国が深刻な社会問題に直面している。"
+            },
+            {
+              "en": "solve / address social issues",
+              "ja": "社会問題を解決する／取り組む",
+              "example": "We must address poverty and inequality.",
+              "exampleJa": "貧困や不平等に取り組まなければならない。"
+            },
+            {
+              "en": "have equal opportunities",
+              "ja": "平等な機会を持つ",
+              "example": "All people should have equal opportunities.",
+              "exampleJa": "すべての人が平等な機会を持つべきである。"
+            },
+            {
+              "en": "support the disadvantaged",
+              "ja": "弱者を支援する",
+              "example": "Governments should support the disadvantaged.",
+              "exampleJa": "政府は弱い立場の人々を支援すべきである。"
+            },
+            {
+              "en": "raise public awareness",
+              "ja": "人々の意識を高める",
+              "example": "We need to raise public awareness about discrimination.",
+              "exampleJa": "差別について人々の意識を高める必要がある。"
+            },
+            {
+              "en": "be influenced by social media",
+              "ja": "SNSに影響される",
+              "example": "Teenagers are often influenced by social media.",
+              "exampleJa": "ティーンエイジャーはしばしばSNSに影響される。"
+            },
+            {
+              "en": "encourage community engagement",
+              "ja": "地域社会への関わりを促す",
+              "example": "The event encourages community engagement.",
+              "exampleJa": "そのイベントは地域社会への関わりを促している。"
+            },
+            {
+              "en": "promote gender equality",
+              "ja": "男女平等を促進する",
+              "example": "We should promote gender equality at workplaces.",
+              "exampleJa": "職場での男女平等を促進すべきである。"
+            },
+            {
+              "en": "suffer from isolation / loneliness",
+              "ja": "孤立・孤独に苦しむ",
+              "example": "Many elderly people suffer from loneliness.",
+              "exampleJa": "多くの高齢者が孤独に苦しんでいる。"
+            }
+          ]
+        },
+        {
+          "title": "⑤ 経済（Economy）",
+          "items": [
+            {
+              "en": "boost the economy",
+              "ja": "経済を活性化させる",
+              "example": "Tourism can help boost the economy.",
+              "exampleJa": "観光は経済を活性化させる助けになる。"
+            },
+            {
+              "en": "create new jobs",
+              "ja": "新しい雇用を生み出す",
+              "example": "New industries create new jobs.",
+              "exampleJa": "新しい産業は新しい雇用を生み出す。"
+            },
+            {
+              "en": "increase / decrease income",
+              "ja": "収入を増やす／減らす",
+              "example": "Many people want to increase their income.",
+              "exampleJa": "多くの人が収入を増やしたいと考えている。"
+            },
+            {
+              "en": "support local businesses",
+              "ja": "地元の企業を支援する",
+              "example": "Buying local products supports local businesses.",
+              "exampleJa": "地元の製品を買うことは地元の企業を支援することになる。"
+            },
+            {
+              "en": "reduce economic gaps",
+              "ja": "経済格差を減らす",
+              "example": "We need to reduce the economic gap between rich and poor.",
+              "exampleJa": "私たちは貧富の経済格差を減らす必要がある。"
+            },
+            {
+              "en": "increase consumer spending",
+              "ja": "消費者の支出を増やす",
+              "example": "Sales and discounts can increase consumer spending.",
+              "exampleJa": "セールや割引は消費者の支出を増やす可能性がある。"
+            },
+            {
+              "en": "stimulate economic growth",
+              "ja": "経済成長を促進する",
+              "example": "New technology can stimulate economic growth.",
+              "exampleJa": "新しい技術は経済成長を促進する可能性がある。"
+            },
+            {
+              "en": "face economic challenges",
+              "ja": "経済的な課題に直面する",
+              "example": "The country is facing many economic challenges.",
+              "exampleJa": "その国は多くの経済的な課題に直面している。"
+            },
+            {
+              "en": "improve working conditions",
+              "ja": "労働環境を改善する",
+              "example": "Better working conditions lead to higher productivity.",
+              "exampleJa": "より良い労働環境は生産性の向上につながる。"
+            },
+            {
+              "en": "attract foreign investment",
+              "ja": "海外からの投資を呼び込む",
+              "example": "The government is trying to attract foreign investment.",
+              "exampleJa": "政府は外国からの投資を呼び込もうとしている。"
+            },
+            {
+              "en": "save money for the future",
+              "ja": "将来のためにお金を貯める",
+              "example": "It is important to save money for the future.",
+              "exampleJa": "将来のためにお金を貯めることは大切だ。"
+            },
+            {
+              "en": "increase the cost of living",
+              "ja": "生活費が上がる",
+              "example": "In big cities, the cost of living is increasing.",
+              "exampleJa": "大都市では生活費が上がっている。"
+            },
+            {
+              "en": "face financial difficulties",
+              "ja": "経済的な困難に直面する",
+              "example": "Many families are facing financial difficulties.",
+              "exampleJa": "多くの家庭が経済的困難に直面している。"
+            },
+            {
+              "en": "income gap / economic disparity",
+              "ja": "所得格差／経済格差",
+              "example": "The income gap is becoming a serious issue.",
+              "exampleJa": "所得格差は深刻な問題になりつつある。"
+            },
+            {
+              "en": "increase tax / raise the consumption tax",
+              "ja": "税金を上げる／消費税を上げる",
+              "example": "The government decided to raise the consumption tax.",
+              "exampleJa": "政府は消費税を上げることを決定した。"
+            },
+            {
+              "en": "support small and medium-sized businesses",
+              "ja": "中小企業を支援する",
+              "example": "The government should support small and medium-sized businesses.",
+              "exampleJa": "政府は中小企業を支援すべきである。"
+            }
+          ]
+        },
+        {
+          "title": "⑥ 文化（Culture）",
+          "items": [
+            {
+              "en": "learn about different cultures",
+              "ja": "さまざまな文化について学ぶ",
+              "example": "It is important to learn about different cultures.",
+              "exampleJa": "さまざまな文化について学ぶことは大切だ。"
+            },
+            {
+              "en": "understand cultural differences",
+              "ja": "文化の違いを理解する",
+              "example": "We should try to understand cultural differences.",
+              "exampleJa": "私たちは文化の違いを理解する努力をすべきだ。"
+            },
+            {
+              "en": "respect other cultures",
+              "ja": "他の文化を尊重する",
+              "example": "We need to respect other cultures when we travel.",
+              "exampleJa": "旅行する時は他の文化を尊重する必要がある。"
+            },
+            {
+              "en": "experience a new culture",
+              "ja": "新しい文化を体験する",
+              "example": "Studying abroad is a good way to experience a new culture.",
+              "exampleJa": "留学は新しい文化を体験する良い方法だ。"
+            },
+            {
+              "en": "preserve traditional culture",
+              "ja": "伝統文化を守る",
+              "example": "We should preserve our traditional culture.",
+              "exampleJa": "私たちは自分たちの伝統文化を守るべきだ。"
+            },
+            {
+              "en": "lose cultural identity",
+              "ja": "文化的アイデンティティを失う",
+              "example": "Some young people are losing their cultural identity.",
+              "exampleJa": "若者の中には文化的アイデンティティを失いつつある人もいる。"
+            },
+            {
+              "en": "promote cultural exchange",
+              "ja": "文化交流を促進する",
+              "example": "Cultural events help promote cultural exchange.",
+              "exampleJa": "文化的なイベントは文化交流を促進する助けになる。"
+            },
+            {
+              "en": "enjoy traditional events",
+              "ja": "伝統的な行事を楽しむ",
+              "example": "Many tourists enjoy traditional events in Japan.",
+              "exampleJa": "多くの観光客が日本の伝統行事を楽しんでいる。"
+            },
+            {
+              "en": "share cultural values",
+              "ja": "文化的価値観を共有する",
+              "example": "We can share cultural values through art and music.",
+              "exampleJa": "芸術や音楽を通じて文化的価値観を共有できる。"
+            },
+            {
+              "en": "influence modern lifestyles",
+              "ja": "現代の生活様式に影響を与える",
+              "example": "Western culture has influenced modern lifestyles in Japan.",
+              "exampleJa": "西洋文化は日本の現代の生活様式に影響を与えている。"
+            },
+            {
+              "en": "preserve traditional culture",
+              "ja": "伝統文化を守る",
+              "example": "We should preserve traditional culture for future generations.",
+              "exampleJa": "私たちは伝統文化を未来の世代のために守るべきだ。"
+            },
+            {
+              "en": "lose cultural identity",
+              "ja": "文化的アイデンティティを失う",
+              "example": "Globalization may cause people to lose their cultural identity.",
+              "exampleJa": "グローバル化は人々が文化的アイデンティティを失う原因になるかもしれない。"
+            },
+            {
+              "en": "cultural diversity",
+              "ja": "文化的多様性",
+              "example": "Cultural diversity makes our society more interesting.",
+              "exampleJa": "文化的多様性は私たちの社会をより面白くする。"
+            },
+            {
+              "en": "respect different cultures",
+              "ja": "異なる文化を尊重する",
+              "example": "It is important to respect different cultures.",
+              "exampleJa": "異なる文化を尊重することは重要である。"
+            },
+            {
+              "en": "understand foreign cultures",
+              "ja": "外国の文化を理解する",
+              "example": "Traveling helps us understand foreign cultures.",
+              "exampleJa": "旅行は私たちが外国の文化を理解するのに役立つ。"
+            },
+            {
+              "en": "cultural exchange / interaction",
+              "ja": "文化交流",
+              "example": "Cultural exchange promotes mutual understanding.",
+              "exampleJa": "文化交流は相互理解を促進する。"
+            },
+            {
+              "en": "traditional customs / local festivals",
+              "ja": "伝統的な習慣／地域の祭り",
+              "example": "Local festivals are important for keeping traditions alive.",
+              "exampleJa": "地域の祭りは伝統を生かし続けるために重要である。"
+            },
+            {
+              "en": "be influenced by Western culture",
+              "ja": "西洋文化の影響を受ける",
+              "example": "Japanese fashion has been influenced by Western culture.",
+              "exampleJa": "日本のファッションは西洋文化の影響を受けてきた。"
+            },
+            {
+              "en": "value cultural heritage",
+              "ja": "文化遺産を大切にする",
+              "example": "We should value our cultural heritage.",
+              "exampleJa": "私たちは自分たちの文化遺産を大切にすべきである。"
+            }
+          ]
+        },
+        {
+          "title": "⑦ 健康（Health）",
+          "items": [
+            {
+              "en": "stay healthy / keep fit",
+              "ja": "健康を保つ",
+              "example": "It is important to stay healthy by eating well and exercising.",
+              "exampleJa": "よく食べて運動することで健康を保つことは大切だ。"
+            },
+            {
+              "en": "have a balanced diet",
+              "ja": "バランスの取れた食事をする",
+              "example": "Children should have a balanced diet to grow well.",
+              "exampleJa": "子どもたちは健やかに成長するためにバランスの取れた食事をとるべきだ。"
+            },
+            {
+              "en": "get regular exercise",
+              "ja": "定期的に運動する",
+              "example": "Getting regular exercise helps prevent illness.",
+              "exampleJa": "定期的な運動は病気の予防に役立つ。"
+            },
+            {
+              "en": "suffer from lifestyle diseases",
+              "ja": "生活習慣病にかかる",
+              "example": "More people suffer from lifestyle diseases these days.",
+              "exampleJa": "最近、生活習慣病にかかる人が増えている。"
+            },
+            {
+              "en": "prevent illness / disease",
+              "ja": "病気を予防する",
+              "example": "Washing your hands often can prevent illness.",
+              "exampleJa": "手をよく洗うことで病気を予防できる。"
+            },
+            {
+              "en": "maintain mental health",
+              "ja": "メンタルヘルスを維持する",
+              "example": "Spending time with friends helps maintain mental health.",
+              "exampleJa": "友人と過ごすことはメンタルヘルスの維持に役立つ。"
+            },
+            {
+              "en": "improve public health",
+              "ja": "公衆衛生を向上させる",
+              "example": "Vaccinations can improve public health.",
+              "exampleJa": "ワクチン接種は公衆衛生の向上に役立つ。"
+            },
+            {
+              "en": "lead a healthy lifestyle",
+              "ja": "健康的な生活を送る",
+              "example": "More people want to lead a healthy lifestyle.",
+              "exampleJa": "より多くの人が健康的な生活を送りたいと考えている。"
+            },
+            {
+              "en": "avoid unhealthy habits",
+              "ja": "不健康な習慣を避ける",
+              "example": "We should avoid unhealthy habits like smoking.",
+              "exampleJa": "喫煙のような不健康な習慣は避けるべきだ。"
+            },
+            {
+              "en": "access medical services",
+              "ja": "医療サービスを受ける",
+              "example": "It is difficult for some people to access medical services.",
+              "exampleJa": "医療サービスを受けるのが難しい人もいる。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "markers",
+      "label": "つなぎ言葉",
+      "lead": "ディスコースマーカーとは文章の中で「話の流れ」をスムーズにするためのつなぎ言葉です。",
+      "groups": [
+        {
+          "title": "【譲歩】（逆のことを認めるとき）",
+          "items": [
+            {
+              "en": "Although 〜",
+              "ja": "〜だけれども"
+            },
+            {
+              "en": "Even though 〜",
+              "ja": "〜にもかかわらず"
+            },
+            {
+              "en": "While 〜",
+              "ja": "〜だけれども"
+            },
+            {
+              "en": "Admittedly, 〜",
+              "ja": "確かに〜だけど"
+            },
+            {
+              "en": "It is true that 〜, but 〜",
+              "ja": "確かに〜だが、〜"
+            }
+          ]
+        },
+        {
+          "title": "【例示】（例をあげるとき）",
+          "items": [
+            {
+              "en": "For example, 〜",
+              "ja": "たとえば",
+              "important": true
+            },
+            {
+              "en": "For instance, 〜",
+              "ja": "たとえば",
+              "important": true
+            },
+            {
+              "en": "Such as 〜",
+              "ja": "〜のような"
+            },
+            {
+              "en": "To give an example, 〜",
+              "ja": "例を挙げると"
+            }
+          ]
+        },
+        {
+          "title": "【追加】（付け足すとき）",
+          "items": [
+            {
+              "en": "In addition, 〜",
+              "ja": "さらに"
+            },
+            {
+              "en": "Moreover, 〜",
+              "ja": "その上"
+            },
+            {
+              "en": "Besides, 〜",
+              "ja": "それに",
+              "important": true
+            },
+            {
+              "en": "Also, 〜",
+              "ja": "〜もまた",
+              "important": true
+            }
+          ]
+        },
+        {
+          "title": "【対比・比較】（違いを示すとき）",
+          "items": [
+            {
+              "en": "On the other hand, 〜",
+              "ja": "一方で"
+            },
+            {
+              "en": "In contrast, 〜",
+              "ja": "対照的に"
+            },
+            {
+              "en": "However, 〜",
+              "ja": "しかしながら",
+              "important": true
+            },
+            {
+              "en": "While 〜, 〜",
+              "ja": "〜だが、〜"
+            }
+          ]
+        },
+        {
+          "title": "【理由・原因】（理由を述べるとき）",
+          "items": [
+            {
+              "en": "Because 〜",
+              "ja": "〜だから",
+              "important": true
+            },
+            {
+              "en": "Since 〜",
+              "ja": "〜なので",
+              "important": true
+            },
+            {
+              "en": "As 〜",
+              "ja": "〜なので",
+              "important": true
+            },
+            {
+              "en": "This is because 〜",
+              "ja": "これは〜が理由である"
+            }
+          ]
+        },
+        {
+          "title": "【結果】（結果を述べるとき）",
+          "items": [
+            {
+              "en": "Therefore, 〜",
+              "ja": "その結果",
+              "important": true
+            },
+            {
+              "en": "As a result, 〜",
+              "ja": "その結果"
+            },
+            {
+              "en": "Consequently, 〜",
+              "ja": "結果として"
+            },
+            {
+              "en": "Thus, 〜",
+              "ja": "したがって"
+            }
+          ]
+        },
+        {
+          "title": "【まとめ・結論】（締めるとき）",
+          "items": [
+            {
+              "en": "In conclusion, 〜",
+              "ja": "結論として"
+            },
+            {
+              "en": "To sum up, 〜",
+              "ja": "要約すると"
+            },
+            {
+              "en": "In summary, 〜",
+              "ja": "まとめると"
+            },
+            {
+              "en": "Overall, 〜",
+              "ja": "全体として"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tips",
+      "label": "減点注意",
+      "groups": [
+        {
+          "items": [
+            {
+              "en": "I'm → I am / It'll → It will",
+              "ja": "短縮しちゃだめですよ。I'mとかIt'llとかダメね。I am It willとしましょう。"
+            },
+            {
+              "en": "First（reason is that）___ / Second（reason is that）___",
+              "ja": "理由は2つ書かなければならないので、このような言い方にします。"
+            },
+            {
+              "en": "× I think that families should not make～ → ○ I do not think that families should make～",
+              "ja": "notの場所は出来る限り前の方に。I think that families should not make～はダメです。I do not think that families should make～としましょう。"
+            },
+            {
+              "en": "think → believe / do not think → I am not sure that〜",
+              "ja": "まとめパートでは主張と同じ意味の違う表現を用いると加点対象になります。thinkはbelieveに、do not thinkはI am not sure that〜と言い換えるようにしましょう。"
+            },
+            {
+              "en": "Do you think such people will increse? → I think people who works abroad will increase",
+              "ja": "できればsuchの中身をハッキリ書いてあげること。言い換えに関係代名詞や分詞が大活躍するからしっかりマスターしておこう。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

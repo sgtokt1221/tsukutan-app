@@ -66,6 +66,13 @@
   gap: var(--space-8);
 }
 
+/* 3つ並ぶと1つ約110px。左右の余白を詰めないと「もう覚えた」が2行に割れる（2026-09-24） */
+.answer-controls__buttons--three .answer-btn {
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+  white-space: nowrap;
+}
+
 /* 迷った: わかった と もう一度 の中間。基準色の範囲で表す（計画書5.1）。 */
 .answer-btn--hard {
   background-color: var(--color-lime-soft);
@@ -75,4 +82,95 @@
 
 .answer-btn--hard:hover:not(:disabled) {
   background-color: var(--color-lime-muted);
+}
+
+/* もう覚えた（上スワイプと同じ）。上スワイプのときの黄（#fef08a）にそろえる。
+   枠 #a16207 は白地に 4.9:1、文字 #713f12 は黄地に 8:1 以上（→ dads） */
+.answer-btn--graduate {
+  background-color: #fef08a;
+  border-color: #a16207;
+  color: #713f12;
+}
+
+.answer-btn--graduate:hover:not(:disabled) {
+  background-color: #fde047;
+}
+
+/* ---- 丸いボタン（単語力チェックテストと同じ見た目。2026-09-26）---- */
+.answer-controls--round {
+  padding: var(--space-8) 0 0;
+}
+
+.answer-controls--round .answer-controls__buttons {
+  justify-content: center;
+  gap: var(--space-24);
+}
+
+.answer-controls--round .answer-btn {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: var(--font-size-14);
+  color: var(--color-ink-olive);
+  white-space: nowrap;
+}
+
+.answer-controls--round .answer-btn:active:not(:disabled) {
+  transform: none;
+}
+
+.answer-controls--round .answer-btn:active:not(:disabled) .answer-btn__circle {
+  transform: scale(0.92);
+}
+
+.answer-btn__circle {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-2);
+  font-size: 26px;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
+.answer-controls--round .answer-btn--again .answer-btn__circle {
+  background-color: var(--color-surface);
+  border: 3px solid var(--color-danger-border);
+  color: var(--color-danger-action);
+}
+
+.answer-controls--round .answer-btn--graduate .answer-btn__circle {
+  background-color: #fef08a;
+  border: 3px solid #a16207;
+  color: #713f12;
+}
+
+.answer-controls--round .answer-btn--known .answer-btn__circle {
+  background-color: var(--color-brand-lime);
+  color: var(--color-ink-olive);
+}
+
+/* 真ん中（もう覚えた）は一段小さく。主役は左右 */
+.answer-controls--round .answer-btn--graduate .answer-btn__circle {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+  margin-top: 6px;
+}
+
+.answer-controls--round .answer-btn--graduate:hover:not(:disabled),
+.answer-controls--round .answer-btn--again:hover:not(:disabled) {
+  background: none;
+}
+
+@media (max-height: 620px) {
+  .answer-btn__circle { width: 54px; height: 54px; font-size: 22px; }
+  .answer-controls--round .answer-btn--graduate .answer-btn__circle { width: 46px; height: 46px; }
 }

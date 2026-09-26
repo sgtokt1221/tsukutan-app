@@ -1,0 +1,67 @@
+{
+  "id": "eiken2-005",
+  "grade": "2",
+  "title": "Apps against Food Waste",
+  "passage": {
+    "text": "A large amount of food is thrown away by restaurants and shops every day. Some smartphone apps let shops sell food that has not been sold at a lower price. Shops take photos of such food and put them on the app before closing time. In this way, they reduce waste and earn money at the same time. These apps have become popular among young people.",
+    "hintPhrase": "In this way",
+    "wordCount": 66
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken2-005-a.webp",
+      "caption": "3コマ。①閉店時刻、売れ残ったパンを見るベーカリーの店主「We throw away so much every night.」→ The next week ②スマホで売れ残りを撮ってアプリに載せる → That evening ③若い客が値引きされたパンを買っている。吹き出しに、空のゴミ箱。",
+      "panels": 3
+    }
+  ],
+  "narration": {
+    "openingSentence": "One evening, a bakery owner was looking at a lot of bread that had not been sold.",
+    "prepareSeconds": 20,
+    "speakSeconds": null
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do some shops reduce waste and earn money at the same time?",
+      "modelAnswer": "By taking photos of food that has not been sold and putting them on an app before closing time.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "narration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the picture and describe the situation. You have twenty seconds to prepare. Your story should begin with the sentence on the card.",
+      "modelAnswer": "One evening, a bakery owner was looking at a lot of bread that had not been sold. She said that they threw away so much every night. The next week, she was taking photos of the bread and putting them on an app. That evening, several young customers were buying the bread at a lower price. She was thinking that her rubbish bin would be empty.",
+      "answerSeconds": 60
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that shops should be fined for throwing away food that can still be eaten. What do you think about that?",
+      "modelAnswer": "I disagree. Shops throw food away because they are afraid of making customers sick. A fine would only make them order less and lose sales. Support for donating the food would work better.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Today, many people care about environmental problems. Do you think young people can change society?",
+      "modelAnswer": null,
+      "answerSeconds": 40,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Young people spread ideas quickly online, and companies change their products to match what they want."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "Young people have little money and few votes. Real change needs the people who make the rules."
+        }
+      }
+    }
+  ]
+}

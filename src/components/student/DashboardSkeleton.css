@@ -1,0 +1,89 @@
+/* 読み込み中の骨組み。中身と同じ形・同じ余白にする。 */
+
+.dash-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-12);
+}
+
+.dash-skeleton__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  border: var(--border-subtle);
+}
+
+.dash-skeleton__card--rank {
+  gap: var(--space-16);
+}
+
+.dash-skeleton__rank {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.dash-skeleton__rank-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  flex: 1;
+}
+
+.dash-skeleton__tasks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-12);
+}
+
+/* 動く帯。じっとしているより「読み込み中」が伝わる。 */
+.dash-skeleton__line,
+.dash-skeleton__badge,
+.dash-skeleton__bar,
+.dash-skeleton__task {
+  display: block;
+  border-radius: var(--radius-control);
+  background: linear-gradient(
+    90deg,
+    var(--color-olive-divider) 25%,
+    rgba(163, 230, 53, 0.18) 37%,
+    var(--color-olive-divider) 63%
+  );
+  background-size: 400% 100%;
+  animation: dash-skeleton-sweep 1.4s ease infinite;
+}
+
+.dash-skeleton__line { height: 12px; }
+.dash-skeleton__line--xs { width: 30%; height: 10px; }
+.dash-skeleton__line--sm { width: 45%; }
+.dash-skeleton__line--md { width: 65%; height: 16px; }
+.dash-skeleton__line--lg { width: 80%; height: 20px; }
+
+.dash-skeleton__badge {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.dash-skeleton__bar { height: 8px; border-radius: var(--radius-pill); }
+.dash-skeleton__task { height: 84px; }
+
+@keyframes dash-skeleton-sweep {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* 動きを減らす設定なら、光らせない */
+@media (prefers-reduced-motion: reduce) {
+  .dash-skeleton__line,
+  .dash-skeleton__badge,
+  .dash-skeleton__bar,
+  .dash-skeleton__task {
+    animation: none;
+  }
+}

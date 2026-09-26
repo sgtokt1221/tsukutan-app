@@ -1,0 +1,286 @@
+/*
+  先生が出した小テスト。ホームのカードと、解く画面。
+  カードは**面をベタで塗る**（白地に色帯を立てるカードは使わない。→ design-preferences）。
+  今日のタスクより目立たせたいので、地を紺にして白い文字を載せる。
+*/
+
+.assigned-quiz-card {
+  margin-bottom: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+}
+
+.assigned-quiz-card__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin: 0 0 var(--space-12);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.assigned-quiz-card__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-16);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.assigned-quiz-card__item + .assigned-quiz-card__item {
+  margin-top: var(--space-8);
+}
+
+.assigned-quiz-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.assigned-quiz-card__title {
+  display: block;
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.assigned-quiz-card__meta {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+.assigned-quiz-card__go {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--font-size-16);
+  font-weight: 700;
+}
+
+/* 解く画面 */
+.assigned-quiz {
+  /* 親が中身を中央に寄せる並び（flex）なので、幅を明示しないと選択肢が文字の幅まで縮む */
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--space-16);
+}
+
+.assigned-quiz__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-12);
+}
+
+.assigned-quiz__eyebrow {
+  margin: 0;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+}
+
+.assigned-quiz__progress {
+  margin: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+.assigned-quiz__prompt {
+  margin: var(--space-24) 0;
+  text-align: center;
+  font-size: var(--font-size-28);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-ink-olive);
+  overflow-wrap: anywhere;
+}
+
+.assigned-quiz__prompt.is-ja {
+  font-size: var(--font-size-22);
+}
+
+.assigned-quiz__choices {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.assigned-quiz__choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.assigned-quiz__choice:disabled {
+  cursor: default;
+}
+
+.assigned-quiz__choice.is-correct {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-ink);
+  font-weight: 700;
+}
+
+.assigned-quiz__choice.is-wrong {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-ink);
+}
+
+.assigned-quiz__choice.is-dim {
+  opacity: 0.55;
+}
+
+.assigned-quiz__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-12);
+  margin-top: var(--space-24);
+}
+
+.assigned-quiz__primary {
+  min-height: var(--tap-target);
+  padding: var(--space-12) var(--space-24);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.assigned-quiz__quit {
+  min-height: var(--tap-target);
+  padding: var(--space-8) var(--space-12);
+  border: none;
+  background: none;
+  color: var(--color-olive-muted);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  cursor: pointer;
+}
+
+.assigned-quiz__score {
+  margin: var(--space-24) 0 var(--space-16);
+  text-align: center;
+  color: var(--color-ink-olive);
+  font-size: var(--font-size-18);
+}
+
+.assigned-quiz__score strong {
+  font-size: var(--font-size-40);
+  line-height: 1;
+}
+
+.assigned-quiz__note {
+  margin: var(--space-12) 0;
+  font-size: var(--font-size-16);
+  color: var(--color-ink-olive);
+}
+
+.assigned-quiz__missed {
+  margin: 0 0 var(--space-24);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.assigned-quiz__missed li {
+  display: flex;
+  gap: var(--space-12);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-ink);
+  font-size: var(--font-size-16);
+}
+
+.assigned-quiz__missed-word {
+  font-weight: 700;
+  min-width: 7em;
+}
+
+.assigned-quiz__error {
+  padding: var(--space-16);
+  border-radius: var(--radius-control);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-ink);
+}
+
+/* 受験サポートのテストでまちがえた語の知らせ。面はベタ塗り（色帯のカードにしない） */
+.exam-missed-notice {
+  margin-bottom: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-lime-muted);
+  color: var(--color-ink-olive);
+}
+
+.exam-missed-notice__text {
+  margin: 0 0 var(--space-12);
+  font-size: var(--font-size-16);
+  line-height: var(--line-normal);
+}
+
+.exam-missed-notice__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* 受験サポートのテスト範囲。先生からの小テスト（紺）と区別して緑の面にする */
+.exam-practice-card {
+  margin-bottom: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background-color: var(--color-lime-muted);
+  color: var(--color-ink-olive);
+}
+
+.exam-practice-card__eyebrow {
+  margin: 0;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+}
+
+.exam-practice-card__lead {
+  margin: var(--space-4) 0 var(--space-12);
+  font-size: var(--font-size-14);
+  line-height: var(--line-normal);
+}
+
+.exam-practice-card .assigned-quiz-card__item + .assigned-quiz-card__item {
+  margin-top: var(--space-8);
+}

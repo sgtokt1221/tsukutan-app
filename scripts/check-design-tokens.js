@@ -16,7 +16,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const TOKENS_FILE = 'src/styles/tokens.css';
-const SCREEN_CSS = ['src/App.css', 'src/AdminDashboard.css', 'src/Analytics.css'];
+const SCREEN_CSS = ['src/App.css', 'src/Analytics.css'];
 
 // 5.1 変更禁止の基準色。値そのものが一致すること。
 const FIXED_COLORS = {

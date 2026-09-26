@@ -1,5 +1,6 @@
 // Firebase SDK
-const { onRequest, HttpsError } = require("firebase-functions/v2/https");
+const { onRequest, onCall, HttpsError } = require("firebase-functions/v2/https");
+const { defineSecret } = require('firebase-functions/params');
 const { logger } = require("firebase-functions");
 const admin = require("firebase-admin");
 const crypto = require("node:crypto");
@@ -20,6 +21,48 @@ const {
 } = require('./lib/studentImport');
 const { getCurrentMonthKey } = require('./lib/dateKeys');
 
+/**
+ * 使う Gemini。
+ *
+ * gemini-2.0-flash-001 は提供が終わっていて 404 を返す（2026-08-13 に確認）。
+ * ストーリー生成が黙って失敗していたのはこれが原因。モデル名を1か所にまとめ、
+ * 次に切り替わったときここだけ直せばよいようにする。
+ *
+ * 生きているかの確かめ方:
+ *   curl -s -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+ *     -H 'Content-Type: application/json' -d '{"contents":[{"role":"user","parts":[{"text":"ok"}]}]}' \
+ *     https://us-central1-aiplatform.googleapis.com/v1/projects/$GCLOUD_PROJECT/locations/us-central1/publishers/google/models/<model>:generateContent
+ */
+const GEMINI_MODEL = 'gemini-2.5-flash';
+const { transcribe, missingWords, uniqueWordCount, MAX_AUDIO_BYTES } = require('./lib/transcription');
+// つくばホームの ID トークン → つくたんの入場券。**アカウントを2つ作らない**
+const {
+  tsukubaAuth,
+  assertTsukubaClaims,
+  ensureStudentProfile,
+} = require('./lib/tsukubaToken');
+const { judgeAnswer } = require('./lib/answerJudge');
+// つくばホームの管理者に、生徒の苦手な単語を渡すときの決まり
+const {
+  assertStaffClaims,
+  weakWordsForQuiz,
+  StaffAccessError,
+} = require('./lib/staffMaterials');
+// 生徒詳細の「定着度」（教材ごと）
+const { masteryByTextbook, easiestEiken } = require('./lib/textbookMastery');
+// 管理者が出す教科書の小テスト
+const {
+  QuizInputError,
+  validateCreate: validateQuizCreate,
+  pickQuizWords,
+  pickWeakWords,
+  pickSourceWords,
+  pickWeakInSource,
+  dataFileOf: quizDataFileOf,
+  titleOf: quizTitleOf,
+  summarize: summarizeQuiz,
+} = require('./lib/quizAssignments');
+
 //==============================================================================
 // ユーザー一括インポート機能 (シンプル版)
 //==============================================================================
@@ -30,6 +73,12 @@ importUsersApp.use(express.json({ limit: '10mb' }));
 const manageStudentsApp = express();
 manageStudentsApp.use(cors({ origin: true }));
 manageStudentsApp.use(express.json({ limit: '1mb' }));
+
+// 録音は 16kHz 16bit モノラルで、3分だと約 3.8MB。base64 で約 5.1MB になる。
+// 既定の 100kb では入らないので、余裕を見て 12mb にする。
+const transcribeSpeakingApp = express();
+transcribeSpeakingApp.use(cors({ origin: true }));
+transcribeSpeakingApp.use(express.json({ limit: '12mb' }));
 
 /**
  * HttpsError のコードを HTTP のステータスへ写す。
@@ -508,7 +557,7 @@ Please adhere to the following rules:
 
   const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
   const generativeModel = vertexAi.getGenerativeModel({
-    model: 'gemini-2.0-flash-001',
+    model: GEMINI_MODEL,
     generationConfig: { responseMimeType: 'application/json' },
   });
 
@@ -711,4 +760,583 @@ exports.generateStoryFromWords = onRequest(
       }
     });
   }
+);
+//==============================================================================
+// 英検二次試験の発音・内容の採点
+//==============================================================================
+
+/** その回で見るもの。音読は読むべき英文が決まっている。 */
+const MODES = new Set(['scripted', 'unscripted']);
+
+/** Vertex AI の Gemini を1回叩く。generateStory と同じ設定。 */
+const generateJson = async (prompt) => {
+  const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+  const model = vertexAi.getGenerativeModel({
+    model: GEMINI_MODEL,
+    generationConfig: { responseMimeType: 'application/json' },
+  });
+  const response = await model.generateContent(prompt);
+  return response.response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+};
+
+/** Speech-to-Text の窓口。呼ばれたときに作る（起動を重くしない）。 */
+let speechClient = null;
+const recognize = (request) => {
+  if (!speechClient) {
+    // eslint-disable-next-line global-require
+    const { SpeechClient } = require('@google-cloud/speech');
+    speechClient = new SpeechClient();
+  }
+  return speechClient.recognize(request);
+};
+
+/**
+ * 録音した英語を文字にする。
+ *
+ * 音読（scripted）は読むべき英文を認識のヒントに渡し、読み飛ばした語を返す。
+ * 質問への答え（unscripted）は文字にしたうえで、Gemini に
+ * 「質問に答えているか」を見せる。
+ *
+ * 発音の点は出さない。それには別サービスが要り、いまは対象外。
+ */
+/**
+ * 生徒本人であることだけ確かめる。uid はトークンから取り、本文の値は信じない。
+ * 通っていなければ 401 を返して false。呼び出し側はそこで抜ける。
+ */
+const verifyStudent = async (req, res) => {
+  const idToken = req.get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return false;
+  }
+  try {
+    await admin.auth().verifyIdToken(idToken);
+    return true;
+  } catch (error) {
+    logger.error('transcribeSpeaking: トークンを検証できませんでした', error);
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return false;
+  }
+};
+
+transcribeSpeakingApp.post('/', async (req, res) => {
+  if (!(await verifyStudent(req, res))) return undefined;
+
+  const { audio, mode, referenceText, question, modelAnswer, grade } = req.body || {};
+  if (typeof audio !== 'string' || audio.length === 0) {
+    return res.status(400).json({ error: '音声が送られていません。' });
+  }
+  if (!MODES.has(mode)) {
+    return res.status(400).json({ error: 'mode が不正です。' });
+  }
+
+  const wav = Buffer.from(audio, 'base64');
+  if (wav.length > MAX_AUDIO_BYTES) {
+    return res.status(413).json({ error: '録音が長すぎます。3分以内にしてください。' });
+  }
+
+  try {
+    const { transcript } = await transcribe(
+      wav,
+      // 音読は読む英文が分かっている。渡すと認識が寄る。
+      mode === 'scripted' && referenceText ? { phrases: referenceText.split(/\s+/) } : {},
+      recognize
+    );
+
+    // 読み飛ばしは音読のときだけ見る。発音の良し悪しは測らない。
+    const missing = mode === 'scripted' && referenceText
+      ? missingWords(referenceText, transcript)
+      : [];
+
+    // 中身の判定は質問に答える回だけ。音読には要らない。
+    let content = null;
+    if (mode === 'unscripted' && question) {
+      content = await judgeAnswer(
+        { grade, question, modelAnswer, transcript },
+        generateJson
+      ).catch((judgeError) => {
+        // 文字起こしは取れているので、ここで全部を落とさない。
+        logger.warn('transcribeSpeaking: 内容の判定に失敗しました', judgeError);
+        return null;
+      });
+    }
+
+    return res.status(200).json({ transcript, missing, content });
+  } catch (error) {
+    logger.error('transcribeSpeaking: 文字起こしに失敗しました', error);
+    const message = /音声が空|長すぎ/.test(error.message)
+      ? error.message
+      : '文字起こしできませんでした。もう一度お試しください。';
+    return res.status(502).json({ error: message });
+  }
+});
+
+/**
+ * 文字にしたあとの答えを見る。
+ *
+ * 音声認識は日本語なまりの英語をよく取り違える。生徒が画面で直せるように
+ * したので、判定は「直したあとの文」に対してかけないと意味がない。だから
+ * 音声を受けずにテキストだけで判定する口を分けてある。
+ *
+ * 読み飛ばした語もここで数え直す。分母（total）も返すのは、同じ正規化を
+ * クライアントに書き写すと、ずれたときに気づけないため。
+ */
+transcribeSpeakingApp.post('/review', async (req, res) => {
+  if (!(await verifyStudent(req, res))) return undefined;
+
+  const { mode, referenceText, question, modelAnswer, grade, transcript } = req.body || {};
+  if (!MODES.has(mode)) {
+    return res.status(400).json({ error: 'mode が不正です。' });
+  }
+  if (typeof transcript !== 'string') {
+    return res.status(400).json({ error: '文字起こしが送られていません。' });
+  }
+
+  const scripted = mode === 'scripted' && referenceText;
+  const missing = scripted ? missingWords(referenceText, transcript) : [];
+  const total = scripted ? uniqueWordCount(referenceText) : 0;
+
+  let content = null;
+  if (mode === 'unscripted' && question) {
+    content = await judgeAnswer(
+      { grade, question, modelAnswer, transcript },
+      generateJson
+    ).catch((judgeError) => {
+      // 1問の判定が取れなくても、他の問題の結果は見せたい。ここで落とさない。
+      logger.warn('transcribeSpeaking: 内容の判定に失敗しました', judgeError);
+      return null;
+    });
+  }
+
+  return res.status(200).json({ missing, total, content });
+});
+
+exports.transcribeSpeaking = onRequest(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 120,
+    memory: '512MiB',
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  transcribeSpeakingApp
+);
+
+//==============================================================================
+// 英検ライティングの採点（2026-09-26）
+//==============================================================================
+
+/**
+ * Jev（TypeSafe）の鍵。**このコードベースで初めての secret**。
+ * 入れ方：firebase functions:secrets:set JEV_API_KEY --project tsukutan-58b3f
+ */
+const JEV_API_KEY = defineSecret('JEV_API_KEY');
+const { FORMATS: WRITING_FORMATS, scoreWriting } = require('./lib/writingScore');
+const { getTokyoDateKey } = require('./lib/dateKeys');
+
+/** 1人1日の採点回数の上限。使いすぎ（連打・自動化）で請求が膨らまないように */
+const WRITING_DAILY_LIMIT = 30;
+const MAX_ANSWER_CHARS = 3000;
+
+const scoreWritingApp = express();
+scoreWritingApp.use(cors({ origin: true }));
+scoreWritingApp.use(express.json({ limit: '64kb' }));
+
+/** ID トークンを確かめて uid を返す。だめなら 401 を返して null */
+const verifiedUid = async (req, res) => {
+  const idToken = req.get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return null;
+  }
+  try {
+    return (await admin.auth().verifyIdToken(idToken)).uid;
+  } catch (error) {
+    logger.error('scoreWriting: トークンを検証できませんでした', error);
+    res.status(401).json({ error: 'ログインし直してください。' });
+    return null;
+  }
+};
+
+/** 問題の文面は画面から来る。長さと型だけ確かめて、採点に要る欄だけ残す */
+const cleanPrompt = (prompt = {}) => {
+  const str = (v, max) => (typeof v === 'string' ? v.slice(0, max) : undefined);
+  return {
+    id: str(prompt.id, 40),
+    question: str(prompt.question, 600),
+    points: Array.isArray(prompt.points) ? prompt.points.slice(0, 6).map((p) => str(p, 60)).filter(Boolean) : undefined,
+    body: str(prompt.body, 2000),
+    title: str(prompt.title, 200),
+    passage: Array.isArray(prompt.passage) ? prompt.passage.slice(0, 6).map((p) => str(p, 2000)).filter(Boolean) : undefined,
+  };
+};
+
+scoreWritingApp.post('/', async (req, res) => {
+  const uid = await verifiedUid(req, res);
+  if (!uid) return undefined;
+
+  const grade = String(req.body?.grade || '');
+  const task = String(req.body?.task || '');
+  const answer = typeof req.body?.answer === 'string' ? req.body.answer.slice(0, MAX_ANSWER_CHARS) : '';
+  if (!WRITING_FORMATS[grade]?.[task]) return res.status(400).json({ error: '問題の種類が分かりません。' });
+  if (!answer.trim()) return res.status(400).json({ error: '英文を書いてから提出してください。' });
+  const prompt = cleanPrompt(req.body?.prompt);
+
+  // 回数を先に数える（採点に失敗したら戻す）
+  const usageRef = db.doc(`users/${uid}/writingUsage/${getTokyoDateKey(new Date())}`);
+  try {
+    await db.runTransaction(async (tx) => {
+      const snap = await tx.get(usageRef);
+      const count = snap.exists ? snap.data().count || 0 : 0;
+      if (count >= WRITING_DAILY_LIMIT) {
+        const error = new Error('limit');
+        error.code = 'limit';
+        throw error;
+      }
+      tx.set(usageRef, { count: count + 1, updatedAt: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    });
+  } catch (error) {
+    if (error.code === 'limit') {
+      return res.status(429).json({ error: `今日の採点は${WRITING_DAILY_LIMIT}回までです。明日また出してください。` });
+    }
+    logger.error('scoreWriting: 回数を数えられませんでした', error);
+    return res.status(500).json({ error: '採点できませんでした。もう一度出してください。' });
+  }
+
+  let result;
+  try {
+    result = await scoreWriting({ grade, task, prompt, answer }, { apiKey: JEV_API_KEY.value() });
+  } catch (error) {
+    logger.error('scoreWriting: 採点に失敗しました', error);
+    await usageRef.set({ count: admin.firestore.FieldValue.increment(-1) }, { merge: true }).catch(() => {});
+    return res.status(502).json({ error: '採点できませんでした。少し待ってからもう一度出してください。' });
+  }
+
+  // 結果はサーバで残す（画面から点を書き換えられないように。firestore.rules でも本人は書けない）
+  const attempt = {
+    grade,
+    task,
+    promptId: prompt.id || null,
+    answer,
+    scores: result.scores,
+    total: result.total,
+    max: result.max,
+    flags: result.flags,
+    words: result.words,
+    model: result.model,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  };
+  const ref = await db.collection(`users/${uid}/writingAttempts`).add(attempt);
+  return res.status(200).json({ id: ref.id, ...attempt, createdAt: new Date().toISOString(), contractions: result.contractions });
+});
+
+exports.scoreWriting = onRequest(
+  {
+    region: 'us-central1',
+    timeoutSeconds: 60,
+    memory: '256MiB',
+    secrets: [JEV_API_KEY],
+    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+  },
+  scoreWritingApp
+);
+
+//==============================================================================
+// つくばホームからの入場
+//==============================================================================
+
+/**
+ * 生徒の入場券を発行する。
+ *
+ * 1. つくばホームの ID トークンを受け取る
+ * 2. **つくばホームのプロジェクトの公開鍵で**検証する
+ * 3. role を検査する（「認証できた」と「入ってよい」は別）
+ * 4. つくたんの Custom Token を発行する。**uid はつくばホームのものをそのまま使う**
+ * 5. 初回ならプロフィールを作る（無いと目標設定が `updateDoc` で落ちる）
+ *
+ * **トークンそのものはログに出さない。** 出すと有効期限まで誰でも使える。
+ */
+exports.exchangeTsukubaToken = onCall({ region: 'us-central1' }, async (request) => {
+  const idToken = (request.data || {}).idToken;
+  if (typeof idToken !== 'string' || idToken === '') {
+    throw new HttpsError('invalid-argument', 'idToken が必要です');
+  }
+
+  let decoded;
+  try {
+    /*
+      `checkRevoked` は付けない。付けるとつくばホームの Auth をユーザー単位で
+      読む必要があり、つくたんの資格情報では読めない。
+      （失効はトークンの有効期限＝最長1時間で効く）
+    */
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    logger.warn('つくばホームのトークンを検証できなかった', { message: e && e.message });
+    throw new HttpsError('unauthenticated', 'つくばホームのトークンを検証できませんでした');
+  }
+
+  try {
+    assertTsukubaClaims(decoded);
+  } catch (e) {
+    logger.warn('入場を拒否した', { uid: decoded.uid, message: e && e.message });
+    throw new HttpsError('permission-denied', e && e.message);
+  }
+
+  const customToken = await admin.auth().createCustomToken(decoded.uid);
+  // **await する。** 返したあとの fire-and-forget は取りこぼす
+  await ensureStudentProfile(db, decoded);
+  return { customToken };
+});
+
+
+//==============================================================================
+// つくばホームの管理者に、生徒の苦手な単語を渡す（2026-09-23）
+//==============================================================================
+/*
+ * 生徒を見る場所をつくばホームの管理画面（`/tsukutsuku/`）に一本化した。
+ * あちらで「苦手な単語の小テスト」を出すための、**読み取りだけ**の口。
+ * 判定の中身（管理者だけ・苦手の決め方）は `lib/staffMaterials.js`。AI長文は渡さない（使わない）。
+ *
+ * - 呼べるのはつくばホームの画面だけ（CORS）。つくばホームのIDトークンを Bearer で受ける
+ * - `checkRevoked` は使えない（つくばホームの Auth を読む権限が無い。`exchangeTsukubaToken` と同じ）
+ * - **トークンはログに出さない**
+ */
+const STAFF_ORIGINS = [
+  'https://tsukubamanager-4900b.web.app',
+  'https://tsukubamanager-4900b.firebaseapp.com',
+  'http://localhost:5173',
+];
+const staffMaterialsApp = express();
+staffMaterialsApp.use(cors({ origin: STAFF_ORIGINS }));
+staffMaterialsApp.use(express.json({ limit: '10kb' }));
+
+staffMaterialsApp.post('/', async (req, res) => {
+  const header = req.headers.authorization || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+  if (idToken === '') return res.status(401).json({ error: 'つくばホームのログインが必要です' });
+
+  let decoded;
+  try {
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    logger.warn('職員のトークンを検証できなかった', { message: e && e.message });
+    return res.status(401).json({ error: 'つくばホームのログインを確かめられませんでした' });
+  }
+
+  const uid = req.body && typeof req.body.uid === 'string' ? req.body.uid : '';
+  if (uid === '' || uid.includes('/')) return res.status(400).json({ error: '生徒が指定されていません' });
+
+  try {
+    assertStaffClaims(decoded);
+    const userRef = db.collection('users').doc(uid);
+    const [userSnap, wordsSnap] = await Promise.all([userRef.get(), userRef.collection('reviewWords').get()]);
+    const toDocs = (snap) => snap.docs.map((d) => ({ id: d.id, data: d.data() }));
+    const docs = toDocs(wordsSnap);
+    // 定着度は教材ファイルが読めなくても、苦手な単語だけは返す（片方の失敗で両方を消さない）
+    let mastery = null;
+    try {
+      mastery = masteryByTextbook(docs, await loadMasteryTextbooks());
+    } catch (e) {
+      logger.warn('定着度の教材を読めなかった', { message: e && e.message });
+    }
+    return res.status(200).json({
+      found: userSnap.exists,
+      weakWords: weakWordsForQuiz(docs),
+      mastery,
+    });
+  } catch (e) {
+    if (e instanceof StaffAccessError) {
+      logger.warn('職員の教材読み取りを拒否した', { staff: decoded.uid, role: decoded.role, uid, message: e.message });
+      return res.status(403).json({ error: e.message });
+    }
+    logger.error('職員の教材読み取りに失敗した', { uid, message: e && e.message });
+    return res.status(500).json({ error: '読み込めませんでした' });
+  }
+});
+
+exports.staffStudentMaterials = onRequest(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    maxInstances: 10,
+    serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
+  },
+  staffMaterialsApp
+);
+
+
+//==============================================================================
+// 管理者が出す「教科書の小テスト」（2026-09-24）
+//==============================================================================
+/*
+ * つくばホームの管理画面（`/tsukutsuku/`）から、学年・ページを指定して生徒に小テストを出す口。
+ * 判定の中身は `lib/quizAssignments.js`。入口の作りは `staffStudentMaterials` と同じ
+ * （CORS はつくばホームだけ・つくばホームのIDトークン・管理者だけ・トークンはログに出さない）。
+ *
+ *   { action: 'create', grade, pageFrom, pageTo, count, direction, targetUids }  → { id }
+ *   { action: 'create', source: 'weak' | 'book' (bookId, noFrom, noTo) | 'eiken' (eiken), count, direction, targetUids }
+ *   教材（textbook / book / eiken）に weakOnly: true を付けると、範囲の中でその生徒が間違えた単語だけ（対象は1人）
+ *   { action: 'list', uid? }  → { assignments: [...集計つき] }（uid を渡すとその生徒に出したものだけ）
+ *   { action: 'close', id }   → { ok }（取り下げ。生徒のホームのカードから消える）
+ *
+ * 生徒は `quiz_assignments` を自分が対象のものだけ読める（firestore.rules）。結果は本人が
+ * `users/{uid}/quizResults/{id}` に書く。
+ */
+const DATA_BASE_URL = 'https://tsukutan-58b3f.web.app/data/';
+const dataFileCache = new Map();
+/** 単語のファイル。**配信しているものを読む**（関数に写しを持たない）。10分だけ覚えておく */
+const loadDataFile = async (name) => {
+  const hit = dataFileCache.get(name);
+  if (hit && Date.now() - hit.at < 10 * 60 * 1000) return hit.data;
+  const response = await fetch(`${DATA_BASE_URL}${name}`);
+  if (!response.ok) throw new Error(`${name} を読めませんでした (${response.status})`);
+  const data = await response.json();
+  if (!Array.isArray(data) || data.length === 0) throw new Error(`${name} が空です`);
+  dataFileCache.set(name, { at: Date.now(), data });
+  return data;
+};
+const loadTextbookCards = () => loadDataFile('words-textbook-sunshine.json');
+
+/**
+ * 定着度を出す教材（生徒の「えらぶ」と同じ並び）。題名は画面に出すもの。
+ * 単語帳の題名の正本はつくつくの src/config/books.js（関数からは読めないので、足したらここにも足す）
+ */
+const MASTERY_TEXTBOOKS = [
+  { id: 'sunshine-1', title: 'Sunshine 1年（学校の教科書）', file: 'words-textbook-sunshine.json', grade: 1 },
+  { id: 'sunshine-2', title: 'Sunshine 2年（学校の教科書）', file: 'words-textbook-sunshine.json', grade: 2 },
+  { id: 'sunshine-3', title: 'Sunshine 3年（学校の教科書）', file: 'words-textbook-sunshine.json', grade: 3 },
+  { id: 'osaka-koukou-nyuushi', title: '中学英語（大阪府公立入試）', file: 'words-osaka.json' },
+  { id: 'highschool-english', title: '高校英語', file: 'words-highschool.json' },
+  { id: 'book-systan5', title: 'システム英単語', file: 'words-book-systan5.json' },
+  { id: 'book-target1900', title: '英単語ターゲット1900', file: 'words-book-target1900.json' },
+  { id: 'book-leap', title: '必携英単語LEAP', file: 'words-book-leap.json' },
+  { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', file: 'words-book-idiom-target1000.json' },
+  // 英検の級（2026-09-25）。1語はいちばんやさしい級1つにだけ入る。1級は語に印が無いので出さない
+  ...[['5', '5級'], ['4', '4級'], ['3', '3級'], ['pre2', '準2級'], ['2', '2級'], ['pre1', '準1級']]
+    .map(([eiken, label]) => ({ id: `eiken-${eiken}`, title: `英検${label}`, file: 'words-master.json', eiken })),
+];
+const loadMasteryTextbooks = async () => Promise.all(MASTERY_TEXTBOOKS.map(async ({ id, title, file, grade, eiken }) => {
+  const words = await loadDataFile(file);
+  if (eiken) return { id, title, words: words.filter((w) => easiestEiken(w) === eiken) };
+  return { id, title, words: grade ? words.filter((w) => w.grade === grade) : words };
+}));
+
+const quizAssignmentsApp = express();
+quizAssignmentsApp.use(cors({ origin: STAFF_ORIGINS }));
+quizAssignmentsApp.use(express.json({ limit: '64kb' }));
+
+const toMillis = (v) => (v && typeof v.toMillis === 'function' ? v.toMillis() : null);
+
+quizAssignmentsApp.post('/', async (req, res) => {
+  const header = req.headers.authorization || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+  if (idToken === '') return res.status(401).json({ error: 'つくばホームのログインが必要です' });
+
+  let decoded;
+  try {
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    logger.warn('職員のトークンを検証できなかった', { message: e && e.message });
+    return res.status(401).json({ error: 'つくばホームのログインを確かめられませんでした' });
+  }
+
+  const body = req.body || {};
+  try {
+    assertStaffClaims(decoded);
+
+    if (body.action === 'create') {
+      const input = validateQuizCreate(body);
+      let words;
+      // その生徒の苦手な単語（staffStudentMaterials と同じ決め方）
+      const weakOf = async (uid) => {
+        const snap = await db.collection('users').doc(uid).collection('reviewWords').get();
+        return weakWordsForQuiz(snap.docs.map((d) => ({ id: d.id, data: d.data() })));
+      };
+      if (input.source === 'weak') {
+        words = pickWeakWords(await weakOf(input.targetUids[0]), input.count);
+      } else if (input.weakOnly) {
+        // 教材の範囲の中で、その生徒が間違えた単語だけ（2026-09-26。規則は lib/quizAssignments.js）
+        const [sourceWords, weakWords] = await Promise.all([loadDataFile(quizDataFileOf(input)), weakOf(input.targetUids[0])]);
+        words = pickWeakInSource(sourceWords, weakWords, input);
+      } else if (input.source === 'book' || input.source === 'eiken') {
+        // 単語帳（見出し番号の範囲）・英検（級）。規則は lib/quizAssignments.js
+        words = pickSourceWords(await loadDataFile(quizDataFileOf(input)), input);
+      } else {
+        words = pickQuizWords(await loadTextbookCards(), input);
+      }
+      const ref = db.collection('quiz_assignments').doc();
+      await ref.set({
+        textbook: input.source === 'textbook' ? 'sunshine' : null,
+        title: quizTitleOf(input),
+        ...input,
+        count: words.length,
+        words,
+        active: true,
+        createdBy: decoded.uid,
+        createdByName: String(decoded.name || ''),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      // 画面が同じ語で紙の小テストも刷れるように、選んだ語も返す
+      return res.status(200).json({ id: ref.id, count: words.length, words });
+    }
+
+    if (body.action === 'list') {
+      const uid = typeof body.uid === 'string' && body.uid !== '' && !body.uid.includes('/') ? body.uid : '';
+      let query = db.collection('quiz_assignments');
+      if (uid) query = query.where('targetUids', 'array-contains', uid);
+      const snap = await query.orderBy('createdAt', 'desc').limit(30).get();
+      const assignments = await Promise.all(snap.docs.map(async (d) => {
+        const a = d.data();
+        const targets = uid ? [uid] : (a.targetUids || []);
+        const refs = targets.map((t) => db.collection('users').doc(t).collection('quizResults').doc(d.id));
+        const results = refs.length ? await db.getAll(...refs) : [];
+        const byUid = new Map(results.map((r, i) => [targets[i], r.exists ? r.data() : null]));
+        return {
+          id: d.id,
+          title: a.title,
+          source: a.source || 'textbook',
+          grade: a.grade ?? null,
+          pageFrom: a.pageFrom,
+          pageTo: a.pageTo,
+          direction: a.direction,
+          count: a.count,
+          active: a.active !== false,
+          createdAt: toMillis(a.createdAt),
+          ...summarizeQuiz({ targetUids: targets }, byUid),
+        };
+      }));
+      return res.status(200).json({ assignments });
+    }
+
+    if (body.action === 'close') {
+      const id = typeof body.id === 'string' ? body.id : '';
+      if (id === '' || id.includes('/')) return res.status(400).json({ error: '小テストが指定されていません' });
+      const ref = db.collection('quiz_assignments').doc(id);
+      const snap = await ref.get();
+      if (!snap.exists) return res.status(404).json({ error: 'その小テストはありません' });
+      await ref.update({ active: false, closedAt: admin.firestore.FieldValue.serverTimestamp(), closedBy: decoded.uid });
+      return res.status(200).json({ ok: true });
+    }
+
+    return res.status(400).json({ error: '操作が指定されていません' });
+  } catch (e) {
+    if (e instanceof StaffAccessError) {
+      logger.warn('小テストの操作を拒否した', { staff: decoded.uid, role: decoded.role, message: e.message });
+      return res.status(403).json({ error: e.message });
+    }
+    if (e instanceof QuizInputError) return res.status(400).json({ error: e.message });
+    logger.error('小テストの操作に失敗した', { action: body.action, message: e && e.message });
+    return res.status(500).json({ error: 'うまくいきませんでした。もう一度お試しください' });
+  }
+});
+
+exports.staffQuizAssignments = onRequest(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    maxInstances: 10,
+    serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
+  },
+  quizAssignmentsApp
 );

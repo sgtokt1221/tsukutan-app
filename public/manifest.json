@@ -1,28 +1,31 @@
 {
-  "short_name": "つくたん",
-  "name": "つくたん - 中高生のための英単語学習アプリ",
+  "short_name": "つくつく",
+  "name": "つくつく - 毎日の英語が身につく学習アプリ",
   "description": "目標と達成日から逆算した日次プランで英単語を学習するアプリです。",
   "lang": "ja",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "logo-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#A3E635",
-  "background_color": "#F7FEE7"
+  "theme_color": "#183153",
+  "background_color": "#F6F7F2"
 }

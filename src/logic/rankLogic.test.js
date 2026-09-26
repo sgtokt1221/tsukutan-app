@@ -249,3 +249,39 @@ describe('移行期間の level → スコア', () => {
     expect(scoreFromLegacyLevel(undefined)).toBeNull();
   });
 });
+
+describe('ランクの中の段（初級・中級・上級。2026-09-26）', () => {
+  // eslint-disable-next-line global-require
+  const { scoreFromAbility, tierForScore, rankLabel, nextStep, scoreFromLegacyLevel, abilityScoreOf } = require('./rankLogic');
+
+  test('整数の力はレベルの代表値と同じ点', () => {
+    for (let level = 1; level <= 7; level += 1) expect(scoreFromAbility(level)).toBe(scoreFromLegacyLevel(level));
+  });
+
+  test('力が上がれば点も上がる（途中で下がらない）', () => {
+    const scores = [0.5, 1, 1.5, 2.5, 3.2, 4.8, 6.1, 7, 7.8].map(scoreFromAbility);
+    expect(scores).toEqual([...scores].sort((a, b) => a - b));
+  });
+
+  test('ランクの幅を3つに分ける', () => {
+    // S は 725〜849
+    expect(tierForScore(730).label).toBe('初級');
+    expect(tierForScore(790).label).toBe('中級');
+    expect(tierForScore(840).label).toBe('上級');
+    expect(rankLabel(840)).toBe('S 上級');
+  });
+
+  test('次の段：同じランクの上の段、上級なら次のランクの初級', () => {
+    expect(nextStep(730).label).toBe('S 中級');
+    expect(nextStep(560).label).toBe('A 初級'); // B 上級 → A 初級
+  });
+
+  test('SS は測定準備中なので、S 上級の次は出さない', () => {
+    expect(nextStep(845)).toBeNull();
+  });
+
+  test('力が無ければ、レベルの代表値（古い結果）', () => {
+    expect(abilityScoreOf({ level: 4 })).toBe(scoreFromLegacyLevel(4));
+    expect(abilityScoreOf({ level: 4, ability: 4.6 })).toBeGreaterThan(scoreFromLegacyLevel(4));
+  });
+});

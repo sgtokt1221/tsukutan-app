@@ -1,0 +1,99 @@
+{
+  "grade": "pre1",
+  "tasks": {
+    "opinion": {
+      "label": "意見論述",
+      "minWords": 120,
+      "maxWords": 150,
+      "instructions": [
+        "Write an essay on the given TOPIC.",
+        "Use TWO of the POINTS below to support your answer.",
+        "Structure: introduction, main body, and conclusion",
+        "Suggested length: 120–150 words."
+      ],
+      "items": [
+        { "id": "o1", "theme": "労働", "question": "Agree or disagree: Companies should be required to allow employees to ignore work messages outside working hours", "points": ["Mental health", "Productivity", "Global business", "Customer service"] },
+        { "id": "o2", "theme": "医療", "question": "Should the government put a higher tax on sugary drinks?", "points": ["Public health", "Personal freedom", "Healthcare costs", "Low-income households"] },
+        { "id": "o3", "theme": "テクノロジー", "question": "Agree or disagree: Artificial intelligence will do more harm than good to the job market", "points": ["Productivity", "Unemployment", "New industries", "Education"] },
+        { "id": "o4", "theme": "教育", "question": "Should universities make community service a requirement for graduation?", "points": ["Social skills", "Academic focus", "Local communities", "Career preparation"] },
+        { "id": "o5", "theme": "環境", "question": "Agree or disagree: The fast fashion industry should be more strictly regulated", "points": ["Waste", "Consumer choice", "Workers' rights", "Prices"] },
+        { "id": "o6", "theme": "政治", "question": "Should voting in national elections be made compulsory in Japan?", "points": ["Democracy", "Individual rights", "Youth participation", "Political awareness"] },
+        { "id": "o7", "theme": "都市", "question": "Agree or disagree: Private cars should be banned from city centers", "points": ["Air pollution", "Local businesses", "Public transportation", "Accessibility"] },
+        { "id": "o8", "theme": "高齢化", "question": "Should Japan raise the mandatory retirement age?", "points": ["Labor shortages", "Pensions", "Health", "Opportunities for young people"] },
+        { "id": "o9", "theme": "メディア", "question": "Agree or disagree: Social media companies should be held responsible for false information on their platforms", "points": ["Freedom of speech", "Public safety", "Technological limits", "Trust"] },
+        { "id": "o10", "theme": "観光", "question": "Should popular tourist destinations limit the number of visitors?", "points": ["Local residents", "The economy", "Cultural preservation", "The environment"] }
+      ]
+    },
+    "summary": {
+      "label": "要約",
+      "minWords": 60,
+      "maxWords": 70,
+      "instructions": [
+        "Read the article below and summarize it in your own words as far as possible in English.",
+        "Suggested length: 60–70 words."
+      ],
+      "items": [
+        {
+          "id": "s1",
+          "theme": "食料・科学",
+          "title": "Meat Without Animals",
+          "passage": [
+            "Meat grown in laboratories from animal cells, often called cultivated meat, is moving closer to supermarket shelves. A few countries have already approved its sale, and dozens of start-up companies are competing to lower production costs. Supporters believe that this technology could transform the way humanity produces protein in the coming decades.",
+            "The main attraction of cultivated meat lies in its potential environmental benefits. Conventional livestock farming requires vast areas of land and large amounts of water, and it is responsible for a significant share of greenhouse gas emissions. Producing meat in controlled facilities could reduce these burdens considerably. Moreover, because no animals need to be raised or slaughtered, many people see the technology as a solution to long-standing ethical concerns about animal welfare.",
+            "Nevertheless, critics argue that the enthusiasm may be premature. Growing cells on a large scale still consumes a great deal of energy, and if that energy comes from fossil fuels, the environmental advantage could shrink or even disappear. There are also doubts about whether consumers will accept laboratory-grown food, as surveys suggest that many people regard it as unnatural. Farmers' organizations, meanwhile, warn that a rapid shift could threaten rural communities whose economies depend on traditional agriculture."
+          ]
+        },
+        {
+          "id": "s2",
+          "theme": "環境",
+          "title": "Letting Nature Return",
+          "passage": [
+            "In several parts of Europe, conservation groups have begun a practice known as rewilding. Rather than managing land intensively, they allow abandoned farmland to return to a natural state and sometimes reintroduce animals, such as beavers or wild horses, that disappeared from the area long ago. The idea has recently attracted attention in other regions, including parts of Asia.",
+            "Advocates say rewilding offers benefits that go beyond protecting individual species. Restored wetlands and forests absorb carbon dioxide and can reduce the risk of flooding by holding rainwater. Furthermore, the return of large animals often attracts nature tourism, creating new sources of income in rural areas that have been losing young residents for years. Supporters also point out that, once established, rewilded land requires relatively little human management.",
+            "However, the practice has provoked strong opposition from some local residents. Farmers fear that reintroduced predators, such as wolves, will attack their sheep and cattle, and they complain that compensation schemes are slow and insufficient. Others argue that decisions about the land are often made by distant organizations without adequate consultation with the people who actually live there. As a result, some rewilding projects have been delayed or abandoned, showing that ecological goals cannot be achieved without local support."
+          ]
+        },
+        {
+          "id": "s3",
+          "theme": "教育",
+          "title": "Learning in Small Pieces",
+          "passage": [
+            "Traditionally, a university degree has been regarded as the most reliable proof of a person's knowledge and skills. In recent years, however, universities and technology companies have started offering short online courses that award micro-credentials, digital certificates showing that a learner has mastered a specific skill, such as data analysis or project management. Some major employers have even begun to accept these certificates in place of traditional qualifications.",
+            "Many people welcome this trend. Because the courses are short and relatively inexpensive, working adults can update their skills without leaving their jobs or taking on large debts. Employers also benefit, as they can quickly identify applicants who have the precise abilities they need. In fields where technology changes rapidly, some experts argue that such flexible learning is more practical than a four-year program designed years in advance.",
+            "Critics, however, have raised several concerns. Since there is no common standard, the quality of micro-credentials varies widely, and employers may find it difficult to judge which certificates are meaningful. Some educators also worry that focusing on narrow, job-related skills could weaken the broader education that universities have traditionally provided, including critical thinking and communication. Unless reliable systems for evaluating these credentials are developed, their value may remain limited."
+          ]
+        },
+        {
+          "id": "s4",
+          "theme": "経済",
+          "title": "Money With No Strings Attached",
+          "passage": [
+            "Over the past decade, governments and charities in several countries have tested basic income, a system in which people receive a regular payment with no conditions attached. In these experiments, participants have been free to spend the money however they choose, and researchers have examined how the payments affect their health, employment, and overall well-being. The idea has attracted interest from both the political left and right.",
+            "The results of some trials have encouraged supporters. Many participants reported lower levels of stress and better mental health, and some used the money to take training courses or to search for more suitable jobs rather than accepting the first offer available. Supporters argue that as automation eliminates certain types of work, a basic income could provide a safety net that is simpler to administer than existing welfare programs.",
+            "Opponents, however, doubt that the system could work on a national scale. Paying every citizen a meaningful amount would require enormous public spending, which would likely mean much higher taxes. Critics also note that most experiments have been small and short, so they cannot show how people would behave if they knew the payments would continue for life. Some fear that a permanent basic income could reduce people's motivation to work."
+          ]
+        },
+        {
+          "id": "s5",
+          "theme": "テクノロジー",
+          "title": "Machines Choosing Workers",
+          "passage": [
+            "A growing number of large companies now use artificial intelligence to help select new employees. Software can scan thousands of resumes within minutes, and some systems even analyze video interviews to evaluate candidates' answers. For companies that receive huge numbers of applications, such tools promise to make recruitment far more efficient, reducing both the time and the cost involved in filling each position. Smaller firms, too, are increasingly adopting similar services.",
+            "Supporters claim that AI can also make hiring fairer. Human interviewers are influenced, often unconsciously, by factors such as a candidate's appearance, accent, or background. A well-designed system, they argue, can focus solely on relevant qualifications and experience. In addition, by handling routine screening, the technology allows human staff to devote more time to meeting the most promising applicants in person.",
+            "However, several cases have shown that AI systems can reproduce existing discrimination. Because these programs learn from past hiring decisions, they may favor the kinds of people who were hired before and unfairly reject others. Furthermore, candidates who are rejected by an algorithm often receive no explanation, making it almost impossible for them to challenge the decision. For these reasons, some governments are now considering laws that would require companies to reveal how their hiring software works."
+          ]
+        },
+        {
+          "id": "s6",
+          "theme": "社会",
+          "title": "Loneliness and Public Health",
+          "passage": [
+            "Loneliness was once regarded as a purely personal problem. Recently, however, a number of governments have begun treating it as a public health issue. Some have even appointed ministers responsible for tackling social isolation, and research into its effects on physical and mental health has increased considerably. The COVID-19 pandemic, which forced many people to stay at home for long periods, further accelerated this shift.",
+            "There are good reasons for this change. Studies have found that long-term loneliness is linked to higher risks of heart disease, depression, and dementia, which place a heavy burden on healthcare systems. Moreover, social changes such as the rise in single-person households and the decline of local community groups mean that more people than ever may be at risk. By addressing loneliness early, governments hope to reduce both human suffering and medical costs.",
+            "Nevertheless, some people question whether governments can solve such a problem effectively. Loneliness is a subjective feeling, and it can be difficult to identify who is suffering from it, particularly because many people are reluctant to admit it. Critics also argue that official programs, such as organized social events, may fail to create the genuine relationships that people need. Instead, they suggest that governments should support the local organizations that already bring residents together."
+          ]
+        }
+      ]
+    }
+  }
+}

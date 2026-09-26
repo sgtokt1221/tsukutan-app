@@ -1,0 +1,53 @@
+{
+  "id": "eiken-p1-005",
+  "grade": "pre1",
+  "title": "Bicycles at the Station",
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p1-005-a.webp",
+      "caption": "4コマ。①駅前の歩道に無秩序に置かれた大量の自転車を見る市の職員（In March）②住民説明会で駐輪場の計画を示す。ボードに「New Bicycle Parking」（In June）③新しい駐輪場は満車、歩道はきれい。看板は「500 yen per day」。職員は満足げ（In October）④一本隣の通りに再び自転車が並ぶ。「No Parking」の看板の横。職員は腕を組んで見ている（In December）。",
+      "panels": 4
+    }
+  ],
+  "narration": {
+    "storyLine": "This is a story about a city officer who tried to clear the bicycles left in front of a station.",
+    "openingSentence": "In March, a city officer was looking at dozens of bicycles left on the pavement in front of a station.",
+    "prepareSeconds": 60,
+    "speakSeconds": 120
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "roleplay",
+      "cardVisible": true,
+      "prompt": "Please look at the fourth picture. If you were the person in the picture, what would you be thinking?",
+      "modelAnswer": "I'd be thinking that people did not stop leaving their bicycles; they simply walked one street further to avoid the fee. Building the facility was not enough by itself. Perhaps the first hour should be free, or we need to enforce the rules on the surrounding streets at the same time.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 2,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think cities should charge people for parking their bicycles?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that rules are useless unless they are strictly enforced. What do you think?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think Japanese cities are designed well for people who do not drive cars?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    }
+  ]
+}

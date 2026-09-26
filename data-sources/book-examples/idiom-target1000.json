@@ -1,0 +1,1790 @@
+{
+ "1": {
+  "example": "Could you give me a piece of paper, please?",
+  "exampleJa": "紙を1枚もらえますか。"
+ },
+ "2": {
+  "example": "I bought a couple of notebooks at the store.",
+  "exampleJa": "私は店でノートを2、3冊買った。"
+ },
+ "3": {
+  "example": "A number of students joined the volunteer club this year.",
+  "exampleJa": "今年はかなり多くの生徒がボランティア部に入った。"
+ },
+ "4": {
+  "example": "Dozens of birds were sitting on the electric wire.",
+  "exampleJa": "何十羽もの鳥が電線にとまっていた。"
+ },
+ "6": {
+  "example": "She spent a great deal of time on her science project.",
+  "exampleJa": "彼女は理科の研究にたくさんの時間を使った。"
+ },
+ "9": {
+  "example": "Wide pants are in fashion among students this year.",
+  "exampleJa": "今年は幅の広いズボンが学生の間で流行している。"
+ },
+ "14": {
+  "example": "Were you aware of the change in the test schedule?",
+  "exampleJa": "テストの日程の変更に気づいていましたか。"
+ },
+ "15": {
+  "example": "This chair is made of wood from local trees.",
+  "exampleJa": "このいすは地元の木の木材でできている。"
+ },
+ "16": {
+  "example": "He is capable of running ten kilometers without stopping.",
+  "exampleJa": "彼は止まらずに10キロ走ることができる。"
+ },
+ "17": {
+  "example": "My brother is afraid of big dogs.",
+  "exampleJa": "弟は大きな犬を怖がっている。"
+ },
+ "18": {
+  "example": "I am sure of her success in the contest.",
+  "exampleJa": "私は彼女がコンテストで成功すると確信している。"
+ },
+ "19": {
+  "example": "Our class is composed of twenty boys and fifteen girls.",
+  "exampleJa": "私たちのクラスは男子20人と女子15人から構成されている。"
+ },
+ "20": {
+  "example": "This movie is based on a true story.",
+  "exampleJa": "この映画は実話に基づいている。"
+ },
+ "21": {
+  "example": "My opinion is different from yours.",
+  "exampleJa": "私の意見はあなたの意見とは違っている。"
+ },
+ "22": {
+  "example": "Ken was absent from school yesterday because of a cold.",
+  "exampleJa": "ケンは昨日、風邪で学校を欠席した。"
+ },
+ "23": {
+  "example": "My uncle is engaged in farming in the countryside.",
+  "exampleJa": "おじは田舎で農業に従事している。"
+ },
+ "24": {
+  "example": "The captain is responsible for the team's equipment.",
+  "exampleJa": "キャプテンはチームの道具に責任がある。"
+ },
+ "25": {
+  "example": "My aunt is married to a science teacher.",
+  "exampleJa": "おばは理科の先生と結婚している。"
+ },
+ "26": {
+  "example": "I am satisfied with my score on the math test.",
+  "exampleJa": "私は数学のテストの点数に満足している。"
+ },
+ "27": {
+  "example": "Children are curious about everything around them.",
+  "exampleJa": "子どもたちは身の回りのあらゆることを知りたがる。"
+ },
+ "28": {
+  "example": "His family is well off and lives in a large house.",
+  "exampleJa": "彼の家族は裕福で、大きな家に住んでいる。"
+ },
+ "30": {
+  "example": "I am willing to help you with your homework.",
+  "exampleJa": "あなたの宿題を手伝ってもかまわないよ。"
+ },
+ "31": {
+  "example": "The train is about to leave the station.",
+  "exampleJa": "電車が今にも駅を出発しようとしている。"
+ },
+ "34": {
+  "example": "Lack of sleep contributed to his poor test results.",
+  "exampleJa": "睡眠不足が彼のテストの悪い結果の一因となった。"
+ },
+ "35": {
+  "example": "The cost of our class party amounted to 20,000 yen.",
+  "exampleJa": "クラスのパーティーの費用は総計2万円になった。"
+ },
+ "36": {
+  "example": "Many students depend on their parents for pocket money.",
+  "exampleJa": "多くの生徒はおこづかいを親に頼っている。"
+ },
+ "37": {
+  "example": "Turn off your phone and focus on your studies.",
+  "exampleJa": "スマホを切って勉強に集中しなさい。"
+ },
+ "39": {
+  "example": "We got on the bus in front of the station.",
+  "exampleJa": "私たちは駅前でバスに乗った。"
+ },
+ "46": {
+  "example": "The test consists of fifty questions.",
+  "exampleJa": "そのテストは50問から成り立っている。"
+ },
+ "47": {
+  "example": "She complained of a headache and went to the nurse's office.",
+  "exampleJa": "彼女は頭痛を訴えて保健室へ行った。"
+ },
+ "48": {
+  "example": "Many people died of the disease in the old days.",
+  "exampleJa": "昔は多くの人がその病気で死んだ。"
+ },
+ "51": {
+  "example": "My sister graduated from high school last spring.",
+  "exampleJa": "姉は去年の春に高校を卒業した。"
+ },
+ "52": {
+  "example": "Japanese school life differs from school life in America.",
+  "exampleJa": "日本の学校生活はアメリカの学校生活と異なる。"
+ },
+ "54": {
+  "example": "I was glad to hear from my old friend last week.",
+  "exampleJa": "先週、旧友から便りがあってうれしかった。"
+ },
+ "55": {
+  "example": "Do you believe in ghosts?",
+  "exampleJa": "あなたは幽霊の存在を信じますか。"
+ },
+ "58": {
+  "example": "This lake abounds in fish and birds.",
+  "exampleJa": "この湖は魚や鳥に富んでいる。"
+ },
+ "59": {
+  "example": "He doesn't care about what other people think.",
+  "exampleJa": "彼は他人がどう思うかを気にかけない。"
+ },
+ "60": {
+  "example": "The new rule brought about big changes in our school.",
+  "exampleJa": "新しい規則は私たちの学校に大きな変化を引き起こした。"
+ },
+ "61": {
+  "example": "Our teacher dealt with the problem quickly and calmly.",
+  "exampleJa": "先生はその問題を素早く冷静に処理した。"
+ },
+ "62": {
+  "example": "The train went through a long tunnel.",
+  "exampleJa": "電車は長いトンネルを通過した。"
+ },
+ "63": {
+  "example": "Don't give up your dream so easily.",
+  "exampleJa": "そんなに簡単に夢をあきらめてはいけない。"
+ },
+ "64": {
+  "example": "I want to be a pilot when I grow up.",
+  "exampleJa": "大人になったらパイロットになりたい。"
+ },
+ "68": {
+  "example": "I need to brush up on my English before the trip.",
+  "exampleJa": "旅行の前に英語をやり直して磨きをかける必要がある。"
+ },
+ "69": {
+  "example": "I finally found out why the computer was so slow.",
+  "exampleJa": "私はパソコンがとても遅い理由をついに見つけ出した。"
+ },
+ "70": {
+  "example": "The students carried out the plan for the school festival.",
+  "exampleJa": "生徒たちは文化祭の計画を実行した。"
+ },
+ "72": {
+  "example": "I couldn't figure out the meaning of this sentence.",
+  "exampleJa": "私はこの文の意味を理解できなかった。"
+ },
+ "74": {
+  "example": "Please fill out this form with a black pen.",
+  "exampleJa": "黒のペンでこの用紙に書き込んでください。"
+ },
+ "82": {
+  "example": "He is getting along well in his new city.",
+  "exampleJa": "彼は新しい町でうまく暮らしている。"
+ },
+ "83": {
+  "example": "Let's get together at the park after school.",
+  "exampleJa": "放課後、公園に集まろう。"
+ },
+ "84": {
+  "example": "The mother tried to calm down the crying baby.",
+  "exampleJa": "母親は泣いている赤ちゃんを落ち着かせようとした。"
+ },
+ "97": {
+  "example": "We got lost in the big shopping mall.",
+  "exampleJa": "私たちは大きなショッピングモールで道に迷った。"
+ },
+ "99": {
+  "example": "My father took a week off to travel with us.",
+  "exampleJa": "父は私たちと旅行するために1週間休みをとった。"
+ },
+ "103": {
+  "example": "If you get lost, ask for help at the station.",
+  "exampleJa": "道に迷ったら、駅で助けを求めなさい。"
+ },
+ "104": {
+  "example": "I want to get rid of the old boxes in my room.",
+  "exampleJa": "部屋の古い箱を取り除きたい。"
+ },
+ "105": {
+  "example": "She fell in love with Kyoto on her first visit.",
+  "exampleJa": "彼女は初めて訪れたときに京都を大好きになった。"
+ },
+ "107": {
+  "example": "You had better go to bed early tonight.",
+  "exampleJa": "今夜は早く寝たほうがいい。"
+ },
+ "114": {
+  "example": "Many people associate summer with fireworks.",
+  "exampleJa": "多くの人は夏を花火と結びつけて考える。"
+ },
+ "118": {
+  "example": "My grandmother came all the way from Hokkaido to see me.",
+  "exampleJa": "祖母は私に会うためにはるばる北海道から来た。"
+ },
+ "119": {
+  "example": "We bought apples, bananas, oranges, and so on.",
+  "exampleJa": "私たちはリンゴ、バナナ、オレンジなどを買った。"
+ },
+ "120": {
+  "example": "He studied very hard, and yet he failed the test.",
+  "exampleJa": "彼はとても熱心に勉強した。それにも関わらず、テストに落ちた。"
+ },
+ "121": {
+  "example": "Please answer the questions as quickly as possible.",
+  "exampleJa": "できる限り速く質問に答えてください。"
+ },
+ "122": {
+  "example": "As a result of practice, she won the speech contest.",
+  "exampleJa": "練習の結果として、彼女はスピーチコンテストで優勝した。"
+ },
+ "129": {
+  "example": "Come here at once, please.",
+  "exampleJa": "すぐにこちらへ来てください。"
+ },
+ "130": {
+  "example": "I didn't understand his joke at all.",
+  "exampleJa": "私は彼の冗談がまったく分からなかった。"
+ },
+ "132": {
+  "example": "The teacher chose five students at random.",
+  "exampleJa": "先生は無作為に5人の生徒を選んだ。"
+ },
+ "135": {
+  "example": "Between you and me, I don't like this song very much.",
+  "exampleJa": "ここだけの話だが、私はこの歌があまり好きではない。"
+ },
+ "137": {
+  "example": "I took my sister's umbrella by mistake.",
+  "exampleJa": "私は間違って妹の傘を持っていった。"
+ },
+ "140": {
+  "example": "My English is far from perfect.",
+  "exampleJa": "私の英語は完璧からほど遠い。"
+ },
+ "142": {
+  "example": "I like sports, for example, soccer and tennis.",
+  "exampleJa": "私はスポーツ、例えばサッカーやテニスが好きだ。"
+ },
+ "145": {
+  "example": "In addition to English, she studies Chinese on weekends.",
+  "exampleJa": "英語に加えて、彼女は週末に中国語を勉強している。"
+ },
+ "146": {
+  "example": "It may rain, but in any case we will play soccer.",
+  "exampleJa": "雨が降るかもしれないが、とにかく私たちはサッカーをする。"
+ },
+ "150": {
+  "example": "He is my mother's brother; in other words, he is my uncle.",
+  "exampleJa": "彼は母の兄弟だ。言い換えれば、私のおじだ。"
+ },
+ "163": {
+  "example": "These days, many students study with tablets.",
+  "exampleJa": "近頃は、多くの生徒がタブレットで勉強している。"
+ },
+ "164": {
+  "example": "According to the weather report, it will snow tomorrow.",
+  "exampleJa": "天気予報によれば、明日は雪が降るそうだ。"
+ },
+ "167": {
+  "example": "In spite of the rain, the game was not canceled.",
+  "exampleJa": "雨にもかかわらず、試合は中止されなかった。"
+ },
+ "168": {
+  "example": "Toys were lying all over the floor.",
+  "exampleJa": "おもちゃが床の至る所に散らばっていた。"
+ },
+ "169": {
+  "example": "Apart from math, I also enjoy science.",
+  "exampleJa": "数学のほかに、私は理科も好きだ。"
+ },
+ "170": {
+  "example": "Aside from a few mistakes, your essay is very good.",
+  "exampleJa": "いくつかの間違いを除いては、あなたの作文はとても良い。"
+ },
+ "171": {
+  "example": "We arrived at the stadium ahead of the other fans.",
+  "exampleJa": "私たちはほかのファンより先に競技場に着いた。"
+ },
+ "172": {
+  "example": "The birds flew south in search of warmer weather.",
+  "exampleJa": "鳥たちはより暖かい気候を求めて南へ飛んでいった。"
+ },
+ "173": {
+  "example": "The students are practicing hard in preparation for the concert.",
+  "exampleJa": "生徒たちはコンサートの準備中で、熱心に練習している。"
+ },
+ "178": {
+  "example": "He talks as if he knew everything about cars.",
+  "exampleJa": "彼はまるで車のことを何でも知っているかのように話す。"
+ },
+ "179": {
+  "example": "As soon as I got home, it started to rain.",
+  "exampleJa": "私が家に着くやいなや、雨が降り始めた。"
+ },
+ "181": {
+  "example": "She was brought up by her grandparents in the country.",
+  "exampleJa": "彼女は田舎で祖父母に育てられた。"
+ },
+ "182": {
+  "example": "The picnic was called off because of the storm.",
+  "exampleJa": "嵐のためにピクニックは中止された。"
+ },
+ "183": {
+  "example": "Please carry on with your work while I'm away.",
+  "exampleJa": "私がいない間も作業を続けてください。"
+ },
+ "185": {
+  "example": "Concert tickets are hard to come by these days.",
+  "exampleJa": "近頃はコンサートのチケットを手に入れるのが難しい。"
+ },
+ "186": {
+  "example": "She came up with a good idea for the class event.",
+  "exampleJa": "彼女はクラスの行事の良いアイデアを思いついた。"
+ },
+ "187": {
+  "example": "Our school did away with the old uniform rule.",
+  "exampleJa": "私たちの学校は古い制服の規則を廃止した。"
+ },
+ "188": {
+  "example": "My brother always finds fault with my cooking.",
+  "exampleJa": "兄はいつも私の料理にけちをつける。"
+ },
+ "190": {
+  "example": "Please hand in your reports by Friday.",
+  "exampleJa": "金曜日までにレポートを提出してください。"
+ },
+ "203": {
+  "example": "I sent a birthday card along with a small present.",
+  "exampleJa": "私は小さなプレゼントと一緒に誕生日カードを送った。"
+ },
+ "204": {
+  "example": "The teacher called my parents in connection with my grades.",
+  "exampleJa": "先生は私の成績に関連して両親に電話をした。"
+ },
+ "208": {
+  "example": "Above all, you should take care of your health.",
+  "exampleJa": "とりわけ、健康に気をつけるべきだ。"
+ },
+ "211": {
+  "example": "As a rule, I get up at six on weekdays.",
+  "exampleJa": "普通は、私は平日6時に起きる。"
+ },
+ "213": {
+  "example": "Before long, the snow stopped and the sun came out.",
+  "exampleJa": "間もなく雪がやみ、太陽が出てきた。"
+ },
+ "219": {
+  "example": "There are thirty-five students in all in my class.",
+  "exampleJa": "私のクラスには全部で35人の生徒がいる。"
+ },
+ "220": {
+  "example": "I like fruit, and strawberries in particular.",
+  "exampleJa": "私は果物が好きで、特にイチゴが好きだ。"
+ },
+ "225": {
+  "example": "My parents agreed to my plan to study abroad.",
+  "exampleJa": "両親は私の留学の計画に同意した。"
+ },
+ "226": {
+  "example": "I agree with you about the new club rules.",
+  "exampleJa": "新しい部活の規則について、私はあなたに同意する。"
+ },
+ "227": {
+  "example": "My brother applied for a part-time job at a bakery.",
+  "exampleJa": "兄はパン屋のアルバイトを申し込んだ。"
+ },
+ "228": {
+  "example": "This rule applies to all students in the school.",
+  "exampleJa": "この規則は学校の全生徒に当てはまる。"
+ },
+ "231": {
+  "example": "I ran fast to catch up with my friends.",
+  "exampleJa": "私は友だちに追いつくために速く走った。"
+ },
+ "236": {
+  "example": "The numbers on the map correspond to the pictures below.",
+  "exampleJa": "地図上の数字は下の写真に一致している。"
+ },
+ "237": {
+  "example": "I correspond with a pen pal in Canada.",
+  "exampleJa": "私はカナダのペンフレンドと文通している。"
+ },
+ "238": {
+  "example": "While taking a bath, he hit on a great idea.",
+  "exampleJa": "入浴中に、彼はすばらしい考えを思いついた。"
+ },
+ "240": {
+  "example": "It suddenly dawned on me that I had left my key at home.",
+  "exampleJa": "鍵を家に置いてきたことが突然私にわかり始めた。"
+ },
+ "245": {
+  "example": "My mother is concerned about my health.",
+  "exampleJa": "母は私の健康を心配している。"
+ },
+ "246": {
+  "example": "This book is concerned with the history of our town.",
+  "exampleJa": "この本は私たちの町の歴史に関係している。"
+ },
+ "247": {
+  "example": "This drink is free from sugar.",
+  "exampleJa": "この飲み物には砂糖がない。"
+ },
+ "248": {
+  "example": "Students are free to use the library after school.",
+  "exampleJa": "生徒は放課後、自由に図書館を使うことができる。"
+ },
+ "249": {
+  "example": "This song is familiar to most Japanese people.",
+  "exampleJa": "この歌はほとんどの日本人によく知られている。"
+ },
+ "250": {
+  "example": "She is familiar with the streets of this town.",
+  "exampleJa": "彼女はこの町の通りをよく知っている。"
+ },
+ "251": {
+  "example": "The same is true of students in other countries.",
+  "exampleJa": "同じことはほかの国の生徒にも当てはまる。"
+ },
+ "252": {
+  "example": "He was always true to his promise.",
+  "exampleJa": "彼はいつも自分の約束に忠実であった。"
+ },
+ "253": {
+  "example": "I was tired from the long walk.",
+  "exampleJa": "私は長い散歩で疲れた。"
+ },
+ "254": {
+  "example": "I'm tired of eating the same food every day.",
+  "exampleJa": "毎日同じものを食べることに飽きた。"
+ },
+ "255": {
+  "example": "This train is bound for Tokyo.",
+  "exampleJa": "この電車は東京行きである。"
+ },
+ "257": {
+  "example": "She is anxious about her entrance exam results.",
+  "exampleJa": "彼女は入試の結果を心配している。"
+ },
+ "258": {
+  "example": "The children are anxious to see the new panda.",
+  "exampleJa": "子どもたちは新しいパンダを見たがっている。"
+ },
+ "259": {
+  "example": "This park will be loved in the years to come.",
+  "exampleJa": "この公園は将来の年月にわたって愛されるだろう。"
+ },
+ "260": {
+  "example": "There are only two days to go until summer vacation.",
+  "exampleJa": "夏休みまであと2日しかない。"
+ },
+ "261": {
+  "example": "The test was anything but easy.",
+  "exampleJa": "そのテストは全然簡単ではなかった。"
+ },
+ "267": {
+  "example": "She left an hour ago, so she should be home by now.",
+  "exampleJa": "彼女は1時間前に出たので、今頃は家にいるはずだ。"
+ },
+ "268": {
+  "example": "That's all for now, class.",
+  "exampleJa": "皆さん、今のところはここまでです。"
+ },
+ "274": {
+  "example": "Do you have a pen, by any chance?",
+  "exampleJa": "もしかして、ペンを持っていますか。"
+ },
+ "287": {
+  "example": "Can you distinguish a crow from a raven?",
+  "exampleJa": "あなたはハシボソガラスをワタリガラスと区別できますか。"
+ },
+ "291": {
+  "example": "He worked extra hours to compensate for his mistake.",
+  "exampleJa": "彼はミスの埋め合わせをするために残業した。"
+ },
+ "293": {
+  "example": "She cares for her sick grandmother after school.",
+  "exampleJa": "彼女は放課後、病気の祖母の世話をしている。"
+ },
+ "297": {
+  "example": "Happiness consists in being satisfied with what you have.",
+  "exampleJa": "幸福は持っているものに満足することにある。"
+ },
+ "299": {
+  "example": "My father finally gave in and bought me a new phone.",
+  "exampleJa": "父はついに屈服して、私に新しいスマホを買ってくれた。"
+ },
+ "300": {
+  "example": "Drivers must give way to people crossing the street.",
+  "exampleJa": "運転手は道路を渡る人に道を譲らなければならない。"
+ },
+ "303": {
+  "example": "The wet shirt clung to his back.",
+  "exampleJa": "ぬれたシャツが彼の背中にくっついた。"
+ },
+ "305": {
+  "example": "You can count on me to help with the festival.",
+  "exampleJa": "文化祭の手伝いは私に頼っていいよ。"
+ },
+ "309": {
+  "example": "He handed over the class notes to his friend.",
+  "exampleJa": "彼は授業のノートを友だちに手渡した。"
+ },
+ "311": {
+  "example": "This temple dates back to the eighth century.",
+  "exampleJa": "この寺は8世紀にさかのぼる。"
+ },
+ "312": {
+  "example": "The old bridge dates from the Edo period.",
+  "exampleJa": "その古い橋は江戸時代から始まる。"
+ },
+ "317": {
+  "example": "The police held back the crowd at the gate.",
+  "exampleJa": "警察は門のところで群衆を制止した。"
+ },
+ "319": {
+  "example": "I felt sorry for the boy who lost his dog.",
+  "exampleJa": "私は犬をなくした少年を気の毒に思った。"
+ },
+ "326": {
+  "example": "Water is essential to all living things.",
+  "exampleJa": "水はすべての生き物にとって不可欠である。"
+ },
+ "327": {
+  "example": "A dictionary is indispensable to language learners.",
+  "exampleJa": "辞書は語学の学習者にとって不可欠である。"
+ },
+ "328": {
+  "example": "One kilometer is equal to one thousand meters.",
+  "exampleJa": "1キロメートルは1000メートルに等しい。"
+ },
+ "329": {
+  "example": "One dozen is equivalent to twelve.",
+  "exampleJa": "1ダースは12に等しい。"
+ },
+ "330": {
+  "example": "We are apt to forget new words quickly.",
+  "exampleJa": "私たちは新しい単語をすぐに忘れがちである。"
+ },
+ "339": {
+  "example": "I'm very busy with my homework at the moment.",
+  "exampleJa": "現在は宿題でとても忙しい。"
+ },
+ "340": {
+  "example": "In a word, the trip was a great success.",
+  "exampleJa": "要するに、その旅行は大成功だった。"
+ },
+ "342": {
+  "example": "Generally speaking, girls like this kind of story.",
+  "exampleJa": "一般的に言えば、女の子はこの種の物語が好きだ。"
+ },
+ "344": {
+  "example": "All in all, it was a good school year.",
+  "exampleJa": "全体的には、良い一年だった。"
+ },
+ "347": {
+  "example": "We must win the next game at all costs.",
+  "exampleJa": "私たちはぜひとも次の試合に勝たなければならない。"
+ },
+ "349": {
+  "example": "Our coach is, as it were, a second father to us.",
+  "exampleJa": "私たちのコーチは、いわば私たちの第二の父親だ。"
+ },
+ "351": {
+  "example": "For my part, I'd rather stay home this weekend.",
+  "exampleJa": "私としては、今週末は家にいたい。"
+ },
+ "353": {
+  "example": "For the present, we will practice in the gym.",
+  "exampleJa": "当分の間は、体育館で練習します。"
+ },
+ "355": {
+  "example": "Keep your dictionary close at hand while you study.",
+  "exampleJa": "勉強中は辞書をすぐ近くに置いておきなさい。"
+ },
+ "357": {
+  "example": "For all his efforts, he couldn't finish the race.",
+  "exampleJa": "努力にもかかわらず、彼はレースを完走できなかった。"
+ },
+ "359": {
+  "example": "As for me, I prefer tea to coffee.",
+  "exampleJa": "私について言えば、コーヒーより紅茶が好きだ。"
+ },
+ "360": {
+  "example": "We have no information as to the date of the event.",
+  "exampleJa": "行事の日付に関しては何も情報がない。"
+ },
+ "363": {
+  "example": "Japan is dependent on other countries for oil.",
+  "exampleJa": "日本は石油をほかの国に依存している。"
+ },
+ "364": {
+  "example": "My brother is now independent of our parents.",
+  "exampleJa": "兄は今では両親から独立している。"
+ },
+ "365": {
+  "example": "Keep your desk in order before the class starts.",
+  "exampleJa": "授業が始まる前に机を整頓しておきなさい。"
+ },
+ "369": {
+  "example": "I'm so thirsty; I could do with a cold drink.",
+  "exampleJa": "とてものどが渇いた。冷たい飲み物があればありがたい。"
+ },
+ "370": {
+  "example": "I can't do without my glasses when I read.",
+  "exampleJa": "本を読むとき、私は眼鏡なしですますことができない。"
+ },
+ "375": {
+  "example": "The city acted on the traffic problem near the school.",
+  "exampleJa": "市は学校近くの交通問題に取り組んだ。"
+ },
+ "376": {
+  "example": "Someone broke in and took the money last night.",
+  "exampleJa": "昨夜、誰かが押し入ってお金を盗んだ。"
+ },
+ "378": {
+  "example": "The ice began to break up in the spring sun.",
+  "exampleJa": "春の日差しで氷がばらばらになり始めた。"
+ },
+ "379": {
+  "example": "This job calls for a lot of patience.",
+  "exampleJa": "この仕事には多くの忍耐を必要とする。"
+ },
+ "380": {
+  "example": "We called on our teacher during the summer vacation.",
+  "exampleJa": "私たちは夏休み中に先生を訪問した。"
+ },
+ "381": {
+  "example": "I came across an old photo while cleaning my room.",
+  "exampleJa": "部屋を掃除していて古い写真を偶然見つけた。"
+ },
+ "382": {
+  "example": "The total bill came to 5,000 yen.",
+  "exampleJa": "請求額の合計は5000円に達した。"
+ },
+ "383": {
+  "example": "The teacher gave out the test papers to the class.",
+  "exampleJa": "先生はクラスにテスト用紙を配った。"
+ },
+ "384": {
+  "example": "Three years went by quickly after I entered high school.",
+  "exampleJa": "高校に入ってから3年がすぐにたった。"
+ },
+ "386": {
+  "example": "The meeting went on for two hours.",
+  "exampleJa": "会議は2時間続いた。"
+ },
+ "388": {
+  "example": "Please go over your answers before you hand them in.",
+  "exampleJa": "提出する前に答えに詳細に目を通してください。"
+ },
+ "389": {
+  "example": "I went with my cousin to the summer festival.",
+  "exampleJa": "私はいとこと一緒に夏祭りに行った。"
+ },
+ "390": {
+  "example": "He held out his hand to help me stand up.",
+  "exampleJa": "彼は私が立ち上がるのを助けようと手を差し出した。"
+ },
+ "391": {
+  "example": "She held up her new trophy for everyone to see.",
+  "exampleJa": "彼女はみんなに見えるように新しいトロフィーを持ち上げた。"
+ },
+ "412": {
+  "example": "The train delay was due to heavy snow.",
+  "exampleJa": "電車の遅れは大雪のためであった。"
+ },
+ "416": {
+  "example": "The work is all but finished.",
+  "exampleJa": "その作業は終わったも同然だ。"
+ },
+ "420": {
+  "example": "We flew to London by way of Dubai.",
+  "exampleJa": "私たちはドバイ経由でロンドンへ飛んだ。"
+ },
+ "421": {
+  "example": "The bad weather added to our troubles on the trip.",
+  "exampleJa": "悪天候が旅行中の私たちの困難を増やした。"
+ },
+ "422": {
+  "example": "It took me a month to adapt to my new school.",
+  "exampleJa": "新しい学校に慣れるのに1か月かかった。"
+ },
+ "424": {
+  "example": "He admitted to breaking the window.",
+  "exampleJa": "彼は窓を割ったことを認めた。"
+ },
+ "425": {
+  "example": "All students must conform to the school rules.",
+  "exampleJa": "全生徒は校則に従わなければならない。"
+ },
+ "428": {
+  "example": "We got to the station just before the train left.",
+  "exampleJa": "私たちは電車が出る直前に駅に到着した。"
+ },
+ "429": {
+  "example": "The team adhered to the coach's training plan.",
+  "exampleJa": "チームはコーチの練習計画に忠実に従った。"
+ },
+ "431": {
+  "example": "We decided on pizza for dinner.",
+  "exampleJa": "私たちは夕食をピザに決めた。"
+ },
+ "432": {
+  "example": "The job of cleaning the room fell on me.",
+  "exampleJa": "部屋を掃除する仕事が私に降りかかった。"
+ },
+ "433": {
+  "example": "Pandas feed on bamboo leaves.",
+  "exampleJa": "パンダは竹の葉を常食にしている。"
+ },
+ "435": {
+  "example": "A thief broke into the store last night.",
+  "exampleJa": "昨夜、泥棒がその店に侵入した。"
+ },
+ "436": {
+  "example": "The two schools entered into an agreement to share the field.",
+  "exampleJa": "2つの学校はグラウンドを共有する協定を取り結んだ。"
+ },
+ "437": {
+  "example": "When she heard the news, she burst into tears.",
+  "exampleJa": "その知らせを聞いて、彼女は急に泣きだした。"
+ },
+ "438": {
+  "example": "Please dispose of your trash in the right box.",
+  "exampleJa": "ごみは正しい箱で処分してください。"
+ },
+ "439": {
+  "example": "My parents don't approve of my staying up late.",
+  "exampleJa": "両親は私が夜ふかしすることに賛成しない。"
+ },
+ "440": {
+  "example": "He often boasts of his high test scores.",
+  "exampleJa": "彼はよくテストの高得点を自慢する。"
+ },
+ "441": {
+  "example": "What will become of the old school building?",
+  "exampleJa": "古い校舎はどうなるのだろうか。"
+ },
+ "442": {
+  "example": "Many English words derive from Latin.",
+  "exampleJa": "多くの英単語はラテン語に由来する。"
+ },
+ "443": {
+  "example": "Our team is aiming at first place this year.",
+  "exampleJa": "私たちのチームは今年、優勝を目指している。"
+ },
+ "448": {
+  "example": "I don't know how to go about this science project.",
+  "exampleJa": "この理科の研究にどう取りかかればいいか分からない。"
+ },
+ "453": {
+  "example": "The sky cleared up in the afternoon.",
+  "exampleJa": "午後になって空が晴れた。"
+ },
+ "455": {
+  "example": "Cheer up! You'll do better next time.",
+  "exampleJa": "元気を出して。次はもっとうまくいくよ。"
+ },
+ "456": {
+  "example": "The old engine blew up with a loud noise.",
+  "exampleJa": "古いエンジンが大きな音を立てて爆発した。"
+ },
+ "457": {
+  "example": "I called up my friend to ask about the homework.",
+  "exampleJa": "宿題について聞くために友だちに電話をかけた。"
+ },
+ "460": {
+  "example": "I'm trying to cut down on sweets this month.",
+  "exampleJa": "今月は甘いものの量を減らそうとしている。"
+ },
+ "462": {
+  "example": "He broke down the old radio to see how it worked.",
+  "exampleJa": "彼は仕組みを知るために古いラジオを分解した。"
+ },
+ "463": {
+  "example": "This recipe has been handed down in our family.",
+  "exampleJa": "このレシピは私たちの家族に代々伝えられてきた。"
+ },
+ "465": {
+  "example": "The old barn burned down during the night.",
+  "exampleJa": "古い納屋は夜の間に全焼した。"
+ },
+ "469": {
+  "example": "Two runners dropped out of the race because of the heat.",
+  "exampleJa": "暑さのために2人の走者がレースから脱落した。"
+ },
+ "477": {
+  "example": "These flowers give off a sweet smell.",
+  "exampleJa": "これらの花は甘い香りを発する。"
+ },
+ "478": {
+  "example": "She broke off in the middle of her story.",
+  "exampleJa": "彼女は話の途中で急にやめた。"
+ },
+ "484": {
+  "example": "Don't give away the ending of the movie!",
+  "exampleJa": "映画の結末を漏らさないで。"
+ },
+ "485": {
+  "example": "Please adjust the chair to your height.",
+  "exampleJa": "いすをあなたの身長に合わせて調節してください。"
+ },
+ "486": {
+  "example": "Don't compare your grades with your brother's.",
+  "exampleJa": "自分の成績とお兄さんの成績を比較してはいけない。"
+ },
+ "489": {
+  "example": "Please attach a photo to your application form.",
+  "exampleJa": "申込用紙に写真を取りつけてください。"
+ },
+ "490": {
+  "example": "She attributed her success to hard work.",
+  "exampleJa": "彼女は自分の成功を努力の結果と考えた。"
+ },
+ "492": {
+  "example": "Please confine your speech to three minutes.",
+  "exampleJa": "スピーチを3分に限定してください。"
+ },
+ "496": {
+  "example": "The school forbids students from using phones in class.",
+  "exampleJa": "学校は生徒に授業中のスマホの使用を禁止している。"
+ },
+ "501": {
+  "example": "She blamed her brother for the broken window.",
+  "exampleJa": "彼女は割れた窓のことで弟を非難した。"
+ },
+ "507": {
+  "example": "He accused his friend of reading his diary.",
+  "exampleJa": "彼は日記を読んだことで友だちを非難した。"
+ },
+ "509": {
+  "example": "The shop assured us of the quality of the bike.",
+  "exampleJa": "店は私たちに自転車の品質を保証した。"
+ },
+ "515": {
+  "example": "We congratulated Mika on winning the speech contest.",
+  "exampleJa": "私たちはスピーチコンテストの優勝のことでミカを祝った。"
+ },
+ "528": {
+  "example": "That old house has changed hands many times.",
+  "exampleJa": "その古い家は何度も持ち主が変わった。"
+ },
+ "529": {
+  "example": "Students should have a say in the school rules.",
+  "exampleJa": "生徒は校則に発言権を持つべきだ。"
+ },
+ "530": {
+  "example": "My little brother always wants to have his own way.",
+  "exampleJa": "弟はいつも思い通りにしたがる。"
+ },
+ "538": {
+  "example": "I had difficulty finding the right answer.",
+  "exampleJa": "私は正しい答えを見つけるのが困難だった。"
+ },
+ "540": {
+  "example": "Good teachers have a great influence on students.",
+  "exampleJa": "良い先生は生徒に大きな影響を与える。"
+ },
+ "541": {
+  "example": "My sister has a liking for spicy food.",
+  "exampleJa": "姉は辛い食べ物を好む。"
+ },
+ "542": {
+  "example": "His careless words gave rise to a misunderstanding.",
+  "exampleJa": "彼の不注意な言葉が誤解を引き起こした。"
+ },
+ "543": {
+  "example": "Our cat gave birth to four kittens last night.",
+  "exampleJa": "うちの猫が昨夜4匹の子猫を産んだ。"
+ },
+ "544": {
+  "example": "We finally found our way to the hotel in the dark.",
+  "exampleJa": "私たちは暗闇の中でようやくホテルへたどり着いた。"
+ },
+ "546": {
+  "example": "Many old trees fell victim to the typhoon.",
+  "exampleJa": "多くの古い木が台風の犠牲になった。"
+ },
+ "547": {
+  "example": "I caught sight of my teacher at the station this morning.",
+  "exampleJa": "今朝、駅で先生を見かけた。"
+ },
+ "549": {
+  "example": "Your health is closely related to what you eat every day.",
+  "exampleJa": "健康は毎日食べるものと密接に関係がある。"
+ },
+ "550": {
+  "example": "My new bag is similar to the one my sister has.",
+  "exampleJa": "私の新しいかばんは姉が持っているものに似ている。"
+ },
+ "551": {
+  "example": "The train schedule is subject to change because of the snow.",
+  "exampleJa": "雪のため、列車の時刻表は変更を受けやすい。"
+ },
+ "552": {
+  "example": "This new phone is superior to the old model in many ways.",
+  "exampleJa": "この新しい携帯電話は多くの点で古い機種より優れている。"
+ },
+ "553": {
+  "example": "My skin is very sensitive to strong sunlight.",
+  "exampleJa": "私の肌は強い日差しにとても敏感である。"
+ },
+ "554": {
+  "example": "She is accustomed to getting up early for club practice.",
+  "exampleJa": "彼女は部活の練習のために早起きすることに慣れている。"
+ },
+ "555": {
+  "example": "Using your phone during the test is contrary to the rules.",
+  "exampleJa": "テスト中に携帯電話を使うことは規則に反している。"
+ },
+ "556": {
+  "example": "My brother is indifferent to fashion and wears the same shirt often.",
+  "exampleJa": "兄はファッションに無関心で、よく同じシャツを着ている。"
+ },
+ "557": {
+  "example": "Walking to school is preferable to taking the crowded bus.",
+  "exampleJa": "歩いて登校するほうが混んだバスに乗るより好ましい。"
+ },
+ "558": {
+  "example": "The coach is dedicated to helping every player improve.",
+  "exampleJa": "そのコーチは選手全員の上達を手助けすることに打ち込んでいる。"
+ },
+ "559": {
+  "example": "This kind of sweet is peculiar to our town.",
+  "exampleJa": "この種のお菓子は私たちの町に特有である。"
+ },
+ "560": {
+  "example": "I am prone to colds when the weather suddenly changes.",
+  "exampleJa": "天気が急に変わると、私は風邪をひきやすい。"
+ },
+ "561": {
+  "example": "Your answer is identical to the one in the textbook.",
+  "exampleJa": "あなたの答えは教科書の答えと同じである。"
+ },
+ "562": {
+  "example": "Many students are involved in planning the school festival.",
+  "exampleJa": "多くの生徒が文化祭の計画に携わっている。"
+ },
+ "563": {
+  "example": "He was so absorbed in his book that he missed his stop.",
+  "exampleJa": "彼は本に熱中していたので、降りる駅を乗り過ごした。"
+ },
+ "564": {
+  "example": "The report was lacking in clear examples.",
+  "exampleJa": "そのレポートは分かりやすい例に欠けていた。"
+ },
+ "565": {
+  "example": "Our science teacher is well versed in the history of space travel.",
+  "exampleJa": "理科の先生は宇宙旅行の歴史に精通している。"
+ },
+ "566": {
+  "example": "This area is abundant in fresh fruit and vegetables.",
+  "exampleJa": "この地域は新鮮な果物と野菜が豊富である。"
+ },
+ "567": {
+  "example": "I am busy with my homework tonight.",
+  "exampleJa": "今夜は宿題で忙しい。"
+ },
+ "568": {
+  "example": "This song is popular with high school students.",
+  "exampleJa": "この歌は高校生に人気がある。"
+ },
+ "569": {
+  "example": "Our classroom is equipped with a large screen.",
+  "exampleJa": "私たちの教室は大きなスクリーンを備えている。"
+ },
+ "570": {
+  "example": "She was content with her score on the math test.",
+  "exampleJa": "彼女は数学のテストの点数に満足していた。"
+ },
+ "571": {
+  "example": "The team was confronted with a serious lack of players.",
+  "exampleJa": "そのチームは深刻な選手不足に直面していた。"
+ },
+ "572": {
+  "example": "She is acquainted with the rules of many card games.",
+  "exampleJa": "彼女は多くのカードゲームのルールに精通している。"
+ },
+ "573": {
+  "example": "Being late is characteristic of him, so nobody was surprised.",
+  "exampleJa": "遅刻はいかにも彼らしいので、誰も驚かなかった。"
+ },
+ "574": {
+  "example": "Her hard work is worthy of praise.",
+  "exampleJa": "彼女の努力は称賛に値する。"
+ },
+ "575": {
+  "example": "He was ignorant of the change in the test date.",
+  "exampleJa": "彼はテストの日程変更を知らなかった。"
+ },
+ "576": {
+  "example": "Our team is confident of winning the next game.",
+  "exampleJa": "私たちのチームは次の試合での勝利を確信している。"
+ },
+ "577": {
+  "example": "You should be considerate of others on the crowded train.",
+  "exampleJa": "混んだ電車では他人に対して思いやりを持つべきだ。"
+ },
+ "578": {
+  "example": "He admitted that he was guilty of breaking the school rules.",
+  "exampleJa": "彼は校則違反を犯していたと認めた。"
+ },
+ "579": {
+  "example": "I am convinced of the importance of reading every day.",
+  "exampleJa": "私は毎日読書をすることの大切さを確信している。"
+ },
+ "580": {
+  "example": "Our teacher is tolerant of small mistakes in speaking practice.",
+  "exampleJa": "先生はスピーキング練習での小さな間違いに対して寛大である。"
+ },
+ "581": {
+  "example": "You should be wary of messages from people you don't know.",
+  "exampleJa": "知らない人からのメッセージには用心深くあるべきだ。"
+ },
+ "582": {
+  "example": "This book is suitable for beginners in English.",
+  "exampleJa": "この本は英語の初心者に適している。"
+ },
+ "583": {
+  "example": "I am grateful to my parents for their support.",
+  "exampleJa": "私は両親の支えのことで両親に感謝している。"
+ },
+ "584": {
+  "example": "My father is very particular about his coffee.",
+  "exampleJa": "父はコーヒーについてとてもやかましい。"
+ },
+ "585": {
+  "example": "I came down with the flu the day before the trip.",
+  "exampleJa": "旅行の前日にインフルエンザにかかった。"
+ },
+ "586": {
+  "example": "Smartphones came into being only a few decades ago.",
+  "exampleJa": "スマートフォンはほんの数十年前に出現した。"
+ },
+ "588": {
+  "example": "A short walk after lunch will do you good.",
+  "exampleJa": "昼食後の短い散歩はあなたのためになるだろう。"
+ },
+ "589": {
+  "example": "Please get in touch with me when you arrive at the station.",
+  "exampleJa": "駅に着いたら私に連絡を取ってください。"
+ },
+ "590": {
+  "example": "Looking directly at the sun can make you go blind.",
+  "exampleJa": "太陽を直接見ると失明することがある。"
+ },
+ "591": {
+  "example": "I have a lot in common with my new classmate.",
+  "exampleJa": "私は新しいクラスメートと共通点を多く持っている。"
+ },
+ "598": {
+  "example": "In terms of price, this shop is the best in town.",
+  "exampleJa": "値段の観点から、この店は町でいちばんだ。"
+ },
+ "599": {
+  "example": "In contrast to his quiet brother, Ken loves talking.",
+  "exampleJa": "物静かな兄と著しく違って、ケンは話すのが大好きだ。"
+ },
+ "600": {
+  "example": "Many kinds of animals are in danger of dying out.",
+  "exampleJa": "多くの種類の動物が絶滅の危険にさらされている。"
+ },
+ "601": {
+  "example": "This old bike is in need of new tires.",
+  "exampleJa": "この古い自転車は新しいタイヤを必要としている。"
+ },
+ "602": {
+  "example": "In response to our request, the school opened the library on Saturdays.",
+  "exampleJa": "私たちの要望に応じて、学校は土曜日も図書館を開けた。"
+ },
+ "603": {
+  "example": "Most students were in favor of the new lunch menu.",
+  "exampleJa": "ほとんどの生徒が新しい給食の献立に賛成していた。"
+ },
+ "604": {
+  "example": "She kept smiling in the face of many difficulties.",
+  "exampleJa": "彼女は多くの困難に直面しても笑顔を絶やさなかった。"
+ },
+ "605": {
+  "example": "Mr. Sato is in charge of our class this year.",
+  "exampleJa": "今年は佐藤先生が私たちのクラスを担当している。"
+ },
+ "606": {
+  "example": "The price of the bag is high in relation to its quality.",
+  "exampleJa": "そのかばんの値段は品質と比べて高い。"
+ },
+ "607": {
+  "example": "You can use honey in place of sugar in this recipe.",
+  "exampleJa": "このレシピでは砂糖の代わりにはちみつを使える。"
+ },
+ "609": {
+  "example": "We held a party in honor of our retiring teacher.",
+  "exampleJa": "退職する先生に敬意を表してパーティーを開いた。"
+ },
+ "610": {
+  "example": "In light of the heavy rain, the game was put off.",
+  "exampleJa": "大雨を考慮して、試合は延期された。"
+ },
+ "611": {
+  "example": "The new building was designed in harmony with the old town.",
+  "exampleJa": "その新しい建物は古い町並みと調和するよう設計された。"
+ },
+ "612": {
+  "example": "I gave him my comic book in exchange for his game.",
+  "exampleJa": "私は彼のゲームと交換に自分の漫画本をあげた。"
+ },
+ "613": {
+  "example": "She stopped eating sweets for the sake of her health.",
+  "exampleJa": "彼女は健康のために甘いものを食べるのをやめた。"
+ },
+ "614": {
+  "example": "He spoke quietly for fear of waking the baby.",
+  "exampleJa": "彼は赤ちゃんを起こすことを恐れて小声で話した。"
+ },
+ "615": {
+  "example": "The plants died for lack of water.",
+  "exampleJa": "水が不足していたために植物は枯れた。"
+ },
+ "616": {
+  "example": "He studied all night at the expense of his health.",
+  "exampleJa": "彼は健康を犠牲にして一晩中勉強した。"
+ },
+ "617": {
+  "example": "The little girl cried at the sight of the big dog.",
+  "exampleJa": "その小さな女の子は大きな犬を見て泣いた。"
+ },
+ "618": {
+  "example": "The small boat was at the mercy of the strong waves.",
+  "exampleJa": "その小舟は強い波のなすがままになっていた。"
+ },
+ "619": {
+  "example": "I prefer reading paper books, as opposed to e-books.",
+  "exampleJa": "私は電子書籍ではなく紙の本を読むほうが好きだ。"
+ },
+ "620": {
+  "example": "We communicated by means of gestures in the foreign country.",
+  "exampleJa": "私たちはその外国で身ぶりを用いて意思を伝え合った。"
+ },
+ "621": {
+  "example": "She became captain by virtue of her hard work.",
+  "exampleJa": "彼女は努力のおかげでキャプテンになった。"
+ },
+ "625": {
+  "example": "His success was due in part to good luck.",
+  "exampleJa": "彼の成功は一部には幸運によるものだった。"
+ },
+ "627": {
+  "example": "Put the books back in place after you read them.",
+  "exampleJa": "読み終えたら本をあるべき場所に戻しなさい。"
+ },
+ "629": {
+  "example": "Nurses are in demand in many parts of Japan.",
+  "exampleJa": "看護師は日本の多くの地域で必要とされている。"
+ },
+ "631": {
+  "example": "In all likelihood, it will rain tomorrow afternoon.",
+  "exampleJa": "十中八九、明日の午後は雨が降るだろう。"
+ },
+ "632": {
+  "example": "My father is still at work, so he will be home late.",
+  "exampleJa": "父はまだ仕事中なので、帰りが遅くなる。"
+ },
+ "649": {
+  "example": "From today on, I will walk to school every morning.",
+  "exampleJa": "今日から以後は、毎朝歩いて登校するつもりだ。"
+ },
+ "650": {
+  "example": "From a student's point of view, the rule seems unfair.",
+  "exampleJa": "生徒の視点からは、その規則は不公平に思える。"
+ },
+ "651": {
+  "example": "I don't know for sure when the bus will come.",
+  "exampleJa": "バスがいつ来るのか確かにはわからない。"
+ },
+ "657": {
+  "example": "My grandfather's phone is a little behind the times.",
+  "exampleJa": "祖父の携帯電話は少し時代遅れだ。"
+ },
+ "658": {
+  "example": "The view from the mountain top was beautiful beyond description.",
+  "exampleJa": "山頂からの眺めは言葉では表現できないほど美しかった。"
+ },
+ "664": {
+  "example": "I don't have a pen, but a pencil will do.",
+  "exampleJa": "ペンはないけれど、鉛筆で用が足りる。"
+ },
+ "667": {
+  "example": "You cannot be too careful when you cross the street.",
+  "exampleJa": "道路を渡るときはいくら注意してもしすぎることはない。"
+ },
+ "669": {
+  "example": "Sleep has a lot to do with your test scores.",
+  "exampleJa": "睡眠はテストの点数と大いに関係がある。"
+ },
+ "673": {
+  "example": "I am used to taking the train to school.",
+  "exampleJa": "私は電車で通学することに慣れている。"
+ },
+ "675": {
+  "example": "I came close to missing the last train last night.",
+  "exampleJa": "昨夜はもう少しで終電に乗り遅れそうになった。"
+ },
+ "678": {
+  "example": "My mother caught me playing games instead of studying.",
+  "exampleJa": "母は私が勉強せずにゲームをしているところを見つけた。"
+ },
+ "687": {
+  "example": "As many as 500 people came to the school concert.",
+  "exampleJa": "500人もの人が学校のコンサートに来た。"
+ },
+ "688": {
+  "example": "My old bike looks as good as new after cleaning.",
+  "exampleJa": "私の古い自転車は掃除したら新品も同然に見える。"
+ },
+ "689": {
+  "example": "She is as kind as any student in our class.",
+  "exampleJa": "彼女はクラスの誰にも劣らず親切だ。"
+ },
+ "690": {
+  "example": "I like him all the better for his honesty.",
+  "exampleJa": "彼は正直なので、私はそれだけいっそう彼が好きだ。"
+ },
+ "695": {
+  "example": "\"How are you today?\" \"Couldn't be better, thanks!\"",
+  "exampleJa": "「今日の調子はどう？」「最高です、ありがとう！」"
+ },
+ "702": {
+  "example": "Every time I visit my grandmother, she makes cookies.",
+  "exampleJa": "私が祖母を訪ねるたびに、祖母はクッキーを作ってくれる。"
+ },
+ "708": {
+  "example": "As is often the case with him, he forgot his textbook.",
+  "exampleJa": "彼に関してはよくあることだが、彼は教科書を忘れた。"
+ },
+ "709": {
+  "example": "This is a cheap restaurant, as restaurants in Tokyo go.",
+  "exampleJa": "ここは東京の一般のレストランと比べると安い店だ。"
+ },
+ "710": {
+  "example": "If only I had more time to finish my homework!",
+  "exampleJa": "宿題を終わらせる時間がもっとありさえすればなあ！"
+ },
+ "711": {
+  "example": "If it were not for water, no plants could grow.",
+  "exampleJa": "もし水がなければ、植物は育たないだろう。"
+ },
+ "712": {
+  "example": "Try to cook the rice the way your grandmother does.",
+  "exampleJa": "おばあさんのやり方でご飯を炊いてみなさい。"
+ },
+ "713": {
+  "example": "I was bored to death during the long meeting.",
+  "exampleJa": "長い会議の間、私はひどく退屈した。"
+ },
+ "715": {
+  "example": "Believe it or not, our cat can open the door.",
+  "exampleJa": "まさかと思うような話だが、うちの猫はドアを開けられる。"
+ },
+ "718": {
+  "example": "Just as food feeds the body, so reading feeds the mind.",
+  "exampleJa": "ちょうど食べ物が体を養うように、読書は心を養う。"
+ },
+ "719": {
+  "example": "No wonder you are tired; you slept only three hours.",
+  "exampleJa": "疲れているのは当然だ。3時間しか寝ていないのだから。"
+ },
+ "721": {
+  "example": "Chances are that the train will be late because of snow.",
+  "exampleJa": "たぶん雪のせいで電車は遅れるだろう。"
+ },
+ "724": {
+  "example": "I had hardly left home when it started to rain.",
+  "exampleJa": "家を出るか出ないかのうちに雨が降り出した。"
+ },
+ "727": {
+  "example": "True, the test was difficult, but you did your best.",
+  "exampleJa": "確かにテストは難しかったが、あなたは全力を尽くした。"
+ },
+ "736": {
+  "example": "I have a cat and a dog; the former is quiet, the latter is noisy.",
+  "exampleJa": "私は猫と犬を飼っている。前者は静かで、後者はうるさい。"
+ },
+ "738": {
+  "example": "All you have to do is write your name here.",
+  "exampleJa": "あなたはただここに名前を書けばよい。"
+ },
+ "740": {
+  "example": "The new library is to open next month.",
+  "exampleJa": "新しい図書館は来月開館することになっている。"
+ },
+ "741": {
+  "example": "We were forced to cancel the picnic because of the rain.",
+  "exampleJa": "雨のため、私たちはやむなくピクニックを中止した。"
+ },
+ "742": {
+  "example": "We are supposed to meet at the station at nine.",
+  "exampleJa": "私たちは9時に駅で会うことになっている。"
+ },
+ "743": {
+  "example": "Nobody is to blame for the loss of the game.",
+  "exampleJa": "試合に負けたことに対して誰にも責任はない。"
+ },
+ "744": {
+  "example": "Members are entitled to a discount at this shop.",
+  "exampleJa": "会員はこの店で割引を受ける資格がある。"
+ },
+ "748": {
+  "example": "I can't afford to buy a new smartphone this year.",
+  "exampleJa": "今年は新しいスマートフォンを買う余裕がない。"
+ },
+ "749": {
+  "example": "He didn't even bother to say goodbye.",
+  "exampleJa": "彼はわざわざさよならを言うことさえしなかった。"
+ },
+ "750": {
+  "example": "The summer vacation came to an end too quickly.",
+  "exampleJa": "夏休みはあまりにも早く終わった。"
+ },
+ "751": {
+  "example": "She went so far as to call my singing terrible.",
+  "exampleJa": "彼女は私の歌をひどいと言いさえした。"
+ },
+ "752": {
+  "example": "The last bus had left, so I had no choice but to walk.",
+  "exampleJa": "最終バスが出てしまったので、歩くよりほかに仕方がなかった。"
+ },
+ "756": {
+  "example": "I couldn't bring myself to throw away my old toys.",
+  "exampleJa": "古いおもちゃを捨てる気持ちになれなかった。"
+ },
+ "759": {
+  "example": "She got up early in order to catch the first train.",
+  "exampleJa": "彼女は始発電車に乗るために早起きした。"
+ },
+ "760": {
+  "example": "This dictionary is useful in that it has many examples.",
+  "exampleJa": "この辞書は例文が多いという点で役に立つ。"
+ },
+ "761": {
+  "example": "You can stay here as long as you keep quiet.",
+  "exampleJa": "静かにしている限り、ここにいてもよい。"
+ },
+ "764": {
+  "example": "By the time we got to the stadium, the game had started.",
+  "exampleJa": "私たちが競技場に着くまでには、試合は始まっていた。"
+ },
+ "765": {
+  "example": "I overslept this morning, so I missed the bus.",
+  "exampleJa": "今朝寝坊した、その結果バスに乗り遅れた。"
+ },
+ "767": {
+  "example": "In case you need help, just call me.",
+  "exampleJa": "もし助けが必要ならば、とにかく私に電話して。"
+ },
+ "768": {
+  "example": "Given that he is only ten, his English is excellent.",
+  "exampleJa": "彼がまだ10歳であることを考慮すれば、彼の英語は素晴らしい。"
+ },
+ "769": {
+  "example": "Even as I was leaving home, the phone started ringing.",
+  "exampleJa": "まさに私が家を出ようとしたときに、電話が鳴り始めた。"
+ },
+ "774": {
+  "example": "He made a mistake, and a big one at that.",
+  "exampleJa": "彼は間違いをした、その上大きな間違いでもあった。"
+ },
+ "778": {
+  "example": "You should check out the new cafe near the station.",
+  "exampleJa": "駅の近くの新しいカフェを見てみるといいよ。"
+ },
+ "780": {
+  "example": "Please don't hang up; I'll get my mother now.",
+  "exampleJa": "電話を切らないでください。今、母を呼んできます。"
+ },
+ "781": {
+  "example": "This game looks fun, so I'll give it a try.",
+  "exampleJa": "このゲームは面白そうなので、試してみよう。"
+ },
+ "782": {
+  "example": "Could you give me a hand with these heavy boxes?",
+  "exampleJa": "この重い箱を運ぶのに手を貸してもらえますか。"
+ },
+ "783": {
+  "example": "I'm busy now, so I'll call you back later.",
+  "exampleJa": "今忙しいので、あとで折り返し電話するね。"
+ },
+ "784": {
+  "example": "I lost my notes, so I had to start from scratch.",
+  "exampleJa": "ノートをなくしたので、最初からやり直さなければならなかった。"
+ },
+ "788": {
+  "example": "The test was hard. Having said that, I enjoyed it.",
+  "exampleJa": "テストは難しかった。そうは言ったものの、楽しめた。"
+ },
+ "791": {
+  "example": "I don't understand what you are driving at.",
+  "exampleJa": "あなたが何を言うつもりなのかわからない。"
+ },
+ "793": {
+  "example": "Before you know it, summer vacation will be over.",
+  "exampleJa": "あっという間に夏休みは終わってしまうだろう。"
+ },
+ "795": {
+  "example": "It's getting dark, so let's call it a day.",
+  "exampleJa": "暗くなってきたので、今日の作業はこれで終えよう。"
+ },
+ "796": {
+  "example": "She has a good command of English and French.",
+  "exampleJa": "彼女は英語とフランス語を自由に使いこなす力がある。"
+ },
+ "800": {
+  "example": "My parents went to the polls early on Sunday morning.",
+  "exampleJa": "両親は日曜日の朝早くに投票に行った。"
+ },
+ "807": {
+  "example": "Can I have a look at your photos from the trip?",
+  "exampleJa": "旅行の写真を見てもいいですか。"
+ },
+ "810": {
+  "example": "I have no idea where I left my umbrella.",
+  "exampleJa": "傘をどこに置き忘れたのか見当がつかない。"
+ },
+ "811": {
+  "example": "I'm so thirsty; I could use a cold drink.",
+  "exampleJa": "とても喉が渇いた。冷たい飲み物があればありがたい。"
+ },
+ "812": {
+  "example": "How come you didn't come to practice yesterday?",
+  "exampleJa": "どうして昨日練習に来なかったの？"
+ },
+ "819": {
+  "example": "Please help yourself to the cookies on the table.",
+  "exampleJa": "テーブルの上のクッキーを自由に取ってください。"
+ },
+ "820": {
+  "example": "\"Is there any cake left?\" \"I'm afraid not.\"",
+  "exampleJa": "「ケーキはまだ残ってる？」「残念ながらないようです。」"
+ },
+ "822": {
+  "example": "I'm fed up with this rainy weather.",
+  "exampleJa": "この雨続きの天気にはうんざりしている。"
+ },
+ "826": {
+  "example": "Here we are. This is the museum I told you about.",
+  "exampleJa": "さあ着いた。ここが話していた博物館だよ。"
+ },
+ "827": {
+  "example": "I hit it off with my new roommate right away.",
+  "exampleJa": "新しいルームメートとすぐに意気投合した。"
+ },
+ "829": {
+  "example": "Please give my regards to your family.",
+  "exampleJa": "ご家族によろしくとお伝えください。"
+ },
+ "831": {
+  "example": "Young children are susceptible to colds in winter.",
+  "exampleJa": "幼い子どもは冬に風邪に感染しやすい。"
+ },
+ "832": {
+  "example": "His story is at odds with what his friend said.",
+  "exampleJa": "彼の話は友達が言ったことと食い違っている。"
+ },
+ "833": {
+  "example": "The club is committed to cleaning the local park every month.",
+  "exampleJa": "その部は毎月地元の公園を掃除することに献身している。"
+ },
+ "834": {
+  "example": "Online classes seem to be here to stay.",
+  "exampleJa": "オンライン授業は定着しているようだ。"
+ },
+ "835": {
+  "example": "This old printer is liable to stop working suddenly.",
+  "exampleJa": "この古いプリンターは突然動かなくなりがちである。"
+ },
+ "836": {
+  "example": "She is intent on passing the entrance exam.",
+  "exampleJa": "彼女は入学試験に合格することに懸命である。"
+ },
+ "837": {
+  "example": "I am no match for my brother at chess.",
+  "exampleJa": "チェスでは、私はとても兄にはかなわない。"
+ },
+ "838": {
+  "example": "Older people are vulnerable to the flu.",
+  "exampleJa": "高齢者はインフルエンザに弱い。"
+ },
+ "839": {
+  "example": "Students with good grades are eligible for this scholarship.",
+  "exampleJa": "成績の良い生徒はこの奨学金の資格がある。"
+ },
+ "840": {
+  "example": "This movie is worth watching more than once.",
+  "exampleJa": "この映画は2回以上見る価値がある。"
+ },
+ "841": {
+  "example": "Our team is out to win the championship this year.",
+  "exampleJa": "私たちのチームは今年の優勝を狙っている。"
+ },
+ "842": {
+  "example": "Tell me about your trip. I'm all ears.",
+  "exampleJa": "旅行の話を聞かせて。一心に耳を傾けているから。"
+ },
+ "843": {
+  "example": "She was beside herself with joy when she passed the exam.",
+  "exampleJa": "彼女は試験に合格して喜びで我を忘れた。"
+ },
+ "844": {
+  "example": "He is kind and patient, so he is cut out to be a teacher.",
+  "exampleJa": "彼は優しくて忍耐強いので、教師に向いている。"
+ },
+ "845": {
+  "example": "This hairstyle is all the rage among high school girls.",
+  "exampleJa": "この髪型は女子高生の間で大流行している。"
+ },
+ "846": {
+  "example": "Lack of sleep may account for your headaches.",
+  "exampleJa": "睡眠不足が頭痛の説明となるかもしれない。"
+ },
+ "847": {
+  "example": "The large windows allow for plenty of sunlight in the room.",
+  "exampleJa": "大きな窓が部屋にたっぷり日光を入れることを可能にしている。"
+ },
+ "850": {
+  "example": "In this contest, effort counts for more than talent.",
+  "exampleJa": "このコンテストでは、才能より努力のほうが重要性を持つ。"
+ },
+ "851": {
+  "example": "She learned to cope with stress by going for a run.",
+  "exampleJa": "彼女はランニングをすることでストレスに対処できるようになった。"
+ },
+ "852": {
+  "example": "My birthday coincides with the first day of school this year.",
+  "exampleJa": "今年は私の誕生日が始業日と同時に来る。"
+ },
+ "853": {
+  "example": "All visitors must comply with the museum's rules.",
+  "exampleJa": "訪問者は全員、博物館の規則に従わなければならない。"
+ },
+ "854": {
+  "example": "Let's dispense with the speeches and start the party.",
+  "exampleJa": "スピーチはなしですませて、パーティーを始めよう。"
+ },
+ "855": {
+  "example": "I have some homework to attend to before dinner.",
+  "exampleJa": "夕食の前に処理しなければならない宿題がある。"
+ },
+ "856": {
+  "example": "Many young players aspire to a place on the national team.",
+  "exampleJa": "多くの若い選手が代表チーム入りを熱望している。"
+ },
+ "858": {
+  "example": "My parents consented to my plan to study abroad.",
+  "exampleJa": "両親は私の留学の計画に同意した。"
+ },
+ "859": {
+  "example": "This small shop deals in used books and old maps.",
+  "exampleJa": "この小さな店は古本と古地図を取り扱っている。"
+ },
+ "862": {
+  "example": "After graduation, she embarked on a career in design.",
+  "exampleJa": "卒業後、彼女はデザインの仕事に乗り出した。"
+ },
+ "863": {
+  "example": "The speaker dwelt on the importance of good sleep.",
+  "exampleJa": "講演者は十分な睡眠の大切さを詳しく述べた。"
+ },
+ "866": {
+  "example": "The company must not discriminate against workers because of age.",
+  "exampleJa": "会社は年齢を理由に従業員を差別してはならない。"
+ },
+ "867": {
+  "example": "Every player must abide by the rules of the game.",
+  "exampleJa": "選手は全員、試合のルールに従わなければならない。"
+ },
+ "878": {
+  "example": "He copied his friend's homework, but he didn't get away with it.",
+  "exampleJa": "彼は友達の宿題を写したが、うまくごまかせなかった。"
+ },
+ "880": {
+  "example": "We hung around the shopping mall after school.",
+  "exampleJa": "私たちは放課後ショッピングモールをぶらついた。"
+ },
+ "881": {
+  "example": "Let's stop talking and get down to our homework.",
+  "exampleJa": "おしゃべりをやめて、宿題に本気で取り掛かろう。"
+ },
+ "884": {
+  "example": "He always follows through on his promises.",
+  "exampleJa": "彼はいつも約束をやり遂げる。"
+ },
+ "885": {
+  "example": "When I woke up, I found myself on the sofa.",
+  "exampleJa": "目が覚めると、私はソファーの上にいた。"
+ },
+ "892": {
+  "example": "Take hold of the rope and pull it slowly.",
+  "exampleJa": "ロープをつかんで、ゆっくり引っ張りなさい。"
+ },
+ "903": {
+  "example": "He finally came to terms with losing the final match.",
+  "exampleJa": "彼はついに決勝戦で負けたことを受け入れた。"
+ },
+ "906": {
+  "example": "A small flashlight can come in handy during a power outage.",
+  "exampleJa": "停電の時には小さな懐中電灯が役に立つことがある。"
+ },
+ "907": {
+  "example": "My score fell short of my goal by five points.",
+  "exampleJa": "私の点数は目標に5点達しなかった。"
+ },
+ "908": {
+  "example": "A kind word can go a long way to make someone happy.",
+  "exampleJa": "親切な一言は人を幸せにするのに大いに役立つことがある。"
+ },
+ "913": {
+  "example": "You need to read between the lines to understand her letter.",
+  "exampleJa": "彼女の手紙を理解するには行間を読む必要がある。"
+ },
+ "914": {
+  "example": "When Ken raised his hand, the other students followed suit.",
+  "exampleJa": "ケンが手を挙げると、他の生徒たちもそれにならった。"
+ },
+ "916": {
+  "example": "The loud music next door is getting on my nerves.",
+  "exampleJa": "隣の大きな音楽が神経にさわってきた。"
+ },
+ "917": {
+  "example": "My younger brother finally got the better of me at tennis.",
+  "exampleJa": "弟はついにテニスで私に勝った。"
+ },
+ "918": {
+  "example": "He played a joke on me, so I'll get even with him tomorrow.",
+  "exampleJa": "彼にいたずらをされたので、明日仕返しをするつもりだ。"
+ },
+ "919": {
+  "example": "Try to keep your anger in check during the discussion.",
+  "exampleJa": "話し合いの間は怒りを抑えるようにしなさい。"
+ },
+ "920": {
+  "example": "My sister has an eye for good clothes.",
+  "exampleJa": "姉は良い服を見分ける眼識がある。"
+ },
+ "921": {
+  "example": "She has had the exam on her mind all week.",
+  "exampleJa": "彼女は一週間ずっと試験のことを気にしている。"
+ },
+ "924": {
+  "example": "You shouldn't impose your ideas on other people.",
+  "exampleJa": "自分の考えを他人に押しつけるべきではない。"
+ },
+ "926": {
+  "example": "The long walk brought home to me how weak I was.",
+  "exampleJa": "長い散歩で、自分の体力のなさを痛感させられた。"
+ },
+ "927": {
+  "example": "The shop sells a variety of fruits from around the world.",
+  "exampleJa": "その店は世界中のいろいろな果物を売っている。"
+ },
+ "928": {
+  "example": "Only a handful of students came to the early practice.",
+  "exampleJa": "朝練に来たのはほんの一握りの生徒だけだった。"
+ },
+ "929": {
+  "example": "The new app has a host of useful features.",
+  "exampleJa": "その新しいアプリには多数の便利な機能がある。"
+ },
+ "933": {
+  "example": "The market sells all manner of goods, from food to toys.",
+  "exampleJa": "その市場では食べ物からおもちゃまで、あらゆる種類の品物が売られている。"
+ },
+ "935": {
+  "example": "The point at issue is how to spend the club budget.",
+  "exampleJa": "問題の点は部の予算をどう使うかだ。"
+ },
+ "938": {
+  "example": "Is there enough pizza to go around?",
+  "exampleJa": "全員に行き渡るだけのピザはありますか。"
+ },
+ "939": {
+  "example": "I go swimming every other day to stay healthy.",
+  "exampleJa": "健康を保つために1日おきに泳ぎに行く。"
+ },
+ "940": {
+  "example": "My grandmother told me to save some money for a rainy day.",
+  "exampleJa": "祖母は、まさかの時に備えてお金を貯めておくよう私に言った。"
+ },
+ "941": {
+  "example": "He began studying in earnest for the entrance exam.",
+  "exampleJa": "彼は入試に向けて本格的に勉強し始めた。"
+ },
+ "942": {
+  "example": "She runs every morning to stay in good shape.",
+  "exampleJa": "彼女は調子を良く保つために毎朝走っている。"
+ },
+ "943": {
+  "example": "Nobody knows what is in store for us in the future.",
+  "exampleJa": "将来私たちの身に何が降りかかろうとしているのか、誰にもわからない。"
+ },
+ "946": {
+  "example": "I want to have a room of my own someday.",
+  "exampleJa": "いつか自分自身の部屋を持ちたい。"
+ },
+ "952": {
+  "example": "Rice eaten per capita in Japan has gone down.",
+  "exampleJa": "日本の一人当たりの米の消費量は減っている。"
+ },
+ "958": {
+  "example": "Please sort the trash in accordance with the town rules.",
+  "exampleJa": "町の決まりに従ってごみを分別してください。"
+ },
+ "959": {
+  "example": "Your pay will increase in proportion to your working hours.",
+  "exampleJa": "給料は働く時間に比例して増える。"
+ },
+ "961": {
+  "example": "As of today, our club has thirty members.",
+  "exampleJa": "今日現在で、私たちの部には30人の部員がいる。"
+ },
+ "962": {
+  "example": "But for your help, I could not have finished the project.",
+  "exampleJa": "あなたの助けがなかったならば、その課題を終えられなかっただろう。"
+ },
+ "976": {
+  "example": "Please call me back at your convenience.",
+  "exampleJa": "ご都合の良いときに折り返しお電話ください。"
+ },
+ "980": {
+  "example": "Learning English now will help you down the road.",
+  "exampleJa": "今英語を学んでおくことは、将来役に立つだろう。"
+ },
+ "981": {
+  "example": "She showed a talent for music early on.",
+  "exampleJa": "彼女は早い時期から音楽の才能を見せた。"
+ },
+ "983": {
+  "example": "For all I know, he may still be asleep.",
+  "exampleJa": "よくは知らないが、たぶん彼はまだ寝ているだろう。"
+ },
+ "984": {
+  "example": "I got this T-shirt for nothing at the event.",
+  "exampleJa": "このTシャツはイベントで無料でもらった。"
+ },
+ "985": {
+  "example": "The test wasn't hard; if anything, it was too easy.",
+  "exampleJa": "テストは難しくなかった。どちらかと言えば、簡単すぎた。"
+ },
+ "987": {
+  "example": "I want to thank her in person, not by email.",
+  "exampleJa": "メールではなく、じかに彼女にお礼を言いたい。"
+ }
+}

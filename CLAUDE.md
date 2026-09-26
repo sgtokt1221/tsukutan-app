@@ -8,7 +8,7 @@
 
 - **目標設定** — 英検5級〜1級 / 高校入試（偏差値45・50・60・最難関） / 大学入試（偏差値50・60・最難関）を複数選択可。達成日とやる気レベル（そこそこ / 普通 / やる気満々）を設定
 - **語彙力チェックテスト** — レベル推定（`VocabularyCheckTest.js` → `TestResult.js`）
-- **日次学習** — 新規単語 + 復習単語のフラッシュカード（`LearningFlashcard.js` / `ReviewFlashcard.js`）
+- **日次学習** — 新規単語 + 復習単語のフラッシュカード（`StudyFlashcard.js` 1つ。モードの違いは `logic/studyMode.js` の表だけ）
 - **自由学習** — 教材別・レベル別に自分のペースで進める（進捗は別管理）
 - **AIストーリー生成** — 学習した単語を使った短編を Gemini (Vertex AI) が生成し、Cloud Translation で和訳を付与。**月1回まで**
 - **分析・予測** — 正答率推移・弱点分野・学習パターン・レベル予測・推薦（`src/logic/` 配下）
@@ -20,7 +20,7 @@
 |------|------|
 | フロント | React 19 + Create React App (`react-scripts` 5.0.1) |
 | ルーティング | react-router-dom v7（`basename="/tsukutan-app"`） |
-| UI | 素の CSS（`App.css` / `AdminDashboard.css` / `Analytics.css`）+ framer-motion + react-icons |
+| UI | 素の CSS（`App.css` / `Analytics.css`）+ framer-motion + react-icons |
 | グラフ | Chart.js + react-chartjs-2 |
 | 認証 / DB | Firebase Auth + Cloud Firestore |
 | サーバー | Cloud Functions for Firebase v2（Node 18, us-central1） |
@@ -38,16 +38,40 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `src/App.js` | ルーティング + 認証状態監視 + 目標設定画面（UI がここに直書き） |
 | `src/LoginPage.js` | ログイン |
 | `src/StudentDashboard.js` | **3,365行**。生徒側のほぼ全機能（ホーム / ストーリー / 自由学習タブ、分析セクション） |
-| `src/AdminDashboard.js` | **1,332行**。管理者。`view` state で `analytics` / `studentDetails` / `import` を切替 |
-| `src/LearningFlashcard.js` | 新規学習フラッシュカード（1,318行） |
-| `src/ReviewFlashcard.js` | 復習フラッシュカード（1,367行） |
+| `src/AdminMoved.js` | 管理者が入ったときの案内だけ。**生徒を見る場所・小テストと長文の印刷はつくばホームの管理者ポータル「つくつく」タブに一本化した**（2026-09-23。旧 AdminDashboard は削除）。あちらは `staffStudentMaterials`（`functions/lib/staffMaterials.js`：管理者＝全校舎／講師＝自校舎）で教材を読む。`importUsers` / `manageStudents` は画面から呼ばれないが、旧アカウントの片付け用に残してある |
+| `src/StudyFlashcard.js` | 単語カード（新規・復習とも。2026-09-23 に2本を1つにまとめた）。部品は `components/learning/`、指の判定は `logic/cardGestures.js`、記録の形は `logic/studyLog.js` |
+| `src/logic/studyMode.js` | モードごとの決まり（上スワイプ・外す・見出し・新規/復習の数え方）。**「復習なら」を部品に書かず、ここに足す** |
+| `src/components/onboarding/Onboarding.js` / `OnboardingScenes.js` | 初回の案内（12枚のアニメ。仕組み・ホーム・カード・えらぶ・長文・きろく）。**機能を足したらここにも1枚足す**。指の動かし方は書かない。図の日数は `reviewGaps`（実際の `nextSchedule`）から出す。中身を大きく変えたら `useOnboarding.js` の版を上げる |
+| `src/components/eiken/writing/` / `public/eiken-writing/` | 英検ライティング（3級〜準1級、本番の形式）。カンペは塾の「ライティング道場」PDFから（準1級は2級と同じ）、問題は塾オリジナル。採点は `functions/lib/writingScore.js` → Jev（TypeSafe、secret `JEV_API_KEY`）で**点数だけ**。語数・短縮形はコードで数え、サーバと画面で同じ規則（`src/logic/writingText.js`）。結果はサーバが `writingAttempts` に保存し、rules で本人は書けない。公開前の採点の確かめは `functions/scripts/eval-writing.js` |
+| `src/components/assessment/CheckTestParts.js` / `CheckTest.css` | 単語力チェックテストの見せ方（上の帯・デッキ・花火・ステージの合図）。**学習カードも同じ部品で組む**（`learning/StudyStage.css` は差分だけ）。単語帳の一覧の地図と絞り込みは `learning/WordbookOverview.js` |
+| `src/components/learning/CoachModal.js` | 学習画面の中の案内。動きの違うモードごと・単語帳を初めて開いたときにモーダルで出す（見たかは `logic/useSeenOnce.js`）。**本物のカードを自分で動かさない**（勝手に動いて見える） |
+| `src/components/learning/SwipeIntent.js` | ドラッグ中の「離すとどうなるか」の札（学習カードと単語力チェックテスト）。「決まり」は答えの判定と同じ閾値（`logic/swipeIntent.js`）。「次は何日後」は**保存済みの記録から**（`logic/useNextInterval.js`。カードの語で計算すると記録の無いカードで嘘になる） |
 | `src/VocabularyCheckTest.js` | 語彙力チェックテスト（975行） |
 | `src/GoalSetter.js` | 目標設定コンポーネント。**未使用（デッドコード）** — 実体は `App.js` 内の `/set-goal` ルート |
 | `src/PrintableQuiz.js` / `PrintableStory.js` | 印刷用ビュー |
 | `src/LevelBadge.js` / `ProgressLamp.js` | 表示用小コンポーネント |
 | `src/firebaseConfig.js` | Firebase 初期化。**gitignore 済み（リポジトリに無い）** |
 | `src/wordsData.json` | クライアント同梱の単語データ |
-| `functions/index.js` | Cloud Functions 3本（下記） |
+| `src/components/` | 分割済みのコンポーネント群（`eiken` / `learning` / `student` / `assessment` / `layout` / `onboarding` / `ui` / `brand`）。新しい画面はここに置く |
+| `functions/index.js` | Cloud Functions 4本（下記） |
+
+### 英検二次試験（面接）モード — `src/components/eiken/`
+
+素材は `public/eiken-interview/`（形式の正本は `docs/eiken-interview-format.md`）。
+
+| File | Role |
+|------|------|
+| `EikenInterview.js` | 入室から退室までを1場面ずつ進める。録音・文字起こし・結果の状態を全部ここが持つ |
+| `SpeakingPanel.js` | 録り終えたあとの聞き返しと、文字起こしの編集欄 |
+| `InterviewResultModal.js` | 通し終えたあとの結果。Chart.js のドーナツと横棒 + 場面ごとの講評 |
+| `src/logic/interviewContent.js` | 素材の読み込み、場面の組み立て（`buildBeats`）、その場面で何を録るか（`speakingFor`） |
+| `src/logic/interviewScore.js` | 結果の点。音読は読めた語の割合、質問は判定（good/partial/off-target） |
+| `src/logic/transcribeApi.js` | `transcribeSpeaking()` 文字起こし / `reviewAnswer()` 採点 |
+| `src/logic/useRecorder.js` | MediaRecorder。端末まかせの形式で録り、送るときだけ 16kHz WAV に変換 |
+
+**採点は面接の途中では出さない。** 録音を止めると自動で文字起こしだけ走り、生徒が
+文字を直せる。判定（Gemini）は「結果を見る」を押した時点で、直したあとの文に対して
+まとめて走る。ここを変えると、認識ミスがそのまま点になる。
 
 ### `src/logic/` — ビジネスロジック層
 
@@ -72,6 +96,7 @@ GitHub: `sgtokt1221/tsukutan-app`（現在のブランチは `feat/admin-portal`
 | `importUsers` | onRequest (Express) | CSV 一括インポート。**既存ユーザーを全削除してから作り直す破壊的処理** |
 | `manageStudents` | onRequest (Express) | `POST /` 生徒作成、`DELETE /:uid` 生徒削除（サブコレクション再帰削除 + Auth 削除） |
 | `generateStoryFromWords` | onRequest | AI ストーリー生成 + 和訳。月1回制限 |
+| `transcribeSpeaking` | onRequest (Express) | `POST /` 録音（16kHz WAV）→ Speech-to-Text で文字起こし。`POST /review` 文字起こし（生徒が直したあとの文）→ 読み飛ばした語 + Gemini による中身の判定 |
 
 ### ルート直下の運用スクリプト（Admin SDK, ローカル実行）
 
@@ -145,6 +170,15 @@ cd functions && npm run serve   # Functions エミュレータ
 - **CSV は Shift_JIS 前提**（`iconv.decode(buffer, 'shift_jis')` → 文字化け検出で UTF-8 フォールバック）
 - **ルート直下の `*.js` スクリプトは本番 Firestore を直接叩く。** 実行前に定数（コレクション名・ファイルパス）を必ず読むこと
 - `words_backup_*.json` が多数あるが、どれが最新の正本かはファイル名からしか判断できない。現行の正本は `words.json` と `src/wordsData.json`
+
+- 単語の重複排除・突合は表記でなく永続ID（`w_` + SHA-256）で行う。配列インデックス由来のIDは使わない。
+- レベルは `src/config/levels.json`（1-7）が正本。英検級と難易度は大小の向きが逆なので同じ変数に入れない。
+- 英検級は数字が小さいほど難しい。級の比較に `level <= target` を使わない。複数級に属する語は最も易しい級でのみ数える。
+- **`public/index.html` の `viewport-fit=cover` を外さない。** 無いと iOS は `env(safe-area-inset-*)` を**すべて 0 で返す**。CSS は15か所で安全領域を見ているので、1行落とすだけで全部が黙って効かなくなる（下タブがホーム操作バーに潜り、低く窮屈に見える）。**Safari のタブでは再現しない**——ブラウザの下バーがその場所を埋めるので、**ホーム画面から開いたときだけ**出る。寸法を直しても変化が無いときは、まずここを見る。**cover にすると上も潜る**ので `.student-header` の `env(safe-area-inset-top)` とセット。番人は `src/components/layout/tabBar.test.js`
+- **下タブの寸法は受験サポート（つくばホーム）と同じに保つ。** 同じ塾の生徒が両方使うので、並べて片方だけ低いと雑に見える。正本は `tsukuba-manager/src/exam-support/student/TabBar.tsx`（58px / 11px / 21px / gap 3px）
+
+- **`updateUserWordProgress` には生徒のペース（`userData.goal.motivationLevel`）を渡す。** 渡さないと黙って「普通」の間隔になる（2026-09-26 まで全員そうだった）。番人は `swipeIntent.test.js`
+- **単語力チェックテストの判定と語彙数は `logic/abilityEstimate.js` の「力（θ）」から出す。** 判定レベル以下を全部知っている、と数えない（7通りの数字しか出ず、低い力ほど多めに出た）。ホームの「いま N語」も `progress.assessedAbility` で同じ推定にそろえてある。割れたら1ステージ足す（`MAX_EXTRA_STAGES` / `AMBIGUITY_MARGIN`）
 
 ## 8. Current State / Known Issues
 
