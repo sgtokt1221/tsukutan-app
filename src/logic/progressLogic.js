@@ -59,7 +59,7 @@ export const updateProgressPercentage = async (userId) => {
       getDocs(collection(db, 'users', userId, 'reviewWords')),
     ]);
     const reviewWords = reviewSnapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-    const reached = reachedWordCount({ master, reviewWords, assessedLevel });
+    const reached = reachedWordCount({ master, reviewWords, assessedLevel, assessedAbility: progress.assessedAbility });
 
     // 3. パーセンテージを計算
     const percentage = achievementPercentage(reached.total, targetVocabulary);

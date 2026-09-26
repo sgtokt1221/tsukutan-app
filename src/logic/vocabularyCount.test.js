@@ -125,3 +125,27 @@ describe('levelLookup：古い Firestore の id で入っている語', () => {
     expect(levelLookup(data)({ id: 'RandomFsId', word: 'look after', partOfSpeech: '熟語', meaning: '別の意味' })).toBeNull();
   });
 });
+
+describe('力で数える（2026-09-26）', () => {
+  // eslint-disable-next-line global-require
+  const { reachedWordCount: reached } = require('./vocabularyCount');
+  // eslint-disable-next-line global-require
+  const { expectedVocabulary } = require('./abilityEstimate');
+  const master = [{ id: 'a', level: 2 }, { id: 'b', level: 4 }, { id: 'c', level: 6 }, { id: 'd', level: 6 }];
+
+  test('力があれば、結果画面と同じ推定で数える', () => {
+    const r = reached({ master, reviewWords: [], assessedLevel: 4, assessedAbility: 4 });
+    expect(r.assessed).toBe(expectedVocabulary(master, 4));
+  });
+
+  test('覚えきった語は、見込みの残りぶんだけ上乗せする（二重に数えない）', () => {
+    const base = reached({ master, reviewWords: [], assessedAbility: 4 }).total;
+    const withMastered = reached({ master, reviewWords: [{ id: 'c', status: 'mastered' }, { id: 'd', status: 'mastered' }], assessedAbility: 4 }).total;
+    expect(withMastered).toBeGreaterThan(base);
+    expect(withMastered - base).toBeLessThanOrEqual(2);
+  });
+
+  test('力が無い古い結果は、今までどおりレベル以下を全部', () => {
+    expect(reached({ master, reviewWords: [], assessedLevel: 4 }).assessed).toBe(2);
+  });
+});

@@ -176,6 +176,7 @@ cd functions && npm run serve   # Functions エミュレータ
 - **下タブの寸法は受験サポート（つくばホーム）と同じに保つ。** 同じ塾の生徒が両方使うので、並べて片方だけ低いと雑に見える。正本は `tsukuba-manager/src/exam-support/student/TabBar.tsx`（58px / 11px / 21px / gap 3px）
 
 - **`updateUserWordProgress` には生徒のペース（`userData.goal.motivationLevel`）を渡す。** 渡さないと黙って「普通」の間隔になる（2026-09-26 まで全員そうだった）。番人は `swipeIntent.test.js`
+- **単語力チェックテストの判定と語彙数は `logic/abilityEstimate.js` の「力（θ）」から出す。** 判定レベル以下を全部知っている、と数えない（7通りの数字しか出ず、低い力ほど多めに出た）。ホームの「いま N語」も `progress.assessedAbility` で同じ推定にそろえてある。割れたら1ステージ足す（`MAX_EXTRA_STAGES` / `AMBIGUITY_MARGIN`）
 
 ## 8. Current State / Known Issues
 

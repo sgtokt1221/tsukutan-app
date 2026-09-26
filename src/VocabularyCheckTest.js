@@ -23,8 +23,9 @@ import {
   questionsForStage,
   totalScore,
   computeResultLevel,
-  estimateVocabulary,
+  resultAbility,
 } from './logic/placementTestEngine';
+import { expectedVocabulary } from './logic/abilityEstimate';
 
 /**
  * めくって答えを見せてから、次のカードへ進むまでの間（ミリ秒）。
@@ -134,8 +135,10 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     setIsSaving(true);
     setSaveError(null);
 
-    // 推定語彙数は永続IDのユニーク件数から出す（計画書11.6）
-    const estimatedVocabulary = estimateVocabulary(words, finalLevel);
+    // 推定語彙数は、推定した力から「各レベルの語数 × 知っていそうな割合」を足して出す。
+    // 以前は判定レベル以下を全部知っているとして数え、7通りの数字しか出なかった
+    const ability = resultAbility(finalState);
+    const estimatedVocabulary = expectedVocabulary(words, ability);
     const answers = finalState.allAnswers;
     const averageResponseTime = answers.length > 0
       ? answers.reduce((sum, answer) => sum + (answer.responseTime || 0), 0) / answers.length
@@ -147,6 +150,8 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
         // 到達語数そのものは updateProgressPercentage が和集合で数え直す。
         // ここではテストの推定値だけを残す。
         'progress.assessedVocabulary': estimatedVocabulary,
+        // ホームの「いま N語」を同じ推定で数えるため（vocabularyCount.js の reachedWordCount）
+        'progress.assessedAbility': ability == null ? null : Math.round(ability * 100) / 100,
         'progress.lastCheckedAt': serverTimestamp(),
       });
 
@@ -222,6 +227,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     // 答える前には見られないので、見たかどうかの印は常に false
     const next = recordAnswer(engine, {
       wordId: currentWord.id,
+      wordLevel: currentWord.level,
       isCorrect,
       responseTime,
       revealed: false,
