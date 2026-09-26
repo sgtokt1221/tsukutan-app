@@ -163,7 +163,8 @@
 
 .wordbook-card__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, …) にしないと、1行に並べた長い語が列ごと押し広げる（縮める前に幅が決まってしまう） */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   min-height: calc(40px * var(--wordbook-zoom, 1));
 }
 
@@ -181,6 +182,19 @@
   /* 幅だけをコンテナにする。size にすると列の高さが中身と切り離され、
      長い語が行の高さに反映されずに切れてしまう。 */
   container-type: inline-size;
+}
+
+/* 右上の ☆ と ✓ の下から語を始める。語を欄いっぱいまで縮めて並べるので、
+   上に重ねたままだと長い語の頭が隠れる */
+.wordbook-card__side.wordbook-card__left {
+  padding-top: calc(22px * var(--wordbook-zoom, 1) + 10px + var(--space-8) * var(--wordbook-zoom, 1));
+}
+
+/* 答えの1行目だけ「隠す」の下に回り込ませる（幅は WordbookList.js の NOTCH_PX と同じ） */
+.wordbook-notch {
+  float: right;
+  width: 48px;
+  height: 26px;
 }
 
 .wordbook-card__right {
@@ -325,27 +339,53 @@
 }
 
 .wordbook-pronunciation {
-  font-size: max(9px, calc(13px * var(--wordbook-zoom, 1)));
+  font-size: max(calc(9px * var(--fit, 1)), calc(13px * var(--wordbook-zoom, 1) * var(--fit, 1)));
   color: var(--color-olive-muted);
   font-style: italic;
   font-weight: 400;
   white-space: nowrap;
 }
 
+/* 折り返す前に縮める（logic/useFitText.js が --fit を入れる）。
+   1行に並べて測り、入らなければ文字だけ小さくする。下限でも入らないときだけ is-wrap で折り返す。 */
+.wordbook-fit {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.wordbook-fit.is-wrap,
+.wordbook-fit.is-wrap * {
+  white-space: normal;
+  /* 英語は語の切れ目でだけ折る（長い語が入る大きさは useFitText が決める）。行の長さはそろえる */
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+.wordbook-word .wordbook-fit {
+  width: 100%;
+  font-size: calc(1em * var(--fit, 1));
+}
+
+.wordbook-word .wordbook-pronunciation {
+  margin-left: 0.4em;
+}
+
 /* 和→英の答え側。英単語と発音記号を単語帳の左と同じ並びにする。 */
-.wordbook-answer-word {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0 var(--space-8);
+/* 回り込み（float）を効かせるため flex にしない */
+.wordbook-answer-word .wordbook-pronunciation {
+  margin-left: 0.4em;
 }
 
 .wordbook-answer-word .wordbook-meaning {
   margin-bottom: 0;
 }
 
+
 .wordbook-meaning {
-  font-size: max(8px, calc(var(--font-size-16) * var(--wordbook-zoom, 1) * 1.5));
+  font-size: max(calc(8px * var(--fit, 1)), calc(var(--font-size-16) * var(--wordbook-zoom, 1) * 1.5 * var(--fit, 1)));
   font-weight: 600;
   color: var(--color-ink-olive);
   line-height: 1.35;
@@ -354,7 +394,7 @@
 }
 
 .wordbook-example__en {
-  font-size: max(7px, calc(var(--font-size-14) * var(--wordbook-zoom, 1) * 1.25));
+  font-size: max(calc(7px * var(--fit, 1)), calc(var(--font-size-14) * var(--wordbook-zoom, 1) * 1.25 * var(--fit, 1)));
   color: var(--color-olive-muted);
   font-style: italic;
   line-height: 1.35;
@@ -362,7 +402,7 @@
 }
 
 .wordbook-example__ja {
-  font-size: max(7px, calc(var(--font-size-12) * var(--wordbook-zoom, 1) * 1.25));
+  font-size: max(calc(7px * var(--fit, 1)), calc(var(--font-size-12) * var(--wordbook-zoom, 1) * 1.25 * var(--fit, 1)));
   color: var(--color-olive-muted);
   line-height: 1.4;
 }
