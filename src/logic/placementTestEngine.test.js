@@ -360,3 +360,38 @@ describe('同じつづりの二度出し', () => {
     }
   });
 });
+
+describe('ステージをまたいで前の問題へ戻る（2026-09-26）', () => {
+  const answerAll = (state, count, isCorrect) => {
+    let s = state;
+    for (let i = 0; i < count; i++) s = recordAnswer(s, { wordId: `w${s.allAnswers.length}`, isCorrect });
+    return s;
+  };
+
+  it('**次のステージの1問目から戻ると、前のステージの最後の問題に戻る**', () => {
+    const before = answerAll(createInitialState(), QUESTIONS_STAGE_1, true);
+    const next = completeStage(before);
+    expect(next.stage).toBe(2);
+    expect(next.targetLevel).toBe(before.targetLevel + 1);
+
+    const back = undoLastAnswer(next);
+    expect(back.stage).toBe(1);
+    expect(back.targetLevel).toBe(before.targetLevel);
+    expect(back.stageAnswers).toHaveLength(QUESTIONS_STAGE_1 - 1);
+    expect(back.allAnswers).toHaveLength(QUESTIONS_STAGE_1 - 1);
+  });
+
+  it('戻ってから答え直すと、その答えでステージを締め直す', () => {
+    const before = answerAll(createInitialState(), QUESTIONS_STAGE_1, true);
+    const back = undoLastAnswer(completeStage(before));
+    // 最後の1問を「わからない」に直すと 4/5 = 80% で、まだ上がる
+    const redone = completeStage(recordAnswer(back, { wordId: 'w4', isCorrect: false }));
+    expect(redone.stage).toBe(2);
+    expect(redone.allAnswers.at(-1).isCorrect).toBe(false);
+  });
+
+  it('最初のステージの1問目では何もしない', () => {
+    const start = createInitialState();
+    expect(undoLastAnswer(start)).toBe(start);
+  });
+});

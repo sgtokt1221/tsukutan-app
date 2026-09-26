@@ -160,9 +160,18 @@ export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revea
   };
 };
 
-/** 直前の回答を取り消す。前の問題へ戻る操作で使う（計画書11.4.8）。 */
+/**
+ * 直前の回答を取り消す。前の問題へ戻る操作で使う（計画書11.4.8）。
+ *
+ * **ステージの1問目からは、前のステージの最後の問題へ戻る**（2026-09-26）。
+ * 以前はステージの中でしか戻れず、ステージが変わると「前の問題」が効かなくなっていた。
+ * 戻るとステージの締め（難しさの上下）も取り消す——締めたときの状態を `previousStage` に
+ * 残してあるので、それに戻してから最後の1問を取り消す。
+ */
 export const undoLastAnswer = (state) => {
-  if (state.stageAnswers.length === 0) return state;
+  if (state.stageAnswers.length === 0) {
+    return state.previousStage ? undoLastAnswer(state.previousStage) : state;
+  }
   const removed = state.stageAnswers[state.stageAnswers.length - 1];
   return {
     ...state,
@@ -219,6 +228,8 @@ export const completeStage = (state) => {
     targetLevel: nextLevel,
     stageAnswers: [],
     stableStages,
+    // 締める前の状態。次のステージの1問目から「前の問題」で戻るときに使う（undoLastAnswer）
+    previousStage: state,
   };
 
   if (settled || outOfStages) {

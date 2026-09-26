@@ -96,18 +96,24 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   // 画面を離れるときは読み上げと待ちを止める
   useEffect(() => () => { clearTimers(); stopSpeaking(); }, [clearTimers]);
 
+  // ステージごとに出した問題。「前の問題」で前のステージへ戻ったとき、同じ問題を出し直す
+  const stageQuestionsRef = useRef({});
+
   // ステージが変わったときだけ問題を組み直す。
   // 依存を stage / targetLevel に絞ってあるので、回答のたびに作り直されることはない。
   useEffect(() => {
     if (words.length === 0 || engine.completed) return;
-    const picked = selectQuestions(
+    const key = `${engine.stage}:${engine.targetLevel}`;
+    const picked = stageQuestionsRef.current[key] || selectQuestions(
       words,
       engine.targetLevel,
       questionsForStage(engine.stage),
       engine.askedIds
     );
+    stageQuestionsRef.current[key] = picked;
     setQuestions(picked);
-    setQuestionIndex(0);
+    // 新しいステージなら1問目。前のステージへ戻ったなら、取り消した問題から
+    setQuestionIndex(Math.min(engine.stageAnswers.length, Math.max(0, picked.length - 1)));
     setIsFlipped(false);
     setPhase('ask');
     setLastAnswer(null);
@@ -262,10 +268,12 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   };
 
   // 前の問題へ戻る。直前の回答は取り消すが、同じ単語は再出題しない。
+  // ステージの1問目なら前のステージの最後の問題へ（位置は上の useEffect が合わせる）
+  const canGoBack = questionIndex > 0 || Boolean(engine.previousStage);
   const handlePrevQuestion = () => {
-    if (questionIndex === 0 || phase !== 'ask') return;
+    if (!canGoBack || phase !== 'ask') return;
     setEngine((prev) => undoLastAnswer(prev));
-    setQuestionIndex((prev) => Math.max(0, prev - 1));
+    if (questionIndex > 0) setQuestionIndex((prev) => prev - 1);
     setIsFlipped(false);
     setQuestionStartTime(Date.now());
     x.set(0);
@@ -431,7 +439,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
           type="button"
           className="test-nav-btn"
           onClick={handlePrevQuestion}
-          disabled={questionIndex === 0 || phase !== 'ask'}
+          disabled={!canGoBack || phase !== 'ask'}
         >
           <FaUndo /> 前の問題
         </button>
