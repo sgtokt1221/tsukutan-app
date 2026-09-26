@@ -5,7 +5,6 @@ import { db, auth } from './firebaseConfig';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { updateUserWordProgress } from './logic/reviewLogic';
 import { logStudySession } from './logic/studyLogger';
-import { initialize, speakSequence, stopSpeaking } from './logic/speechUtils';
 import { updateProgressPercentage } from './logic/progressLogic';
 import { FaUndo, FaArrowLeft } from 'react-icons/fa';
 import SwipeIntent from './components/learning/SwipeIntent';
@@ -27,10 +26,12 @@ import {
   estimateVocabulary,
 } from './logic/placementTestEngine';
 
-/** 読み終えてから次のカードへ進むまでの間（ミリ秒） */
-export const REVEAL_PAUSE_MS = 600;
-/** 読み上げが返らない端末でも止まらないための上限（ミリ秒） */
-export const REVEAL_MAX_MS = 8000;
+/**
+ * めくって答えを見せてから、次のカードへ進むまでの間（ミリ秒）。
+ * **読み上げはしない**（2026-09-26）。テストは力を測るもので、ここで覚えさせる必要は無い。
+ * 以前は英語→意味を読み終えるまで待っていて、1問ごとに数秒かかっていた。
+ */
+export const REVEAL_PAUSE_MS = 900;
 
 /**
  * 単語力チェックテスト。
@@ -84,17 +85,13 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
   const rotate = useTransform(x, [-200, 0, 200], [-25, 0, 25]);
   const cardColor = useTransform(x, [-100, 0, 100], ['#fecaca', '#ffffff', '#d9f99d']);
 
-  useEffect(() => {
-    initialize().catch((error) => console.error('Speech initialization failed:', error));
-  }, []);
-
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((id) => clearTimeout(id));
     timersRef.current = [];
   }, []);
 
-  // 画面を離れるときは読み上げと待ちを止める
-  useEffect(() => () => { clearTimers(); stopSpeaking(); }, [clearTimers]);
+  // 画面を離れるときは待ちを止める
+  useEffect(() => () => { clearTimers(); }, [clearTimers]);
 
   // ステージごとに出した問題。「前の問題」で前のステージへ戻ったとき、同じ問題を出し直す
   const stageQuestionsRef = useRef({});
@@ -182,7 +179,7 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
     }
   }, [words, onTestComplete, navigate]);
 
-  /** 読み上げが終わった（または上限が来た）。少し置いて次へ進む。**1回だけ** */
+  /** 答えを見せた。少し置いて次へ進む。**1回だけ** */
   const finishReveal = useCallback(() => {
     const pending = pendingRef.current;
     if (!pending || pending.finishing) return;
@@ -243,19 +240,13 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
       finishing: false,
     };
 
-    // めくって、英語 → 意味を読み上げる（答え合わせ）
+    // めくって答えを見せ、すぐ次へ（読み上げはしない）
     setLastAnswer(isCorrect);
     setPhase('reveal');
     setIsFlipped(true);
     x.set(0);
     y.set(0);
-    const meaning = currentWord.meaning || currentWord.japanese;
-    speakSequence(
-      [{ text: currentWord.word, lang: 'en-US' }, { text: meaning, lang: 'ja-JP' }],
-      { onDone: finishReveal },
-    );
-    // 読み上げが返らない端末（音声が出ない・止められた）でも止まらない
-    timersRef.current.push(setTimeout(finishReveal, REVEAL_MAX_MS));
+    finishReveal();
   }, [questions, questionIndex, engine, questionStartTime, isSaving, finishReveal, x, y]);
 
   const handleDragEnd = (event, info) => {
@@ -282,7 +273,6 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
 
   const handleLeave = () => {
     clearTimers();
-    stopSpeaking();
     // めくっている途中で止めた。「続ける」を選んだら、もう一度次へ進められるようにしておく
     if (pendingRef.current) pendingRef.current.finishing = false;
     /*
@@ -373,8 +363,6 @@ export default function VocabularyCheckTest({ allWords: passedWords, onTestCompl
         <p className="test-header-note">
           出題レベル: {engine.targetLevel} / 7　これまでの正答率: {accuracy}%（{answeredCount}問）
         </p>
-        <p>わかる→右へスワイプ / わからない→左へスワイプ</p>
-        <p>答えるとカードがめくれて、答えを読み上げます。</p>
       </div>
 
       <div id="flashcard-container">
