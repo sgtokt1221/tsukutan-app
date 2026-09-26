@@ -12,7 +12,7 @@ import './Onboarding.css';
  *
  * **指の動かし方はここで説明しない**（2026-09-26 に分けた）。上スワイプはモードで
  * 効いたり効かなかったりするので、まとめて説明しても覚えられない。カードを開いたときに
- * その場で、本物のカードを動かして見せる（→ components/learning/FlashcardCoach.js）。
+ * その場で、モーダルで見せる（→ components/learning/CoachModal.js）。
  *
  * 図の日数は、実際に次の日を決める計算（`reviewGaps` → `nextSchedule`）から出す。
  * 手で書くと、計算を変えたときに案内だけ嘘になる。

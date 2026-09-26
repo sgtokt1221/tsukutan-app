@@ -1,0 +1,187 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { MotionConfig, motion } from 'framer-motion';
+import { FaHandPointer } from 'react-icons/fa';
+import './Coach.css';
+
+/**
+ * 学習画面の中の案内。**そのモードを初めて開いたとき、モーダルで出す。**
+ *
+ * 以前は本物のカードを自分で動かして見せていたが、「勝手に動いているように見える」
+ * （2026-09-26）。本物のカードは生徒が触るまで動かさない。見本はモーダルの中の小さなカードで。
+ *
+ * 上スワイプは効くモード（復習・自由学習）でだけ見せる（→ logic/studyMode.js）。
+ * どのモードで出すかの記録は logic/useSeenOnce.js。
+ */
+
+const GLIDE = [0.22, 0.9, 0.24, 1];
+const STEP_MS = 2200;
+
+/** 見本のカードの動き。pose は framer-motion の animate にそのまま渡す */
+const CARD_STEPS = {
+  tap: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, flip: true, hand: { x: 0, y: 0 } },
+  good: { pose: { x: 70, y: 0, rotate: 8, backgroundColor: '#d9f99d' }, hand: { x: 70, y: 0 } },
+  again: { pose: { x: -70, y: 0, rotate: -8, backgroundColor: '#fecaca' }, hand: { x: -70, y: 0 } },
+  up: { pose: { x: 0, y: -46, rotate: 0, backgroundColor: '#fef08a' }, hand: { x: 0, y: -46 } },
+  button: { pose: { x: 0, y: 0, rotate: 0, backgroundColor: '#FFFFFF' }, button: true },
+};
+
+/** モードに合わせた手順。**文言は studyMode.js の表から** */
+export function cardCoachSteps(policy) {
+  const steps = [
+    { key: 'tap', title: 'タップ', text: '答え（意味）が出る' },
+    { key: 'good', title: '右へ払う', text: 'わかった。次に出るまでの間があく' },
+    { key: 'again', title: '左へ払う', text: 'もう一度。今日のうちにまた出る' },
+  ];
+  if (policy.swipeUp) steps.push({ key: 'up', title: '上へ払う', text: `${policy.removeShort}。${policy.removePlainHint}` });
+  steps.push({
+    key: 'button',
+    title: `「${policy.removeShort}」ボタン`,
+    text: policy.swipeUp ? '上へ払うのと同じ' : policy.removePlainHint,
+  });
+  return steps;
+}
+
+export const WORDBOOK_COACH_STEPS = [
+  { key: 'list', title: '一覧で見わたす', text: '1枚ずつめくらず、並んだまま次々に確かめられる' },
+  { key: 'reveal', title: '赤い部分をタップ', text: '答えが出る。もう一度押すと隠れる' },
+  { key: 'swipe', title: '横に払う', text: '右＝わかった／左＝もう一度。色が残るので苦手が一目で分かる' },
+  { key: 'check', title: '✓ を押す', text: '' },
+];
+
+function useStepCycle(count) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setStep((s) => (s + 1) % count), STEP_MS);
+    return () => clearInterval(id);
+  }, [count]);
+  return step;
+}
+
+function CardDemo({ stepKey, policy }) {
+  const s = CARD_STEPS[stepKey];
+  return (
+    <div className="coach-demo">
+      <div className="coach-demo__stage">
+        <motion.div
+          className="coach-demo__card"
+          animate={s.pose}
+          transition={{ duration: 0.7, ease: GLIDE }}
+        >
+          <span className="coach-demo__word">follow</span>
+          <motion.span
+            className="coach-demo__meaning"
+            animate={{ opacity: stepKey === 'tap' ? 1 : 0 }}
+            transition={{ delay: stepKey === 'tap' ? 0.5 : 0, duration: 0.25 }}
+          >
+            ～の後に続く
+          </motion.span>
+        </motion.div>
+        {s.hand && (
+          <motion.span
+            key={stepKey}
+            className="coach-demo__hand"
+            aria-hidden="true"
+            initial={{ x: 0, y: 0, scale: 1 }}
+            animate={{ x: s.hand.x, y: s.hand.y, scale: stepKey === 'tap' ? [1, 0.85, 1] : 1 }}
+            transition={{ duration: 0.7, ease: GLIDE }}
+          >
+            <FaHandPointer />
+          </motion.span>
+        )}
+      </div>
+      <div className="coach-demo__buttons" aria-hidden="true">
+        <span className="coach-demo__btn coach-demo__btn--again">もう一度</span>
+        <span className={`coach-demo__btn coach-demo__btn--remove${s.button ? ' is-coached' : ''}`}>{policy.removeShort}</span>
+        <span className="coach-demo__btn coach-demo__btn--good">わかった</span>
+      </div>
+    </div>
+  );
+}
+
+const WB_ROWS = [
+  { word: 'follow', meaning: '～の後に続く' },
+  { word: 'decide', meaning: '決める' },
+  { word: 'arrive', meaning: '着く' },
+];
+
+function WordbookDemo({ stepKey }) {
+  const revealed = stepKey !== 'list';
+  return (
+    <div className="coach-demo">
+      <ul className="coach-wb">
+        {WB_ROWS.map((row, i) => {
+          const swiped = (stepKey === 'swipe' || stepKey === 'check') && i < 2;
+          const mark = i === 0 ? 'good' : 'again';
+          return (
+            <motion.li
+              key={row.word}
+              className="coach-wb__row"
+              animate={{
+                x: stepKey === 'swipe' && i < 2 ? [0, mark === 'good' ? 24 : -24, 0] : 0,
+                backgroundColor: swiped ? (mark === 'good' ? '#effbe0' : '#fff0f0') : '#FFFFFF',
+                opacity: stepKey === 'check' && i === 2 ? 0.35 : 1,
+              }}
+              transition={{ duration: 0.8, delay: i * 0.15, ease: GLIDE }}
+            >
+              <span className="coach-wb__word">{row.word}</span>
+              <span className="coach-wb__meaning">
+                {row.meaning}
+                <motion.span
+                  className="coach-wb__sheet"
+                  animate={{ opacity: revealed && i <= (stepKey === 'reveal' ? 0 : 2) ? 0 : 1 }}
+                  transition={{ duration: 0.25, delay: 0.3 }}
+                />
+              </span>
+              <span className={`coach-wb__check${stepKey === 'check' && i === 2 ? ' is-coached' : ''}`}>✓</span>
+            </motion.li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * @param {{ kind: 'card'|'wordbook', policy: object, onClose: () => void }} props
+ */
+export default function CoachModal({ kind, policy, onClose }) {
+  const steps = kind === 'card'
+    ? cardCoachSteps(policy)
+    : WORDBOOK_COACH_STEPS.map((s) => (s.key === 'check' ? { ...s, text: `${policy.removeLabel}。${policy.removePlainHint}` } : s));
+  const step = useStepCycle(steps.length);
+  const current = steps[step];
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    buttonRef.current?.focus();
+    const onKey = (event) => { if (event.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <div className="coach-modal" role="dialog" aria-modal="true" aria-labelledby="coach-modal-title">
+        <div className="coach-modal__sheet">
+          <h2 id="coach-modal-title" className="coach-modal__title">
+            {kind === 'card' ? 'カードの使い方' : '単語帳の使い方'}
+          </h2>
+          {kind === 'card'
+            ? <CardDemo stepKey={current.key} policy={policy} />
+            : <WordbookDemo stepKey={current.key} />}
+          <ol className="coach-modal__steps">
+            {steps.map((s, i) => (
+              <li key={s.key} className={i === step ? 'coach-modal__step is-on' : 'coach-modal__step'}>
+                <strong>{s.title}</strong>
+                <span>{s.text}</span>
+              </li>
+            ))}
+          </ol>
+          <button ref={buttonRef} type="button" className="coach-modal__go" onClick={onClose}>
+            やってみる
+          </button>
+        </div>
+      </div>
+    </MotionConfig>
+  );
+}

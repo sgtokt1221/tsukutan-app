@@ -60,15 +60,12 @@ const REMOVE_TEXT = {
     label: 'もう覚えた',
     short: 'もう覚えた',
     hint: 'もう出題されなくなります',
-    // 初めてカードを開いたときの案内（真ん中のボタンを光らせて出す）
-    coach: '覚えた語は、このボタンで外す',
   },
   unbookmark: {
     label: '覚えた（毎日みるから外す）',
     // 中央のボタンは3つ並ぶので短く（読み上げと長押しの説明には label と hint を使う）
     short: '覚えた',
     hint: '毎日みる単語から外します',
-    coach: '覚えたら、このボタンで毎日みるから外す',
   },
 };
 
@@ -86,7 +83,6 @@ export function studyModePolicy(mode) {
     removeShort: text.short,
     // 上スワイプの札・案内に出す。「上にスワイプしても同じ」を付けない版
     removePlainHint: text.hint,
-    removeCoach: policy.swipeUp ? `上へ払うかわりに、このボタンでも「${text.short}」` : text.coach,
     // 上スワイプが効くモードでは、ボタンと同じだと書き添える
     removeHint: policy.swipeUp ? `${text.hint}（上にスワイプしても同じ）` : text.hint,
   };
