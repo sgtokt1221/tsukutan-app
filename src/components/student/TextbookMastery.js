@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import RetentionBar from './RetentionBar';
-import { loadMyTextbookMastery, orderForPicker, textbookBreakdown } from '../../logic/textbookMastery';
+import { coverOf, loadMyTextbookMastery, orderForPicker, textbookBreakdown } from '../../logic/textbookMastery';
 
 /**
  * きろくの「教材ごとの定着度」（2026-09-27）。教材を1つ選ぶと、その教材の語の内訳が帯で出る。
@@ -24,8 +24,14 @@ export default function TextbookMastery({ load = loadMyTextbookMastery }) {
   if (state.list.length === 0) return <p className="rec-empty">まだ教材がありません</p>;
 
   const selected = state.list.find((m) => m.id === selectedId) || state.list[0];
+  const cover = coverOf(selected.id);
   return (
     <div className="rec-mastery">
+      <div className="rec-mastery__pick">
+      {/* 表紙で「どの本か」が一目で分かるように（2026-09-27）。無い教材は枠だけ */}
+      {cover
+        ? <img className="rec-mastery__cover" src={cover} alt="" />
+        : <span className="rec-mastery__cover" aria-hidden="true" />}
       <select
         className="rec-mastery__select"
         value={selected.id}
@@ -38,6 +44,7 @@ export default function TextbookMastery({ load = loadMyTextbookMastery }) {
           </option>
         ))}
       </select>
+      </div>
       <RetentionBar breakdown={textbookBreakdown(selected)} />
     </div>
   );

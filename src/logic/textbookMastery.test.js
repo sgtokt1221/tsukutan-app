@@ -28,3 +28,12 @@ test('1冊の内訳：分母はその教材の語数。まだ＝未学習、テ�
 test('語が無ければ何も出さない', () => {
   expect(textbookBreakdown(entry('x', {}, 0))).toBeNull();
 });
+
+test('表紙：単語帳・英検（でる順パス単）・Sunshine は表紙を引ける。無い教材は null', () => {
+  const { coverOf } = require('./textbookMastery');
+  expect(coverOf('book-leap')).toMatch(/books_en_9199\.jpg$/);
+  expect(coverOf('eiken-pre2')).toMatch(/books_en_passtanp2_5\.jpg$/);
+  expect(coverOf('sunshine-1')).toBe('/covers/sunshine1.jpg');
+  expect(coverOf('sunshine-3')).toBeNull();
+  expect(coverOf('highschool-english')).toBeNull();
+});

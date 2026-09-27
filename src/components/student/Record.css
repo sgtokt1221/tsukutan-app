@@ -187,3 +187,25 @@
   font-family: inherit;
   font-size: var(--font-size-16);
 }
+
+.rec-mastery__pick {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.rec-mastery__pick .rec-mastery__select {
+  flex: 1;
+  min-width: 0;
+}
+
+.rec-mastery__cover {
+  flex: none;
+  width: 44px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: var(--color-surface-muted, #f1f5f4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  color: transparent;
+}

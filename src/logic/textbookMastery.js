@@ -7,6 +7,19 @@
  */
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { RETENTION_BUCKETS } from './retentionBreakdown';
+import { BOOKS } from '../config/books';
+import { SUNSHINE } from './textbookPages';
+
+/**
+ * 教材の表紙（2026-09-27）。id はサーバの MASTERY_TEXTBOOKS（book-… / eiken-… / sunshine-N）。
+ * 英検の級はでる順パス単の表紙。無いもの（中学英語・高校英語・Sunshine 3年）は null
+ */
+export function coverOf(id) {
+  const book = BOOKS.find((b) => b.id === id || b.eikenOption === id);
+  if (book) return book.cover;
+  const m = /^sunshine-(\d)$/.exec(String(id || ''));
+  return m ? (SUNSHINE.covers[Number(m[1]) - 1] || null) : null;
+}
 
 /** 自分の教材ごとの定着度。読めなければ投げる（呼び出し側で「読めませんでした」を出す） */
 export async function loadMyTextbookMastery() {
