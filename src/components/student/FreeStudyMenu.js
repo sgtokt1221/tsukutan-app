@@ -5,6 +5,7 @@ import { rangesOf } from '../../logic/bookWords';
 import { SUNSHINE } from '../../logic/textbookPages';
 import TextbookPagePicker from './TextbookPagePicker';
 import './FreeStudyMenu.css';
+import { WRITING_ENABLED } from '../../config/features';
 
 /**
  * 自由学習の入口。
@@ -189,12 +190,15 @@ export default function FreeStudyMenu({
           description="入室から退室までを通しで練習します"
           onClick={() => onNavigate('eiken-interview')}
         />
-        <MenuCard
-          Icon={FaPen}
-          title="ライティング"
-          description="本番と同じ形式。カンペを見ながら書いて採点"
-          onClick={() => onNavigate('eiken-writing')}
-        />
+        {/* 採点の鍵待ちで引っ込めている（→ config/features.js） */}
+        {WRITING_ENABLED && (
+          <MenuCard
+            Icon={FaPen}
+            title="ライティング"
+            description="本番と同じ形式。カンペを見ながら書いて採点"
+            onClick={() => onNavigate('eiken-writing')}
+          />
+        )}
       </div>
     );
   }

@@ -929,7 +929,13 @@ exports.transcribeSpeaking = onRequest(
  * Jev（TypeSafe）の鍵。**このコードベースで初めての secret**。
  * 入れ方：firebase functions:secrets:set JEV_API_KEY --project tsukutan-58b3f
  */
-const JEV_API_KEY = defineSecret('JEV_API_KEY');
+/**
+ * **英検ライティングの栓**（2026-09-27 に引っ込めた。Jev のウェイティングリスト待ちで鍵が無い）。
+ * 鍵の無い defineSecret を関数に付けたままだと、**どの関数を出しても鍵の入力待ちで止まる**。
+ * 戻すときは true にして鍵を入れる（画面側は src/config/features.js）
+ */
+const WRITING_ENABLED = false;
+const JEV_API_KEY = WRITING_ENABLED ? defineSecret('JEV_API_KEY') : null;
 const { FORMATS: WRITING_FORMATS, scoreWriting } = require('./lib/writingScore');
 const { getTokyoDateKey } = require('./lib/dateKeys');
 
@@ -1029,16 +1035,18 @@ scoreWritingApp.post('/', async (req, res) => {
   return res.status(200).json({ id: ref.id, ...attempt, createdAt: new Date().toISOString(), contractions: result.contractions });
 });
 
-exports.scoreWriting = onRequest(
-  {
-    region: 'us-central1',
-    timeoutSeconds: 60,
-    memory: '256MiB',
-    secrets: [JEV_API_KEY],
-    serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
-  },
-  scoreWritingApp
-);
+if (WRITING_ENABLED) {
+  exports.scoreWriting = onRequest(
+    {
+      region: 'us-central1',
+      timeoutSeconds: 60,
+      memory: '256MiB',
+      secrets: [JEV_API_KEY],
+      serviceAccount: "115384710973-compute@developer.gserviceaccount.com",
+    },
+    scoreWritingApp
+  );
+}
 
 //==============================================================================
 // つくばホームからの入場

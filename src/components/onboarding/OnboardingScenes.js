@@ -9,6 +9,7 @@ import { MAX_NEW_WORDS_PER_DAY } from '../../logic/dailyPlanMath';
 import { RETENTION_BUCKETS } from '../../logic/retentionBreakdown';
 import { reviewGaps } from '../../logic/swipeIntent';
 import { STUDENT_TABS } from '../layout/StudentShell';
+import { WRITING_ENABLED } from '../../config/features';
 
 /**
  * 初回の案内の各ページ（図とアニメ）。枠・進み方・保存の進み具合は Onboarding.js。
@@ -578,7 +579,7 @@ const CHOICES = [
   { key: 'book', title: '教材', text: '塾の単語帳を番号の範囲で。前回の続きから' },
   { key: 'school', title: '学校の教科書', text: '学年とページを選ぶ' },
   { key: 'level', title: '中学英語・高校英語', text: 'レベル別・品詞別に', badge: true },
-  { key: 'eiken', title: '英検', text: '級ごとの単語、ライティング（カンペつき）、二次試験（面接）' },
+  { key: 'eiken', title: '英検', text: WRITING_ENABLED ? '級ごとの単語、ライティング（カンペつき）、二次試験（面接）' : '級ごとの単語、二次試験（面接）' },
 ];
 
 function ChooseScene() {
