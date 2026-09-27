@@ -20,6 +20,7 @@ const ROOT = path.resolve(__dirname, '..');
 const PROJECT = 'tsukutan-58b3f';
 
 const BOOKS = {
+  'sokutan-intro': { label: '速読英単語 入門編', idPrefix: 'sokutan-intro' },
   'sokutan-advanced': { label: '速読英単語 上級編', idPrefix: 'sokutan-adv' },
 };
 
@@ -31,7 +32,8 @@ const CATEGORY_OF = {
   環境: 'nature', 自然: 'nature', 地球: 'nature',
   経済: 'work', ビジネス: 'work', 仕事: 'work',
   技術: 'technology', 情報: 'technology', テクノロジー: 'technology', 工学: 'technology',
-  教育: 'school',
+  教育: 'school', 学校: 'school',
+  物語: 'daily', 生活: 'daily', 日常: 'daily', 家族: 'daily', 食: 'daily', 旅行: 'town', 地域: 'town',
   スポーツ: 'sports',
 };
 

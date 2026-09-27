@@ -19,7 +19,7 @@ const BASE_PATH = '/reading';
  * 本文のデータは Git に入らない `local/licensed-readings/` にだけあり、
  * `scripts/upload-licensed-readings.js` で入れる。
  */
-export const LICENSED_BOOKS = ['sokutan-advanced'];
+export const LICENSED_BOOKS = ['sokutan-intro', 'sokutan-advanced'];
 
 /** 読めない（生徒でない・通信が無い）ときは出さないだけ。公開の長文は止めない */
 const loadLicensedGrades = async () => {

@@ -18,7 +18,10 @@ beforeEach(() => {
 });
 
 test('生徒なら、一覧の最後に本が足される', async () => {
-  mockGetDoc.mockResolvedValue({ exists: () => true, data: () => ({ label: '速読英単語 上級編', readings: [{ id: 'sokutan-adv-01' }] }) });
+  // 入門編はまだ入っていない（文書が無い）ときは、その本だけ出さない
+  mockGetDoc.mockImplementation((ref) => Promise.resolve(ref === 'licensedReadings/sokutan-advanced'
+    ? { exists: () => true, data: () => ({ label: '速読英単語 上級編', readings: [{ id: 'sokutan-adv-01' }] }) }
+    : { exists: () => false }));
   const { loadReadingIndex } = require('./readingContent');
   const index = await loadReadingIndex();
   expect(index.grades.map((g) => g.id)).toEqual(['2', 'sokutan-advanced']);
