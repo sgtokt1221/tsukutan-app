@@ -225,12 +225,38 @@ const main = () => {
   const master = JSON.parse(fs.readFileSync(MASTER, 'utf8'));
   const byWord = indexMaster(master);
 
+  /*
+    **パス単はやさしい級から作る**（5→4→3→2→準1。2026-09-27）。後ろの級は前の級の札と照合する
+    （「want to do」を4級で作ってあれば、3級も同じ札を使う＝覚えた記録が級をまたいでつながる）
+  */
+  const EIKEN_RANK = { 5: 0, 4: 1, 3: 2, pre2: 3, 2: 4, pre1: 5, 1: 6 };
+  const rankOf = (file) => {
+    try { return EIKEN_RANK[JSON.parse(fs.readFileSync(file, 'utf8')).eiken] ?? 99; } catch (e) { return 99; }
+  };
   const decks = [DECK_DIR, EXTRA_DECK_DIR]
     .filter((dir) => fs.existsSync(dir))
-    .flatMap((dir) => fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort().map((f) => path.join(dir, f)));
+    .flatMap((dir) => fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort().map((f) => path.join(dir, f))
+      .sort((a, b) => (dir === EXTRA_DECK_DIR ? rankOf(a) - rankOf(b) : 0)));
   let changed = 0;
   /** 作り終えた単語帳の語（綴り → 例文のある札）。後ろの本が例文を借りる */
   const bookPool = new Map();
+  /**
+   * **ほかの級のパス単の札（前回作ったもの）**。級の順に作ると、上の級の札は下の級から見えない
+   * （3級の「too A to do」が2級の札に当たらない）。作ってある出力を読んで、自分以外の級から引く
+   */
+  const passtanPoolFor = (deckId) => {
+    const pool = new Map();
+    for (const f of fs.readdirSync(OUT_DIR).filter((n) => /^words-book-passtan.*\.json$/.test(n))) {
+      if (f === `words-book-${deckId}.json`) continue;
+      for (const card of JSON.parse(fs.readFileSync(path.join(OUT_DIR, f), 'utf8'))) {
+        if (!card.meaning) continue;
+        const key = norm(card.word);
+        if (!pool.has(key)) pool.set(key, []);
+        pool.get(key).push(card);
+      }
+    }
+    return pool;
+  };
   /** 高校英語・大阪府の語（照合する本が、マスタの次に見る） */
   const extraByWord = indexMaster(['words-highschool.json', 'words-osaka.json']
     .flatMap((f) => JSON.parse(fs.readFileSync(path.join(OUT_DIR, f), 'utf8'))));
@@ -240,12 +266,13 @@ const main = () => {
     const writtenPath = path.join(EXAMPLES_DIR, `${deck.deckId}.json`);
     const written = fs.existsSync(writtenPath) ? JSON.parse(fs.readFileSync(writtenPath, 'utf8')) : {};
     const usedIds = new Set();
+    const otherPasstan = deck.meaningFrom === 'master' ? passtanPoolFor(deck.deckId) : new Map();
     /*
       meaningFrom: 'master' … 単語データと照合する本（英検パス単）。同じ語があればその意味・id・例文を使い、
       無い語だけ本の訳で作る。品詞・格で分けた語（hint 付き）は訳をこちらで決めてあるので本の札にする
     */
     const cards = deck.words.map((entry) => (deck.meaningFrom === 'master' && !entry.hint
-      ? masterCardOf(deck.deckId, entry, byWord, usedIds, { eiken: deck.eiken || null, written, pools: [extraByWord, bookPool] })
+      ? masterCardOf(deck.deckId, entry, byWord, usedIds, { eiken: deck.eiken || null, written, pools: [extraByWord, bookPool, otherPasstan] })
       : cardOf(deck.deckId, entry, byWord, written)));
     /*
       **1冊の中で id を重ねない。** 品詞・格で分けた語（you の主格と目的格など）が同じマスタの語に

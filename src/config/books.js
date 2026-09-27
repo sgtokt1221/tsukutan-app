@@ -83,6 +83,15 @@ export const BOOKS = [
     eikenOption: 'eiken-4',
   },
   {
+    id: 'book-passtan3',
+    deckId: 'passtan3',
+    title: '英検3級 でる順パス単［5訂版］',
+    publisher: '旺文社',
+    count: 1200,
+    cover: `${COVER_BASE}/books_en_passtan3_5.jpg`,
+    eikenOption: 'eiken-3',
+  },
+  {
     id: 'book-passtan2',
     deckId: 'passtan2',
     title: '英検2級 でる順パス単［5訂版］',

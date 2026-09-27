@@ -92,11 +92,10 @@ describe('単語帳・英検から出す（2026-09-26。高校生の出題元）
     }
   });
 
-  test('英検：級は 5〜準1級だけ（1級は語に印が無い）', () => {
+  test('英検：級から出せるのは準2級だけ（ほかの級はでる順パス単。2026-09-27）', () => {
     expect(validateCreate({ ...one, source: 'eiken', eiken: 'pre2' }))
       .toEqual({ source: 'eiken', eiken: 'pre2', count: 10, direction: 'en-ja', targetUids: ['u1'] });
-    expect(validateCreate({ ...one, source: 'eiken', eiken: 3 }).eiken).toBe('3');
-    for (const eiken of ['1', 'x', undefined]) {
+    for (const eiken of ['1', '3', 3, '5', 'x', undefined]) {
       expect(() => validateCreate({ ...one, source: 'eiken', eiken })).toThrow(QuizInputError);
     }
   });
@@ -145,9 +144,9 @@ describe('単語帳・英検から出す（2026-09-26。高校生の出題元）
     expect(titleOf({ source: 'book', bookId: 'book-leap', noFrom: 5, noTo: 5 })).toBe('必携英単語LEAP No.5');
     expect(titleOf({ source: 'eiken', eiken: 'pre2' })).toBe('英検準2級');
     expect(dataFileOf({ source: 'book', bookId: 'book-systan5' })).toBe('words-book-systan5.json');
-    expect(dataFileOf({ source: 'eiken', eiken: '3' })).toBe('words-master.json');
+    expect(dataFileOf({ source: 'eiken', eiken: 'pre2' })).toBe('words-master.json');
     // 2級・準1級はでる順パス単（単語帳）で出す（2026-09-27）
-    expect(QUIZ_EIKEN_LEVELS.map((l) => l.id)).toEqual(['3', 'pre2']);
+    expect(QUIZ_EIKEN_LEVELS.map((l) => l.id)).toEqual(['pre2']);
     expect(dataFileOf({ source: 'book', bookId: 'book-passtan2' })).toBe('words-book-passtan2.json');
   });
 
@@ -166,9 +165,9 @@ describe('教材ごとの「間違えた単語だけ」（2026-09-26。weakOnly�
   const one = { count: 0, direction: 'en-ja', targetUids: ['u1'] };
 
   test('**true のときだけ weakOnly を持つ**（undefined を持つと Firestore が文書ごと拒む）', () => {
-    expect(validateCreate({ ...one, source: 'eiken', eiken: '3' })).not.toHaveProperty('weakOnly');
-    expect(validateCreate({ ...one, source: 'eiken', eiken: '3', weakOnly: 'yes' })).not.toHaveProperty('weakOnly');
-    expect(validateCreate({ ...one, source: 'eiken', eiken: '3', weakOnly: true }).weakOnly).toBe(true);
+    expect(validateCreate({ ...one, source: 'eiken', eiken: 'pre2' })).not.toHaveProperty('weakOnly');
+    expect(validateCreate({ ...one, source: 'eiken', eiken: 'pre2', weakOnly: 'yes' })).not.toHaveProperty('weakOnly');
+    expect(validateCreate({ ...one, source: 'eiken', eiken: 'pre2', weakOnly: true }).weakOnly).toBe(true);
     expect(validateCreate({ ...one, source: 'book', bookId: 'book-leap', noFrom: 1, noTo: 5, weakOnly: true }).weakOnly).toBe(true);
     expect(validateCreate({ ...one, grade: 1, pageFrom: 1, pageTo: 2, weakOnly: true }).weakOnly).toBe(true);
     // 苦手な単語にはもともと範囲が無いので付けない
@@ -176,7 +175,7 @@ describe('教材ごとの「間違えた単語だけ」（2026-09-26。weakOnly�
   });
 
   test('**生徒ごとに語が違うので、対象は1人だけ**', () => {
-    expect(() => validateCreate({ ...one, source: 'eiken', eiken: '3', weakOnly: true, targetUids: ['u1', 'u2'] }))
+    expect(() => validateCreate({ ...one, source: 'eiken', eiken: 'pre2', weakOnly: true, targetUids: ['u1', 'u2'] }))
       .toThrow('間違えた単語だけの小テストは、1人ずつ出します');
   });
 

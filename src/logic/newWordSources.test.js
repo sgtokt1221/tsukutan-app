@@ -79,7 +79,7 @@ describe('教材の語を読む', () => {
       { id: 'd', eikenLevels: ['pre2'] },
       { id: 'e' },
     ]);
-    expect(ids(await getNewWordSource('eiken-3').load())).toEqual(['b', 'c']);
+    // 準2級だけが英検の印で集める（ほかの級はでる順パス単。2026-09-27）
     expect(ids(await getNewWordSource('eiken-pre2').load())).toEqual(['d']);
   });
 

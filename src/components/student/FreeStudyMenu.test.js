@@ -120,12 +120,12 @@ test('単語は5級から準1級まで並ぶ', () => {
 
   // **2級・準1級はでる順パス単**（2026-09-27）。本の名前と収録語数を出し、押すと本を開く
   expect(screen.getAllByRole('button').map((b) => b.textContent)).toEqual([
-    '英検5級英検5級 でる順パス単［5訂版］570語', '英検4級英検4級 でる順パス単［5訂版］700語', '英検3級2,100語',
+    '英検5級英検5級 でる順パス単［5訂版］570語', '英検4級英検4級 でる順パス単［5訂版］700語', '英検3級英検3級 でる順パス単［5訂版］1,200語',
     '英検準2級3,400語', '英検2級英検2級 でる順パス単［5訂版］1,700語', '英検準1級英検準1級 でる順パス単［5訂版］1,900語',
   ]);
 
-  fireEvent.click(screen.getByText('英検3級'));
-  expect(onSelectTextbook).toHaveBeenCalledWith('eiken-3');
+  fireEvent.click(screen.getByText('英検準2級'));
+  expect(onSelectTextbook).toHaveBeenCalledWith('eiken-pre2');
 });
 
 test('**英検2級を押すと、でる順パス単を開く**', () => {
