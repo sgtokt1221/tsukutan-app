@@ -12,7 +12,9 @@
  *
  * ## 形
  *   licensedWordBooks/{deckId}              { deckId, file, count, chunks, version }
- *   licensedWordBooks/{deckId}/chunks/{NN}  { words: [...] }   … 1文書1MBの上限があるので400語ずつ
+ *   licensedWordBooks/{deckId}/chunks/{NN}  { json: "[...]" }   … 1文書1MBの上限があるので400語ずつ
+ * **語は JSON の文字列で入れる**（2026-09-27）。配列・マップのまま入れると、ブラウザの Firestore SDK が
+ * ほどくのに1冊で数十秒かかった（文字列なら0.1秒）。
  * version は中身のハッシュ。端末はこれが変わったときだけ読み直す。
  *
  * 認証は Application Default Credentials（`gcloud auth application-default login`）。
@@ -50,7 +52,7 @@ async function main() {
     const ref = db.collection('licensedWordBooks').doc(b.deckId);
     const batch = db.batch();
     for (let i = 0; i < b.chunks; i += 1) {
-      batch.set(ref.collection('chunks').doc(String(i).padStart(2, '0')), { words: b.words.slice(i * CHUNK, (i + 1) * CHUNK) });
+      batch.set(ref.collection('chunks').doc(String(i).padStart(2, '0')), { json: JSON.stringify(b.words.slice(i * CHUNK, (i + 1) * CHUNK)) });
     }
     // **一覧は最後に書く**（チャンクが揃う前に version が変わると、端末が欠けたまま読む）
     batch.set(ref, { deckId: b.deckId, file: b.file, count: b.words.length, chunks: b.chunks, version: b.version });

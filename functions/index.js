@@ -1314,7 +1314,9 @@ const loadLicensedBook = async (name) => {
   const ref = db.collection('licensedWordBooks').doc(deckId);
   const [head, chunks] = await Promise.all([ref.get(), ref.collection('chunks').get()]);
   if (!head.exists) throw new Error(`${name} がありません`);
-  const words = chunks.docs.slice().sort((a, b) => a.id.localeCompare(b.id)).flatMap((d) => d.data().words || []);
+  // 語は JSON の文字列（json）で持つ（ブラウザの SDK が配列のままだと遅い。scripts/upload-licensed-words.js）。古い形も読む
+  const words = chunks.docs.slice().sort((a, b) => a.id.localeCompare(b.id))
+    .flatMap((d) => { const c = d.data(); return typeof c.json === 'string' ? JSON.parse(c.json) : (c.words || []); });
   if (words.length !== Number(head.data().count)) throw new Error(`${name} が欠けています`);
   return words;
 };
