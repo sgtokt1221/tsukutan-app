@@ -202,7 +202,7 @@ describe('音読の結果', () => {
     finishRecording(view);
 
     expect(await screen.findByText('100')).toBeInTheDocument();
-    await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('My Morning'));
+    await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('英検5級「わたしの朝」'));
     // 拾えなかった語は赤のまま（本人にはそこが見える）
     const passage = screen.getByTestId('aloud-passage');
     expect(passage.querySelectorAll('.aloud-result__text .is-missed').length).toBe(6);
@@ -286,7 +286,7 @@ describe('つくばホームへ送る音読の数', () => {
     fireEvent.click(screen.getByRole('button', { name: '音読する' }));
     finishRecording(view);
 
-    await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('My Morning'));
+    await waitFor(() => expect(mockNoteAloud).toHaveBeenCalledWith('英検5級「わたしの朝」'));
     expect(await screen.findByText('文章の 80% 以上を読んだので「音読した日」になりました')).toBeInTheDocument();
   });
 
@@ -465,5 +465,19 @@ describe('スラッシュに SVOC の札が載る', () => {
     // 組と組の間の / は太いほう。組の中の区切りが無いので細いほうは出ない
     expect(view.container.querySelectorAll('.reading-slash:not(.reading-slash--inner)')).toHaveLength(2);
     expect(view.container.querySelectorAll('.reading-slash--inner')).toHaveLength(0);
+  });
+});
+
+describe('受験サポートに残す音読の名前（2026-09-27）', () => {
+  const { aloudTitleOf } = jest.requireActual('./ReadingPanel');
+  const index = { grades: [
+    { id: '2', label: '英検2級', readings: [] },
+    { id: 'sokutan-advanced', label: '速読英単語 上級編', licensed: true, readings: [] },
+  ] };
+  it('買った教材は「本の名前 No.」', () => {
+    expect(aloudTitleOf({ title: 'No.17', titleJa: '人種差別を排除するには (1)' }, index, 'sokutan-advanced')).toBe('速読英単語 上級編 No.17');
+  });
+  it('英検の長文は「級「題」」', () => {
+    expect(aloudTitleOf({ title: 'Kintsugi', titleJa: '金継ぎ' }, index, '2')).toBe('英検2級「金継ぎ」');
   });
 });

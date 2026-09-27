@@ -29,6 +29,20 @@ import './Reading.css';
  * 「読めた割合」を出せる。発音は測らない。
  */
 
+/**
+ * 受験サポートの勉強時間に残す名前（向こうが「〜 音読」と付ける。2026-09-27）。
+ * 本の名前を付ける——題名だけだと、速単の「No.17」は何の本か分からない。
+ *   買った教材: 「速読英単語 上級編 No.17」
+ *   英検の長文: 「英検2級「金継ぎ」」
+ */
+export function aloudTitleOf(reading, index, bookId) {
+  const book = (index?.grades || []).find((g) => g.id === bookId);
+  const label = book?.label || '';
+  if (book?.licensed) return `${label} ${reading?.title || ''}`.trim();
+  const title = reading?.titleJa || reading?.title || '';
+  return label ? `${label}「${title}」` : title;
+}
+
 export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, userId }) {
   const [index, setIndex] = useState(null);
   const [grade, setGrade] = useState(null);
@@ -201,7 +215,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
         */
         noteActivity('reading');
         const reach = readAloudReach(markPassage(referenceText, heard));
-        if (countsAsAloud(reach)) noteAloud(reading.title);
+        if (countsAsAloud(reach)) noteAloud(aloudTitleOf(reading, index, openBook || grade));
         setAloud({ working: false, transcript: heard });
 
         /*
