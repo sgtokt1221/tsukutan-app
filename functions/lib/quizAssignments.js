@@ -342,7 +342,20 @@ function summarize(assignment, resultsByUid) {
   };
 }
 
+/**
+ * 1人ぶんの結果から、間違えた語（出した時点の語を写して持っているので、そこから引く）。
+ * 管理画面の「出した小テスト」で、提出したものの中身を見せる（2026-09-27）。
+ * @param {Array<{id, word, meaning}>} words 出した語（quiz_assignments.words）
+ * @param {{answers?: Array<{id, correct}>}|null} result users/{uid}/quizResults/{id}
+ */
+function missedWordsOf(words, result) {
+  if (!result || !Array.isArray(result.answers)) return [];
+  const wrong = new Set(result.answers.filter((a) => a && !a.correct).map((a) => String(a.id)));
+  return (words || []).filter((w) => w && wrong.has(String(w.id))).map((w) => ({ word: String(w.word || ''), meaning: String(w.meaning || '') }));
+}
+
 module.exports = {
+  missedWordsOf,
   DIRECTIONS, SOURCES, MAX_TARGETS, MAX_QUESTIONS, QUIZ_BOOKS, QUIZ_EIKEN_LEVELS, QuizInputError,
   WEAK_ONLY_SUFFIX, validateCreate, wordsInPages, wordsInBookRange, wordsOfEiken, titleOf, pickQuizWords, pickSourceWords,
   pickWeakWords, weakWordsInSource, sourcePool, pickWeakInSource, dataFileOf, summarize,

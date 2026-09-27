@@ -252,3 +252,13 @@ describe('教材ごとの「間違えた単語だけ」（2026-09-26。weakOnly�
       .toEqual(['w_run']);
   });
 });
+
+describe('提出した中身（2026-09-27）', () => {
+  const { missedWordsOf } = require('./quizAssignments');
+  test('間違えた語だけを、出した時点の語から引く', () => {
+    const words = [{ id: 'a', word: 'apple', meaning: 'りんご' }, { id: 'b', word: 'bear', meaning: 'くま' }];
+    expect(missedWordsOf(words, { answers: [{ id: 'a', correct: true }, { id: 'b', correct: false }] }))
+      .toEqual([{ word: 'bear', meaning: 'くま' }]);
+    expect(missedWordsOf(words, null)).toEqual([]);
+  });
+});

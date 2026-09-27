@@ -48,11 +48,16 @@ export async function saveQuizResult(uid, quiz, answers) {
  */
 export async function saveSelfTestResult(uid, quiz, answers) {
   const score = answers.filter((a) => a.correct).length;
+  // 間違えた語も写して持つ（先生の画面で中身を見せる。自分でしたテストは出した語を別に持っていない）
+  const wrong = new Set(answers.filter((a) => !a.correct).map((a) => String(a.id)));
+  const missed = (quiz.words || []).filter((w) => wrong.has(String(w.id)))
+    .map((w) => ({ word: String(w.word || ''), meaning: String(w.meaning || '') }));
   await setDoc(doc(db, 'users', uid, 'selfTests', quiz.id), {
     title: String(quiz.title || ''),
     score,
     total: answers.length,
     answers: answers.map((a) => ({ id: String(a.id), correct: Boolean(a.correct) })),
+    missed,
     finishedAt: serverTimestamp(),
   });
   return { score, total: answers.length };

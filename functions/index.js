@@ -61,6 +61,7 @@ const {
   dataFileOf: quizDataFileOf,
   titleOf: quizTitleOf,
   summarize: summarizeQuiz,
+  missedWordsOf,
 } = require('./lib/quizAssignments');
 
 //==============================================================================
@@ -1476,9 +1477,33 @@ quizAssignmentsApp.post('/', async (req, res) => {
           active: a.active !== false,
           createdAt: toMillis(a.createdAt),
           ...summarizeQuiz({ targetUids: targets }, byUid),
+          // 1人を開いているときだけ、提出した中身（間違えた語と提出した時刻）も返す（2026-09-27）
+          ...(uid ? {
+            finishedAt: toMillis(byUid.get(uid) && byUid.get(uid).finishedAt),
+            missed: missedWordsOf(a.words, byUid.get(uid)),
+          } : {}),
         };
       }));
-      return res.status(200).json({ assignments });
+      /*
+        生徒が自分でしたテスト（教材を選んで「テスト」。users/{uid}/selfTests）。先生が出したものとは別に並べる。
+        1人を開いているときだけ
+      */
+      let selfTests;
+      if (uid) {
+        const selfSnap = await db.collection('users').doc(uid).collection('selfTests').orderBy('finishedAt', 'desc').limit(30).get();
+        selfTests = selfSnap.docs.map((d) => {
+          const t = d.data();
+          return {
+            id: d.id,
+            title: String(t.title || ''),
+            score: Number(t.score) || 0,
+            total: Number(t.total) || 0,
+            finishedAt: toMillis(t.finishedAt),
+            missed: Array.isArray(t.missed) ? t.missed.map((w) => ({ word: String(w.word || ''), meaning: String(w.meaning || '') })) : [],
+          };
+        });
+      }
+      return res.status(200).json({ assignments, ...(selfTests ? { selfTests } : {}) });
     }
 
     if (body.action === 'close') {
