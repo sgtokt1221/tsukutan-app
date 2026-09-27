@@ -77,8 +77,8 @@
         ]
       },
       {
-        "//": "単語帳と英検の語（words-master）も、つくばホームの管理画面が小テストの範囲を見せ・印刷するために読む（2026-09-26）。教科書と同じく読むことだけ許す。",
-        "source": "/data/@(words-book-*|words-master).json",
+        "//": "単語帳と英検の語（words-master）も、つくばホームの管理画面が小テストの範囲を見せ・印刷するために読む（2026-09-26）。高校英語・大阪府も単語データの一覧で読む（2026-09-27）。教科書と同じく読むことだけ許す。",
+        "source": "/data/@(words-book-*|words-master|words-osaka|words-highschool).json",
         "headers": [
           { "key": "Access-Control-Allow-Origin", "value": "*" }
         ]
