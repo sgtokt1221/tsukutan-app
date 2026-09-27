@@ -52,7 +52,7 @@ export default function ReadingShelf({
               className="reading-book"
               onClick={() => onOpenBook(entry.id)}
             >
-              <BookCover gradeId={entry.id} className="reading-book__art" />
+              <BookCover gradeId={entry.id} image={entry.cover} className="reading-book__art" />
               <span className="reading-book__label">{entry.label}</span>
               <span className="reading-book__count">{entry.readings.length}本</span>
               {entry.id === recommended && (

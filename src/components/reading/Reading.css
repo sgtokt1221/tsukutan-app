@@ -514,3 +514,10 @@
 .reading-line--paragraph {
   margin-top: var(--space-16, 16px);
 }
+
+/* 本物の表紙（買った教材）。絵の本と同じ大きさで、切らずに収める */
+.book--photo {
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: var(--shadow-1);
+}

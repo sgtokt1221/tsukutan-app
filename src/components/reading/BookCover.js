@@ -36,7 +36,14 @@ const DEFAULT_COLOR = '#48D7A5';
  * @param gradeId 級（色を引くのに使う）
  * @param className 大きさ・動きをCSSから当てるための追加クラス
  */
-export default function BookCover({ gradeId, className = '' }) {
+export default function BookCover({ gradeId, image, className = '' }) {
+  /*
+    **本物の表紙があればそれを出す**（買った教材。2026-09-27）。
+    画像は Firestore の一覧（licensedReadings/{本}.cover）に入っていて、塾の生徒にしか届かない
+  */
+  if (image) {
+    return <img src={image} alt="" aria-hidden="true" className={`book book--photo ${className}`.trim()} />;
+  }
   const color = BOOK_COLORS[gradeId] || DEFAULT_COLOR;
   return (
     <svg

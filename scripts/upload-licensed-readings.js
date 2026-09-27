@@ -107,8 +107,12 @@ async function main() {
 
   const files = fs.existsSync(outDir) ? fs.readdirSync(outDir).filter((f) => f.endsWith('.json')).sort() : [];
   const readings = files.map((f) => JSON.parse(fs.readFileSync(path.join(outDir, f), 'utf8')));
+  // 表紙（local/licensed-readings/<本>.cover.jpg）。**公開の置き場に置かない**ので一覧に埋め込む
+  const coverPath = path.join(ROOT, 'local', 'licensed-readings', `${bookId}.cover.jpg`);
+  const cover = fs.existsSync(coverPath) ? `data:image/jpeg;base64,${fs.readFileSync(coverPath).toString('base64')}` : null;
   const index = {
     label: book.label,
+    ...(cover ? { cover } : {}),
     readings: readings.map((r) => ({ id: r.id, title: r.title, titleJa: r.titleJa, category: r.category })),
   };
   console.log(`入れるもの: ${readings.length}題（${book.label}）`);
