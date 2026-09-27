@@ -111,8 +111,13 @@ export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onS
     <div className="reading-body">
       {reading.sentences.map((sentence, index) => {
         const speaking = speakingIndex === index;
+        // 段落が変わるところは上を空ける（段落を持つのは本から起こした長文だけ）
+        const newParagraph = index > 0 && sentence.paragraph
+          && sentence.paragraph !== reading.sentences[index - 1].paragraph;
+        const lineClass = ['reading-line', speaking && 'is-speaking', newParagraph && 'reading-line--paragraph']
+          .filter(Boolean).join(' ');
         return (
-          <div key={index} className={speaking ? 'reading-line is-speaking' : 'reading-line'}>
+          <div key={index} className={lineClass}>
             <button
               type="button"
               className="reading-line__speak"

@@ -27,6 +27,14 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    // **塾の生徒**：users に記録があり（作るのはサーバだけ）、止められていない人。
+    // 買った教材の長文（licensedReadings）はこの人だけが読める（2026-09-27）
+    function isEnrolled() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('disabledAt', null) == null;
+    }
+
     // 生徒が自分で書き換えてはいけないフィールド。
     // studentId はログイン用メールと対応し、disabledAt は管理者による無効化の印。
     function protectedFieldsUnchanged() {
@@ -62,6 +70,16 @@ service cloud.firestore {
     //--------------------------------------------------------------------------
     // マスターデータ
     //--------------------------------------------------------------------------
+    // 買った教材の長文。**塾の生徒だけ**が読む。書くのは管理用のスクリプトだけ
+    match /licensedReadings/{bookId} {
+      allow read: if isEnrolled() || isAdmin();
+      allow write: if false;
+      match /items/{itemId} {
+        allow read: if isEnrolled() || isAdmin();
+        allow write: if false;
+      }
+    }
+
     match /goalsMaster/{goalId} {
       allow read: if isSignedIn();
       allow write: if false;

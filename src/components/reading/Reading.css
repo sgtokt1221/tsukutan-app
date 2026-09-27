@@ -509,3 +509,8 @@
 @media (prefers-reduced-motion: reduce) {
   .reading-picked { animation: none; }
 }
+
+/* 本から起こした長文の段落の変わり目（2026-09-27） */
+.reading-line--paragraph {
+  margin-top: var(--space-16, 16px);
+}

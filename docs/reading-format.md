@@ -17,6 +17,13 @@ AI生成の月1本ストーリー（`generatedStories`）とは別物。あち�
 理由で止まる。`node scripts/checkReadings.js` がカバー率を測るので、
 書いたら必ず通すこと。
 
+**例外：買った教材（2026-09-27、沖藤さんの判断）。** 市販の教材の本文を入れるときは、
+`public/` にもリポジトリにも置かない（**このリポジトリは公開**）。Firestore の
+`licensedReadings/{本}` に置き、**塾の生徒だけ**（firestore.rules の `isEnrolled`）が読む。
+本文の元データは `local/licensed-readings/`（Git に入らない）にだけ置き、
+`node scripts/upload-licensed-readings.js` で入れる。読み込みは `src/logic/readingContent.js` の
+`LICENSED_BOOKS`。文に `paragraph`（段落番号）を持たせてよい（画面が段落の間を空ける）。
+
 ---
 
 ## 1. 置き場所

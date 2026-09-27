@@ -4,7 +4,37 @@
  * 素材は public/reading/。AI生成の月1本ストーリーとは別物で、こちらは作り置き。
  */
 
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+
 const BASE_PATH = '/reading';
+
+/**
+ * **買った教材の長文は、塾の生徒だけが読める置き場に置く**（2026-09-27）。
+ *
+ * `public/reading/` は誰でも取れる静的ファイルで、しかもリポジトリは公開なので、
+ * 市販の本文はそこへ置かない。Firestore の `licensedReadings/{本}`（一覧）と
+ * `licensedReadings/{本}/items/{id}`（本文）に置き、規則で「users に記録があり、
+ * 止められていない人」だけに読ませる（firestore.rules の isEnrolled）。
+ * 本文のデータは Git に入らない `local/licensed-readings/` にだけあり、
+ * `scripts/upload-licensed-readings.js` で入れる。
+ */
+export const LICENSED_BOOKS = ['sokutan-advanced'];
+
+/** 読めない（生徒でない・通信が無い）ときは出さないだけ。公開の長文は止めない */
+const loadLicensedGrades = async () => {
+  const out = [];
+  for (const id of LICENSED_BOOKS) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const snap = await getDoc(doc(db, 'licensedReadings', id));
+      if (snap.exists()) out.push({ ...snap.data(), id, licensed: true });
+    } catch (error) {
+      // 生徒でなければ規則で弾かれる。それは正しい動きなので黙って出さない
+    }
+  }
+  return out;
+};
 
 const cache = new Map();
 
@@ -26,9 +56,18 @@ const fetchJson = (path) => {
   return promise;
 };
 
-export const loadReadingIndex = () => fetchJson(`${BASE_PATH}/index.json`);
+export const loadReadingIndex = () => Promise.all([fetchJson(`${BASE_PATH}/index.json`), loadLicensedGrades()])
+  .then(([index, licensed]) => (licensed.length ? { ...index, grades: [...index.grades, ...licensed] } : index));
 
-export const loadReading = (grade, id) => fetchJson(`${BASE_PATH}/${grade}/${id}.json`);
+export const loadReading = (grade, id) => {
+  if (LICENSED_BOOKS.includes(grade)) {
+    return getDoc(doc(db, 'licensedReadings', grade, 'items', id)).then((snap) => {
+      if (!snap.exists()) throw new Error(`${grade}/${id} が見つかりません`);
+      return snap.data();
+    });
+  }
+  return fetchJson(`${BASE_PATH}/${grade}/${id}.json`);
+};
 
 /** 文をつないだ英文。チャンクが正本なので、ここで組み立てる。 */
 export const sentenceEnglish = (sentence) =>
