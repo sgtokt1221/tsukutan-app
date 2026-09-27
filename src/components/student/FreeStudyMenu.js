@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaBook, FaBookOpen, FaChevronRight, FaGraduationCap, FaMicrophone, FaPen, FaSchool, FaStar } from 'react-icons/fa';
+import { FaBook, FaBookOpen, FaChevronRight, FaMicrophone, FaPen, FaSchool, FaStar } from 'react-icons/fa';
 import RecommendationBadge from './RecommendationBadge';
 import { rangesOf } from '../../logic/bookWords';
 import { SUNSHINE } from '../../logic/textbookPages';
@@ -13,15 +13,14 @@ import { bookForEiken } from '../../config/books';
  *
  * 以前は「学年で選ぶ」「英検で選ぶ」「二次試験（面接）」の見出しの下に
  * ボタンが12個並んでいて、何を選ぶ画面なのか分からなかった。
- * 中学英語 / 高校英語 / 英検 の3枚に畳んで、英検だけ下へ辿る。
+ * 教材 / 教科書 / 英検 の3枚に畳んで、それぞれ下へ辿る（2026-09-27。中学英語・高校英語は外した）。
+ * 3枚とも**中に入っている本の表紙を重ねて**見せる（題名より先に絵で分かる）。
  *
- *   main            [教材] [中学英語] [高校英語] [英検]
+ *   main            [教材] [教科書] [英検]
  *    ├ books     塾が配っている単語帳4冊（表紙つき）
  *    │    └ book-range  番号の帯（1〜100 …）→ onSelectRange → そのままカードへ
  *    ├ textbook-grade  学校の教科書（Sunshine）の学年
  *    │    └ textbook-pages  ページの範囲 → onStartTextbookPages → そのままカードへ
- *    ├ 中学英語  → onSelectTextbook（レベル・品詞・意味の絞り込みへ）
- *    ├ 高校英語  → onSelectTextbook
  *    └ eiken     [単語を覚える] [二次試験（面接）]
  *         ├ eiken-words     → 級を選ぶ → onSelectTextbook
  *         ├ eiken-interview → 級を選ぶ → onSelectInterview
@@ -54,21 +53,25 @@ export const freeStudyBackTarget = (mode, textbookId) => ({
   filter: textbookId?.startsWith('eiken-') ? 'eiken-words' : 'main',
 }[mode] || 'main');
 
-/** 英検以外の入口。押すとそのまま絞り込み画面へ入る。 */
-const TEXTBOOK_ENTRIES = [
-  { id: 'osaka-koukou-nyuushi', title: '中学英語', description: '大阪府公立入試', Icon: FaGraduationCap },
-  { id: 'highschool-english', title: '高校英語', description: '基礎・標準・応用', Icon: FaBook },
-];
-
-/** 一覧に出す語数。まだ読めていない（null）ときは何も足さない。 */
-const withCount = (description, count) =>
-  count === null ? description : `${description}・${count.toLocaleString()}語`;
-
 /**
  * @param thumbnail 表紙の画像URL。**あればアイコンの代わりに出す**
  *   （本は絵で覚えているので、題名より先に表紙で見つかる）
+ * @param covers 表紙の画像URLの並び。**重ねて出す**（中に何冊も入っている入口。最大3冊）
  */
-function MenuCard({ Icon, title, description, badge, thumbnail, onClick }) {
+function MenuCard({ Icon, title, description, badge, thumbnail, covers, onClick }) {
+  if (covers && covers.length > 0) {
+    return (
+      <button type="button" className="free-study-card" onClick={onClick}>
+        <span className="free-study-card__stack" aria-hidden="true">
+          {covers.slice(0, 3).map((src) => (
+            // 読めなくても崩さない（alt を空にして枠だけ残す。題名は隣に出ている）
+            <img key={src} src={src} alt="" loading="lazy" draggable="false" />
+          ))}
+        </span>
+        <CardBody title={title} description={description} badge={badge} />
+      </button>
+    );
+  }
   return (
     <button type="button" className="free-study-card" onClick={onClick}>
       <span className={thumbnail ? 'free-study-card__cover' : 'free-study-card__icon'}>
@@ -83,6 +86,14 @@ function MenuCard({ Icon, title, description, badge, thumbnail, onClick }) {
           )
           : <Icon aria-hidden="true" />}
       </span>
+      <CardBody title={title} description={description} badge={badge} />
+    </button>
+  );
+}
+
+function CardBody({ title, description, badge }) {
+  return (
+    <>
       <span className="free-study-card__body">
         <span className="free-study-card__title">
           {title}
@@ -93,7 +104,7 @@ function MenuCard({ Icon, title, description, badge, thumbnail, onClick }) {
       <span className="free-study-card__chevron">
         <FaChevronRight aria-hidden="true" />
       </span>
-    </button>
+    </>
   );
 }
 
@@ -301,29 +312,22 @@ export default function FreeStudyMenu({
         Icon={FaBookOpen}
         title="教材"
         description="塾で使っている単語帳から選ぶ"
+        covers={(books || []).filter((book) => !book.eikenOption).map((book) => book.cover)}
         onClick={() => onNavigate('books')}
       />
       {/* 学校の教科書。ページを指定して覚える（2026-09-24） */}
       <MenuCard
         Icon={FaSchool}
-        title="学校の教科書"
+        title="教科書"
         description={`${SUNSHINE.title}・ページを選んで覚える`}
+        covers={SUNSHINE.covers}
         onClick={() => onNavigate('textbook-grade')}
       />
-      {TEXTBOOK_ENTRIES.map(({ id, title, description, Icon }) => (
-        <MenuCard
-          key={id}
-          Icon={Icon}
-          title={title}
-          description={withCount(description, wordCountOf(id))}
-          badge={recommendationOf(id)}
-          onClick={() => onSelectTextbook(id)}
-        />
-      ))}
       <MenuCard
         Icon={FaStar}
         title="英検"
-        description="単語と、二次試験（面接）"
+        description="単語（でる順パス単）と、二次試験（面接）"
+        covers={(books || []).filter((book) => book.eikenOption).map((book) => book.cover)}
         // どれか1級でも今の力に合っていれば付ける。中を開かないと分からないため。
         badge={eikenOptions.map((option) => recommendationOf(option.id)).find(Boolean) || null}
         onClick={() => onNavigate('eiken')}

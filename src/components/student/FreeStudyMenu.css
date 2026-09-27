@@ -1,4 +1,4 @@
-/* 自由学習の入口。中学英語 / 高校英語 / 英検 の3枚。
+/* 自由学習の入口。教材 / 教科書 / 英検 の3枚。
    スマホ幅では横に3列並べると説明の一行が入らないので縦に積む。 */
 
 .free-study-cards {
@@ -100,3 +100,30 @@
   /* 読めなかったときに「壊れた画像」の印を出さない（枠だけ残す） */
   color: transparent;
 }
+
+/*
+  中に何冊も入っている入口（教材・教科書・英検）。**表紙を少しずつずらして重ねる**（2026-09-27）。
+  奥の本ほど右へ寄せて小さく傾け、いちばん手前（1冊目）が正面を向く。
+*/
+.free-study-card__stack {
+  flex: none;
+  position: relative;
+  width: 84px;
+  height: 64px;
+}
+
+.free-study-card__stack img {
+  position: absolute;
+  top: 2px;
+  width: 42px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: var(--color-surface-muted, #f1f5f4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: transparent;
+}
+
+.free-study-card__stack img:nth-child(1) { left: 0; z-index: 3; }
+.free-study-card__stack img:nth-child(2) { left: 20px; z-index: 2; transform: rotate(6deg); }
+.free-study-card__stack img:nth-child(3) { left: 40px; z-index: 1; transform: rotate(12deg); }

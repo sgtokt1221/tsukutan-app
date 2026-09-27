@@ -14,6 +14,8 @@ export const SUNSHINE = {
   title: 'Sunshine（教科書）',
   publisher: '開隆堂',
   file: '/data/words-textbook-sunshine.json',
+  // 表紙（開隆堂の令和7年度用の紹介ページから。3年は公開されていない）
+  covers: ['/covers/sunshine1.jpg', '/covers/sunshine2.jpg'],
   grades: [1, 2, 3],
 };
 

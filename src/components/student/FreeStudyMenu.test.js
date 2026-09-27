@@ -65,13 +65,12 @@ const show = (props = {}) => {
   生徒はまずここを探す。並び順まで固定するのは、後から足した入口が
   いつのまにか下へ埋もれるのを止めるため。
 */
-test('最初は 教材 / 学校の教科書 / 中学英語 / 高校英語 / 英検 の5枚だけ', () => {
+test('最初は 教材 / 教科書 / 英検 の3枚だけ（中学英語・高校英語は外した。2026-09-27）', () => {
   show();
 
   const titles = screen.getAllByRole('button')
     .map((card) => card.querySelector('.free-study-card__title').textContent);
-  // 学校の教科書（Sunshine）は 2026-09-24 に足した。塾の配る本のすぐ下
-  expect(titles).toEqual(['教材', '学校の教科書', '中学英語', '高校英語', '英検']);
+  expect(titles).toEqual(['教材', '教科書', '英検']);
 
   // 級や面接の入口は、英検を開くまで出さない
   expect(screen.queryByText('英検3級')).not.toBeInTheDocument();
@@ -80,21 +79,17 @@ test('最初は 教材 / 学校の教科書 / 中学英語 / 高校英語 / 英�
   expect(screen.queryByText('システム英単語')).not.toBeInTheDocument();
 });
 
-test('中学英語・高校英語は語数を添えて、押すとそのまま教材へ入る', () => {
-  const { onSelectTextbook } = show();
+test('**3枚とも中の本の表紙を重ねて出す**（教材は単語帳・教科書は Sunshine・英検はパス単）', () => {
+  const passtan = { id: 'book-passtan5', title: '英検5級 でる順パス単［5訂版］', publisher: '旺文社', count: 570, cover: 'https://example.test/p5.jpg', eikenOption: 'eiken-5' };
+  show({ books: [...BOOKS, passtan] });
 
-  expect(screen.getByText('大阪府公立入試・3,193語')).toBeInTheDocument();
-  expect(screen.getByText('基礎・標準・応用・5,934語')).toBeInTheDocument();
-
-  fireEvent.click(screen.getByText('中学英語'));
-  expect(onSelectTextbook).toHaveBeenCalledWith('osaka-koukou-nyuushi');
-});
-
-test('単語データを読む前は語数を出さない', () => {
-  show({ wordCountOf: () => null });
-
-  expect(screen.getByText('大阪府公立入試')).toBeInTheDocument();
-  expect(screen.queryByText(/\d語/)).not.toBeInTheDocument();
+  const stacks = [...document.querySelectorAll('.free-study-card__stack')]
+    .map((stack) => [...stack.querySelectorAll('img')].map((img) => img.getAttribute('src')));
+  expect(stacks).toEqual([
+    ['https://example.test/a.jpg', 'https://example.test/b.jpg', 'https://example.test/c.jpg'],
+    ['/covers/sunshine1.jpg', '/covers/sunshine2.jpg'],
+    ['https://example.test/p5.jpg'],
+  ]);
 });
 
 test('英検は選ばずに一段下りる', () => {
