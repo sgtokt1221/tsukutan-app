@@ -162,6 +162,7 @@ cd functions && npm run serve   # Functions エミュレータ
 ## 7. Common Pitfalls
 
 - **このリポジトリは公開。市販の本の中身（単語帳の収録語と並び・長文の本文）を `public/` や Git に入れない。** 元データも出力も `local/`（.gitignore 済み）に置き、Firestore の `licensedWordBooks` / `licensedReadings`（`isEnrolled`）へ `scripts/upload-licensed-*.js --apply` で入れる。職員の画面は関数 `staffBookWords` から読む。`local/` の控えは `~/Backups/tsukutan-local-licensed-*.tgz`（2026-09-27 に履歴から消した）
+- **大きなデータを Firestore の配列・マップのまま入れて SDK で読まない。** 1文書のほどきに数十秒かかり、常時接続（Listen）が 503 で止まって他の読み込みも道連れになる。JSON の文字列（`json`）で持ち、REST で読む（`src/logic/licensedWords.js`）
 - **`npm run deploy` は動かない。** `gh-pages -d build` を呼ぶが `gh-pages` が dependencies にも node_modules にも無い。デプロイは `firebase deploy` を使うか、`gh-pages` を入れる
 - **`basename="/tsukutan-app"`** が Router に固定されている。Firebase Hosting のルートに置くとパスが合わない（GitHub Pages 前提の設定が残っている）
 - **`importUsers` は既存ユーザーを全削除してから再作成する。** 部分更新ではない。CSV 実行前に必ず影響範囲を確認する
