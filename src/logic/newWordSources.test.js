@@ -80,8 +80,15 @@ describe('教材の語を読む', () => {
       { id: 'e' },
     ]);
     expect(ids(await getNewWordSource('eiken-3').load())).toEqual(['b', 'c']);
-    expect(ids(await getNewWordSource('eiken-5').load())).toEqual(['a']);
+    expect(ids(await getNewWordSource('eiken-4').load())).toEqual([]);
     expect(ids(await getNewWordSource('eiken-pre2').load())).toEqual(['d']);
+  });
+
+  test('**英検5級・2級・準1級はでる順パス単の語**（2026-09-27）', async () => {
+    mockTextbook.mockResolvedValue([{ id: 'p1' }, { id: 'p2' }]);
+    expect(ids(await getNewWordSource('eiken-5').load())).toEqual(['p1', 'p2']);
+    expect(mockTextbook).toHaveBeenCalledWith('book-passtan5');
+    expect(getNewWordSource('eiken-2').title).toBe('英検2級 でる順パス単［5訂版］');
   });
 
   test('Sunshine は学年で絞る', async () => {

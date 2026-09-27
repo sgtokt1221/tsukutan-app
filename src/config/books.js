@@ -65,6 +65,15 @@ export const BOOKS = [
     収録語は data-sources/passtan-decks/（出典の誤記は直して印を残してある）
   */
   {
+    id: 'book-passtan5',
+    deckId: 'passtan5',
+    title: '英検5級 でる順パス単［5訂版］',
+    publisher: '旺文社',
+    count: 570,
+    cover: `${COVER_BASE}/books_en_passtan5_5.jpg`,
+    eikenOption: 'eiken-5',
+  },
+  {
     id: 'book-passtan2',
     deckId: 'passtan2',
     title: '英検2級 でる順パス単［5訂版］',

@@ -50,13 +50,14 @@ const QUIZ_BOOKS = [
   { id: 'book-leap', title: '必携英単語LEAP', file: 'words-book-leap.json' },
   { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', file: 'words-book-idiom-target1000.json' },
   // 英検2級・準1級はでる順パス単で出す（2026-09-27。英検の級からは外した）
+  { id: 'book-passtan5', title: '英検5級 でる順パス単［5訂版］', file: 'words-book-passtan5.json' },
   { id: 'book-passtan2', title: '英検2級 でる順パス単［5訂版］', file: 'words-book-passtan2.json' },
   { id: 'book-passtanp1', title: '英検準1級 でる順パス単［5訂版］', file: 'words-book-passtanp1.json' },
 ];
 /** 小テストに出せる英検の級（1級は語に印が無いので出さない。定着度と同じ） */
 const QUIZ_EIKEN_LEVELS = [
-  { id: '5', label: '5級' }, { id: '4', label: '4級' }, { id: '3', label: '3級' },
-  // 2級・準1級はでる順パス単（上の QUIZ_BOOKS）へ移した（2026-09-27）
+  { id: '4', label: '4級' }, { id: '3', label: '3級' },
+  // 5級・2級・準1級はでる順パス単（上の QUIZ_BOOKS）へ移した（2026-09-27）
   { id: 'pre2', label: '準2級' },
 ];
 /** 1回に出せる人数の上限（1つの文書に入る大きさと、誤操作で全校に出さないため） */

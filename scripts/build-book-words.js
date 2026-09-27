@@ -124,6 +124,44 @@ const indexMaster = (master) => {
   return by;
 };
 
+/**
+ * **意味を本から取らない単語帳**（英検5級パス単。2026-09-27）。索引から綴りと番号だけ起こしたので、
+ * 意味・例文・レベル・id は単語データ（マスタ）の同じ語から取る。同じ綴りが複数あれば
+ * 英検5級の印がある方 → やさしい方を選ぶ。**マスタの id を使う**（英検5級として覚えた記録がつながる）。
+ * 1冊の中で同じ語に2回当たったら（you の主格・目的格など）、2回目は本の id にする（札が2枚重ならないように）
+ */
+const masterCardOf = (deckId, entry, byWord, usedIds, { eiken = null, written = {}, pools = [] } = {}) => {
+  const keys = [entry.en, String(entry.en).split(',')[0]].map(norm);
+  /*
+    **照合する順：単語データ（マスタ）→ 高校英語・大阪府 → 先に作った単語帳**（2026-09-27）。
+    マスタに無い語（replace など）も、ほかの本に同じ語があればその札を使う（同じ語が本ごとに別の札に
+    ならない＝覚えた記録が1つにまとまる）。どこにも無い語だけ新しく作る
+  */
+  let found = [];
+  for (const pool of [byWord, ...pools]) {
+    found = keys.map((k) => pool.get(k) || []).find((list) => list.length > 0) || [];
+    if (found.length) break;
+  }
+  // 本の訳があれば、いちばん近い意味の語を先に見る（2級・準1級。5級は訳が無い）
+  const byMeaning = entry.ja ? pickByMeaning(found, entry.ja) : null;
+  const rank = (m) => [eiken && (m.eikenLevels || []).map(String).includes(eiken) ? 0 : 1, Number.isFinite(m.level) ? m.level : 99];
+  const m = byMeaning || [...found].sort((a, b) => {
+    const [a1, a2] = rank(a); const [b1, b2] = rank(b);
+    return a1 - b1 || a2 - b2;
+  })[0];
+  // **単語データに無い語だけ、本の訳で新しい札を作る**（照合が先。2026-09-27 沖藤さんの指定）
+  if (!m) return cardOf(deckId, entry, new Map(), written);
+  const own = usedIds.has(m.id);
+  const card = { id: own ? idOf(deckId, entry.no) : m.id, word: String(entry.en), meaning: m.meaning, no: entry.no, partOfSpeech: '' };
+  for (const key of [...BORROW, 'exampleSource']) {
+    if (own && key === 'level') continue;
+    if (m[key] === undefined || m[key] === null || m[key] === '') continue;
+    card[key] = m[key];
+  }
+  usedIds.add(card.id);
+  return card;
+};
+
 const cardOf = (deckId, entry, byWord, written = {}) => {
   const card = {
     id: idOf(deckId, entry.no),
@@ -187,12 +225,42 @@ const main = () => {
   let changed = 0;
   /** 作り終えた単語帳の語（綴り → 例文のある札）。後ろの本が例文を借りる */
   const bookPool = new Map();
+  /** 高校英語・大阪府の語（照合する本が、マスタの次に見る） */
+  const extraByWord = indexMaster(['words-highschool.json', 'words-osaka.json']
+    .flatMap((f) => JSON.parse(fs.readFileSync(path.join(OUT_DIR, f), 'utf8'))));
 
   for (const file of decks) {
     const deck = JSON.parse(fs.readFileSync(file, 'utf8'));
     const writtenPath = path.join(EXAMPLES_DIR, `${deck.deckId}.json`);
     const written = fs.existsSync(writtenPath) ? JSON.parse(fs.readFileSync(writtenPath, 'utf8')) : {};
-    const cards = deck.words.map((entry) => cardOf(deck.deckId, entry, byWord, written));
+    const usedIds = new Set();
+    /*
+      meaningFrom: 'master' … 単語データと照合する本（英検パス単）。同じ語があればその意味・id・例文を使い、
+      無い語だけ本の訳で作る。品詞・格で分けた語（hint 付き）は訳をこちらで決めてあるので本の札にする
+    */
+    const cards = deck.words.map((entry) => (deck.meaningFrom === 'master' && !entry.hint
+      ? masterCardOf(deck.deckId, entry, byWord, usedIds, { eiken: deck.eiken || null, written, pools: [extraByWord, bookPool] })
+      : cardOf(deck.deckId, entry, byWord, written)));
+    /*
+      **1冊の中で id を重ねない。** 品詞・格で分けた語（you の主格と目的格など）が同じマスタの語に
+      当たると、札が2枚同じ id になる（学習の記録が1つに潰れる）。2枚目は本の id にし、level は外す
+    */
+    const seenIds = new Set();
+    for (let i = 0; i < cards.length; i += 1) {
+      const card = cards[i];
+      if (seenIds.has(card.id)) {
+        card.id = idOf(deck.deckId, deck.words[i].no);
+        delete card.level;
+      }
+      seenIds.add(card.id);
+      // 手で書いた例文は、どの道で作った札でも最後の手当てとして付ける
+      const w = written[String(card.no)];
+      if (!card.example && w && w.example && w.exampleJa) {
+        card.example = String(w.example);
+        card.exampleJa = String(w.exampleJa);
+        card.exampleSource = 'written';
+      }
+    }
     /*
       **前に作った単語帳の例文も借りる**（2026-09-27。パス単のため）。マスタに無い語でも、ほかの本に
       同じ綴り・近い訳の語があれば、その例文（本の訳に合わせて書いたもの）を使う。借りるのは例文だけ
