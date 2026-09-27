@@ -80,7 +80,6 @@ describe('教材の語を読む', () => {
       { id: 'e' },
     ]);
     expect(ids(await getNewWordSource('eiken-3').load())).toEqual(['b', 'c']);
-    expect(ids(await getNewWordSource('eiken-4').load())).toEqual([]);
     expect(ids(await getNewWordSource('eiken-pre2').load())).toEqual(['d']);
   });
 

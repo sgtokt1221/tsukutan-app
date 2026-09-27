@@ -131,7 +131,13 @@ const indexMaster = (master) => {
  * 1冊の中で同じ語に2回当たったら（you の主格・目的格など）、2回目は本の id にする（札が2枚重ならないように）
  */
 const masterCardOf = (deckId, entry, byWord, usedIds, { eiken = null, written = {}, pools = [] } = {}) => {
-  const keys = [entry.en, String(entry.en).split(',')[0]].map(norm);
+  /*
+    熟語は書き方を寄せてから引く：「～」、( ) の中（無くてもよい部分）、[ ] の中（言い換え）を外す
+    （例: 「go (back) home」→「go home」、「start doing [to do]」→「start doing」）
+  */
+  const loose = String(entry.en).replace(/[～~]/g, ' ').replace(/\([^)]*\)/g, ' ').replace(/\[[^\]]*\]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+  const keys = [...new Set([entry.en, String(entry.en).split(',')[0], loose].map(norm))];
   /*
     **照合する順：単語データ（マスタ）→ 高校英語・大阪府 → 先に作った単語帳**（2026-09-27）。
     マスタに無い語（replace など）も、ほかの本に同じ語があればその札を使う（同じ語が本ごとに別の札に
@@ -152,7 +158,7 @@ const masterCardOf = (deckId, entry, byWord, usedIds, { eiken = null, written = 
   // **単語データに無い語だけ、本の訳で新しい札を作る**（照合が先。2026-09-27 沖藤さんの指定）
   if (!m) return cardOf(deckId, entry, new Map(), written);
   const own = usedIds.has(m.id);
-  const card = { id: own ? idOf(deckId, entry.no) : m.id, word: String(entry.en), meaning: m.meaning, no: entry.no, partOfSpeech: '' };
+  const card = { id: own ? idOf(deckId, entry.no) : m.id, word: String(entry.en), meaning: m.meaning || '', no: entry.no, partOfSpeech: '' };
   for (const key of [...BORROW, 'exampleSource']) {
     if (own && key === 'level') continue;
     if (m[key] === undefined || m[key] === null || m[key] === '') continue;
@@ -166,8 +172,8 @@ const cardOf = (deckId, entry, byWord, written = {}) => {
   const card = {
     id: idOf(deckId, entry.no),
     word: String(entry.en),
-    // **本の訳が正。** マスタの訳で上書きしない
-    meaning: String(entry.ja),
+    // **本の訳が正。** マスタの訳で上書きしない（訳を持たない本＝照合する本では空。下で埋める）
+    meaning: entry.ja == null ? '' : String(entry.ja),
     no: entry.no,
     // 品詞タブの `word.partOfSpeech.includes()` は無防備なので、空でも必ず置く
     partOfSpeech: '',
