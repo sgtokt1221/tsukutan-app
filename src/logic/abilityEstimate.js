@@ -87,3 +87,23 @@ export const expectedVocabulary = (words = [], theta) => {
   }
   return Math.round(total);
 };
+
+/**
+ * 知っていそうな語数から、力を逆に求める（expectedVocabulary の逆。2026-09-27）。
+ * 力を記録していない古いテスト（2026-09-26 のお昼より前）でも、推定語数は残っているので、きろくの「伸び」を
+ * ランクと同じものさしで描ける。語数は力に対して単調に増えるので、二分法で求める。
+ * 全部の語を知っている（上限に張り付いた）ときは range の上端を返す。
+ * @param {number} vocabulary 推定語数（ログの estimatedVocabulary）
+ * @param {Array} words 単語データ（テストに使ったのと同じもの）
+ */
+export const abilityFromVocabulary = (vocabulary, words = [], range = [-2, 12]) => {
+  if (!Number.isFinite(vocabulary) || !words.length) return null;
+  let [lo, hi] = range;
+  if (expectedVocabulary(words, hi) <= vocabulary) return hi;
+  if (expectedVocabulary(words, lo) >= vocabulary) return lo;
+  for (let i = 0; i < 40; i += 1) {
+    const mid = (lo + hi) / 2;
+    if (expectedVocabulary(words, mid) < vocabulary) lo = mid; else hi = mid;
+  }
+  return Math.round(((lo + hi) / 2) * 100) / 100;
+};

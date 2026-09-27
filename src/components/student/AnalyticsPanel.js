@@ -9,6 +9,7 @@ import RankCard from '../assessment/RankCard';
 import { abilityScoreOf, rankLabel } from '../../logic/rankLogic';
 import { retentionBreakdown, retentionTowardGoal } from '../../logic/retentionBreakdown';
 import { abilityHistory, weeklyStudy, nextAction } from '../../logic/recordSummary';
+import { loadWordMaster } from '../../logic/wordMaster';
 import './Record.css';
 
 /**
@@ -45,6 +46,8 @@ export default function AnalyticsPanel({ onNavigateTab, onStartTest }) {
   const [userData, setUserData] = useState(null);
   const [logs, setLogs] = useState([]);
   const [retention, setRetention] = useState(null);
+  // 力を記録していない古いテストがあるときだけ読む（推定語数から力を逆に求める。recordSummary.js）
+  const [masterWords, setMasterWords] = useState([]);
 
   useEffect(() => {
     let alive = true;
@@ -62,7 +65,12 @@ export default function AnalyticsPanel({ onNavigateTab, onStartTest }) {
         ]);
         if (!alive) return;
         setUserData(userDoc.exists() ? userDoc.data() : null);
-        setLogs(logSnapshot.docs.map((d) => d.data()));
+        const allLogs = logSnapshot.docs.map((d) => d.data());
+        setLogs(allLogs);
+        if (allLogs.some((l) => l && l.sessionType === 'placement_test' && !Number.isFinite(l.ability))) {
+          // 読めなくてもきろくは出す（そのときは判定レベルで描く）
+          loadWordMaster().then((words) => { if (alive) setMasterWords(words || []); }).catch(() => {});
+        }
         setRetention(retentionBreakdown(reviewSnapshot.docs.map((d) => d.data())));
       } catch (error) {
         console.error('きろくを読めませんでした:', error);
@@ -86,7 +94,7 @@ export default function AnalyticsPanel({ onNavigateTab, onStartTest }) {
 
   const progress = userData?.progress || {};
   const score = abilityScoreOf({ level: userData?.level, ability: progress.assessedAbility });
-  const history = abilityHistory(logs);
+  const history = abilityHistory(logs, masterWords);
   const week = weeklyStudy(logs);
   const weekMinutes = week.reduce((sum, d) => sum + d.minutes, 0);
   const weekWords = week.reduce((sum, d) => sum + d.words, 0);

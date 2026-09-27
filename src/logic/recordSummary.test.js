@@ -52,3 +52,35 @@ describe('次にやるとよいこと', () => {
     expect(nextAction({ history: [{ date: at(2026, 9, 20), score: 400 }], retention, now }).text).toMatch(/復習/);
   });
 });
+
+describe('力を記録していない古いテスト（2026-09-27）', () => {
+  const { abilityHistory } = require('./recordSummary');
+  const { abilityFromVocabulary, expectedVocabulary } = require('./abilityEstimate');
+  const words = Array.from({ length: 700 }, (_, i) => ({ id: `w${i}`, level: (i % 7) + 1 }));
+
+  test('推定語数から力を逆に求める（expectedVocabulary の逆）', () => {
+    const theta = 4.3;
+    const v = expectedVocabulary(words, theta);
+    expect(Math.abs(abilityFromVocabulary(v, words) - theta)).toBeLessThan(0.05);
+  });
+
+  test('**力の無いテストも、力の有るテストと同じものさしで描く**（判定レベルの代表値に落とさない）', () => {
+    const v = expectedVocabulary(words, 5.5);
+    const [old, now] = abilityHistory([
+      { sessionType: 'placement_test', timestamp: new Date('2026-09-26T02:00:00Z'), finalLevel: 6, estimatedVocabulary: v },
+      { sessionType: 'placement_test', timestamp: new Date('2026-09-27'), finalLevel: 6, ability: 5.5 },
+    ], words);
+    expect(Math.abs(old.score - now.score)).toBeLessThanOrEqual(2);
+  });
+
+  test('**推定の仕方が変わる前のテストは逆に求めない**（全部の語＝上限に張り付く）', () => {
+    const { scoreFromLegacyLevel } = require('./rankLogic');
+    const [p] = abilityHistory([{ sessionType: 'placement_test', timestamp: new Date('2026-09-20'), finalLevel: 7, estimatedVocabulary: 700 }], words);
+    expect(p.score).toBe(scoreFromLegacyLevel(7));
+  });
+
+  test('単語データが無ければ判定レベルで描く（落ちない）', () => {
+    const [p] = abilityHistory([{ sessionType: 'placement_test', timestamp: new Date('2026-09-20'), finalLevel: 6, estimatedVocabulary: 100 }]);
+    expect(Number.isFinite(p.score)).toBe(true);
+  });
+});

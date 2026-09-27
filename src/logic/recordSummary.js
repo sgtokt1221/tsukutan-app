@@ -7,6 +7,7 @@
  * 「最適な学習時間・曜日」も外した——中身はテストを受けた時刻で、無いときは12時・月曜日の作り物だった。
  */
 import { abilityScoreOf } from './rankLogic';
+import { abilityFromVocabulary } from './abilityEstimate';
 import { getTokyoDateKey } from './dateKeys';
 
 const toDate = (value) => {
@@ -17,14 +18,26 @@ const toDate = (value) => {
 
 /**
  * テストごとの力（能力スコア）。古い順。
- * 力（ability）を記録していない古いテストは、判定レベルの代表値で。
+ * **力（ability）を記録していない古いテストは、推定語数から力を逆に求める**（2026-09-27）。
+ * 判定レベルの代表値で描くと、ランク（力から出している）と食い違った（サポート太郎：ランク S 上級なのに線は別の段）。
+ * ただし**推定語数を力から出すようになる前（ESTIMATE_BY_ABILITY_SINCE より前）のテストは逆に求めない**。
+ * そのころの推定語数は「判定レベル以下の語を全部」数えたもので、逆に求めると上限に張り付く
+ * （サポート太郎の 9/20：8,160語＝全部 → SS 上級になった）。そのテストと、単語データ（words）が無いときは、判定レベルの代表値で。
  */
-export const abilityHistory = (logs = []) => logs
+export const ESTIMATE_BY_ABILITY_SINCE = new Date('2026-09-26T00:58:52Z'); // df8391c7（単語力チェックテストの推定を力からに）
+
+export const abilityHistory = (logs = [], words = []) => logs
   .filter((log) => log && log.sessionType === 'placement_test')
-  .map((log) => ({
-    date: toDate(log.timestamp),
-    score: abilityScoreOf({ level: log.finalLevel || log.level, ability: log.ability }),
-  }))
+  .map((log) => {
+    const date = toDate(log.timestamp);
+    const ability = Number.isFinite(log.ability)
+      ? log.ability
+      : (date && date >= ESTIMATE_BY_ABILITY_SINCE ? abilityFromVocabulary(Number(log.estimatedVocabulary), words) : null);
+    return {
+      date,
+      score: abilityScoreOf({ level: log.finalLevel || log.level, ability: Number.isFinite(ability) ? ability : undefined }),
+    };
+  })
   .filter((point) => point.date && Number.isFinite(point.score))
   .sort((a, b) => a.date - b.date);
 
