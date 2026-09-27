@@ -169,3 +169,21 @@
 .rec-week__day.is-today .rec-week__label {
   color: var(--color-ink-olive);
 }
+
+/* 教材ごとの定着度（2026-09-27）。教材を選ぶと、下の帯がその教材の内訳になる */
+.rec-mastery {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.rec-mastery__select {
+  width: 100%;
+  min-height: var(--tap-target);
+  padding: 0 var(--space-12);
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+}

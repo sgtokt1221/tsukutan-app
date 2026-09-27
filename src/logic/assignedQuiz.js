@@ -42,6 +42,41 @@ export async function saveQuizResult(uid, quiz, answers) {
   return { score, total: answers.length };
 }
 
+/**
+ * 自分で始めたテスト（教材を選んで「テスト」。2026-09-27）の結果。**先生の小テストの結果（quizResults）と混ぜない**
+ * （混ぜると先生の画面で「出していない小テストを解いた」ことになる）。
+ */
+export async function saveSelfTestResult(uid, quiz, answers) {
+  const score = answers.filter((a) => a.correct).length;
+  await setDoc(doc(db, 'users', uid, 'selfTests', quiz.id), {
+    title: String(quiz.title || ''),
+    score,
+    total: answers.length,
+    answers: answers.map((a) => ({ id: String(a.id), correct: Boolean(a.correct) })),
+    finishedAt: serverTimestamp(),
+  });
+  return { score, total: answers.length };
+}
+
+/** 自分で始めるテストの問題数の上限。100語の帯を全部出すと長すぎる */
+export const SELF_TEST_MAX = 20;
+
+/**
+ * 自分で始めるテストを組む。範囲の語から**混ぜて**最大 SELF_TEST_MAX 問。
+ * ひっかけは同じ教材の語（pool）から選ぶ（高校の単語帳に中学の教科書の訳が混ざらないように）。
+ */
+export function buildSelfTest({ title, words, pool }, random = Math.random, now = Date.now()) {
+  const usable = (words || []).filter((w) => w && w.id && w.word && w.meaning);
+  return {
+    id: `self_${now}`,
+    title: String(title || ''),
+    words: shuffle(usable, random).slice(0, SELF_TEST_MAX),
+    direction: 'en-ja',
+    selfTest: true,
+    pool: pool || [],
+  };
+}
+
 const shuffle = (items, random) => {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {

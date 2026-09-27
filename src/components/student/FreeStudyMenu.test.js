@@ -309,3 +309,26 @@ describe('学校の教科書（Sunshine）', () => {
     expect(freeStudyBackTarget('textbook-grade')).toBe('main');
   });
 });
+
+describe('練習｜テスト（2026-09-27）', () => {
+  const book = { id: 'book-leap', title: '必携英単語LEAP', publisher: '数研出版', count: 250, cover: 'x' };
+
+  test('範囲を選ぶ画面の上に出て、押すと親へ渡る', () => {
+    const onChangePurpose = jest.fn();
+    show({ mode: 'book-range', selectedBook: book, purpose: 'practice', onChangePurpose });
+    expect(screen.getByRole('radio', { name: '練習' })).toHaveAttribute('aria-checked', 'true');
+    fireEvent.click(screen.getByRole('radio', { name: 'テスト' }));
+    expect(onChangePurpose).toHaveBeenCalledWith('test');
+  });
+
+  test('テストを選んでいれば、そう書く', () => {
+    show({ mode: 'book-range', selectedBook: book, purpose: 'test', onChangePurpose: jest.fn() });
+    expect(screen.getByRole('radio', { name: 'テスト' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByText(/4択で出ます/)).toBeInTheDocument();
+  });
+
+  test('最初の画面には出さない', () => {
+    show({ onChangePurpose: jest.fn() });
+    expect(screen.queryByRole('radio', { name: 'テスト' })).not.toBeInTheDocument();
+  });
+});

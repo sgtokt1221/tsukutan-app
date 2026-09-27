@@ -7,6 +7,7 @@ import TextbookPagePicker from './TextbookPagePicker';
 import './FreeStudyMenu.css';
 import { WRITING_ENABLED } from '../../config/features';
 import { bookForEiken } from '../../config/books';
+import { SELF_TEST_MAX } from '../../logic/assignedQuiz';
 
 /**
  * 自由学習の入口。
@@ -108,6 +109,35 @@ function CardBody({ title, description, badge }) {
   );
 }
 
+/**
+ * 覚える（練習＝カード）か、テスト（4択）か。**範囲を選ぶ画面の上に出す**（2026-09-27）。
+ * テストしたい生徒もいるので、同じ範囲の選び方のまま切り替えられるようにした。
+ */
+function PurposeToggle({ purpose, onChange }) {
+  const option = (value, label) => (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={purpose === value}
+      className={purpose === value ? 'free-study-purpose__option is-active' : 'free-study-purpose__option'}
+      onClick={() => onChange(value)}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="free-study-purpose">
+      <div className="free-study-purpose__switch" role="radiogroup" aria-label="覚えるかテストするか">
+        {option('practice', '練習')}
+        {option('test', 'テスト')}
+      </div>
+      <p className="free-study-purpose__note">
+        {purpose === 'test' ? `範囲の中から最大${SELF_TEST_MAX}問、4択で出ます` : 'カードで覚えます'}
+      </p>
+    </div>
+  );
+}
+
 export default function FreeStudyMenu({
   mode,
   onNavigate,
@@ -128,12 +158,21 @@ export default function FreeStudyMenu({
   textbookGrade = null,
   onSelectTextbookGrade,
   onStartTextbookPages,
+  // 範囲を選んだあと 覚える（練習）か テストか（2026-09-27）。持つのは親
+  purpose = 'practice',
+  onChangePurpose,
 }) {
+  const purposeToggle = onChangePurpose ? <PurposeToggle purpose={purpose} onChange={onChangePurpose} /> : null;
   if (mode === 'textbook-grade' || mode === 'textbook-pages') {
     if (textbookError) return <p className="tile-caption" role="alert">{textbookError}</p>;
     if (!textbookCards) return <p className="tile-caption">教科書の単語を読み込んでいます…</p>;
     if (mode === 'textbook-pages') {
-      return <TextbookPagePicker cards={textbookCards} grade={textbookGrade} onStart={onStartTextbookPages} />;
+      return (
+        <>
+          {purposeToggle}
+          <TextbookPagePicker cards={textbookCards} grade={textbookGrade} onStart={onStartTextbookPages} />
+        </>
+      );
     }
     return (
       <div className="list-group">
@@ -171,6 +210,8 @@ export default function FreeStudyMenu({
   if (mode === 'book-range') {
     if (!selectedBook) return null;
     return (
+      <>
+      {purposeToggle}
       <div className="list-group">
         {rangesOf(selectedBook.count).map((range) => (
           <button
@@ -184,6 +225,7 @@ export default function FreeStudyMenu({
           </button>
         ))}
       </div>
+      </>
     );
   }
 

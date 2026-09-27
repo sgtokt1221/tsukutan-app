@@ -27,7 +27,7 @@ import { wordsInRange, rangeKeyOf } from './logic/bookWords';
 import {
   loadSunshineCards, sunshineTextbookId, isSunshineTextbookId, gradeOfSunshineId, wordsInPages, pageRangeKey, pageLabel,
 } from './logic/textbookPages';
-import { loadPendingQuizzes } from './logic/assignedQuiz';
+import { loadPendingQuizzes, buildSelfTest } from './logic/assignedQuiz';
 import AssignedQuiz from './components/quiz/AssignedQuiz';
 import AssignedQuizCard from './components/quiz/AssignedQuizCard';
 import ExamMissedNotice from './components/quiz/ExamMissedNotice';
@@ -1180,6 +1180,10 @@ export default function StudentDashboard() {
         alert('この範囲の単語が読み込めませんでした。電波の良いところで試してください。');
         return;
       }
+      if (freeStudyPurpose === 'test') {
+        startSelfTest({ title: `${book.title} ${range.label}`, words, pool: all });
+        return;
+      }
 
       const rangeKey = rangeKeyOf(range.from, range.to);
       const uid = auth.currentUser?.uid;
@@ -1226,6 +1230,8 @@ export default function StudentDashboard() {
   */
   const [pendingQuizzes, setPendingQuizzes] = useState([]);
   const [activeQuiz, setActiveQuiz] = useState(null);
+  // 教材を選んだあと、覚える（練習）か、テストするか（2026-09-27）
+  const [freeStudyPurpose, setFreeStudyPurpose] = useState('practice');
   const refreshQuizzes = useCallback(async (uid) => {
     try {
       setPendingQuizzes(await loadPendingQuizzes(uid));
@@ -1307,10 +1313,16 @@ export default function StudentDashboard() {
     setActiveQuiz(quiz);
     setViewMode('assigned-quiz');
   };
+  /** 教材を選んで「テスト」（2026-09-27）。先生の小テストと同じ4択の画面で解く */
+  const startSelfTest = (source) => {
+    noteDeck(null); // 練習ではない（受験サポートのタスクの時間に付けない）
+    startAssignedQuiz(buildSelfTest(source));
+  };
   const closeAssignedQuiz = (finished) => {
+    const wasSelfTest = Boolean(activeQuiz && activeQuiz.selfTest);
     setActiveQuiz(null);
     setViewMode('select');
-    if (finished && userId) refreshQuizzes(userId);
+    if (finished && userId && !wasSelfTest) refreshQuizzes(userId);
   };
 
   const handleSelectTextbookGrade = (grade) => {
@@ -1323,6 +1335,14 @@ export default function StudentDashboard() {
     noteDeck(null); // 単語帳の練習ではない（受験サポートのタスクに付けない）
     const words = wordsInPages(textbookCards, grade, from, to);
     if (words.length === 0) return;
+    if (freeStudyPurpose === 'test') {
+      startSelfTest({
+        title: `Sunshine ${grade}年 ${pageLabel(from, to)}`,
+        words,
+        pool: textbookCards.filter((c) => c.grade === grade),
+      });
+      return;
+    }
     const textbookId = sunshineTextbookId(grade);
     const rangeKey = pageRangeKey(from, to);
     const uid = auth.currentUser?.uid;
@@ -1996,6 +2016,8 @@ export default function StudentDashboard() {
                   textbookGrade={gradeOfSunshineId(selectedTextbookId)}
                   onSelectTextbookGrade={handleSelectTextbookGrade}
                   onStartTextbookPages={startTextbookPages}
+                  purpose={freeStudyPurpose}
+                  onChangePurpose={setFreeStudyPurpose}
                 />
               ) : (
                 <>

@@ -1142,15 +1142,7 @@ staffMaterialsApp.post('/', async (req, res) => {
     // 定着度は教材ファイルが読めなくても、苦手な単語だけは返す（片方の失敗で両方を消さない）
     let mastery = null;
     try {
-      const master = await loadDataFile('words-master.json');
-      const levelBySpelling = new Map();
-      for (const w of master) {
-        const k = String(w.word || '').trim().toLowerCase();
-        // 同じ綴りが複数あれば、いちばんやさしい level（知っている見込みを大きく見すぎない方へは倒さない）
-        if (Number.isFinite(w.level) && (!levelBySpelling.has(k) || w.level < levelBySpelling.get(k))) levelBySpelling.set(k, w.level);
-      }
-      const ability = Number(userSnap.exists && userSnap.data().progress && userSnap.data().progress.assessedAbility);
-      mastery = masteryByTextbook(docs, await loadMasteryTextbooks(), { ability, levelBySpelling });
+      mastery = await masteryOfUser(userSnap, docs);
     } catch (e) {
       logger.warn('定着度の教材を読めなかった', { message: e && e.message });
     }
@@ -1294,6 +1286,37 @@ const MASTERY_TEXTBOOKS = [
   { id: 'eiken-2', title: '英検2級 でる順パス単［5訂版］', file: 'words-book-passtan2.json' },
   { id: 'eiken-pre1', title: '英検準1級 でる順パス単［5訂版］', file: 'words-book-passtanp1.json' },
 ];
+/**
+ * 生徒1人の教材ごとの定着度。**職員の画面（staffStudentMaterials）と生徒の画面（myTextbookMastery）で同じものを使う**
+ * （数え方を2か所に書くと、先生と生徒で数字が食い違う）。
+ */
+async function masteryOfUser(userSnap, reviewDocs) {
+  const master = await loadDataFile('words-master.json');
+  const levelBySpelling = new Map();
+  for (const w of master) {
+    const k = String(w.word || '').trim().toLowerCase();
+    // 同じ綴りが複数あれば、いちばんやさしい level（知っている見込みを大きく見すぎない方へは倒さない）
+    if (Number.isFinite(w.level) && (!levelBySpelling.has(k) || w.level < levelBySpelling.get(k))) levelBySpelling.set(k, w.level);
+  }
+  const ability = Number(userSnap.exists && userSnap.data().progress && userSnap.data().progress.assessedAbility);
+  return masteryByTextbook(reviewDocs, await loadMasteryTextbooks(), { ability, levelBySpelling });
+}
+
+/**
+ * 生徒本人の教材ごとの定着度（きろくの「教材ごとの定着度」。2026-09-27）。
+ * **引数を取らない。** 誰のぶんかはログイン（request.auth.uid）だけで決める（他人のぶんは引けない）。
+ * 単語帳は塾の生徒だけの置き場にあるので、生徒の記録が無い（退塾・未登録）なら返さない。
+ */
+exports.myTextbookMastery = onCall({ region: 'us-central1' }, async (request) => {
+  const uid = request.auth && request.auth.uid;
+  if (!uid) throw new HttpsError('unauthenticated', 'ログインが必要です');
+  const userRef = db.collection('users').doc(uid);
+  const [userSnap, wordsSnap] = await Promise.all([userRef.get(), userRef.collection('reviewWords').get()]);
+  if (!userSnap.exists || userSnap.data().disabledAt) throw new HttpsError('permission-denied', '塾の生徒だけが見られます');
+  const docs = wordsSnap.docs.map((d) => ({ id: d.id, data: d.data() }));
+  return { mastery: await masteryOfUser(userSnap, docs) };
+});
+
 const loadMasteryTextbooks = async () => Promise.all(MASTERY_TEXTBOOKS.map(async ({ id, title, file, grade, eiken }) => {
   const words = await loadDataFile(file);
   if (eiken) return { id, title, words: words.filter((w) => easiestEiken(w) === eiken) };

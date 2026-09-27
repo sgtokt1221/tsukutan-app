@@ -4,6 +4,7 @@ import { auth, db } from '../../firebaseConfig';
 import { FaChevronRight } from 'react-icons/fa';
 import TrendChart from './TrendChart';
 import RetentionBar from './RetentionBar';
+import TextbookMastery from './TextbookMastery';
 import RankCard from '../assessment/RankCard';
 import { abilityScoreOf, rankLabel } from '../../logic/rankLogic';
 import { retentionBreakdown, retentionTowardGoal } from '../../logic/retentionBreakdown';
@@ -13,7 +14,8 @@ import './Record.css';
 /**
  * 「きろく」タブ（2026-09-26 に作り直した）。
  *
- * 出すのは5つ：次にやるとよいこと・いまのランクと知っている語数・力の伸び・直近7日の勉強量・定着の内訳。
+ * 出すのは6つ：次にやるとよいこと・いまのランクと知っている語数・力の伸び・直近7日の勉強量・定着の内訳・
+ * 教材ごとの定着度（2026-09-27）。
  * **文字を減らし、数字とグラフで見せる。**
  *
  * 外したもの（理由は recordSummary.js の冒頭）：正答率の推移・最適な学習時間／曜日・
@@ -157,6 +159,11 @@ export default function AnalyticsPanel({ onNavigateTab, onStartTest }) {
           <RetentionBar breakdown={goalRetention} />
         </section>
       )}
+
+      <section className="rec-section">
+        <h3 className="rec-title">教材ごとの定着度</h3>
+        <TextbookMastery />
+      </section>
     </div>
   );
 }

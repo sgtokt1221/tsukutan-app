@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import {
-  addMissedWordsToReview, answerOf, buildChoices, promptOf, saveQuizResult,
+  addMissedWordsToReview, answerOf, buildChoices, promptOf, saveQuizResult, saveSelfTestResult,
 } from '../../logic/assignedQuiz';
 import { loadSunshineCards } from '../../logic/textbookPages';
 import logger from '../../logic/logger';
@@ -9,6 +9,8 @@ import './AssignedQuiz.css';
 
 /**
  * 先生が出した小テストを解く画面。**4択を1問ずつ。**
+ * 自分で始めたテスト（`quiz.selfTest`。教材を選んで「テスト」。2026-09-27）も同じ画面で解く。
+ * そのときは結果を別の置き場（selfTests）へ書き、ひっかけは同じ教材の語（`quiz.pool`）から選ぶ。
  *
  * - 答えたら正解・不正解をその場で見せ、「次へ」で進む（見直す間を取る）
  * - 最後の問題を答えたら結果を保存する。**保存に失敗したら、そう言ってやり直せるようにする**
@@ -28,10 +30,14 @@ export default function AssignedQuiz({ quiz, uid, onExit, onFinished }) {
   // ひっかけが足りないとき用に、教科書の同じ学年の語（読めなくても小テストは進める）。
   // 苦手な単語から出した小テストは学年を持たないので、教科書の全部から選ぶ
   useEffect(() => {
+    if (quiz.selfTest) {
+      setExtraPool(quiz.pool || []);
+      return;
+    }
     loadSunshineCards()
       .then((cards) => setExtraPool(quiz.grade ? cards.filter((c) => c.grade === quiz.grade) : cards))
       .catch((error) => logger.warn('教科書の単語を読めませんでした（ひっかけは小テストの語だけで作ります）', error));
-  }, [quiz.grade]);
+  }, [quiz.grade, quiz.selfTest, quiz.pool]);
 
   const word = words[index];
   // 選択肢は問題ごとに1回だけ作る（描き直すたびに並びが変わらないように）
@@ -44,7 +50,7 @@ export default function AssignedQuiz({ quiz, uid, onExit, onFinished }) {
   const save = async (finalAnswers) => {
     setSaving('saving');
     try {
-      const saved = await saveQuizResult(uid, quiz, finalAnswers);
+      const saved = await (quiz.selfTest ? saveSelfTestResult : saveQuizResult)(uid, quiz, finalAnswers);
       setResult(saved);
       setSaving('saved');
       const missed = words.filter((w) => finalAnswers.some((a) => a.id === w.id && !a.correct));
@@ -73,8 +79,10 @@ export default function AssignedQuiz({ quiz, uid, onExit, onFinished }) {
   if (words.length === 0) {
     return (
       <div className="assigned-quiz">
-        <p className="assigned-quiz__note">この小テストには問題がありません。先生に伝えてください。</p>
-        <button type="button" className="assigned-quiz__primary" onClick={onExit}>ホームに戻る</button>
+        <p className="assigned-quiz__note">
+          {quiz.selfTest ? 'この範囲には出せる単語がありません。' : 'この小テストには問題がありません。先生に伝えてください。'}
+        </p>
+        <button type="button" className="assigned-quiz__primary" onClick={onExit}>{quiz.selfTest ? 'もどる' : 'ホームに戻る'}</button>
       </div>
     );
   }
@@ -107,7 +115,7 @@ export default function AssignedQuiz({ quiz, uid, onExit, onFinished }) {
                 </ul>
               </>
             ) : <p className="assigned-quiz__note">全問正解です。</p>}
-            <button type="button" className="assigned-quiz__primary" onClick={onFinished}>ホームに戻る</button>
+            <button type="button" className="assigned-quiz__primary" onClick={onFinished}>{quiz.selfTest ? 'もどる' : 'ホームに戻る'}</button>
           </>
         )}
       </div>

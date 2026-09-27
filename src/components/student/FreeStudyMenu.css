@@ -127,3 +127,46 @@
 .free-study-card__stack img:nth-child(1) { left: 0; z-index: 3; }
 .free-study-card__stack img:nth-child(2) { left: 20px; z-index: 2; transform: rotate(6deg); }
 .free-study-card__stack img:nth-child(3) { left: 40px; z-index: 1; transform: rotate(12deg); }
+
+/* 練習｜テスト（2026-09-27）。範囲を選ぶ画面のいちばん上 */
+.free-study-purpose {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
+}
+
+.free-study-purpose__switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+.free-study-purpose__option {
+  min-height: var(--tap-target);
+  border: 0;
+  background: transparent;
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.free-study-purpose__option + .free-study-purpose__option {
+  border-left: var(--border-default);
+}
+
+.free-study-purpose__option.is-active {
+  /* 選んでいる方をはっきり塗る（薄い色だと、どちらを選んでいるか分からない） */
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+}
+
+.free-study-purpose__note {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}

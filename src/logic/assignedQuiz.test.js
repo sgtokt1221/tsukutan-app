@@ -25,3 +25,22 @@ test('和→英は意味を見せて語を選ぶ', () => {
   expect(answerOf(w('apple', 'りんご'), 'ja-en')).toBe('apple');
   expect(buildChoices(w('apple', 'りんご'), [w('apple', 'りんご'), w('pen', 'ペン')], [], 'ja-en', seq()).sort()).toEqual(['apple', 'pen']);
 });
+
+describe('自分で始めるテスト（2026-09-27）', () => {
+  const { buildSelfTest, SELF_TEST_MAX } = require('./assignedQuiz');
+  const words = Array.from({ length: 50 }, (_, i) => ({ id: `w${i}`, word: `w${i}`, meaning: `意味${i}` }));
+
+  test('範囲から最大20問を混ぜて出し、先生の小テストと見分けられる', () => {
+    const quiz = buildSelfTest({ title: 'LEAP 1〜100', words, pool: words }, () => 0.3, 123);
+    expect(quiz.words).toHaveLength(SELF_TEST_MAX);
+    expect(quiz.id).toBe('self_123');
+    expect(quiz.selfTest).toBe(true);
+    expect(quiz.pool).toBe(words);
+    expect(new Set(quiz.words.map((w) => w.id)).size).toBe(SELF_TEST_MAX);
+  });
+
+  test('意味の無い語は出さない（4択が組めない）', () => {
+    const quiz = buildSelfTest({ title: 't', words: [{ id: 'a', word: 'a', meaning: '' }, { id: 'b', word: 'b', meaning: 'び' }] });
+    expect(quiz.words.map((w) => w.id)).toEqual(['b']);
+  });
+});

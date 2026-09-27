@@ -41,9 +41,9 @@ export default function RetentionBar({ breakdown }) {
       </ul>
 
       <p className="retention__total">
-        {breakdown.target
+        {breakdown.caption || (breakdown.target
           ? `目標 ${breakdown.target.toLocaleString()} 語のうち（復習リスト ${breakdown.learnedTotal.toLocaleString()} 語）`
-          : `復習リスト ${breakdown.total.toLocaleString()} 語`}
+          : `復習リスト ${breakdown.total.toLocaleString()} 語`)}
       </p>
     </div>
   );
