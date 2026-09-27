@@ -1201,6 +1201,77 @@ exports.staffBookWords = onRequest(
   staffBookWordsApp
 );
 
+/*
+ * **単語がどの教材に入っているか**（2026-09-27。管理画面の「単語データ」）。同じ語は教材をまたいで同じ id を持つ
+ * （単語帳・教科書を作るとき単語データと照合している）ので id で引く。1語が複数の教材に入ることもある。
+ * 教材の並びと題名は定着度と同じ（MASTERY_TEXTBOOKS）。**全部の教材を読むので、組んだ索引は覚えておく**
+ * （関数の入れ物が生きているあいだ。単語帳を入れ直したら、次に立ち上がった入れ物から新しくなる）。
+ */
+let textbookIndexPromise = null;
+function textbookIndex() {
+  if (!textbookIndexPromise) {
+    textbookIndexPromise = loadMasteryTextbooks().then((list) => {
+      const byId = new Map();
+      list.forEach((t, i) => {
+        for (const w of t.words || []) {
+          if (!w || !w.id) continue;
+          const at = byId.get(w.id) || [];
+          if (!at.includes(i)) at.push(i);
+          byId.set(w.id, at);
+        }
+      });
+      return { titles: list.map((t) => ({ id: t.id, title: t.title })), byId };
+    }).catch((e) => {
+      textbookIndexPromise = null; // 失敗は覚えない
+      throw e;
+    });
+  }
+  return textbookIndexPromise;
+}
+
+const staffWordTextbooksApp = express();
+staffWordTextbooksApp.use(cors({ origin: STAFF_ORIGINS }));
+staffWordTextbooksApp.use(express.json({ limit: '2kb' }));
+staffWordTextbooksApp.post('/', async (req, res) => {
+  const header = req.headers.authorization || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+  if (idToken === '') return res.status(401).json({ error: 'つくばホームのログインが必要です' });
+  let decoded;
+  try {
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    return res.status(401).json({ error: 'つくばホームのログインを確かめられませんでした' });
+  }
+  const file = req.body && typeof req.body.file === 'string' ? req.body.file : '';
+  if (!/^words-[a-z0-9-]+\.json$/.test(file)) return res.status(400).json({ error: '単語データの指定が正しくありません' });
+  try {
+    assertStaffClaims(decoded);
+    const [{ titles, byId }, words] = await Promise.all([textbookIndex(), loadDataFile(file)]);
+    // 返すのはこのファイルの語のぶんだけ（{ 語のid: [教材の番号…] }。番号は titles の並び）
+    const byWord = {};
+    for (const w of words || []) {
+      const at = w && w.id ? byId.get(w.id) : null;
+      if (at && at.length) byWord[w.id] = at;
+    }
+    return res.status(200).json({ titles, byWord });
+  } catch (e) {
+    if (e instanceof StaffAccessError) return res.status(403).json({ error: e.message });
+    logger.error('単語の収録教材を渡せなかった', { file, message: e && e.message });
+    return res.status(500).json({ error: '収録教材を読めませんでした' });
+  }
+});
+
+exports.staffWordTextbooks = onRequest(
+  {
+    region: 'us-central1',
+    memory: '512MiB',
+    timeoutSeconds: 120,
+    maxInstances: 10,
+    serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
+  },
+  staffWordTextbooksApp
+);
+
 exports.staffStudentMaterials = onRequest(
   {
     region: 'us-central1',
