@@ -61,8 +61,8 @@ export const BOOKS = [
     cover: `${COVER_BASE}/books_en_4051.jpg`,
   },
   /*
-    **英検のでる順パス単**（2026-09-27）。英検2級・準1級の単語はこの本の並びと訳で出す
-    （「えらぶ → 英検 → 単語を覚える」の2級・準1級もこの本を開く。→ eikenOption）。
+    **英検のでる順パス単**（2026-09-27）。英検（5級〜準1級）の単語はこの本の並びと訳で出す
+    （「えらぶ → 英検 → 単語を覚える」もこの本を開く。→ eikenOption）。
     収録語は local/licensed-decks/passtan/（Git の外。出典の誤記は直して印を残してある）
   */
   {
@@ -91,6 +91,15 @@ export const BOOKS = [
     count: 1200,
     cover: `${COVER_BASE}/books_en_passtan3_5.jpg`,
     eikenOption: 'eiken-3',
+  },
+  {
+    id: 'book-passtanp2',
+    deckId: 'passtanp2',
+    title: '英検準2級 でる順パス単［5訂版］',
+    publisher: '旺文社',
+    count: 1500,
+    cover: `${COVER_BASE}/books_en_passtanp2_5.jpg`,
+    eikenOption: 'eiken-pre2',
   },
   {
     id: 'book-passtan2',

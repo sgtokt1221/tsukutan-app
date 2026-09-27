@@ -49,18 +49,20 @@ const QUIZ_BOOKS = [
   { id: 'book-systan5', title: 'システム英単語', file: 'words-book-systan5.json' },
   { id: 'book-leap', title: '必携英単語LEAP', file: 'words-book-leap.json' },
   { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', file: 'words-book-idiom-target1000.json' },
-  // 英検2級・準1級はでる順パス単で出す（2026-09-27。英検の級からは外した）
+  // 英検の単語はでる順パス単で出す（2026-09-27。5級〜準1級。英検の級からは外した）
   { id: 'book-passtan5', title: '英検5級 でる順パス単［5訂版］', file: 'words-book-passtan5.json' },
   { id: 'book-passtan4', title: '英検4級 でる順パス単［5訂版］', file: 'words-book-passtan4.json' },
   { id: 'book-passtan3', title: '英検3級 でる順パス単［5訂版］', file: 'words-book-passtan3.json' },
+  { id: 'book-passtanp2', title: '英検準2級 でる順パス単［5訂版］', file: 'words-book-passtanp2.json' },
   { id: 'book-passtan2', title: '英検2級 でる順パス単［5訂版］', file: 'words-book-passtan2.json' },
   { id: 'book-passtanp1', title: '英検準1級 でる順パス単［5訂版］', file: 'words-book-passtanp1.json' },
 ];
 /** 小テストに出せる英検の級（1級は語に印が無いので出さない。定着度と同じ） */
 const QUIZ_EIKEN_LEVELS = [
-  // 5級・4級・3級・2級・準1級はでる順パス単（上の QUIZ_BOOKS）へ移した（2026-09-27）
-  { id: 'pre2', label: '準2級' },
+  // 5級〜準1級はすべてでる順パス単（上の QUIZ_BOOKS）へ移した（2026-09-27）。新しくは出せない
 ];
+/** もう出せないが、前に出した小テストの題名に使う */
+const EIKEN_LABELS = { 5: '5級', 4: '4級', 3: '3級', pre2: '準2級', 2: '2級', pre1: '準1級' };
 /** 1回に出せる人数の上限（1つの文書に入る大きさと、誤操作で全校に出さないため） */
 const MAX_TARGETS = 300;
 /** 1回の問題数の上限（生徒が一度に解ける量） */
@@ -194,8 +196,7 @@ const baseTitleOf = ({ source, grade, pageFrom, pageTo, bookId, noFrom, noTo, ei
     return `${book ? book.title : bookId} ${noFrom === noTo ? `No.${noFrom}` : `No.${noFrom}〜${noTo}`}`;
   }
   if (source === 'eiken') {
-    const level = QUIZ_EIKEN_LEVELS.find((l) => l.id === String(eiken));
-    return `英検${level ? level.label : eiken}`;
+    return `英検${EIKEN_LABELS[String(eiken)] || eiken}`;
   }
   return `Sunshine ${grade}年 ${pageFrom === pageTo ? `p.${pageFrom}` : `p.${pageFrom}〜${pageTo}`}`;
 };

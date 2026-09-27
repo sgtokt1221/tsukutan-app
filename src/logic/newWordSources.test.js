@@ -71,16 +71,11 @@ describe('教材の語を読む', () => {
     mockSunshine.mockReset();
   });
 
-  test('英検の級は、いちばんやさしい級1つにだけ入れる', async () => {
-    mockMaster.mockResolvedValue([
-      { id: 'a', eikenLevels: [3, 4, 5] },
-      { id: 'b', eikenLevels: [3] },
-      { id: 'c', eikenLevels: ['pre2', 3] },
-      { id: 'd', eikenLevels: ['pre2'] },
-      { id: 'e' },
-    ]);
-    // 準2級だけが英検の印で集める（ほかの級はでる順パス単。2026-09-27）
-    expect(ids(await getNewWordSource('eiken-pre2').load())).toEqual(['d']);
+  test('英検準2級もでる順パス単の語（英検の印では集めない。2026-09-27）', async () => {
+    mockTextbook.mockResolvedValue([{ id: 'p' }]);
+    expect(ids(await getNewWordSource('eiken-pre2').load())).toEqual(['p']);
+    expect(mockTextbook).toHaveBeenCalledWith('book-passtanp2');
+    expect(mockMaster).not.toHaveBeenCalled();
   });
 
   test('**英検5級・2級・準1級はでる順パス単の語**（2026-09-27）', async () => {
