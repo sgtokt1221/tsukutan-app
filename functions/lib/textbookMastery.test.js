@@ -29,7 +29,7 @@ test('教材ごとに数える。id で引けなければ中身で引く（Fires
   ];
   const [m] = masteryByTextbook(docs, [{ id: 't', title: 'T', words }]);
   expect(m.total).toBe(3);
-  expect(m.counts).toEqual({ unlearned: 1, learning: 1, settling: 0, retained: 1, graduated: 0 });
+  expect(m.counts).toEqual({ unlearned: 1, known: 0, learning: 1, settling: 0, retained: 1, graduated: 0 });
 });
 
 test('英検の級は、いちばんやさしい級1つにだけ入る（数値と文字列が混ざっていても）', () => {
@@ -45,4 +45,22 @@ test('英検の級の束は、本物の単語帳で空にならない', () => {
   for (const g of ['5', '4', '3', 'pre2', '2', 'pre1']) {
     expect(words.filter((w) => easiestEiken(w) === g).length).toBeGreaterThan(100);
   }
+});
+
+describe('テストで分かっている（推定）（2026-09-27）', () => {
+  const book = [{ id: 'bk', title: 'b', words: [
+    { id: 'a', word: 'apple', level: 1 }, { id: 'b', word: 'bank', level: 1 },
+    { id: 'c', word: 'curious', level: 7 }, { id: 'd', word: 'dog' },
+  ] }];
+  test('力が高ければ、学んでいないやさしい語を「知っていそう」に数える', () => {
+    const [m] = masteryByTextbook([], book, { ability: 6, levelBySpelling: new Map([['dog', 1]]) });
+    expect(m.counts.known).toBe(3); // apple・bank・dog はほぼ確実、curious は半分以下
+    expect(m.counts.unlearned).toBe(1);
+    expect(m.estimated).toBe(true);
+  });
+  test('テストを受けていなければ見積もらない', () => {
+    const [m] = masteryByTextbook([], book);
+    expect(m.counts.known).toBe(0);
+    expect(m.counts.unlearned).toBe(4);
+  });
 });

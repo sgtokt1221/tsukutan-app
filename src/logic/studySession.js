@@ -227,6 +227,8 @@ export function toPayload(s) {
           週間計画表のタスクに付け、見積もりに届けば済みにする。無ければ欄ごと出さない（上の音読と同じ）
         */
         ...(typeof s.deckId === 'string' && s.deckId ? { deckId: s.deckId } : {}),
+        // **長文（音読）の時間だけ印を付ける。** 無ければ単語の時間（古い記録と同じ形のまま）
+        ...(s.kind === 'reading' ? { kind: 'reading' } : {}),
     };
 }
 
@@ -339,10 +341,15 @@ export async function flushStudySessions() {
  *
  * 締めずに始めると、前のぶんが宙に浮いて消える。
  */
-export function startStudySession() {
+/**
+ * @param {'words'|'reading'} [kind] 何の時間か。**単語と長文（音読）を分けて見る**（2026-09-27）。
+ *   長文タブが 'reading' で始める。つくばホームが1日あたりの単語の時間・音読の時間に分ける
+ */
+export function startStudySession(kind = 'words') {
     if (current) endStudySession();
     const t = now();
     current = {
+        kind: kind === 'reading' ? 'reading' : 'words',
         startedAtMs: t,
         // 見え始めた時刻。裏に回っていたら null
         visibleSince: isVisible() ? t : null,
@@ -364,8 +371,10 @@ export function noteActivity(kind) {
     const t = now();
     // **手が止まっていたぶんは数えない。** 放置してから戻ってきた場合
     if (t - current.lastAt > IDLE_MS) {
+        // 放置で切れても、同じ画面の続きなので種類は持ち越す
+        const sameKind = current.kind;
         endStudySession();
-        startStudySession();
+        startStudySession(sameKind);
         if (kind === 'new') current.newWords += 1;
         if (kind === 'review') current.reviewWords += 1;
         save();
@@ -386,14 +395,15 @@ export function noteActivity(kind) {
  * @param {string} [title] 読んだものの題名。**最後の1本だけ持つ**
  */
 export function noteAloud(title) {
-    if (!current) startStudySession();
+    if (!current) startStudySession('reading');
     const t = now();
     // 手が止まっていたぶんは数えない（`noteActivity` と同じ作法）
     if (t - current.lastAt > IDLE_MS) {
         // 練習している単語帳は持ち越す（同じ単語帳のカードを続けているので）
         const deckId = current.deckId || null;
+        const sameKind = current.kind;
         endStudySession();
-        startStudySession();
+        startStudySession(sameKind);
         if (deckId) current.deckId = deckId;
     }
     // **読んだ時刻まで数える。** 締め時刻は「最後に手を動かした時刻」なので、

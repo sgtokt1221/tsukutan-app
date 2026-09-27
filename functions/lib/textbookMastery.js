@@ -13,7 +13,16 @@
 
 const LEARNING_DAYS = 7;
 const RETAINED_DAYS = 21;
-const BUCKETS = ['unlearned', 'learning', 'settling', 'retained', 'graduated'];
+const BUCKETS = ['unlearned', 'known', 'learning', 'settling', 'retained', 'graduated'];
+
+/**
+ * **まだ学んでいない語のうち、単語力チェックテストから「もう知っていそう」な語**（2026-09-27）。
+ * 生徒の画面（定着の内訳の「テストで分かっている（推定）」）と揃える。確率の式は
+ * src/logic/abilityEstimate.js の knowProbability と同じ（傾き 1.0）。**変えるときは両方を直す**。
+ * 数は「知っている確率」を足したもの（語ごとに知っている／いないを決めない）。
+ */
+const SLOPE = 1.0;
+const knowProbability = (level, theta) => 1 / (1 + Math.exp(SLOPE * (level - theta)));
 
 const normalizePos = (value) =>
   String(value || '').split(/\s*[,、]\s*/).map((p) => p.trim()).map((p) => (p === '熟' ? '熟語' : p)).join(', ');
@@ -35,7 +44,8 @@ function bucketOf(data) {
  * @param {Array<{id: string, title: string, words: Array}>} textbooks 教材ごとの語
  * @returns {Array<{id, title, total, counts: Record<string, number>}>}
  */
-function masteryByTextbook(reviewDocs, textbooks) {
+function masteryByTextbook(reviewDocs, textbooks, { ability = null, levelBySpelling = new Map() } = {}) {
+  const canEstimate = Number.isFinite(ability);
   const byId = new Map();
   const byKey = new Map();
   for (const { id, data } of reviewDocs || []) {
@@ -49,13 +59,23 @@ function masteryByTextbook(reviewDocs, textbooks) {
   return (textbooks || []).map(({ id, title, words }) => {
     const counts = Object.fromEntries(BUCKETS.map((b) => [b, 0]));
     const seen = new Set();
+    let known = 0;
     for (const w of words || []) {
       if (!w || !w.id || seen.has(w.id)) continue;
       seen.add(w.id);
       const data = byId.get(w.id) || byKey.get(contentKey(w));
-      counts[data ? bucketOf(data) : 'unlearned'] += 1;
+      if (data) {
+        counts[bucketOf(data)] += 1;
+        continue;
+      }
+      counts.unlearned += 1;
+      // 単語帳だけの語は level を持たないので、同じ綴りの単語データの level で見積もる
+      const level = Number.isFinite(w.level) ? w.level : levelBySpelling.get(String(w.word || '').trim().toLowerCase());
+      if (canEstimate && Number.isFinite(level)) known += knowProbability(level, ability);
     }
-    return { id, title, total: seen.size, counts };
+    counts.known = Math.min(counts.unlearned, Math.round(known));
+    counts.unlearned -= counts.known;
+    return { id, title, total: seen.size, counts, estimated: canEstimate };
   });
 }
 
@@ -69,4 +89,4 @@ function easiestEiken(word) {
   return ranks.length ? EIKEN_ORDER[Math.min(...ranks)] : null;
 }
 
-module.exports = { BUCKETS, EIKEN_ORDER, LEARNING_DAYS, RETAINED_DAYS, bucketOf, contentKey, easiestEiken, masteryByTextbook };
+module.exports = { BUCKETS, EIKEN_ORDER, knowProbability, LEARNING_DAYS, RETAINED_DAYS, bucketOf, contentKey, easiestEiken, masteryByTextbook };

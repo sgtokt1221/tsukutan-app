@@ -636,3 +636,10 @@ describe('練習した単語帳を送る（2026-09-24）', () => {
     expect('deckId' in toPayload(base)).toBe(false);
   });
 });
+
+describe('単語と長文の時間を分ける（2026-09-27）', () => {
+  test('長文タブで始めた記録は kind: reading で送る。単語は欄を出さない', () => {
+    expect(toPayload({ kind: 'reading', startedAtMs: 0, accumulatedMs: 5 * 60000, visibleSince: null }).kind).toBe('reading');
+    expect(toPayload({ kind: 'words', startedAtMs: 0, accumulatedMs: 5 * 60000, visibleSince: null }).kind).toBeUndefined();
+  });
+});

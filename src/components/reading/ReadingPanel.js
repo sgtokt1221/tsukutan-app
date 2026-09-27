@@ -226,7 +226,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
           締めたあとすぐ測り直すので、続けて読むぶんも数える。
         */
         endStudySession();
-        startStudySession();
+        startStudySession('reading');
       })
       .catch((transcribeError) => {
         logger.warn('音読を聞き取れませんでした', transcribeError);
@@ -247,7 +247,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     setAloud(null);
     resetRecorder();
     handledBlobRef.current = null;
-    startStudySession();
+    startStudySession('reading');
     // **開いている本の級で読む。** `grade` はおすすめを覚えているだけ
     loadReading(openBook || grade, entry.id)
       .then(setReading)

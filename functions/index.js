@@ -1134,7 +1134,15 @@ staffMaterialsApp.post('/', async (req, res) => {
     // 定着度は教材ファイルが読めなくても、苦手な単語だけは返す（片方の失敗で両方を消さない）
     let mastery = null;
     try {
-      mastery = masteryByTextbook(docs, await loadMasteryTextbooks());
+      const master = await loadDataFile('words-master.json');
+      const levelBySpelling = new Map();
+      for (const w of master) {
+        const k = String(w.word || '').trim().toLowerCase();
+        // 同じ綴りが複数あれば、いちばんやさしい level（知っている見込みを大きく見すぎない方へは倒さない）
+        if (Number.isFinite(w.level) && (!levelBySpelling.has(k) || w.level < levelBySpelling.get(k))) levelBySpelling.set(k, w.level);
+      }
+      const ability = Number(userSnap.exists && userSnap.data().progress && userSnap.data().progress.assessedAbility);
+      mastery = masteryByTextbook(docs, await loadMasteryTextbooks(), { ability, levelBySpelling });
     } catch (e) {
       logger.warn('定着度の教材を読めなかった', { message: e && e.message });
     }
