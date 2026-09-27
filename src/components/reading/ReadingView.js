@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaVolumeUp, FaStop } from 'react-icons/fa';
 import { speechPlanFor } from '../../logic/readingContent';
-import { slashGroups } from '../../logic/slashReading';
+import { slashGroups, slashUnits } from '../../logic/slashReading';
 import { useLongPress } from '../../logic/useLongPress';
 import { splitIntoUnits } from '../../logic/wordLookup';
 
@@ -106,6 +106,35 @@ function SlashSentence({ sentence, phrases, isMarked, onHold }) {
   );
 }
 
+/**
+ * 和訳モード。**英文とスラッシュ訳を同じ切れ目で並べ、その下に文全体の訳**（2026-09-27、沖藤さんの指定）。
+ *
+ *   What / makes / us / specifically human?
+ *   何が / 〜にするのか / 私たちを / とりわけ人間に
+ *   何が私たちをとりわけ人間たらしめているのだろうか。
+ *
+ * 切れ目はスラッシュ読みと同じ `slashUnits`（切り方を2か所に書かない）。
+ */
+function SlashTranslation({ sentence, phrases, isMarked, onHold }) {
+  const units = slashUnits(sentence.chunks);
+  return (
+    <>
+      <p className="reading-sentence">
+        {units.map((unit, i) => (
+          <React.Fragment key={i}>
+            <Words text={unit.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+            {i < units.length - 1 && <span className="reading-slash reading-slash--inline" aria-hidden="true"> / </span>}
+          </React.Fragment>
+        ))}
+      </p>
+      <p className="reading-sentence__slash-ja">
+        {units.map((unit) => unit.ja || '…').join(' / ')}
+      </p>
+      {sentence.ja && <p className="reading-sentence__ja">{sentence.ja}</p>}
+    </>
+  );
+}
+
 export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onStop, phrases, isMarked, onHold }) {
   return (
     <div className="reading-body">
@@ -129,7 +158,7 @@ export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onS
 
             <div className="reading-line__text">
               {mode === 'slash' && <SlashSentence sentence={sentence} phrases={phrases} isMarked={isMarked} onHold={onHold} />}
-              {(mode === 'plain' || mode === 'ja') && (
+              {mode === 'plain' && (
                 <p className="reading-sentence">
                   {sentence.chunks.map((chunk, i) => (
                     <React.Fragment key={i}>
@@ -139,7 +168,7 @@ export default function ReadingView({ reading, mode, speakingIndex, onSpeak, onS
                   ))}
                 </p>
               )}
-              {mode === 'ja' && <p className="reading-sentence__ja">{sentence.ja}</p>}
+              {mode === 'ja' && <SlashTranslation sentence={sentence} phrases={phrases} isMarked={isMarked} onHold={onHold} />}
             </div>
           </div>
         );

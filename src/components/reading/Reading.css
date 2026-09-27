@@ -454,6 +454,10 @@
   font-size: 0.85em;
 }
 
+.reading-scale .reading-sentence__slash-ja {
+  font-size: 0.95em;
+}
+
 .reading-zoom {
   display: flex;
   align-items: center;
@@ -520,4 +524,17 @@
   object-fit: contain;
   border-radius: 4px;
   box-shadow: var(--shadow-1);
+}
+
+/* 和訳モードのスラッシュ訳（2026-09-27）。英文と同じ切れ目。文全体の訳より目立たせる */
+.reading-sentence__slash-ja {
+  margin: var(--space-4) 0 0;
+  font-size: var(--font-size-16);
+  line-height: 1.8;
+  color: var(--color-ink-olive);
+}
+
+.reading-slash--inline {
+  color: var(--color-brand-lime, #4fd1a5);
+  font-weight: 700;
 }
