@@ -118,13 +118,21 @@ test('英検の下は 単語 と 面接 の2つ', () => {
 test('単語は5級から準1級まで並ぶ', () => {
   const { onSelectTextbook } = show({ mode: 'eiken-words' });
 
+  // **2級・準1級はでる順パス単**（2026-09-27）。本の名前と収録語数を出し、押すと本を開く
   expect(screen.getAllByRole('button').map((b) => b.textContent)).toEqual([
     '英検5級620語', '英検4級1,240語', '英検3級2,100語',
-    '英検準2級3,400語', '英検2級4,800語', '英検準1級6,200語',
+    '英検準2級3,400語', '英検2級英検2級 でる順パス単［5訂版］1,700語', '英検準1級英検準1級 でる順パス単［5訂版］1,900語',
   ]);
 
   fireEvent.click(screen.getByText('英検3級'));
   expect(onSelectTextbook).toHaveBeenCalledWith('eiken-3');
+});
+
+test('**英検2級を押すと、でる順パス単を開く**', () => {
+  const onSelectBook = jest.fn();
+  show({ mode: 'eiken-words', onSelectBook });
+  fireEvent.click(screen.getByText('英検2級 でる順パス単［5訂版］'));
+  expect(onSelectBook).toHaveBeenCalledWith(expect.objectContaining({ id: 'book-passtan2' }));
 });
 
 test('収録が0語の級は出さない。選んでも何も学べない', () => {

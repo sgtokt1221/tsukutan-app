@@ -146,7 +146,9 @@ describe('単語帳・英検から出す（2026-09-26。高校生の出題元）
     expect(titleOf({ source: 'eiken', eiken: 'pre2' })).toBe('英検準2級');
     expect(dataFileOf({ source: 'book', bookId: 'book-systan5' })).toBe('words-book-systan5.json');
     expect(dataFileOf({ source: 'eiken', eiken: '3' })).toBe('words-master.json');
-    expect(QUIZ_EIKEN_LEVELS.map((l) => l.id)).toEqual(['5', '4', '3', 'pre2', '2', 'pre1']);
+    // 2級・準1級はでる順パス単（単語帳）で出す（2026-09-27）
+    expect(QUIZ_EIKEN_LEVELS.map((l) => l.id)).toEqual(['5', '4', '3', 'pre2']);
+    expect(dataFileOf({ source: 'book', bookId: 'book-passtan2' })).toBe('words-book-passtan2.json');
   });
 
   test('**単語帳の id・題名・ファイルは src/config/books.js（正本）と同じ**', () => {

@@ -6,6 +6,7 @@ import { SUNSHINE } from '../../logic/textbookPages';
 import TextbookPagePicker from './TextbookPagePicker';
 import './FreeStudyMenu.css';
 import { WRITING_ENABLED } from '../../config/features';
+import { bookForEiken } from '../../config/books';
 
 /**
  * 自由学習の入口。
@@ -213,6 +214,24 @@ export default function FreeStudyMenu({
         {options.map(({ id, label }) => {
           const count = wordCountOf(id);
           const badge = recommendationOf(id);
+          /*
+            **2級・準1級はでる順パス単を開く**（2026-09-27）。本の並びと訳で覚える。
+            表紙と本の名前を出す（どの本の単語かを生徒が分かるように）
+          */
+          const book = bookForEiken(id);
+          if (book) {
+            return (
+              <button key={id} type="button" className="tile-button tile-button--book" onClick={() => onSelectBook(book)}>
+                <img className="tile-button__thumb" src={book.cover} alt="" aria-hidden="true" />
+                <span className="tile-button__label">
+                  {label}
+                  <span className="tile-button__sub">{book.title}</span>
+                  {badge && <RecommendationBadge type="textbook" priority={badge} />}
+                </span>
+                <span className="tile-button__count">{book.count.toLocaleString()}語</span>
+              </button>
+            );
+          }
 
           return (
             <button

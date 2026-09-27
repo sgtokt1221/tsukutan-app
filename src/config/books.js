@@ -59,7 +59,33 @@ export const BOOKS = [
     count: 1000,
     cover: `${COVER_BASE}/books_en_4051.jpg`,
   },
+  /*
+    **英検のでる順パス単**（2026-09-27）。英検2級・準1級の単語はこの本の並びと訳で出す
+    （「えらぶ → 英検 → 単語を覚える」の2級・準1級もこの本を開く。→ eikenOption）。
+    収録語は data-sources/passtan-decks/（出典の誤記は直して印を残してある）
+  */
+  {
+    id: 'book-passtan2',
+    deckId: 'passtan2',
+    title: '英検2級 でる順パス単［5訂版］',
+    publisher: '旺文社',
+    count: 1700,
+    cover: `${COVER_BASE}/books_en_passtan2_5.jpg`,
+    eikenOption: 'eiken-2',
+  },
+  {
+    id: 'book-passtanp1',
+    deckId: 'passtanp1',
+    title: '英検準1級 でる順パス単［5訂版］',
+    publisher: '旺文社',
+    count: 1900,
+    cover: `${COVER_BASE}/books_en_passtanp1_5.jpg`,
+    eikenOption: 'eiken-pre1',
+  },
 ];
+
+/** 英検の級に当てた本（無ければ null。その級は今までどおり英検の印で集めた語を出す） */
+export const bookForEiken = (optionId) => BOOKS.find((b) => b.eikenOption === optionId) || null;
 
 /** 教材IDかどうか。**綴りで判定する場所を1つにする** */
 export const isBookId = (id) => typeof id === 'string' && id.startsWith('book-');

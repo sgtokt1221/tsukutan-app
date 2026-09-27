@@ -1228,8 +1228,11 @@ const MASTERY_TEXTBOOKS = [
   { id: 'book-leap', title: '必携英単語LEAP', file: 'words-book-leap.json' },
   { id: 'book-idiom-target1000', title: '英熟語ターゲット1000', file: 'words-book-idiom-target1000.json' },
   // 英検の級（2026-09-25）。1語はいちばんやさしい級1つにだけ入る。1級は語に印が無いので出さない
-  ...[['5', '5級'], ['4', '4級'], ['3', '3級'], ['pre2', '準2級'], ['2', '2級'], ['pre1', '準1級']]
+  ...[['5', '5級'], ['4', '4級'], ['3', '3級'], ['pre2', '準2級']]
     .map(([eiken, label]) => ({ id: `eiken-${eiken}`, title: `英検${label}`, file: 'words-master.json', eiken })),
+  // **2級・準1級はでる順パス単の収録語で数える**（2026-09-27。id は変えない＝管理画面の並びはそのまま）
+  { id: 'eiken-2', title: '英検2級 でる順パス単［5訂版］', file: 'words-book-passtan2.json' },
+  { id: 'eiken-pre1', title: '英検準1級 でる順パス単［5訂版］', file: 'words-book-passtanp1.json' },
 ];
 const loadMasteryTextbooks = async () => Promise.all(MASTERY_TEXTBOOKS.map(async ({ id, title, file, grade, eiken }) => {
   const words = await loadDataFile(file);

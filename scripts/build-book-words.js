@@ -60,6 +60,11 @@ const crypto = require('crypto');
 
 const ROOT = path.resolve(__dirname, '..');
 const DECK_DIR = path.join(ROOT, 'data-sources', 'exam-support-decks');
+/**
+ * 英検の でる順パス単（2級・準1級。2026-09-27）。受験サポートの小テストには無い本なので別の棚に置く
+ * （上は `import-exam-support-decks.js` が書き直す）。形は同じ `{deckId, words: [{no, en, ja}]}`
+ */
+const EXTRA_DECK_DIR = path.join(ROOT, 'data-sources', 'passtan-decks');
 const OUT_DIR = path.join(ROOT, 'public', 'data');
 const MASTER = path.join(OUT_DIR, 'words-master.json');
 
@@ -176,14 +181,36 @@ const main = () => {
   const master = JSON.parse(fs.readFileSync(MASTER, 'utf8'));
   const byWord = indexMaster(master);
 
-  const decks = fs.readdirSync(DECK_DIR).filter((f) => f.endsWith('.json')).sort();
+  const decks = [DECK_DIR, EXTRA_DECK_DIR]
+    .filter((dir) => fs.existsSync(dir))
+    .flatMap((dir) => fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort().map((f) => path.join(dir, f)));
   let changed = 0;
+  /** 作り終えた単語帳の語（綴り → 例文のある札）。後ろの本が例文を借りる */
+  const bookPool = new Map();
 
   for (const file of decks) {
-    const deck = JSON.parse(fs.readFileSync(path.join(DECK_DIR, file), 'utf8'));
+    const deck = JSON.parse(fs.readFileSync(file, 'utf8'));
     const writtenPath = path.join(EXAMPLES_DIR, `${deck.deckId}.json`);
     const written = fs.existsSync(writtenPath) ? JSON.parse(fs.readFileSync(writtenPath, 'utf8')) : {};
     const cards = deck.words.map((entry) => cardOf(deck.deckId, entry, byWord, written));
+    /*
+      **前に作った単語帳の例文も借りる**（2026-09-27。パス単のため）。マスタに無い語でも、ほかの本に
+      同じ綴り・近い訳の語があれば、その例文（本の訳に合わせて書いたもの）を使う。借りるのは例文だけ
+    */
+    for (const card of cards) {
+      if (card.example) continue;
+      const pick = pickByMeaning(bookPool.get(norm(card.word)) || [], card.meaning);
+      if (!pick) continue;
+      card.example = pick.example;
+      card.exampleJa = pick.exampleJa;
+      if (pick.exampleSource) card.exampleSource = pick.exampleSource;
+    }
+    for (const card of cards) {
+      if (!card.example) continue;
+      const key = norm(card.word);
+      if (!bookPool.has(key)) bookPool.set(key, []);
+      bookPool.get(key).push(card);
+    }
 
     // **番号順のまま出す。** 本を開いて「301〜400」と進むので、並べ替えない
     const borrowed = cards.filter((c) => c.example !== undefined).length;

@@ -35,7 +35,8 @@ const SUNSHINE_SOURCES = [1, 2, 3].map((grade) => ({
   本は1つの綴りに1枚なので、綴りで外しても取りこぼす意味は無い。
   英検（マスタ）には同じ綴りで意味違いの札が別々にあるので、綴りでは見ない。
 */
-const BOOK_SOURCES = BOOKS.map((book) => ({
+// 英検の級に当てた本（でる順パス単）は下の英検に出す（同じ本が2か所に並ばないように）
+const BOOK_SOURCES = BOOKS.filter((book) => !book.eikenOption).map((book) => ({
   id: book.id,
   title: book.title,
   stages: ['high'],
@@ -44,15 +45,31 @@ const BOOK_SOURCES = BOOKS.map((book) => ({
 }));
 
 /** 英検は中学生にも高校生にも出す。1級は語に印が無いので出さない */
-const EIKEN_SOURCES = ['5', '4', '3', 'pre2', '2', 'pre1'].map((eiken) => ({
-  id: `eiken-${eiken}`,
-  title: EIKEN_LABELS[eiken],
-  stages: ['middle', 'high'],
-  load: async () => {
-    const target = eikenTargetOf(`eiken-${eiken}`);
-    return (await loadWordMaster()).filter((word) => easiestEikenLevel(word) === target);
-  },
-}));
+const EIKEN_SOURCES = ['5', '4', '3', 'pre2', '2', 'pre1'].map((eiken) => {
+  /*
+    **2級・準1級はでる順パス単の語で出す**（2026-09-27）。id は eiken-2 のまま
+    （もう選んでいる生徒の教材が外れない。管理画面の定着度も同じ id でパス単を数える）
+  */
+  const book = BOOKS.find((b) => b.eikenOption === `eiken-${eiken}`);
+  if (book) {
+    return {
+      id: `eiken-${eiken}`,
+      title: book.title,
+      stages: ['middle', 'high'],
+      matchBySpelling: true,
+      load: () => loadTextbookWords(book.id),
+    };
+  }
+  return {
+    id: `eiken-${eiken}`,
+    title: EIKEN_LABELS[eiken],
+    stages: ['middle', 'high'],
+    load: async () => {
+      const target = eikenTargetOf(`eiken-${eiken}`);
+      return (await loadWordMaster()).filter((word) => easiestEikenLevel(word) === target);
+    },
+  };
+});
 
 /** 選べる教材。**この並びで画面に出す**（学校の教科書 → 単語帳 → 英検） */
 export const NEW_WORD_SOURCES = [...SUNSHINE_SOURCES, ...BOOK_SOURCES, ...EIKEN_SOURCES];
