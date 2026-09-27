@@ -183,6 +183,8 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
     handledBlobRef.current = blob;
 
     const referenceText = readingEnglish(reading);
+    // 名前は録り終えた時点で決める（聞き取りの返事を待つあいだに本を閉じても変わらない）
+    const aloudTitle = aloudTitleOf(reading, index, openBook || grade);
     setAloud({ working: true });
     transcribeSpeaking(blob, { mode: 'scripted', referenceText })
       .then(async ({ transcript }) => {
@@ -215,7 +217,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
         */
         noteActivity('reading');
         const reach = readAloudReach(markPassage(referenceText, heard));
-        if (countsAsAloud(reach)) noteAloud(aloudTitleOf(reading, index, openBook || grade));
+        if (countsAsAloud(reach)) noteAloud(aloudTitle);
         setAloud({ working: false, transcript: heard });
 
         /*
@@ -230,7 +232,7 @@ export default function ReadingPanel({ schoolGrade, abilityLevel, goalTargets, u
         logger.warn('音読を聞き取れませんでした', transcribeError);
         setAloud({ working: false, failure: transcribeError.message });
       });
-  }, [blob, reading]);
+  }, [blob, reading, index, openBook, grade]);
 
   /*
     **読みものを開いているあいだは測る**（2026-09-22）。単語カードと違って
