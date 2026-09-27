@@ -107,28 +107,32 @@ function SlashSentence({ sentence, phrases, isMarked, onHold }) {
 }
 
 /**
- * 和訳モード。**英文とスラッシュ訳を同じ切れ目で並べ、その下に文全体の訳**（2026-09-27、沖藤さんの指定）。
+ * 和訳モード。**かたまりごとに、そのすぐ下に訳を置く**（2026-09-27、沖藤さんの指定）。その下に文全体の訳。
  *
- *   What / makes / us / specifically human?
- *   何が / 〜にするのか / 私たちを / とりわけ人間に
+ *   What   / makes     / us     / specifically human?
+ *   何が     〜にするのか  私たちを  とりわけ人間に
  *   何が私たちをとりわけ人間たらしめているのだろうか。
  *
+ * 以前は英文の下に訳を1行にまとめていた（何番目のかたまりの訳かを目で数えることになった）。
  * 切れ目はスラッシュ読みと同じ `slashUnits`（切り方を2か所に書かない）。
+ * 組み方はスラッシュ読みの小片と同じ（英語の下に訳。スラッシュは直前のかたまりにくっつける）。
  */
 function SlashTranslation({ sentence, phrases, isMarked, onHold }) {
   const units = slashUnits(sentence.chunks);
   return (
     <>
-      <p className="reading-sentence">
+      <p className="reading-sentence reading-sentence--slash reading-sentence--interlinear">
         {units.map((unit, i) => (
-          <React.Fragment key={i}>
-            <Words text={unit.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
-            {i < units.length - 1 && <span className="reading-slash reading-slash--inline" aria-hidden="true"> / </span>}
-          </React.Fragment>
+          <span key={i} className="reading-slash-unit">
+            <span className="reading-chunk">
+              <span className="reading-chunk__en">
+                <Words text={unit.en} phrases={phrases} isMarked={isMarked} onHold={onHold} />
+              </span>
+              <span className="reading-chunk__ja">{unit.ja || '…'}</span>
+            </span>
+            {i < units.length - 1 && <span className="reading-slash reading-slash--inline" aria-hidden="true">/</span>}
+          </span>
         ))}
-      </p>
-      <p className="reading-sentence__slash-ja">
-        {units.map((unit) => unit.ja || '…').join(' / ')}
       </p>
       {sentence.ja && <p className="reading-sentence__ja">{sentence.ja}</p>}
     </>

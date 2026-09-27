@@ -468,6 +468,20 @@ describe('スラッシュに SVOC の札が載る', () => {
   });
 });
 
+describe('和訳：かたまりのすぐ下に訳（2026-09-27）', () => {
+  it('**かたまりごとに英語と訳を縦に組む**（訳を1行にまとめない）', async () => {
+    const view = await openReading();
+    fireEvent.click(screen.getByRole('tab', { name: '和訳' }));
+    const chunks = [...view.container.querySelectorAll('.reading-sentence--interlinear .reading-chunk')];
+    expect(chunks.length).toBeGreaterThan(0);
+    chunks.forEach((c) => {
+      expect(c.querySelector('.reading-chunk__en')).not.toBeNull();
+      expect(c.querySelector('.reading-chunk__ja')).not.toBeNull();
+    });
+    expect(view.container.querySelector('.reading-sentence__slash-ja')).toBeNull();
+  });
+});
+
 describe('受験サポートに残す音読の名前（2026-09-27）', () => {
   const { aloudTitleOf } = jest.requireActual('./ReadingPanel');
   const index = { grades: [
