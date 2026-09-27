@@ -80,6 +80,17 @@ service cloud.firestore {
       }
     }
 
+    // 市販の単語帳（収録語と並び）。**塾の生徒だけ**が読む（2026-09-27。公開ファイルから移した）。
+    // 職員の管理画面は関数 staffBookWords が admin で読む。書くのは scripts/upload-licensed-words.js だけ
+    match /licensedWordBooks/{bookId} {
+      allow read: if isEnrolled() || isAdmin();
+      allow write: if false;
+      match /chunks/{chunkId} {
+        allow read: if isEnrolled() || isAdmin();
+        allow write: if false;
+      }
+    }
+
     match /goalsMaster/{goalId} {
       allow read: if isSignedIn();
       allow write: if false;

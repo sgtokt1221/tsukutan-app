@@ -4,7 +4,8 @@
  * 収録語は受験サポート（つくばホーム）の小テストと**同じもの**を使う。
  * 生徒は同じ本を開いているので、訳や並びが食い違うと混乱する。
  * 取り込みは `scripts/import-exam-support-decks.js` →
- * `scripts/build-book-words.js`（`public/data/words-book-<id>.json` を作る）。
+ * `scripts/build-book-words.js`（`local/licensed-words/words-book-<id>.json` を作る）→
+ * `scripts/upload-licensed-words.js --apply`（Firestore `licensedWordBooks` へ。**公開ファイルに置かない**。読み口は src/logic/licensedWords.js）。
  *
  * **表紙はつくばホームが配っているものをそのまま読む。** こちらへ写すと、
  * 絵を差し替えたときに片方だけ古くなる（ランクの紋章と同じ考え方）。
@@ -22,7 +23,7 @@ const COVER_BASE = 'https://tsukubamanager-4900b.web.app/covers';
 /**
  * 出す順は**やさしい順**。生徒は上から順に進む。
  *
- * `count` は `public/data/words-book-*.json` の件数。表示にしか使わないので、
+ * `count` は単語帳の件数（`local/licensed-words/words-book-*.json`）。表示にしか使わないので、
  * 読み込み前でも「◯◯語」を出せるようにここに置く（ずれたら
  * `node scripts/build-book-words.js` の出力と突き合わせる）。
  */
@@ -62,7 +63,7 @@ export const BOOKS = [
   /*
     **英検のでる順パス単**（2026-09-27）。英検2級・準1級の単語はこの本の並びと訳で出す
     （「えらぶ → 英検 → 単語を覚える」の2級・準1級もこの本を開く。→ eikenOption）。
-    収録語は data-sources/passtan-decks/（出典の誤記は直して印を残してある）
+    収録語は local/licensed-decks/passtan/（Git の外。出典の誤記は直して印を残してある）
   */
   {
     id: 'book-passtan5',
@@ -120,5 +121,7 @@ export const isBookId = (id) => typeof id === 'string' && id.startsWith('book-')
 /** 教材を引く。無ければ null */
 export const getBook = (id) => BOOKS.find((b) => b.id === id) || null;
 
-/** 単語ファイルの場所。**選んだときだけ読む**（起動には乗せない） */
-export const bookWordsUrl = (book) => `/data/words-book-${book.deckId}.json`;
+/*
+  単語帳の語は公開ファイルに無い（2026-09-27）。読むのは logic/licensedWords.js の loadBookWords だけ
+  （塾の生徒だけが読める Firestore の置き場。scripts/upload-licensed-words.js で入れる）
+*/

@@ -21,7 +21,8 @@ import LevelNudge from './components/assessment/LevelNudge';
 import ReadingPanel from './components/reading/ReadingPanel';
 import { isAheadOfAssessment } from './logic/estimatedLevel';
 import { setStudyRank, noteDeck } from './logic/studySession';
-import { BOOKS, isBookId, getBook, bookWordsUrl } from './config/books';
+import { BOOKS, isBookId, getBook } from './config/books';
+import { loadBookWords } from './logic/licensedWords';
 import { wordsInRange, rangeKeyOf } from './logic/bookWords';
 import {
   loadSunshineCards, sunshineTextbookId, isSunshineTextbookId, gradeOfSunshineId, wordsInPages, pageRangeKey, pageLabel,
@@ -1172,10 +1173,8 @@ export default function StudentDashboard() {
     // 練習した時間を受験サポートのタスクに付けるため、単語帳を記録に付ける
     noteDeck(book.deckId);
     try {
-      const response = await fetch(bookWordsUrl(book));
-      // SPA の書き換えで index.html が 200 で返ることがある（wordMaster.js と同じ用心）
-      if (!response.ok) throw new Error(`${response.status}`);
-      const all = await response.json();
+      // 単語帳は塾の生徒だけが読める置き場にある（→ logic/licensedWords.js）
+      const all = await loadBookWords(book);
       const words = wordsInRange(all, range.from, range.to);
       if (words.length === 0) {
         alert('この範囲の単語が読み込めませんでした。電波の良いところで試してください。');

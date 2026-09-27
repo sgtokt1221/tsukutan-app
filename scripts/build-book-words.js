@@ -8,11 +8,11 @@
  *   node scripts/build-book-words.js --check  # 差分があるかだけ見る（書き込まない）
  *
  * 入力
- *   data-sources/exam-support-decks/*.json   `{no, en, ja}`。正本はつくばホーム
+ *   local/licensed-decks/exam-support/*.json   `{no, en, ja}`。正本はつくばホーム（Git の外）
  *   public/data/words-master.json            例文・発音・品詞を借りる相手
  *
  * 出力
- *   public/data/words-book-<deckId>.json
+ *   local/licensed-words/words-book-<deckId>.json   （Git の外。upload-licensed-words.js で Firestore へ）
  *
  * ## 訳は本のものが正
  *
@@ -59,13 +59,20 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ROOT = path.resolve(__dirname, '..');
-const DECK_DIR = path.join(ROOT, 'data-sources', 'exam-support-decks');
+/*
+  **市販の単語帳の収録語と並びは、公開リポジトリに置かない**（2026-09-27）。元データも出力も Git に入らない
+  `local/` にだけ置き、Firestore（licensedWordBooks。塾の生徒だけが読める）へ `scripts/upload-licensed-words.js` で入れる
+*/
+const DECK_DIR = path.join(ROOT, 'local', 'licensed-decks', 'exam-support');
 /**
  * 英検の でる順パス単（2級・準1級。2026-09-27）。受験サポートの小テストには無い本なので別の棚に置く
  * （上は `import-exam-support-decks.js` が書き直す）。形は同じ `{deckId, words: [{no, en, ja}]}`
  */
-const EXTRA_DECK_DIR = path.join(ROOT, 'data-sources', 'passtan-decks');
+const EXTRA_DECK_DIR = path.join(ROOT, 'local', 'licensed-decks', 'passtan');
+/** 公開の単語データ（マスタ・高校・大阪）。読むだけ */
 const OUT_DIR = path.join(ROOT, 'public', 'data');
+/** 単語帳の出力先（Git の外） */
+const BOOK_OUT_DIR = path.join(ROOT, 'local', 'licensed-words');
 const MASTER = path.join(OUT_DIR, 'words-master.json');
 
 /**
@@ -246,9 +253,9 @@ const main = () => {
    */
   const passtanPoolFor = (deckId) => {
     const pool = new Map();
-    for (const f of fs.readdirSync(OUT_DIR).filter((n) => /^words-book-passtan.*\.json$/.test(n))) {
+    for (const f of (fs.existsSync(BOOK_OUT_DIR) ? fs.readdirSync(BOOK_OUT_DIR) : []).filter((n) => /^words-book-passtan.*\.json$/.test(n))) {
       if (f === `words-book-${deckId}.json`) continue;
-      for (const card of JSON.parse(fs.readFileSync(path.join(OUT_DIR, f), 'utf8'))) {
+      for (const card of JSON.parse(fs.readFileSync(path.join(BOOK_OUT_DIR, f), 'utf8'))) {
         if (!card.meaning) continue;
         const key = norm(card.word);
         if (!pool.has(key)) pool.set(key, []);
@@ -316,7 +323,8 @@ const main = () => {
     // **番号順のまま出す。** 本を開いて「301〜400」と進むので、並べ替えない
     const borrowed = cards.filter((c) => c.example !== undefined).length;
     const text = `${JSON.stringify(cards, null, 2)}\n`;
-    const out = path.join(OUT_DIR, `words-book-${deck.deckId}.json`);
+    fs.mkdirSync(BOOK_OUT_DIR, { recursive: true });
+    const out = path.join(BOOK_OUT_DIR, `words-book-${deck.deckId}.json`);
     const before = fs.existsSync(out) ? fs.readFileSync(out, 'utf8') : null;
 
     const note = `${deck.deckId.padEnd(18)} ${String(cards.length).padStart(5)}語  例文あり ${borrowed}（${Math.round((borrowed / cards.length) * 100)}%）`;

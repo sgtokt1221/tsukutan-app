@@ -18,24 +18,15 @@
  */
 import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
-import { BOOKS, bookWordsUrl } from '../config/books';
+import { loadBookWordsByDeck } from './licensedWords';
 import { addWordToReview } from './reviewLogic';
 
 const MISSED_URL = process.env.REACT_APP_MISSED_WORDS_URL
   || 'https://asia-northeast1-tsukubamanager-4900b.cloudfunctions.net/tsukutanMissedWords';
 
-/** 単語帳のカードを読む（冊ごとに1回。読めなければ投げる） */
-const deckCache = new Map();
-export function loadDeckCards(deckId, fetchImpl = fetch) {
-  if (deckCache.has(deckId)) return deckCache.get(deckId);
-  const book = BOOKS.find((b) => b.deckId === deckId);
-  if (!book) return Promise.resolve([]);
-  const p = fetchImpl(bookWordsUrl(book)).then((response) => {
-    if (!response.ok) throw new Error(`単語帳を読めませんでした (${deckId})`);
-    return response.json();
-  }).catch((error) => { deckCache.delete(deckId); throw error; });
-  deckCache.set(deckId, p);
-  return p;
+/** 単語帳のカードを読む（冊ごとに1回・読めなければ投げるのは licensedWords.js 側） */
+export function loadDeckCards(deckId, loadImpl = loadBookWordsByDeck) {
+  return loadImpl(deckId);
 }
 
 /** 番号の一覧（`{deckId, no}`）をカードにする。要る冊だけ読む */

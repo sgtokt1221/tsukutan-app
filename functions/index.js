@@ -1169,6 +1169,46 @@ staffMaterialsApp.post('/', async (req, res) => {
   }
 });
 
+/*
+ * **単語帳の語を職員の管理画面へ渡す**（2026-09-27）。単語帳は公開ファイルから外したので、つくばホームの
+ * 管理画面（小テストの範囲・印刷・単語データの一覧）はここから読む。認証は上の staffStudentMaterials と同じ
+ */
+const staffBookWordsApp = express();
+staffBookWordsApp.use(cors({ origin: STAFF_ORIGINS }));
+staffBookWordsApp.use(express.json({ limit: '2kb' }));
+staffBookWordsApp.post('/', async (req, res) => {
+  const header = req.headers.authorization || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+  if (idToken === '') return res.status(401).json({ error: 'つくばホームのログインが必要です' });
+  let decoded;
+  try {
+    decoded = await tsukubaAuth().verifyIdToken(idToken);
+  } catch (e) {
+    return res.status(401).json({ error: 'つくばホームのログインを確かめられませんでした' });
+  }
+  const file = req.body && typeof req.body.file === 'string' ? req.body.file : '';
+  if (!/^words-book-[a-z0-9-]+\.json$/.test(file)) return res.status(400).json({ error: '単語帳の指定が正しくありません' });
+  try {
+    assertStaffClaims(decoded);
+    return res.status(200).json({ words: await loadDataFile(file) });
+  } catch (e) {
+    if (e instanceof StaffAccessError) return res.status(403).json({ error: e.message });
+    logger.error('単語帳を職員へ渡せなかった', { file, message: e && e.message });
+    return res.status(500).json({ error: '単語帳を読めませんでした' });
+  }
+});
+
+exports.staffBookWords = onRequest(
+  {
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    maxInstances: 10,
+    serviceAccount: '115384710973-compute@developer.gserviceaccount.com',
+  },
+  staffBookWordsApp
+);
+
 exports.staffStudentMaterials = onRequest(
   {
     region: 'us-central1',
@@ -1201,9 +1241,28 @@ exports.staffStudentMaterials = onRequest(
 const DATA_BASE_URL = 'https://tsukutan-58b3f.web.app/data/';
 const dataFileCache = new Map();
 /** 単語のファイル。**配信しているものを読む**（関数に写しを持たない）。10分だけ覚えておく */
+/**
+ * 市販の単語帳（words-book-*.json）は公開ファイルに無い（2026-09-27）。Firestore の licensedWordBooks から組み立てる
+ * （scripts/upload-licensed-words.js が400語ずつのチャンクで入れている）。欠けていたら投げる
+ */
+const loadLicensedBook = async (name) => {
+  const deckId = name.replace(/^words-book-|\.json$/g, '');
+  const ref = db.collection('licensedWordBooks').doc(deckId);
+  const [head, chunks] = await Promise.all([ref.get(), ref.collection('chunks').get()]);
+  if (!head.exists) throw new Error(`${name} がありません`);
+  const words = chunks.docs.slice().sort((a, b) => a.id.localeCompare(b.id)).flatMap((d) => d.data().words || []);
+  if (words.length !== Number(head.data().count)) throw new Error(`${name} が欠けています`);
+  return words;
+};
+
 const loadDataFile = async (name) => {
   const hit = dataFileCache.get(name);
   if (hit && Date.now() - hit.at < 10 * 60 * 1000) return hit.data;
+  if (/^words-book-.+\.json$/.test(name)) {
+    const words = await loadLicensedBook(name);
+    dataFileCache.set(name, { at: Date.now(), data: words });
+    return words;
+  }
   const response = await fetch(`${DATA_BASE_URL}${name}`);
   if (!response.ok) throw new Error(`${name} を読めませんでした (${response.status})`);
   const data = await response.json();

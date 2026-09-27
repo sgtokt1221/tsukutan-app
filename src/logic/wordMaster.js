@@ -10,7 +10,8 @@
  */
 
 import { loadCachedJson } from './wordDataCache';
-import { BOOKS } from '../config/books';
+import { getBook, isBookId } from '../config/books';
+import { loadBookWords } from './licensedWords';
 
 const BASE_PATH = '/data';
 
@@ -129,13 +130,17 @@ export const loadPronunciations = (options) => fetchCachedJson('pronunciations.j
 const TEXTBOOK_FILES = {
   'osaka-koukou-nyuushi': 'words-osaka.json',
   'highschool-english': 'words-highschool.json',
-  // 市販の単語帳。日々の新しい単語で「教材」に選べる（logic/newWordSources.js）。
-  // ファイル名の正本は config/books.js の deckId
-  ...Object.fromEntries(BOOKS.map((book) => [book.id, `words-book-${book.deckId}.json`])),
 };
 
-/** 教材ごとの単語。未知の教材IDは空配列。 */
+/**
+ * 教材ごとの単語。未知の教材IDは空配列。
+ * **市販の単語帳（book-*）は公開ファイルに無い**。塾の生徒だけが読める置き場から読む（→ licensedWords.js）
+ */
 export const loadTextbookWords = (textbookId, options) => {
+  if (isBookId(textbookId)) {
+    const book = getBook(textbookId);
+    return book ? loadBookWords(book) : Promise.resolve([]);
+  }
   const file = TEXTBOOK_FILES[textbookId];
   if (!file) return Promise.resolve([]);
   return CACHED_FILES.has(file)

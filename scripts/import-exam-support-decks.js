@@ -22,7 +22,8 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT_DIR = path.join(ROOT, 'data-sources', 'exam-support-decks');
+// 市販の単語帳の収録語なので公開リポジトリに置かない（Git の外。2026-09-27）
+const OUT_DIR = path.join(ROOT, 'local', 'licensed-decks', 'exam-support');
 
 /** つくばホームの置き場。**兄弟ディレクトリにある前提**（無ければ飛ばす） */
 const SOURCE_DIR = path.resolve(ROOT, '..', 'tsukuba-manager', 'data', 'source', 'words');

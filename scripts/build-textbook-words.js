@@ -5,7 +5,7 @@
  *   node scripts/build-textbook-words.js
  *
  * 入力  data-sources/textbook-sunshine-r7.json（ページつきの語彙一覧）
- *       public/data/words-master.json / words-book-*.json（意味を引く相手）
+ *       public/data/words-master.json / local/licensed-words/words-book-*.json（意味を引く相手）
  * 出力  public/data/words-textbook-sunshine.json
  *       docs/baseline/sunshine-unmatched.txt（意味が引けず外した語。あとで足すときの一覧）
  *
@@ -22,10 +22,12 @@ const read = (file) => JSON.parse(fs.readFileSync(path.join(ROOT, file), 'utf8')
 
 const source = read('data-sources/textbook-sunshine-r7.json');
 const master = read('public/data/words-master.json');
-const bookWords = fs.readdirSync(DATA)
+// 単語帳は Git の外（local/licensed-words。scripts/build-book-words.js の出力）
+const BOOK_DIR = path.join(ROOT, 'local', 'licensed-words');
+const bookWords = (fs.existsSync(BOOK_DIR) ? fs.readdirSync(BOOK_DIR) : [])
   .filter((f) => /^words-book-.*\.json$/.test(f))
   .sort()
-  .flatMap((f) => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8')));
+  .flatMap((f) => JSON.parse(fs.readFileSync(path.join(BOOK_DIR, f), 'utf8')));
 
 const { cards, skipped, counts } = buildTextbookCards(source.rows, master, bookWords);
 
