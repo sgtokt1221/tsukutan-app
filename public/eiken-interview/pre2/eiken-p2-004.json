@@ -1,0 +1,84 @@
+{
+  "id": "eiken-p2-004",
+  "grade": "pre2",
+  "title": "Small Shopping Streets",
+  "passage": {
+    "text": "Small shopping streets can be found in many Japanese towns. Some shop owners remember the names and the tastes of their customers, and in this way, they build a friendly relationship with them. However, the number of such shops has been getting smaller in recent years.",
+    "hintPhrase": "in this way",
+    "wordCount": 46
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p2-004-a.webp",
+      "caption": "商店街。5人が別々の動作（木箱にりんごを並べる店主／レジで支払う女性／紙袋を2つ抱える男性／小犬を散歩させる女の子／店先のメニューを見る年配女性）。"
+    },
+    {
+      "id": "b",
+      "file": "eiken-p2-004-b.webp",
+      "caption": "駅の長い階段の下に立つ年配の女性。重い買い物袋を両手に持っている。エスカレーターもエレベーターも無い。吹き出しにホームに立つ姿、赤い斜線。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do some shop owners build a friendly relationship with their customers?",
+      "modelAnswer": "By remembering their names and their tastes.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the people in Picture A. They are doing different things. Tell me as much as you can about what they are doing.",
+      "modelAnswer": "A shopkeeper is arranging apples in a box. A woman is paying money at a counter. A man is carrying two paper bags. A girl is walking a dog. An older woman is looking at a menu.",
+      "answerSeconds": 45
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, look at the person in Picture B. Please describe the situation.",
+      "modelAnswer": "The older woman can't get up to the platform because she is holding two heavy bags and there is no escalator.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think small shops will still be needed in the future?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Older people cannot always go to large malls. Small shops are close and easy to visit."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "Large stores and the Internet are cheaper. People will choose the cheaper way."
+        }
+      }
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "cardVisible": false,
+      "prompt": "These days, we often see people who need help in the street. Do you often help people who are in trouble?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I helped a woman carry her bag up the stairs last month. She looked very glad."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "I want to help, but I don't know what to say to them. I hope I can do it next time."
+        }
+      }
+    }
+  ]
+}

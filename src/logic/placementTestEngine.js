@@ -13,7 +13,11 @@
  *   - ステージ得点と全体得点は別に持つ
  *   - 早期終了は最低回答数を満たしたうえで、全回答履歴から判定する
  *   - 同じ回答履歴を与えれば必ず同じ最終レベルになる
+ *   - **最終レベルと語彙数は答え全部から推定した「力」で出す**（abilityEstimate.js。2026-09-26）。
+ *     以前は最後のレベルの正答率で±1していただけで、受け直すと3回に1回ずれた
+ *   - 終わる時点で力が2つのレベルにまたがっていたら、1ステージだけ足して確かめる
  */
+import { estimateAbility, isAmbiguous, levelOfAbility } from './abilityEstimate';
 
 export const QUESTIONS_STAGE_1 = 5;
 export const QUESTIONS_PER_STAGE = 10;
@@ -22,6 +26,14 @@ export const MAX_STAGES = 10;
 export const MIN_LEVEL = 1;
 export const MAX_LEVEL = 7;
 export const DEFAULT_START_LEVEL = 3;
+
+/**
+ * 判定が割れたとき（力の推定の幅が2つのレベルにまたがるとき）に足すステージの数。
+ * 試算では、足すほど受け直したときに揃うが、1回で約10問ずつ増える。
+ */
+export const MAX_EXTRA_STAGES = 1;
+/** 「割れた」とみなす幅（推定の標準誤差の何倍か）。広いほど足しやすい */
+export const AMBIGUITY_MARGIN = 0.5;
 
 /** 早期終了に必要な最低回答数 */
 export const MIN_ANSWERS_FOR_EARLY_FINISH = 15;
@@ -36,7 +48,7 @@ const FAIL_RATE = 0.3;
  *
  * 自己申告なので、見てから「知っていた」と答えたのか、本当に思い出せたのかが
  * 区別できなかった。全部「わかる」を押せばレベル7まで行ける状態だった。
- * 画面が「ダブルタップで答えを確認」と案内している以上、見たこと自体を
+ * 画面が「長押しで答えをのぞける」と案内している以上、見たこと自体を
  * 不正解にはしない。思い出せた回答の半分として数える。
  */
 export const REVEALED_ANSWER_WEIGHT = 0.5;
@@ -74,9 +86,22 @@ export const createInitialState = ({ startLevel = DEFAULT_START_LEVEL } = {}) =>
  * @param {Set|Array} askedIds 出題済みID
  * @param {Function} random 0〜1 を返す関数
  */
+/** つづりの比べ方（大文字小文字・前後の空白を無視）。つづりが無ければ ID で見分ける */
+const spellingOf = (word) => String(word?.word || '').trim().toLowerCase() || `#${word?.id}`;
+
 export const selectQuestions = (words, level, count, askedIds = [], random = Math.random) => {
   const asked = askedIds instanceof Set ? askedIds : new Set(askedIds);
-  const available = (words || []).filter((word) => word && word.id && !asked.has(word.id));
+  /*
+    **同じつづりを1回のテストで二度出さない**（2026-09-24）。単語データには同じつづりの
+    別の行が1,174語ぶんあり（about・after など）、IDだけで除いていたので、テストの23%で
+    同じ語が2回出ていた。2回目は答えを知った状態で自己申告することになる。
+  */
+  const askedSpellings = new Set(
+    (words || []).filter((word) => word && asked.has(word.id)).map(spellingOf),
+  );
+  const available = (words || []).filter(
+    (word) => word && word.id && !asked.has(word.id) && !askedSpellings.has(spellingOf(word)),
+  );
 
   const withinDistance = (distance) =>
     available.filter((word) => Math.abs((word.level ?? 0) - level) <= distance);
@@ -86,7 +111,17 @@ export const selectQuestions = (words, level, count, askedIds = [], random = Mat
   if (pool.length < count) pool = withinDistance(2);
   if (pool.length < count) pool = available;
 
-  return shuffle(pool, random).slice(0, count);
+  // 同じつづりが同じステージに2つ入らないように、混ぜてから先に出たものだけ取る
+  const seen = new Set();
+  const picked = [];
+  for (const word of shuffle(pool, random)) {
+    const key = spellingOf(word);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    picked.push(word);
+    if (picked.length >= count) break;
+  }
+  return picked;
 };
 
 /** 乱数を注入できる Fisher-Yates */
@@ -116,7 +151,7 @@ export const seededRandom = (seed = 1) => {
 /**
  * 1問の回答を記録する。ここでは難易度を変えないし、何も初期化しない。
  */
-export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revealed = false }) => {
+export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revealed = false, wordLevel }) => {
   if (state.completed) return state;
 
   const answer = {
@@ -127,6 +162,8 @@ export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revea
     responseTime,
     stage: state.stage,
     level: state.targetLevel,
+    // 出した単語そのもののレベル（狙いの±2まで散る）。力の推定はこちらを使う
+    ...(Number.isFinite(wordLevel) ? { wordLevel } : {}),
   };
 
   return {
@@ -137,9 +174,18 @@ export const recordAnswer = (state, { wordId, isCorrect, responseTime = 0, revea
   };
 };
 
-/** 直前の回答を取り消す。前の問題へ戻る操作で使う（計画書11.4.8）。 */
+/**
+ * 直前の回答を取り消す。前の問題へ戻る操作で使う（計画書11.4.8）。
+ *
+ * **ステージの1問目からは、前のステージの最後の問題へ戻る**（2026-09-26）。
+ * 以前はステージの中でしか戻れず、ステージが変わると「前の問題」が効かなくなっていた。
+ * 戻るとステージの締め（難しさの上下）も取り消す——締めたときの状態を `previousStage` に
+ * 残してあるので、それに戻してから最後の1問を取り消す。
+ */
 export const undoLastAnswer = (state) => {
-  if (state.stageAnswers.length === 0) return state;
+  if (state.stageAnswers.length === 0) {
+    return state.previousStage ? undoLastAnswer(state.previousStage) : state;
+  }
   const removed = state.stageAnswers[state.stageAnswers.length - 1];
   return {
     ...state,
@@ -196,43 +242,58 @@ export const completeStage = (state) => {
     targetLevel: nextLevel,
     stageAnswers: [],
     stableStages,
+    // 締める前の状態。次のステージの1問目から「前の問題」で戻るときに使う（undoLastAnswer）
+    previousStage: state,
   };
 
+  if (settled && !outOfStages) {
+    // 割れていれば、もう1ステージ。狙いは推定した力に一番近いレベル
+    const ability = estimateAbility(state.allAnswers);
+    if (isAmbiguous(ability, AMBIGUITY_MARGIN) && (state.extraStages || 0) < MAX_EXTRA_STAGES) {
+      return { ...next, targetLevel: levelOfAbility(ability.theta), extraStages: (state.extraStages || 0) + 1 };
+    }
+  }
   if (settled || outOfStages) {
-    return { ...next, completed: true, resultLevel: computeResultLevel({ ...state, targetLevel: nextLevel }) };
+    return { ...next, completed: true, resultLevel: computeResultLevel(state) };
   }
   return next;
 };
 
+/** 答え全部から推定した力（小数のレベル）。答えが無ければ null */
+export const resultAbility = (state) => (
+  state.allAnswers.length === 0 ? null : estimateAbility(state.allAnswers).theta
+);
+
 /**
- * 全回答履歴から最終レベルを決める。
- *
- * 落ち着いたレベル（最後に到達したレベル）を基準にし、
- * そのレベルでの正答率が極端な場合だけ1段ずらす。
+ * 全回答履歴から最終レベルを決める。推定した力を1〜7に丸める。
  * 同じ履歴なら必ず同じ値になる。
  */
 export const computeResultLevel = (state) => {
-  if (state.allAnswers.length === 0) return clampLevel(state.targetLevel);
-
-  const settledLevel = state.targetLevel;
-  const atSettledLevel = state.allAnswers.filter((answer) => answer.level === settledLevel);
-  const sample = atSettledLevel.length > 0 ? atSettledLevel : state.allAnswers;
-  const accuracy = sample.filter((answer) => answer.isCorrect).length / sample.length;
-
-  if (accuracy >= 0.9) return clampLevel(settledLevel + 1);
-  if (accuracy <= 0.2) return clampLevel(settledLevel - 1);
-  return clampLevel(settledLevel);
+  const theta = resultAbility(state);
+  return theta == null ? clampLevel(state.targetLevel) : levelOfAbility(theta, MIN_LEVEL, MAX_LEVEL);
 };
 
 /**
- * 推定語彙数。永続IDのユニーク件数から出す（計画書11.6）。
- * 同じ単語が複数の教材に入っていても二重に数えない。
+ * あと何問くらいで終わりそうか（画面の「あと約N問」とデッキの厚み）。
+ *
+ * テストは答え方で長さが変わるので、**今のステージでレベルが動かなかったとしたら**の見込み。
+ * 早く終わるには、レベルが動かないステージが STABLE_STAGES_FOR_EARLY_FINISH 回続き、
+ * 答えが MIN_ANSWERS_FOR_EARLY_FINISH 問以上あること（completeStage と同じ条件）。
+ * レベルが動けば見込みは増える（そのときは正直に増やす）。
  */
-export const estimateVocabulary = (words, level) => {
-  const ids = new Set();
-  for (const word of words || []) {
-    if (!word || (word.level ?? 0) > level) continue;
-    ids.add(word.id || `${word.word}|${word.partOfSpeech}|${word.meaning}`);
+export const estimateRemaining = (state) => {
+  if (!state || state.completed) return 0;
+  const leftInStage = Math.max(0, questionsForStage(state.stage) - state.stageAnswers.length);
+  const stagesLeft = Math.max(0, MAX_STAGES - state.stage);
+  const moreStages = Math.min(stagesLeft, Math.max(0, STABLE_STAGES_FOR_EARLY_FINISH - (state.stableStages + 1)));
+  let remaining = leftInStage + moreStages * QUESTIONS_PER_STAGE;
+  // 答えの数が足りなければ、足りるところまでステージを重ねる
+  let answeredAtEnd = state.allAnswers.length + remaining;
+  let extra = 0;
+  while (answeredAtEnd < MIN_ANSWERS_FOR_EARLY_FINISH && moreStages + extra < stagesLeft) {
+    remaining += QUESTIONS_PER_STAGE;
+    answeredAtEnd += QUESTIONS_PER_STAGE;
+    extra += 1;
   }
-  return ids.size;
+  return remaining;
 };

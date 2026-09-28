@@ -1,0 +1,58 @@
+{
+  "id": "eiken3-005",
+  "grade": "3",
+  "title": "Food from Near the Town",
+  "passage": {
+    "text": "Supermarkets sell many kinds of food. Some supermarkets sell fruits and vegetables that are grown near the town, so people can buy very fresh food. Many people enjoy shopping at these supermarkets.",
+    "hintPhrase": "so",
+    "wordCount": 32
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken3-005-a.webp",
+      "caption": "スーパーの店内。女性がカートを押し、店員が野菜を並べ、男性が飲み物の棚の前でかごを持って立っている（吹き出しで家でジュースを飲む姿）。床の箱にすいかが3つ。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "prompt": "Please look at the passage. Why can people buy very fresh food?",
+      "modelAnswer": "Because some supermarkets sell fruits and vegetables that are grown near the town."
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "prompt": "Please look at the picture. What is the man going to do?",
+      "modelAnswer": "He's going to drink some juice."
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "prompt": "How many watermelons are there in the box?",
+      "modelAnswer": "There are three watermelons."
+    },
+    {
+      "no": 4,
+      "type": "personal",
+      "prompt": "What food do you like the best?",
+      "modelAnswer": "I like curry and rice the best."
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "prompt": "Do you often go shopping with your family?",
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I go to the supermarket with my mother on Sundays. I carry the bags for her."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "My parents are busy on weekends. I usually stay home and study."
+        }
+      }
+    }
+  ]
+}

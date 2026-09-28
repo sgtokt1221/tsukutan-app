@@ -878,5 +878,14 @@
       "間違",
       "静か"
     ]
+  },
+  {
+    "id": "writing",
+    "label": "ライティング表現",
+    "description": "英検のライティングでそのまま使える型",
+    "assignedBy": "source",
+    "en": [],
+    "ja": [],
+    "color": "#0ea5e9"
   }
 ]

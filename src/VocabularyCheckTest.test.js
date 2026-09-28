@@ -1,5 +1,12 @@
+/**
+ * 語彙力チェック。
+ *
+ * 2026-09-24 から、答えたら毎回カードがめくれて英語→意味を読み上げ（答え合わせ）、
+ * 読み終えたら少し置いて自動で次へ進む。ここの「押す」は「押して、読み上げを終わらせ、
+ * 間を進める」まで含める（`clickKnow` / `clickDontKnow`）。
+ */
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 const mockUpdateDoc = jest.fn();
@@ -7,6 +14,9 @@ const mockLogStudySession = jest.fn();
 const mockUpdateProgress = jest.fn();
 const mockUpdateUserWordProgress = jest.fn();
 const mockNavigate = jest.fn();
+// 読み上げ。呼ばれ方を覚え、`mockAutoDone` のときはすぐ「読み終えた」を返す
+const mockSequence = jest.fn();
+let mockAutoDone = true;
 
 jest.mock('./firebaseConfig', () => ({
   auth: { currentUser: { uid: 'student-a' } },
@@ -25,10 +35,17 @@ jest.mock('./logic/reviewLogic', () => ({
 }));
 jest.mock('./logic/studyLogger', () => ({ logStudySession: (...args) => mockLogStudySession(...args) }));
 jest.mock('./logic/progressLogic', () => ({ updateProgressPercentage: (...args) => mockUpdateProgress(...args) }));
-jest.mock('./logic/speechUtils', () => ({ initialize: () => Promise.resolve(), speak: jest.fn() }));
+jest.mock('./logic/speechUtils', () => ({
+  initialize: () => Promise.resolve(),
+  stopSpeaking: () => {},
+  speakSequence: (items, options) => {
+    mockSequence(items, options);
+    if (mockAutoDone && options && options.onDone) options.onDone();
+  },
+}));
 
 // eslint-disable-next-line import/first
-import VocabularyCheckTest from './VocabularyCheckTest';
+import VocabularyCheckTest, { REVEAL_PAUSE_MS } from './VocabularyCheckTest';
 
 /** eikenLevels に文字列を混ぜた単語データ */
 const WORDS = [];
@@ -45,19 +62,36 @@ for (let level = 1; level <= 7; level += 1) {
   }
 }
 
-const clickKnow = () => fireEvent.click(screen.getByRole('button', { name: 'わかる' }));
-const clickDontKnow = () => fireEvent.click(screen.getByRole('button', { name: 'わからない' }));
+/** 答えて、めくって答えを見せ、間が過ぎて次のカードが出るまで */
+const answerAndWait = (name) => {
+  fireEvent.click(screen.getByRole('button', { name }));
+  act(() => { jest.advanceTimersByTime(REVEAL_PAUSE_MS); });
+};
+const clickKnow = () => answerAndWait('わかる');
+const clickDontKnow = () => answerAndWait('わからない');
 
 /** 「3 / 10」のような進捗表示を読む */
 const progress = () => {
   const match = screen.getByText(/^\d+ \/ \d+$/).textContent.match(/(\d+) \/ (\d+)/);
   return { index: Number(match[1]), total: Number(match[2]) };
 };
-const stageLabel = () => screen.getByText(/^ステージ \d+ \/ 10$/).textContent;
+/** 画面に文字では出さなくなった状態（2026-09-26）。画面のいちばん外側の data 属性から読む */
+const state = () => {
+  const root = screen.getByTestId('check-test');
+  return {
+    stage: Number(root.dataset.stage),
+    level: Number(root.dataset.level),
+    answered: Number(root.dataset.answered),
+    correct: Number(root.dataset.correct),
+  };
+};
 /** カードは表と裏の両方に語を持つので、先頭（表）だけを読む */
 const currentWordText = () => screen.getAllByText(/^word-/)[0].textContent;
 
 beforeEach(() => {
+  jest.useFakeTimers();
+  mockAutoDone = true;
+  mockSequence.mockReset();
   mockUpdateDoc.mockReset().mockResolvedValue(undefined);
   mockLogStudySession.mockReset().mockResolvedValue(undefined);
   mockUpdateProgress.mockReset().mockResolvedValue(undefined);
@@ -65,11 +99,13 @@ beforeEach(() => {
   mockNavigate.mockReset();
 });
 
+afterEach(() => { jest.useRealTimers(); });
+
 describe('出題', () => {
   test('ステージ1は5問で始まる', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     expect(progress()).toEqual({ index: 1, total: 5 });
-    expect(stageLabel()).toBe('ステージ 1 / 10');
+    expect(state().stage).toBe(1);
   });
 
   test('pre1 / pre2 を含むデータでも例外にならず出題される', () => {
@@ -96,29 +132,29 @@ describe('ステージ途中でリセットされない', () => {
     }
     // 5問目に到達している
     expect(progress()).toEqual({ index: 5, total: 5 });
-    expect(screen.getByText(/これまでの正答率: 100%（4問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 4, correct: 4 });
   });
 
   test('ステージ1を終えるとステージ2の10問に進み、履歴は残る', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     for (let i = 0; i < 5; i += 1) clickKnow();
 
-    expect(stageLabel()).toBe('ステージ 2 / 10');
+    expect(state().stage).toBe(2);
     expect(progress()).toEqual({ index: 1, total: 10 });
-    expect(screen.getByText(/これまでの正答率: 100%（5問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 5, correct: 5 });
   });
 
   test('全問正解するとステージ2の出題レベルが上がる', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
-    expect(screen.getByText(/出題レベル: 3 \/ 7/)).toBeInTheDocument();
+    expect(state().level).toBe(3);
     for (let i = 0; i < 5; i += 1) clickKnow();
-    expect(screen.getByText(/出題レベル: 4 \/ 7/)).toBeInTheDocument();
+    expect(state().level).toBe(4);
   });
 
   test('全問不正解するとステージ2の出題レベルが下がる', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     for (let i = 0; i < 5; i += 1) clickDontKnow();
-    expect(screen.getByText(/出題レベル: 2 \/ 7/)).toBeInTheDocument();
+    expect(state().level).toBe(2);
   });
 });
 
@@ -150,11 +186,11 @@ describe('前の問題へ戻る', () => {
     render(<VocabularyCheckTest allWords={WORDS} />);
     clickKnow();
     clickKnow();
-    expect(screen.getByText(/これまでの正答率: 100%（2問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 2, correct: 2 });
 
     fireEvent.click(screen.getByRole('button', { name: /前の問題/ }));
     expect(progress().index).toBe(2);
-    expect(screen.getByText(/これまでの正答率: 100%（1問）/)).toBeInTheDocument();
+    expect(state()).toMatchObject({ answered: 1, correct: 1 });
   });
 });
 
@@ -183,7 +219,7 @@ describe('保存', () => {
     for (let i = 0; i < 60; i += 1) {
       const known = screen.queryByRole('button', { name: 'わかる' });
       if (!known) return;
-      if (i % 2 === 0) fireEvent.click(known);
+      if (i % 2 === 0) clickKnow();
       else clickDontKnow();
     }
   };
@@ -217,5 +253,129 @@ describe('保存', () => {
     expect(await screen.findByText('結果を保存できませんでした')).toBeInTheDocument();
     expect(onTestComplete).not.toHaveBeenCalled();
     expect(screen.getByRole('button', { name: 'もう一度保存する' })).toBeInTheDocument();
+  });
+});
+
+/*
+  **答えたら毎回めくれて答えを見せる。読み上げはしない**（2026-09-26。テンポを優先。
+  以前は読み上げが終わるまで待っていた）。答える前にはめくれない。
+  判定が終わる前にやめた結果は保存しない。
+*/
+describe('答えたらめくれて、読み上げずに次へ', () => {
+  const show = (props = {}) => render(<VocabularyCheckTest allWords={WORDS} onCancel={() => {}} {...props} />);
+  const card = () => document.getElementById('flashcard');
+  const front = () => document.getElementById('card-front-text').textContent;
+  const answer = (name) => act(() => { fireEvent.click(screen.getByRole('button', { name })); });
+  /** 答えを見せる間を進める */
+  const finishReveal = async () => {
+    await act(async () => { jest.advanceTimersByTime(REVEAL_PAUSE_MS); });
+  };
+
+  beforeEach(() => { mockAutoDone = false; });
+
+  test('**答える前にはめくれない**（ダブルタップしても裏返らない・読み上げない）', () => {
+    show();
+    fireEvent.doubleClick(card());
+    expect(screen.queryByTestId('your-answer')).toBeNull();
+    expect(mockSequence).not.toHaveBeenCalled();
+  });
+
+  test('**答えるとめくれて自分の答えが出る。読み上げはしない**', () => {
+    show();
+    answer('わかる');
+    expect(screen.getByTestId('your-answer').textContent).toBe('あなたの答え：わかる');
+    expect(mockSequence).not.toHaveBeenCalled();
+  });
+
+  test('**答えを少し見せたら、待たずに次のカードへ**（1秒以内）', async () => {
+    show();
+    const first = front();
+    answer('わからない');
+    expect(front()).toBe(first); // めくった直後はまだ進まない
+    expect(REVEAL_PAUSE_MS).toBeLessThanOrEqual(1000);
+    await finishReveal();
+    expect(front()).not.toBe(first);
+    expect(screen.queryByTestId('your-answer')).toBeNull();
+    // わからない語は復習リストへ
+    expect(mockUpdateUserWordProgress).toHaveBeenCalledTimes(1);
+  });
+
+  test('**めくっている間は答えを受け付けない**（連打で1問飛ばない）', async () => {
+    show();
+    answer('わかる');
+    answer('わかる');
+    answer('わからない');
+    expect(screen.getByTestId('your-answer').textContent).toBe('あなたの答え：わかる');
+    expect(screen.getByRole('button', { name: 'わかる' })).toBeDisabled();
+    await finishReveal();
+    expect(screen.getByText(/^2 \//)).toBeInTheDocument();
+  });
+
+  test('**判定が終わる前にやめた結果は保存しない**（15問を超えていても）', async () => {
+    show();
+    for (let i = 0; i < 16; i += 1) {
+      answer('わかる');
+      await finishReveal();
+    }
+    answer('前の画面に戻る');
+    expect(screen.getByText('結果は保存されません')).toBeInTheDocument();
+    answer('結果を破棄して戻る');
+    expect(mockUpdateDoc).not.toHaveBeenCalled();
+  });
+
+  test('**最後まで答えたら、1回だけ保存して結果へ**', async () => {
+    const onTestComplete = jest.fn();
+    show({ onTestComplete });
+    // 全部「わかる」→ 最上位で落ち着いて終わる
+    for (let i = 0; i < 80 && onTestComplete.mock.calls.length === 0; i += 1) {
+      const btn = screen.queryByRole('button', { name: 'わかる' });
+      if (!btn) break;
+      answer('わかる');
+      await finishReveal();
+    }
+    expect(mockUpdateDoc).toHaveBeenCalledTimes(1);
+    expect(onTestComplete).toHaveBeenCalledTimes(1);
+    const [level, , estimated] = onTestComplete.mock.calls[0];
+    expect(level).toBe(7);
+    expect(Number.isFinite(estimated)).toBe(true);
+  });
+});
+
+describe('長押しで答えをのぞく（2026-09-26）', () => {
+  // eslint-disable-next-line global-require
+  const { HOLD_MS } = require('./logic/cardGestures');
+  const card = () => document.getElementById('flashcard');
+
+  test('**押している間だけ裏になり、離すと戻る。答えにはならない**', () => {
+    render(<VocabularyCheckTest allWords={WORDS} onCancel={() => {}} />);
+    const before = document.getElementById('card-front-text').textContent;
+    fireEvent.pointerDown(card());
+    act(() => { jest.advanceTimersByTime(HOLD_MS + 10); });
+    expect(card().getAttribute('data-peeking')).toBe('true');
+    fireEvent.pointerUp(card());
+    act(() => { jest.advanceTimersByTime(500); });
+    expect(card().getAttribute('data-peeking')).toBeNull();
+    expect(document.getElementById('card-front-text').textContent).toBe(before);
+    expect(screen.getByText(/^1 \//)).toBeInTheDocument();
+  });
+
+  test('**のぞいてから答えたら、見てから答えた印が付く**', async () => {
+    const onTestComplete = jest.fn();
+    render(<VocabularyCheckTest allWords={WORDS} onCancel={() => {}} onTestComplete={onTestComplete} />);
+    fireEvent.pointerDown(card());
+    act(() => { jest.advanceTimersByTime(HOLD_MS + 10); });
+    fireEvent.pointerUp(card());
+    clickKnow();
+    // 次の問題はのぞいていない
+    clickKnow();
+    // 記録（logStudySession）は最後まで行かないと出ないので、答えの中身は完了時に確かめる
+    for (let i = 0; i < 120 && onTestComplete.mock.calls.length === 0; i += 1) {
+      if (!screen.queryByRole('button', { name: 'わかる' })) break;
+      await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'わかる' })); });
+      await act(async () => { jest.advanceTimersByTime(REVEAL_PAUSE_MS); });
+    }
+    const answers = onTestComplete.mock.calls[0]?.[1] || [];
+    expect(answers[0]?.revealed).toBe(true);
+    expect(answers[1]?.revealed).toBe(false);
   });
 });

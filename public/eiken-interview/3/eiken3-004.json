@@ -1,0 +1,58 @@
+{
+  "id": "eiken3-004",
+  "grade": "3",
+  "title": "Using the Library",
+  "passage": {
+    "text": "Libraries are useful places for students. Students can borrow many books there for free, so they can read a lot without spending money. Some libraries are also quiet places to study after school.",
+    "hintPhrase": "so",
+    "wordCount": 33
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken3-004-a.webp",
+      "caption": "図書館。女の子がテーブルで本を読み、係の人が棚に本を戻し、少年がカウンターで本を3冊持って立っている（吹き出しで家のソファで読む姿）。カウンターに本が5冊積んである。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "prompt": "Please look at the passage. Why can students read a lot without spending money?",
+      "modelAnswer": "Because they can borrow many books at libraries for free."
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "prompt": "Please look at the picture. What is the boy at the counter going to do?",
+      "modelAnswer": "He's going to read a book at home."
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "prompt": "How many books are there on the counter?",
+      "modelAnswer": "There are five books."
+    },
+    {
+      "no": 4,
+      "type": "personal",
+      "prompt": "How often do you go to the library?",
+      "modelAnswer": "I go to the library about twice a month."
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "prompt": "Do you like reading books?",
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I read a story before I go to bed. I like mystery books the best."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "I get sleepy when I read. I like watching movies better."
+        }
+      }
+    }
+  ]
+}

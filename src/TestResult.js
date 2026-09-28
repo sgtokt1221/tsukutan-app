@@ -1,11 +1,13 @@
 import { getLevel, getLevelEquivalent, MAX_WORD_LEVEL } from './config';
-import { FaBook, FaBullseye, FaHome } from 'react-icons/fa';
+import { FaBook, FaHome } from 'react-icons/fa';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom';
 import { analyzeUserPerformance, generateLearningRecommendations } from './logic/basicAnalytics';
 import { auth } from './firebaseConfig';
 import logger from './logic/logger';
+import RankBadge from './components/assessment/RankBadge';
+import { rankForScore, abilityScoreOf, rankLabel, tierForScore } from './logic/rankLogic';
 
 // レベル定義
 
@@ -16,7 +18,13 @@ const getLevelColor = (level) => {
   return "#ef4444"; // 赤
 };
 
-function TestResult({ level, onRestart, responseTimes = [] }) {
+/**
+ * @param {object} props
+ * @param {number} props.level 判定したレベル（1〜MAX_WORD_LEVEL）
+ * @param {number} [props.estimatedVocabulary] テストで保存した推定語彙数（`expectedVocabulary` の値）
+ * @param {number} [props.ability] テストで推定した力（小数のレベル）。ランクの中の段を出すのに使う
+ */
+function TestResult({ level, onRestart, responseTimes = [], estimatedVocabulary, ability }) {
   const [meterWidth, setMeterWidth] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
   const [loadingAnalysis, setLoadingAnalysis] = useState(true);
@@ -57,6 +65,10 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
   const info = getLevel(level);
   const label = info?.label || 'レベル判定中';
   const equivalent = info ? getLevelEquivalent(level) : '';
+  const resultScore = abilityScoreOf({ level, ability });
+  const resultRank = rankForScore(resultScore);
+  // 「S 上級」のように、ランクの中の段まで出す
+  const resultRankText = rankLabel(resultScore) || resultRank?.id;
 
   return (
     <div className="test-result-container stylish-result">
@@ -71,10 +83,12 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="level-badge-large"
-            style={{ backgroundColor: getLevelColor(level) }}
+            className="result-rank-award"
           >
-            <span className="level-number">{level}</span>
+            <RankBadge rankId={resultRank?.id ?? null} size="large" tier={tierForScore(resultScore)} />
+            <span className="result-rank-caption">
+              {resultRank ? `ランク ${resultRankText} 獲得` : 'ランク測定中'}
+            </span>
           </motion.div>
           <h2 className="result-title">診断結果</h2>
         </div>
@@ -92,7 +106,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
             </div>
             
             <div className="level-display">
-              <h1 className="level-label">{label}</h1>
+              <p className="level-label">{label}</p>
               <p className="level-equivalent">{equivalent}</p>
             </div>
             
@@ -110,7 +124,7 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
                   transition={{ duration: 1.5, ease: "easeOut" }}
                 />
               </div>
-              <p className="level-description">Lv. {level} / 10</p>
+              <p className="level-description">Lv. {level} / {MAX_WORD_LEVEL}</p>
             </div>
             
             <div className="result-stats">
@@ -118,16 +132,14 @@ function TestResult({ level, onRestart, responseTimes = [] }) {
                 <div className="stat-icon" aria-hidden="true"><FaBook /></div>
                 <div className="stat-content">
                   <span className="stat-label">推定語彙数</span>
-                  <span className="stat-value">{(info?.wordsRequired ?? 0).toLocaleString()}語</span>
+                  {/* 保存した値を出す（2026-09-24）。以前はレベルの目標語数（levels.json の
+                      wordsRequired）を出していて、保存している推定値と食い違っていた */}
+                  <span className="stat-value">{Number.isFinite(estimatedVocabulary)
+                    ? `${estimatedVocabulary.toLocaleString()}語` : '—'}</span>
                 </div>
               </div>
-              <div className="stat-item">
-                <div className="stat-icon" aria-hidden="true"><FaBullseye /></div>
-                <div className="stat-content">
-                  <span className="stat-label">目標達成度</span>
-                  <span className="stat-value">{Math.round(meterWidth)}%</span>
-                </div>
-              </div>
+              {/* 「目標達成度」は外した（2026-09-24）。中身は上の「レベル進捗」と同じ
+                  レベル÷7 で、目標とは関係が無かった */}
               {responseTimes.length > 0 && (
                 <div className="stat-item">
                   <div className="stat-icon">⏱️</div>

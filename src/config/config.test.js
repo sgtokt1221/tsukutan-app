@@ -221,8 +221,21 @@ describe('発音記号', () => {
   const pronunciations = require('../../public/data/pronunciations.json');
 
   test('全語に発音記号が付いている', () => {
-    const missing = master.filter((word) => !word.pronunciation);
+    // ライティングの型（source: 'writing'）は除く。"It is ～ that SV" のように
+    // 伏せ字を含むものが多く、発音記号を付けても読めない。build-pronunciations.js
+    // も「1語でも辞書に無ければ落とす（半端な表記を出さない）」方針なので、
+    // ここも同じ扱いにする。
+    const missing = master.filter((word) => !word.pronunciation && word.source !== 'writing');
     expect(missing.map((word) => word.word)).toEqual([]);
+  });
+
+  test('ライティングの型は単語カードと区別できる', () => {
+    const writing = master.filter((word) => word.source === 'writing');
+    expect(writing.length).toBeGreaterThan(0);
+    // 例文と訳が無いと、書くための型として使えない
+    expect(writing.filter((word) => !word.example || !word.exampleJa)).toEqual([]);
+    // 級が入っていないと「えらぶ」の英検教材に出てこない
+    expect(writing.filter((word) => !word.eikenLevels?.length)).toEqual([]);
   });
 
   test('マスターの pronunciation は発音表と一致する', () => {

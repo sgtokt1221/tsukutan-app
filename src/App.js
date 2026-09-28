@@ -6,28 +6,61 @@ import { doc, getDoc } from 'firebase/firestore';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Component Imports
-// ダッシュボードは遅延読み込みにする。Chart.js は AdminDashboard からしか
-// 使わないので、管理者がその画面を開くまで取りに行かない（計画書13.5）。
+// ダッシュボードは遅延読み込みにする（計画書13.5）。
+// 管理者向けは案内だけ。生徒を見る場所はつくばホームの管理者ポータルに一本化した（2026-09-23）
 import LoginPage from './LoginPage.js';
-const StudentDashboard = lazy(() => import('./StudentDashboard.js'));
-const AdminDashboard = lazy(() => import('./AdminDashboard.js'));
+import BrandLoader from './components/brand/BrandLoader';
+// つくばホームから `#token=` で渡ってきたときの入場。**アカウントを2つ作らない**
+import { enterFromTsukubaHome } from './logic/tsukubaEntry.js';
+// 勉強時間をつくばホームへ送る。**前回閉じたぶんも、ここで締めて送る**
+import { resumeAndFlush } from './logic/studySession.js';
+const loadStudentDashboard = () => import('./StudentDashboard.js');
+const StudentDashboard = lazy(loadStudentDashboard);
+const AdminMoved = lazy(() => import('./AdminMoved.js'));
 const GoalSetter = lazy(() => import('./GoalSetter.js'));
 
 const RouteFallback = () => (
-  <div className="loading-container">
-    <p>読み込み中...</p>
-  </div>
+  <BrandLoader fullScreen label="画面を準備しています…" />
 );
 
 function AppContent() {
   const [currentUser, setCurrentUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isGoalSet, setIsGoalSet] = useState(false);
+  // 学年（'中学1年生' / '中1' など）。目標設定で出す教材を学年で分けるのに使う
+  const [schoolGrade, setSchoolGrade] = useState(null);
   
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
   const [retryToken, setRetryToken] = useState(0);
   const navigate = useNavigate();
+
+  // 生徒はほぼ必ずここへ来る。認証の復帰を待ってから取りに行くと、
+  // その待ち時間ぶん画面が出るのが遅れる（実測で1.5秒）。先に温めておく。
+  useEffect(() => {
+    loadStudentDashboard();
+  }, []);
+
+  /*
+    つくばホームから渡ってきたか。**認証の監視より先に済ませる。**
+
+    先に `onAuthStateChanged` が「未ログイン」で確定すると、入場券を使う前に
+    ログイン画面へ飛ばしてしまう。トークンがあるあいだは待たせる。
+  */
+  const [entering, setEntering] = useState(
+    typeof window !== 'undefined' && /[#&]token=/.test(window.location.hash || '')
+  );
+  useEffect(() => {
+    if (!entering) return;
+    let alive = true;
+    void enterFromTsukubaHome().then((r) => {
+      if (!alive) return;
+      // **失敗しても行き止まりにしない。** 理由を出して、ログイン画面へ落とす
+      if (r.tried && !r.ok) setAuthError(r.message);
+      setEntering(false);
+    });
+    return () => { alive = false; };
+  }, [entering]);
 
   useEffect(() => {
     setLoading(true);
@@ -36,6 +69,8 @@ function AppContent() {
     const unsubscribe = onAuthStateChanged(
       auth,
       async (user) => {
+        // 起動の内訳を測るための目印。ここまでが認証の復帰にかかった時間。
+        performance.mark('auth');
         setCurrentUser(user);
         try {
           if (user) {
@@ -44,8 +79,15 @@ function AppContent() {
             setUserRole(role);
 
             if (!isAdmin) {
+              /*
+                前回タブを閉じて宙に浮いた勉強時間を締めて、貯まっているぶんと
+                一緒につくばホームへ送る。**待たない**——送れなくても学習は始められる
+                （次に開いたときにまた送る）。
+              */
+              void resumeAndFlush();
               const userDocRef = doc(db, 'users', user.uid);
               const userDoc = await getDoc(userDocRef);
+              setSchoolGrade(userDoc.exists() ? userDoc.data().grade ?? null : null);
               if (userDoc.exists() && userDoc.data().goal && userDoc.data().goal.isSet) {
                 setIsGoalSet(true);
               } else {
@@ -95,19 +137,15 @@ function AppContent() {
     setIsGoalSet(false);
   };
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <p>読み込み中...</p>
-      </div>
-    );
+  if (loading || entering) {
+    return <BrandLoader fullScreen label={entering ? 'ログインしています…' : 'つくつくを準備しています…'} />;
   }
 
   if (authError) {
     return (
       <div className="loading-container">
         <div className="app-status-card">
-          <h1 className="app-status-title">つくたんを開けませんでした</h1>
+          <h1 className="app-status-title">つくつくを開けませんでした</h1>
           <p className="app-status-message">{authError}</p>
           <button
             type="button"
@@ -137,11 +175,11 @@ function AppContent() {
           )
         } />
         <Route path="/login" element={!currentUser ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/admin-dashboard" element={userRole === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
+        <Route path="/admin-dashboard" element={userRole === 'admin' ? <AdminMoved /> : <Navigate to="/" />} />
         <Route path="/student-dashboard" element={userRole === 'student' ? <StudentDashboard /> : <Navigate to="/" />} />
         <Route path="/set-goal" element={
           userRole === 'student' ? (
-            <GoalSetter onGoalSet={handleGoalSet} onGoalReset={handleGoalReset} />
+            <GoalSetter onGoalSet={handleGoalSet} onGoalReset={handleGoalReset} schoolGrade={schoolGrade} />
           ) : (
             <Navigate to="/" />
           )

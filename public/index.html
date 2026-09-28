@@ -2,16 +2,33 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#A3E635" />
+    <!--
+      **`viewport-fit=cover` を外さない。**
+
+      これが無いと iOS は `env(safe-area-inset-*)` を**すべて 0 で返す**。
+      CSS 側は15か所で安全領域を見ているのに、**1つも効いていなかった**
+      （2026-09-22 に判明）。ホーム操作バーのある端末を PWA で開くと、
+      下タブがバーに潜り込んで**低く・窮屈に見える**。Safari のタブから開くと
+      ブラウザのバーがその場所を埋めるので、**ブラウザでは気づけない**。
+
+      受験サポート（`tsukuba-manager/src/exam-support-page/index.html`）は
+      最初からこれを付けている。並べたときの差はここから出ていた。
+
+      **付けると上も安全領域の下に潜る**ので、`.student-header` は
+      `env(safe-area-inset-top)` を必ず持つこと（App.css）。
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#183153" />
     <meta
       name="description"
-      content="つくたんは中高生のための英単語学習アプリです。英検・高校入試・大学入試の目標と達成日から、毎日の学習プランを自動で作成します。"
+      content="つくつくは、今日やるべき量と復習のタイミングが分かる中高生向け英語学習アプリです。"
     />
-    <title>つくたん</title>
+    <title>つくつく</title>
 
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/tsukutsuku-mark.svg" />
+    <!-- iOS は透明を黒で塗ってから自分で角を丸める。**角丸なし・透明なしの180px**を渡す
+         （`logo192.png` は角が透明なので、渡すと外側に黒い三角が残る）→ scripts/build-icons.mjs -->
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +36,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <noscript>つくたんを使うには JavaScript を有効にしてください。</noscript>
+    <noscript>つくつくを使うには JavaScript を有効にしてください。</noscript>
     <div id="root"></div>
   </body>
 </html>

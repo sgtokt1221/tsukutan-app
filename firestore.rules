@@ -27,6 +27,14 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    // **塾の生徒**：users に記録があり（作るのはサーバだけ）、止められていない人。
+    // 買った教材の長文（licensedReadings）はこの人だけが読める（2026-09-27）
+    function isEnrolled() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('disabledAt', null) == null;
+    }
+
     // 生徒が自分で書き換えてはいけないフィールド。
     // studentId はログイン用メールと対応し、disabledAt は管理者による無効化の印。
     function protectedFieldsUnchanged() {
@@ -50,15 +58,39 @@ service cloud.firestore {
 
       // サブコレクション（logs / reviewWords / dailyCompletion /
       // freeStudyProgress / generatedStories など）
+      // **ライティングの採点結果と回数はサーバだけが書く**（2026-09-26）。
+      // 本人が書けると、点を画面から書き換えられる。match を別に書いても
+      // ここの allow と OR になって効かないので、ここで除く
       match /{subCollection}/{docId} {
         allow read: if isOwner(uid) || isAdmin();
-        allow write: if isOwner(uid);
+        allow write: if isOwner(uid) && !(subCollection in ['writingAttempts', 'writingUsage']);
       }
     }
 
     //--------------------------------------------------------------------------
     // マスターデータ
     //--------------------------------------------------------------------------
+    // 買った教材の長文。**塾の生徒だけ**が読む。書くのは管理用のスクリプトだけ
+    match /licensedReadings/{bookId} {
+      allow read: if isEnrolled() || isAdmin();
+      allow write: if false;
+      match /items/{itemId} {
+        allow read: if isEnrolled() || isAdmin();
+        allow write: if false;
+      }
+    }
+
+    // 市販の単語帳（収録語と並び）。**塾の生徒だけ**が読む（2026-09-27。公開ファイルから移した）。
+    // 職員の管理画面は関数 staffBookWords が admin で読む。書くのは scripts/upload-licensed-words.js だけ
+    match /licensedWordBooks/{bookId} {
+      allow read: if isEnrolled() || isAdmin();
+      allow write: if false;
+      match /chunks/{chunkId} {
+        allow read: if isEnrolled() || isAdmin();
+        allow write: if false;
+      }
+    }
+
     match /goalsMaster/{goalId} {
       allow read: if isSignedIn();
       allow write: if false;
@@ -72,6 +104,26 @@ service cloud.firestore {
         allow read: if isSignedIn();
         allow write: if false;
       }
+    }
+
+    //--------------------------------------------------------------------------
+    // 管理者が出した教科書の小テスト（2026-09-24）。
+    // 読めるのは対象の生徒だけ（targetUids に自分の uid がある文書）。書くのは Functions だけ
+    // （staffQuizAssignments）。生徒の結果は users/{uid}/quizResults に本人が書く。
+    //--------------------------------------------------------------------------
+    match /quiz_assignments/{assignmentId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.targetUids;
+      allow write: if false;
+    }
+
+    //--------------------------------------------------------------------------
+    // 先生から生徒のホームへのメッセージ（2026-09-27。一斉テストの結果から送る）。
+    // 読めるのは対象の生徒だけ。書くのは Functions だけ（staffQuizAssignments の message）。
+    // 「読んだ」は users/{uid}/messageReads/{id} に本人が書く
+    //--------------------------------------------------------------------------
+    match /staff_messages/{messageId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.targetUids;
+      allow write: if false;
     }
 
     //--------------------------------------------------------------------------

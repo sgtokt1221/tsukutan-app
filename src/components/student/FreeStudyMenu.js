@@ -1,0 +1,379 @@
+import React from 'react';
+import { FaBook, FaBookOpen, FaChevronRight, FaMicrophone, FaPen, FaSchool, FaStar } from 'react-icons/fa';
+import RecommendationBadge from './RecommendationBadge';
+import { rangesOf } from '../../logic/bookWords';
+import { SUNSHINE } from '../../logic/textbookPages';
+import TextbookPagePicker from './TextbookPagePicker';
+import './FreeStudyMenu.css';
+import { WRITING_ENABLED } from '../../config/features';
+import { bookForEiken } from '../../config/books';
+import { SELF_TEST_MAX } from '../../logic/assignedQuiz';
+
+/**
+ * 自由学習の入口。
+ *
+ * 以前は「学年で選ぶ」「英検で選ぶ」「二次試験（面接）」の見出しの下に
+ * ボタンが12個並んでいて、何を選ぶ画面なのか分からなかった。
+ * 教材 / 教科書 / 英検 の3枚に畳んで、それぞれ下へ辿る（2026-09-27。中学英語・高校英語は外した）。
+ * 3枚とも**中に入っている本の表紙を重ねて**見せる（題名より先に絵で分かる）。
+ *
+ *   main            [教材] [教科書] [英検]
+ *    ├ books     塾が配っている単語帳4冊（表紙つき）
+ *    │    └ book-range  番号の帯（1〜100 …）→ onSelectRange → そのままカードへ
+ *    ├ textbook-grade  学校の教科書（Sunshine）の学年
+ *    │    └ textbook-pages  ページの範囲 → onStartTextbookPages → そのままカードへ
+ *    └ eiken     [単語を覚える] [二次試験（面接）]
+ *         ├ eiken-words     → 級を選ぶ → onSelectTextbook
+ *         ├ eiken-interview → 級を選ぶ → onSelectInterview
+ *         └ eiken-writing → 級を選ぶ → onSelectWriting（2026-09-26）
+ *
+ * **教材だけ絞り込み画面（filter）を通さない。** 単語帳はレベルでも品詞でもなく
+ * **通し番号**で進めるものなので、番号の帯から直接カードへ行く。
+ *
+ * どの段にいるかは親（StudentDashboard）が持つ。ここで持つと、絞り込み画面へ
+ * 進んだときにこの部品が外れて、戻ったとき必ず main に落ちてしまう。
+ */
+
+/**
+ * 一段だけ戻る先。
+ *
+ * 絞り込み画面（filter）から戻る先は、その教材をどこから選んだかで変わる。
+ * 英検の級は級一覧へ戻す。常に main にすると、5級を見たあと4級を見るのに
+ * 毎回3カードから辿り直すことになる。どこから来たかは教材IDから分かるので、
+ * 状態は増やさない。
+ */
+export const freeStudyBackTarget = (mode, textbookId) => ({
+  eiken: 'main',
+  'eiken-words': 'eiken',
+  'eiken-interview': 'eiken',
+  'eiken-writing': 'eiken',
+  books: 'main',
+  'book-range': 'books',
+  'textbook-grade': 'main',
+  'textbook-pages': 'textbook-grade',
+  filter: textbookId?.startsWith('eiken-') ? 'eiken-words' : 'main',
+}[mode] || 'main');
+
+/**
+ * @param thumbnail 表紙の画像URL。**あればアイコンの代わりに出す**
+ *   （本は絵で覚えているので、題名より先に表紙で見つかる）
+ * @param covers 表紙の画像URLの並び。**重ねて出す**（中に何冊も入っている入口。最大3冊）
+ */
+function MenuCard({ Icon, title, description, badge, thumbnail, covers, onClick }) {
+  if (covers && covers.length > 0) {
+    return (
+      <button type="button" className="free-study-card" onClick={onClick}>
+        <span className="free-study-card__stack" aria-hidden="true">
+          {covers.slice(0, 3).map((src) => (
+            // 読めなくても崩さない（alt を空にして枠だけ残す。題名は隣に出ている）
+            <img key={src} src={src} alt="" loading="lazy" draggable="false" />
+          ))}
+        </span>
+        <CardBody title={title} description={description} badge={badge} />
+      </button>
+    );
+  }
+  return (
+    <button type="button" className="free-study-card" onClick={onClick}>
+      <span className={thumbnail ? 'free-study-card__cover' : 'free-study-card__icon'}>
+        {thumbnail
+          ? (
+            /*
+              **読めなくても崩さない。** 表紙はつくばホームから読むので、
+              電波が悪いと出ないことがある。alt を空にして枠だけ残す
+              （題名は隣に出ているので、読み上げが二重にならない）。
+            */
+            <img src={thumbnail} alt="" loading="lazy" draggable="false" />
+          )
+          : <Icon aria-hidden="true" />}
+      </span>
+      <CardBody title={title} description={description} badge={badge} />
+    </button>
+  );
+}
+
+function CardBody({ title, description, badge }) {
+  return (
+    <>
+      <span className="free-study-card__body">
+        <span className="free-study-card__title">
+          {title}
+          {badge && <RecommendationBadge type="textbook" priority={badge} />}
+        </span>
+        {description && <span className="free-study-card__sub">{description}</span>}
+      </span>
+      <span className="free-study-card__chevron">
+        <FaChevronRight aria-hidden="true" />
+      </span>
+    </>
+  );
+}
+
+/**
+ * 覚える（練習＝カード）か、テスト（4択）か。**範囲を選ぶ画面の上に出す**（2026-09-27）。
+ * テストしたい生徒もいるので、同じ範囲の選び方のまま切り替えられるようにした。
+ */
+function PurposeToggle({ purpose, onChange }) {
+  const option = (value, label) => (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={purpose === value}
+      className={purpose === value ? 'free-study-purpose__option is-active' : 'free-study-purpose__option'}
+      onClick={() => onChange(value)}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="free-study-purpose">
+      <div className="free-study-purpose__switch" role="radiogroup" aria-label="覚えるかテストするか">
+        {option('practice', '練習')}
+        {option('test', 'テスト')}
+      </div>
+      <p className="free-study-purpose__note">
+        {purpose === 'test' ? `範囲の中から最大${SELF_TEST_MAX}問、4択で出ます` : 'カードで覚えます'}
+      </p>
+    </div>
+  );
+}
+
+export default function FreeStudyMenu({
+  mode,
+  onNavigate,
+  eikenOptions,
+  interviewGrades,
+  books,
+  selectedBook,
+  wordCountOf,
+  recommendationOf,
+  onSelectTextbook,
+  onSelectInterview,
+  onSelectWriting,
+  onSelectBook,
+  onSelectRange,
+  // 学校の教科書。cards は読み込み前 null、読めなければ textbookError
+  textbookCards = null,
+  textbookError = '',
+  textbookGrade = null,
+  onSelectTextbookGrade,
+  onStartTextbookPages,
+  // 範囲を選んだあと 覚える（練習）か テストか（2026-09-27）。持つのは親
+  purpose = 'practice',
+  onChangePurpose,
+}) {
+  const purposeToggle = onChangePurpose ? <PurposeToggle purpose={purpose} onChange={onChangePurpose} /> : null;
+  if (mode === 'textbook-grade' || mode === 'textbook-pages') {
+    if (textbookError) return <p className="tile-caption" role="alert">{textbookError}</p>;
+    if (!textbookCards) return <p className="tile-caption">教科書の単語を読み込んでいます…</p>;
+    if (mode === 'textbook-pages') {
+      return (
+        <>
+          {purposeToggle}
+          <TextbookPagePicker cards={textbookCards} grade={textbookGrade} onStart={onStartTextbookPages} />
+        </>
+      );
+    }
+    return (
+      <div className="list-group">
+        {SUNSHINE.grades.map((grade) => (
+          <button key={grade} type="button" className="tile-button" onClick={() => onSelectTextbookGrade(grade)}>
+            <span className="tile-button__label">{grade}年</span>
+            <span className="tile-button__count">
+              {textbookCards.filter((c) => c.grade === grade).length.toLocaleString()}語
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // 教材の一覧。**表紙で選べるようにする**（題名より先に絵で見つかる）
+  if (mode === 'books') {
+    return (
+      <div className="free-study-cards">
+        {(books || []).map((book) => (
+          <MenuCard
+            key={book.id}
+            Icon={FaBook}
+            thumbnail={book.cover}
+            title={book.title}
+            description={`${book.publisher}・${book.count.toLocaleString()}語`}
+            onClick={() => onSelectBook(book)}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // 番号の帯。**本を開いて「今日は301〜400」と進むのと同じ区切り**
+  if (mode === 'book-range') {
+    if (!selectedBook) return null;
+    return (
+      <>
+      {purposeToggle}
+      <div className="list-group">
+        {rangesOf(selectedBook.count).map((range) => (
+          <button
+            key={range.label}
+            type="button"
+            className="tile-button"
+            onClick={() => onSelectRange(selectedBook, range)}
+          >
+            <span className="tile-button__label">{range.label}</span>
+            <span className="tile-button__count">{range.count}語</span>
+          </button>
+        ))}
+      </div>
+      </>
+    );
+  }
+
+  if (mode === 'eiken') {
+    return (
+      <div className="free-study-cards">
+        <MenuCard
+          Icon={FaBook}
+          title="単語を覚える"
+          description="5級 〜 準1級"
+          onClick={() => onNavigate('eiken-words')}
+        />
+        <MenuCard
+          Icon={FaMicrophone}
+          title="二次試験（面接）"
+          description="入室から退室までを通しで練習します"
+          onClick={() => onNavigate('eiken-interview')}
+        />
+        {/* 採点の鍵待ちで引っ込めている（→ config/features.js） */}
+        {WRITING_ENABLED && (
+          <MenuCard
+            Icon={FaPen}
+            title="ライティング"
+            description="本番と同じ形式。カンペを見ながら書いて採点"
+            onClick={() => onNavigate('eiken-writing')}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if (mode === 'eiken-words') {
+    // 収録が0語の級は出さない。選んでも何も学べない。
+    // 単語データの読み込み前は判定できないので出したままにする。
+    const options = eikenOptions.filter((option) => wordCountOf(option.id) !== 0);
+
+    return (
+      <div className="list-group">
+        {options.map(({ id, label }) => {
+          const count = wordCountOf(id);
+          const badge = recommendationOf(id);
+          /*
+            **2級・準1級はでる順パス単を開く**（2026-09-27）。本の並びと訳で覚える。
+            表紙と本の名前を出す（どの本の単語かを生徒が分かるように）
+          */
+          const book = bookForEiken(id);
+          if (book) {
+            return (
+              <button key={id} type="button" className="tile-button tile-button--book" onClick={() => onSelectBook(book)}>
+                <img className="tile-button__thumb" src={book.cover} alt="" aria-hidden="true" />
+                <span className="tile-button__label">
+                  {label}
+                  <span className="tile-button__sub">{book.title}</span>
+                  {badge && <RecommendationBadge type="textbook" priority={badge} />}
+                </span>
+                <span className="tile-button__count">{book.count.toLocaleString()}語</span>
+              </button>
+            );
+          }
+
+          return (
+            <button
+              key={id}
+              type="button"
+              className="tile-button"
+              onClick={() => onSelectTextbook(id)}
+            >
+              <span className="tile-button__label">
+                {label}
+                {badge && <RecommendationBadge type="textbook" priority={badge} />}
+              </span>
+              {count !== null && (
+                <span className="tile-button__count">{count.toLocaleString()}語</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (mode === 'eiken-writing') {
+    return (
+      <div className="list-group">
+        {interviewGrades.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            className="tile-button"
+            onClick={() => onSelectWriting(id)}
+          >
+            <span className="tile-button__label">{label}</span>
+            <span className="tile-button__count">{id === '3' || id === 'pre2' ? 'Eメール・意見' : '要約・意見'}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  if (mode === 'eiken-interview') {
+    return (
+      <div className="list-group">
+        {interviewGrades.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            className="tile-button"
+            onClick={() => onSelectInterview(id)}
+          >
+            <span className="tile-button__label">{label}</span>
+            {/* 単語ではないので語数は出さない */}
+            <span className="tile-button__count">5問</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="free-study-cards">
+      {/*
+        **教材を一番上に置く**（2026-09-22 の指定）。塾が実際に配っている本なので、
+        生徒はまずここを探す。
+      */}
+      <MenuCard
+        Icon={FaBookOpen}
+        title="教材"
+        description="塾で使っている単語帳から選ぶ"
+        covers={(books || []).filter((book) => !book.eikenOption).map((book) => book.cover)}
+        onClick={() => onNavigate('books')}
+      />
+      {/* 学校の教科書。ページを指定して覚える（2026-09-24） */}
+      <MenuCard
+        Icon={FaSchool}
+        title="教科書"
+        description={`${SUNSHINE.title}・ページを選んで覚える`}
+        covers={SUNSHINE.covers}
+        onClick={() => onNavigate('textbook-grade')}
+      />
+      <MenuCard
+        Icon={FaStar}
+        title="英検"
+        description="単語（でる順パス単）と、二次試験（面接）"
+        covers={(books || []).filter((book) => book.eikenOption).map((book) => book.cover)}
+        // どれか1級でも今の力に合っていれば付ける。中を開かないと分からないため。
+        badge={eikenOptions.map((option) => recommendationOf(option.id)).find(Boolean) || null}
+        onClick={() => onNavigate('eiken')}
+      />
+    </div>
+  );
+}

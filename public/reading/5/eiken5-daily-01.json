@@ -1,0 +1,224 @@
+{
+  "id": "eiken5-daily-01",
+  "grade": "5",
+  "category": "daily",
+  "title": "My Morning",
+  "titleJa": "わたしの朝",
+  "sentences": [
+    {
+      "ja": "わたしは朝6時に起きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "get up",
+          "ja": "起きます",
+          "role": "V"
+        },
+        {
+          "en": "at six",
+          "ja": "6時に",
+          "role": "M"
+        },
+        {
+          "en": "in the morning.",
+          "ja": "朝に",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "まず、顔を洗います。",
+      "chunks": [
+        {
+          "en": "First,",
+          "ja": "まず",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "wash",
+          "ja": "洗います",
+          "role": "V"
+        },
+        {
+          "en": "my face.",
+          "ja": "顔を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "母は家で朝ごはんを作ります。",
+      "chunks": [
+        {
+          "en": "My mother",
+          "ja": "母は",
+          "role": "S"
+        },
+        {
+          "en": "makes",
+          "ja": "作ります",
+          "role": "V"
+        },
+        {
+          "en": "breakfast",
+          "ja": "朝ごはんを",
+          "role": "O"
+        },
+        {
+          "en": "at home.",
+          "ja": "家で",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしはパンを食べて牛乳を飲みます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "eat",
+          "ja": "食べます",
+          "role": "V"
+        },
+        {
+          "en": "bread",
+          "ja": "パンを",
+          "role": "O"
+        },
+        {
+          "en": "and",
+          "ja": "そして",
+          "role": "M"
+        },
+        {
+          "en": "drink",
+          "ja": "飲みます",
+          "role": "V"
+        },
+        {
+          "en": "milk.",
+          "ja": "牛乳を",
+          "role": "O"
+        }
+      ]
+    },
+    {
+      "ja": "父もお茶を飲みます。",
+      "chunks": [
+        {
+          "en": "My father",
+          "ja": "父は",
+          "role": "S"
+        },
+        {
+          "en": "drinks",
+          "ja": "飲みます",
+          "role": "V"
+        },
+        {
+          "en": "tea",
+          "ja": "お茶を",
+          "role": "O"
+        },
+        {
+          "en": "too.",
+          "ja": "も",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "そのあと、わたしはかばんに本を入れます。",
+      "chunks": [
+        {
+          "en": "After that,",
+          "ja": "そのあと",
+          "role": "M"
+        },
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "put",
+          "ja": "入れます",
+          "role": "V"
+        },
+        {
+          "en": "my books",
+          "ja": "本を",
+          "role": "O"
+        },
+        {
+          "en": "in my bag.",
+          "ja": "かばんに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは友だちといっしょに歩いて学校へ行きます。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "walk",
+          "ja": "歩いて行きます",
+          "role": "V"
+        },
+        {
+          "en": "to school",
+          "ja": "学校へ",
+          "role": "M"
+        },
+        {
+          "en": "with my friends.",
+          "ja": "友だちといっしょに",
+          "role": "M"
+        }
+      ]
+    },
+    {
+      "ja": "わたしは朝がとても好きです。",
+      "chunks": [
+        {
+          "en": "I",
+          "ja": "わたしは",
+          "role": "S"
+        },
+        {
+          "en": "like",
+          "ja": "好きです",
+          "role": "V"
+        },
+        {
+          "en": "the morning",
+          "ja": "朝が",
+          "role": "O"
+        },
+        {
+          "en": "very much.",
+          "ja": "とても",
+          "role": "M"
+        }
+      ]
+    }
+  ]
+}
