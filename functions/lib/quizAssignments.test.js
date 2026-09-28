@@ -262,3 +262,33 @@ describe('提出した中身（2026-09-27）', () => {
     expect(missedWordsOf(words, null)).toEqual([]);
   });
 });
+
+describe('合格点・追試・メッセージ（2026-09-27）', () => {
+  const { validateCreate, validatePassRate, passedOf, validateRetest, validateMessage, QuizInputError, MAX_MESSAGE } = require('./quizAssignments');
+  const base = { grade: 1, pageFrom: 1, pageTo: 2, count: 10, direction: 'en-ja', targetUids: ['a', 'b'] };
+
+  test('合格点は決めたときだけ持つ（1〜100%）', () => {
+    expect(validateCreate({ ...base, passRate: 80 }).passRate).toBe(80);
+    expect(validateCreate(base)).not.toHaveProperty('passRate');
+    expect(validatePassRate({ passRate: '' })).toBeNull();
+    for (const v of [0, 101, 7.5, 'x']) expect(() => validatePassRate({ passRate: v })).toThrow(QuizInputError);
+  });
+
+  test('合格の判定は正解率で。合格点が無ければ判定しない', () => {
+    expect(passedOf(8, 10, 80)).toBe(true);
+    expect(passedOf(7, 10, 80)).toBe(false);
+    expect(passedOf(5, 10, null)).toBeNull();
+  });
+
+  test('追試は元の小テストと出す生徒', () => {
+    expect(validateRetest({ id: 'q1', targetUids: ['a'] })).toEqual({ id: 'q1', targetUids: ['a'] });
+    expect(() => validateRetest({ id: '', targetUids: ['a'] })).toThrow(QuizInputError);
+    expect(() => validateRetest({ id: 'q1', targetUids: [] })).toThrow(QuizInputError);
+  });
+
+  test('メッセージは1字以上・上限まで', () => {
+    expect(validateMessage({ text: '  月曜までに追試を  ', targetUids: ['a'] })).toEqual({ text: '月曜までに追試を', targetUids: ['a'] });
+    expect(() => validateMessage({ text: '   ', targetUids: ['a'] })).toThrow(QuizInputError);
+    expect(() => validateMessage({ text: 'あ'.repeat(MAX_MESSAGE + 1), targetUids: ['a'] })).toThrow(QuizInputError);
+  });
+});

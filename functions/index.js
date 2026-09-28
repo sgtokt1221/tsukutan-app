@@ -62,6 +62,8 @@ const {
   titleOf: quizTitleOf,
   summarize: summarizeQuiz,
   missedWordsOf,
+  validateRetest: validateQuizRetest,
+  validateMessage: validateStaffMessage,
 } = require('./lib/quizAssignments');
 
 //==============================================================================
@@ -1478,6 +1480,9 @@ quizAssignmentsApp.post('/', async (req, res) => {
           count: a.count,
           active: a.active !== false,
           createdAt: toMillis(a.createdAt),
+          // 合格点（%）と、追試なら元の小テスト（2026-09-27）
+          passRate: Number.isInteger(a.passRate) ? a.passRate : null,
+          retestOf: a.retestOf || null,
           ...summarizeQuiz({ targetUids: targets }, byUid),
           // 1人を開いているときだけ、提出した中身（間違えた語と提出した時刻）も返す（2026-09-27）
           ...(uid ? {
@@ -1506,6 +1511,61 @@ quizAssignmentsApp.post('/', async (req, res) => {
         });
       }
       return res.status(200).json({ assignments, ...(selfTests ? { selfTests } : {}) });
+    }
+
+    /*
+      **追試**（2026-09-27）。元の小テストと**同じ語**を並びだけ混ぜて、選んだ生徒（元の対象の中から）に出す。
+      範囲から選び直すと、追試なのに別の問題になる
+    */
+    if (body.action === 'retest') {
+      const input = validateQuizRetest(body);
+      const orig = await db.collection('quiz_assignments').doc(input.id).get();
+      if (!orig.exists) return res.status(404).json({ error: 'その小テストはありません' });
+      const o = orig.data();
+      const allowed = new Set(o.targetUids || []);
+      if (input.targetUids.some((u) => !allowed.has(u))) return res.status(400).json({ error: '元の小テストの対象ではない生徒が含まれています' });
+      const words = (o.words || []).slice();
+      for (let i = words.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [words[i], words[j]] = [words[j], words[i]];
+      }
+      // 元の範囲の欄だけ写す（**undefined を入れない**。Firestore が文書ごと拒む）
+      const keep = ['textbook', 'source', 'grade', 'pageFrom', 'pageTo', 'bookId', 'noFrom', 'noTo', 'eiken', 'direction', 'passRate'];
+      const copied = Object.fromEntries(keep.filter((k) => o[k] !== undefined && o[k] !== null).map((k) => [k, o[k]]));
+      const ref = db.collection('quiz_assignments').doc();
+      await ref.set({
+        ...copied,
+        title: `追試 ${String(o.title || '').replace(/^追試 /, '')}`,
+        count: words.length,
+        words,
+        targetUids: input.targetUids,
+        retestOf: input.id,
+        active: true,
+        createdBy: decoded.uid,
+        createdByName: String(decoded.name || ''),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      return res.status(200).json({ id: ref.id, count: words.length, words });
+    }
+
+    /*
+      **生徒のホームに出すメッセージ**（2026-09-27）。一斉テストの結果から「合格点に届かなかった生徒」などへ。
+      staff_messages（読めるのは対象の生徒だけ → firestore.rules）。生徒が「読んだ」を押すと消える
+    */
+    if (body.action === 'message') {
+      const input = validateStaffMessage(body);
+      const relatedTitle = typeof body.relatedTitle === 'string' ? body.relatedTitle.slice(0, 100) : '';
+      const ref = db.collection('staff_messages').doc();
+      await ref.set({
+        text: input.text,
+        targetUids: input.targetUids,
+        ...(relatedTitle ? { relatedTitle } : {}),
+        active: true,
+        createdBy: decoded.uid,
+        createdByName: String(decoded.name || ''),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      return res.status(200).json({ id: ref.id, count: input.targetUids.length });
     }
 
     if (body.action === 'close') {

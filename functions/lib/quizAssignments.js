@@ -91,6 +91,39 @@ function validateTargets(b) {
   return targets;
 }
 
+/** 合格点（正解率 1〜100%）。空なら null（合格点なし） */
+function validatePassRate(b) {
+  const v = b && b.passRate;
+  if (v === undefined || v === null || v === '') return null;
+  const n = Number(v);
+  if (!isInt(n) || n < 1 || n > 100) throw new QuizInputError('合格点は 1〜100% で選んでください');
+  return n;
+}
+
+/** 合格したか。合格点が無ければ null（判定しない） */
+function passedOf(score, total, passRate) {
+  if (!Number.isInteger(passRate) || !(total > 0)) return null;
+  return (score / total) * 100 >= passRate;
+}
+
+/** 追試（2026-09-27）。元の小テストと、出す生徒（元の対象の中から） */
+function validateRetest(body) {
+  const b = body || {};
+  const id = typeof b.id === 'string' ? b.id : '';
+  if (id === '' || id.includes('/')) throw new QuizInputError('元の小テストが指定されていません');
+  return { id, targetUids: validateTargets(b) };
+}
+
+/** 生徒のホームに出すメッセージ（2026-09-27）。1〜300字 */
+const MAX_MESSAGE = 300;
+function validateMessage(body) {
+  const b = body || {};
+  const text = typeof b.text === 'string' ? b.text.trim() : '';
+  if (text === '') throw new QuizInputError('メッセージを入れてください');
+  if (text.length > MAX_MESSAGE) throw new QuizInputError(`メッセージは${MAX_MESSAGE}字までです`);
+  return { text, targetUids: validateTargets(b) };
+}
+
 /** 1人だけの指定か（苦手な単語・間違えた単語だけは生徒ごとに語が違う） */
 function validateSingleTarget(b, message) {
   const uids = Array.isArray(b.targetUids) ? b.targetUids : [];
@@ -101,7 +134,10 @@ function validateSingleTarget(b, message) {
 }
 
 function validateCreate(body) {
-  const input = validateCreateBase(body);
+  const base = validateCreateBase(body);
+  // 合格点（正解率・%。2026-09-27）。**決めたときだけ持つ**（undefined を書くと Firestore が文書ごと拒む）
+  const passRate = validatePassRate(body);
+  const input = passRate === null ? base : { ...base, passRate };
   // 教材ごとの「間違えた単語だけ」。**true のときだけ持つ**（undefined を書くと Firestore が文書ごと拒む）
   if (body && body.weakOnly === true && input.source !== 'weak') {
     return {
@@ -355,7 +391,7 @@ function missedWordsOf(words, result) {
 }
 
 module.exports = {
-  missedWordsOf,
+  missedWordsOf, validatePassRate, passedOf, validateRetest, validateMessage, MAX_MESSAGE,
   DIRECTIONS, SOURCES, MAX_TARGETS, MAX_QUESTIONS, QUIZ_BOOKS, QUIZ_EIKEN_LEVELS, QuizInputError,
   WEAK_ONLY_SUFFIX, validateCreate, wordsInPages, wordsInBookRange, wordsOfEiken, titleOf, pickQuizWords, pickSourceWords,
   pickWeakWords, weakWordsInSource, sourcePool, pickWeakInSource, dataFileOf, summarize,

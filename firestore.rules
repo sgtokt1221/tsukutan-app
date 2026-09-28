@@ -117,6 +117,16 @@ service cloud.firestore {
     }
 
     //--------------------------------------------------------------------------
+    // 先生から生徒のホームへのメッセージ（2026-09-27。一斉テストの結果から送る）。
+    // 読めるのは対象の生徒だけ。書くのは Functions だけ（staffQuizAssignments の message）。
+    // 「読んだ」は users/{uid}/messageReads/{id} に本人が書く
+    //--------------------------------------------------------------------------
+    match /staff_messages/{messageId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.targetUids;
+      allow write: if false;
+    }
+
+    //--------------------------------------------------------------------------
     // CSV取り込みの操作記録。Functions だけが触る。
     //--------------------------------------------------------------------------
     match /importOperations/{operationId} {

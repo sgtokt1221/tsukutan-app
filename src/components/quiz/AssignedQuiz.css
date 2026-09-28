@@ -284,3 +284,49 @@
 .exam-practice-card .assigned-quiz-card__item + .assigned-quiz-card__item {
   margin-top: var(--space-8);
 }
+
+/* 先生からのメッセージ（2026-09-27）。小テストのカードと同じ組み方（紺の地に白い面） */
+.staff-message-card__item {
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
+  background-color: var(--color-surface);
+  color: var(--color-ink-olive);
+}
+
+.staff-message-card__item + .staff-message-card__item {
+  margin-top: var(--space-8);
+}
+
+.staff-message-card__text {
+  margin: var(--space-4) 0 var(--space-8);
+  font-size: var(--font-size-16);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.staff-message-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.staff-message-card__read {
+  flex: none;
+  min-height: var(--tap-target);
+  padding: 0 var(--space-16);
+  border: none;
+  border-radius: var(--radius-control);
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.staff-message-card__error {
+  margin: var(--space-8) 0 0;
+  font-size: var(--font-size-14);
+}

@@ -30,6 +30,8 @@ import {
 import { loadPendingQuizzes, buildSelfTest } from './logic/assignedQuiz';
 import AssignedQuiz from './components/quiz/AssignedQuiz';
 import AssignedQuizCard from './components/quiz/AssignedQuizCard';
+import StaffMessageCard from './components/quiz/StaffMessageCard';
+import { loadUnreadMessages, markMessageRead } from './logic/staffMessages';
 import ExamMissedNotice from './components/quiz/ExamMissedNotice';
 import { syncExamSupportMissed, reviewEntryOf, cardsForRefs } from './logic/examSupportMissed';
 import ExamPracticeCard from './components/quiz/ExamPracticeCard';
@@ -1244,6 +1246,26 @@ export default function StudentDashboard() {
     if (userId) refreshQuizzes(userId);
   }, [userId, refreshQuizzes]);
   /*
+    先生からのメッセージ（2026-09-27。つくばホームの一斉テストの結果から送られる）。
+    **「読んだ」は書いてから読み直して消す**（手元で消さない。楽観的更新をしない）
+  */
+  const [staffMessages, setStaffMessages] = useState([]);
+  const refreshMessages = useCallback(async (uid) => {
+    try {
+      setStaffMessages(await loadUnreadMessages(uid));
+    } catch (error) {
+      // 読めなかったときはカードを出さないだけ
+      logger.warn('先生からのメッセージを読めませんでした', error);
+    }
+  }, []);
+  useEffect(() => {
+    if (userId) refreshMessages(userId);
+  }, [userId, refreshMessages]);
+  const readStaffMessage = async (id) => {
+    await markMessageRead(userId, id);
+    await refreshMessages(userId);
+  };
+  /*
     受験サポートのテストでまちがえた語を、毎日の復習に入れる（2026-09-24。→ logic/examSupportMissed.js）。
     起動と並行して1回。**失敗しても画面は止めない**（次に開いたときに取り直す）
   */
@@ -1598,6 +1620,7 @@ export default function StudentDashboard() {
         return (
           <>
             {/* 先生からの小テストは、目標より上に置く（出されたものを最初にやってほしい） */}
+            <StaffMessageCard messages={staffMessages} onRead={readStaffMessage} />
             <AssignedQuizCard quizzes={pendingQuizzes} onStart={startAssignedQuiz} />
             <ExamMissedNotice words={examMissed} onReview={startExamMissedReview} onClose={() => setExamMissed([])} />
             <ExamPracticeCard practice={examPractice} onStart={startExamPractice} busyId={practiceBusy} />
