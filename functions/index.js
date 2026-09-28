@@ -1031,6 +1031,8 @@ scoreWritingApp.post('/', async (req, res) => {
     max: result.max,
     flags: result.flags,
     words: result.words,
+    // 文ごとの間違いの種類（2026-09-27）。直した英文は持たない（Jev は書き直せない。種類とヒントだけ）
+    sentences: (result.sentences || []).map((x) => ({ text: String(x.text || ''), errors: Array.isArray(x.errors) ? x.errors : [] })),
     model: result.model,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   };

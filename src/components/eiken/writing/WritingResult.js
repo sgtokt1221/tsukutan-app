@@ -2,9 +2,24 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 /**
- * 採点の結果（2026-09-26）。**点数だけ**（ユーザーの決定。コメントは書かない）。
- * 観点ごとの 0〜4 の棒と合計、それに自動のしるし（語数・短縮形・0点ルール）。
+ * 採点の結果（2026-09-26）。観点ごとの 0〜4 の棒と合計、それに自動のしるし（語数・短縮形・0点ルール）。
+ * **2026-09-27：書いた英文を1文ずつ並べ、間違いのある文に種類とヒントを付ける**（沖藤さんの指定）。
+ * 直した英文は出さない（採点の Jev は書き直せない。種類はサーバが文ごとに選ばせたもの → functions/lib/writingScore.js）。
  */
+
+/** 間違いの種類。サーバの SENTENCE_ERRORS と対応 */
+export const ERROR_TEXT = {
+  agreement: { label: '主語と動詞の形', hint: '主語に動詞の形を合わせよう（I go / he goes、the library is / books are）' },
+  tense: { label: '動詞の時制・形', hint: '過去のことは過去形に。can・will・to のあとは動詞の元の形' },
+  article: { label: 'a / the', hint: '数えられる名詞の前に a や the が要らないか見直そう（in the library）' },
+  plural: { label: '単数・複数', hint: 'many・two などのあとは複数形（many books）' },
+  preposition: { label: '前置詞', hint: '動詞とセットの前置詞を確かめよう（concentrate on、listen to）' },
+  spelling: { label: 'つづり・大文字', hint: 'つづりと、曜日・月・人名の大文字を確かめよう（Sunday、friend）' },
+  wordOrder: { label: '語順', hint: '「だれが → どうする → 何を」の順になっているか確かめよう' },
+  wordChoice: { label: '言葉の選び方', hint: '意味に合う単語か確かめよう（do homework、make a friend）' },
+  fragment: { label: '文になっていない', hint: 'Because 〜 だけでは1文にならない。前の文とつなげよう' },
+  other: { label: 'そのほかの文法', hint: 'もう一度、文の形を確かめよう' },
+};
 
 const ASPECT_LABEL = { content: '内容', organization: '構成', vocabulary: '語彙', grammar: '文法' };
 const ASPECT_ORDER = ['content', 'organization', 'vocabulary', 'grammar'];
@@ -72,7 +87,25 @@ export default function WritingResult({ result, answer, onRetry, onBack }) {
 
       <div className="wr-answer">
         <span className="wr-answer__label">書いた英文（{result.words}語）</span>
-        <p className="wr-answer__text">{answer}</p>
+        {Array.isArray(result.sentences) && result.sentences.length > 0 ? (
+          <ol className="wr-sentences">
+            {result.sentences.map((sentence, i) => {
+              const errors = (sentence.errors || []).filter((e) => ERROR_TEXT[e]);
+              return (
+                <li key={i} className={errors.length ? 'wr-sentence has-error' : 'wr-sentence'}>
+                  <span className="wr-sentence__text">{sentence.text}</span>
+                  {errors.map((e) => (
+                    <span key={e} className="wr-sentence__error">
+                      <strong>{ERROR_TEXT[e].label}</strong>：{ERROR_TEXT[e].hint}
+                    </span>
+                  ))}
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <p className="wr-answer__text">{answer}</p>
+        )}
       </div>
 
       <div className="wr-actions">

@@ -110,7 +110,11 @@ const checksFor = (gradeIn, task) => {
   if (task === 'opinion') {
     const checks = [
       { id: 'answersQuestion', effect: 'gate', text: 'Does the answer respond to the QUESTION/TOPIC given (it is on-topic and states an opinion about it)?' },
-      { id: 'twoReasons', effect: 'cap', text: 'Does the answer give TWO distinct reasons that support the stated opinion (not contradicting it)?' },
+      /*
+        **厳しめに聞く**（2026-09-27）。「静かで集中できる」を2つに数えたり、「毎週日曜に行く」（自分の習慣）を
+        理由に数えたりして、理由が1つの答案が内容3点になっていた。この聞き方で 1つ=0.05 / 2つ=0.92〜0.96
+      */
+      { id: 'twoReasons', effect: 'cap', text: 'Does the answer give TWO clearly separate reasons, each explaining WHY the stated opinion is right? Count only real supporting reasons. Do NOT count: a description of the writer\'s own habit or experience that does not explain why (e.g. "I go there every Sunday"), a restatement of the opinion, or two parts of the same reason (e.g. "it is quiet and I can concentrate" is ONE reason).' },
     ];
     if (grade === 'pre1') {
       checks.push({ id: 'usesTwoPoints', effect: 'cap', text: 'Does the answer use at least TWO of the POINTS listed in the prompt as its main supporting ideas?' });
@@ -131,6 +135,32 @@ const checksFor = (gradeIn, task) => {
     { id: 'isSummary', effect: 'gate', text: 'Is the text a summary of the passage in the prompt (it restates the passage\'s content rather than giving the writer\'s own opinion or unrelated content)?' },
   ];
 };
+
+/**
+ * **文ごとの間違いの種類**（2026-09-27）。Jev は文章を書き直せない（はい／いいえ・選択・段階の点だけ）ので、
+ * こちらで文に分け、文ごとに「間違いなし」を含む種類から1つ選ばせる。直した英文は出さない（種類とヒントだけ）
+ */
+const SENTENCE_ERRORS = {
+  none: 'The sentence has no grammar or spelling mistake (small punctuation issues are fine).',
+  agreement: 'Subject-verb agreement is wrong (e.g. "I goes", "the library are", "he play").',
+  tense: 'The verb tense or verb form is wrong (e.g. "I go there yesterday", "I can went", "to played").',
+  article: 'An article (a / an / the) is missing or wrong (e.g. "in library" instead of "in the library").',
+  plural: 'A noun is singular where it should be plural, or the other way round (e.g. "many book").',
+  preposition: 'A preposition is missing or wrong (e.g. "concentrate my study" instead of "concentrate on my study", "arrive to").',
+  spelling: 'A word is misspelled, or a proper noun / day / month is not capitalized (e.g. "freind", "sunday").',
+  wordOrder: 'The word order is wrong.',
+  wordChoice: 'A wrong or unnatural word is used for the meaning (e.g. "make homework").',
+  fragment: 'It is not a complete sentence (e.g. a "Because ..." clause standing alone, or a missing verb).',
+  other: 'There is another grammar mistake not listed above.',
+};
+const MAX_SENTENCES = 12;
+/** 分かりやすい単位で文に分ける（. ! ? のあと）。長すぎる答案は先頭から MAX_SENTENCES 文まで */
+const splitSentences = (answer) => String(answer || '')
+  .replace(/\s+/g, ' ')
+  .split(/(?<=[.!?])\s+/)
+  .map((t) => t.trim())
+  .filter((t) => /[A-Za-z]/.test(t))
+  .slice(0, MAX_SENTENCES);
 
 /** 採点に渡す問題の文面。Eメールの下線 [[...]] は <u>…</u> にして伝える */
 const promptText = (task, prompt = {}) => {
@@ -167,6 +197,18 @@ const buildJevRequest = ({ grade: gradeIn, task, prompt, answer }) => {
   for (const check of checksFor(grade, task)) {
     questions[check.id] = { type: 'noul', instructions: check.text };
   }
+  splitSentences(answer).forEach((sentence, i) => {
+    questions[`sentence${i}`] = {
+      type: 'choice',
+      instructions: `Look ONLY at this one sentence from the student's answer and pick the main mistake in it (or "none"). Sentence: "${sentence}"`,
+      criteria: SENTENCE_ERRORS,
+    };
+    // つづりは別に聞く（1文に文法とつづりの両方の間違いがあると、選択では大きい方しか出てこない）
+    questions[`sentence${i}Spelling`] = {
+      type: 'noul',
+      instructions: `Does this one sentence from the student's answer contain a misspelled English word, or a day / month / proper noun that is not capitalized? Sentence: "${sentence}"`,
+    };
+  });
   return {
     model: JEV_MODEL,
     state: {
@@ -235,8 +277,28 @@ const scoreFromJev = ({ grade: gradeIn, task, answer }, jevAnswers = {}) => {
   if (zeroed) for (const aspect of format.aspects) scores[aspect] = 0;
 
   const total = Object.values(scores).reduce((sum, v) => sum + v, 0);
-  return { scores, total, max: format.aspects.length * 4, flags, words, contractions, labels: ASPECT_LABEL };
+  return { scores, total, max: format.aspects.length * 4, flags, words, contractions, labels: ASPECT_LABEL, sentences: sentencesFromJev(answer, jevAnswers) };
 };
+
+/**
+ * 文ごとの結果。**間違いがありそうなときだけ種類を付ける**（「間違いなし」の見込みが半分未満）。
+ * 2番目に見込みの高い種類も、0.25 以上なら添える（1文に2種類の間違いがよくある）
+ * @returns {Array<{ text: string, errors: string[] }>}
+ */
+const sentencesFromJev = (answer, jevAnswers = {}) => splitSentences(answer).map((text, i) => {
+  const a = jevAnswers[`sentence${i}`];
+  const probs = (a && a.probabilities) || {};
+  const pNone = Number(probs.none);
+  const hasError = Number.isFinite(pNone) ? pNone < 0.5 : Boolean(a && a.choice && a.choice !== 'none');
+  const ranked = Object.entries(probs)
+    .filter(([k, p]) => k !== 'none' && SENTENCE_ERRORS[k] && Number.isFinite(p))
+    .sort((x, y) => y[1] - x[1]);
+  const errors = hasError ? ranked.filter(([, p], idx) => idx === 0 || p >= 0.25).slice(0, 2).map(([k]) => k) : [];
+  if (hasError && errors.length === 0 && a && a.choice && a.choice !== 'none') errors.push(a.choice);
+  const spelling = noulOf(jevAnswers[`sentence${i}Spelling`]);
+  if (spelling != null && spelling >= 0.5 && !errors.includes('spelling')) errors.push('spelling');
+  return { text, errors };
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -274,6 +336,9 @@ const scoreWriting = async (input, options) => {
 };
 
 module.exports = {
+  SENTENCE_ERRORS,
+  splitSentences,
+  sentencesFromJev,
   FORMATS,
   countWords,
   findContractions,

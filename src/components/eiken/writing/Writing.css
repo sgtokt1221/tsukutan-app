@@ -684,3 +684,35 @@
 @media (prefers-reduced-motion: reduce) {
   .wr-pip, .wr-result__fill { transition: none; }
 }
+
+/* 書いた英文を1文ずつ。間違いのある文は下線と、種類・ヒント（2026-09-27） */
+.wr-sentences {
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-8);
+}
+
+.wr-sentence__text {
+  display: block;
+  font-size: var(--font-size-16);
+  line-height: 1.7;
+  color: var(--color-ink-olive);
+}
+
+.wr-sentence.has-error .wr-sentence__text {
+  text-decoration: underline wavy var(--color-danger-action, #dc2626);
+  text-underline-offset: 4px;
+}
+
+.wr-sentence__error {
+  display: block;
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-control);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-ink);
+  font-size: var(--font-size-14);
+  line-height: 1.5;
+}

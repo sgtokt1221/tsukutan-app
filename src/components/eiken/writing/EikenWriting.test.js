@@ -94,3 +94,18 @@ test('提出すると採点を頼み、点数だけの結果が出る', async ()
   await waitFor(() => expect(screen.getByText('10')).toBeInTheDocument());
   expect(screen.getByText(/短縮形があります/)).toBeInTheDocument();
 });
+
+describe('文ごとの間違い（2026-09-27）', () => {
+  const { render, screen } = require('@testing-library/react');
+  const WritingResult = require('./WritingResult').default;
+  test('間違いのある文に種類とヒント。間違いの無い文には何も付けない', () => {
+    render(<WritingResult
+      result={{ total: 9, max: 16, scores: { content: 2, organization: 2, vocabulary: 3, grammar: 2 }, flags: [], words: 20,
+        sentences: [{ text: 'I goes to library.', errors: ['agreement', 'spelling'] }, { text: 'So I think it is good.', errors: [] }] }}
+      answer="I goes to library. So I think it is good." onRetry={() => {}} onBack={() => {}} />);
+    expect(screen.getByText('I goes to library.').closest('li')).toHaveClass('has-error');
+    expect(screen.getByText('主語と動詞の形')).toBeInTheDocument();
+    expect(screen.getByText('つづり・大文字')).toBeInTheDocument();
+    expect(screen.getByText('So I think it is good.').closest('li')).not.toHaveClass('has-error');
+  });
+});

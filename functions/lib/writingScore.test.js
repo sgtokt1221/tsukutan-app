@@ -118,3 +118,35 @@ describe('画面の問題データと語数がそろっている', () => {
     }
   });
 });
+
+describe('文ごとの間違い（2026-09-27）', () => {
+  const { splitSentences, sentencesFromJev, buildJevRequest } = require('./writingScore');
+
+  test('. ! ? のあとで文に分ける', () => {
+    expect(splitSentences('I think so. Because it is fun!  Do you agree?')).toEqual(['I think so.', 'Because it is fun!', 'Do you agree?']);
+    expect(splitSentences('')).toEqual([]);
+  });
+
+  test('文ごとに「間違いの種類」（選ぶ）と「つづり」（はい／いいえ）を聞く', () => {
+    const body = buildJevRequest({ grade: '3', task: 'opinion', prompt: { question: 'Q?' }, answer: 'I goes. It is fun.' });
+    expect(body.questions.sentence0.type).toBe('choice');
+    expect(body.questions.sentence0.criteria.none).toBeTruthy();
+    expect(body.questions.sentence0.instructions).toContain('"I goes."');
+    expect(body.questions.sentence1Spelling.type).toBe('noul');
+  });
+
+  test('**間違いなしの見込みが半分未満のときだけ種類を付ける**。2番目も 0.25 以上なら添える。つづりは別に足す', () => {
+    const answer = 'I goes. Because fun. I like sunday.';
+    const got = sentencesFromJev(answer, {
+      sentence0: { choice: 'agreement', probabilities: { none: 0.01, agreement: 0.99 } },
+      sentence1: { choice: 'fragment', probabilities: { none: 0.1, fragment: 0.5, agreement: 0.3, article: 0.1 } },
+      sentence2: { choice: 'none', probabilities: { none: 0.9, spelling: 0.1 } },
+      sentence2Spelling: { noul: 0.8 },
+    });
+    expect(got).toEqual([
+      { text: 'I goes.', errors: ['agreement'] },
+      { text: 'Because fun.', errors: ['fragment', 'agreement'] },
+      { text: 'I like sunday.', errors: ['spelling'] },
+    ]);
+  });
+});
