@@ -933,11 +933,11 @@ exports.transcribeSpeaking = onRequest(
  * 入れ方：firebase functions:secrets:set JEV_API_KEY --project tsukutan-58b3f
  */
 /**
- * **英検ライティングの栓**（2026-09-27 に引っ込めた。Jev のウェイティングリスト待ちで鍵が無い）。
+ * **英検ライティングの栓**（2026-09-27 に一度引っ込め、同日に鍵が届いて戻した）。
  * 鍵の無い defineSecret を関数に付けたままだと、**どの関数を出しても鍵の入力待ちで止まる**。
- * 戻すときは true にして鍵を入れる（画面側は src/config/features.js）
+ * 止めるときは false にする（画面側は src/config/features.js）
  */
-const WRITING_ENABLED = false;
+const WRITING_ENABLED = true;
 const JEV_API_KEY = WRITING_ENABLED ? defineSecret('JEV_API_KEY') : null;
 const { FORMATS: WRITING_FORMATS, scoreWriting } = require('./lib/writingScore');
 const { getTokyoDateKey } = require('./lib/dateKeys');
