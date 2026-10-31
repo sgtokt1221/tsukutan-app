@@ -43,8 +43,21 @@ export const isStoredPlanUsable = (stored, signature) =>
   && stored.signature === signature
   && Array.isArray(stored.newWords);
 
+/*
+  保存中の計画（2026-10-31）。計画を作る側は保存の返事を待たずに画面へ進むので、
+  **その日の計画を読む・書き足す処理は、ここで保存の完了を待ってから動く。**
+  待たずに読むと「まだ無い」と見て別の抽選の計画を作り、保存済みのものを上書きする。
+*/
+const pendingSaves = new Map();
+const saveKey = (userId, dateKey) => `${userId}/${dateKey}`;
+
+/** その日の計画の保存が終わるまで待つ（保存中でなければすぐ返る。失敗しても reject しない） */
+export const waitForPlanSave = (userId, dateKey) =>
+  pendingSaves.get(saveKey(userId, dateKey)) || Promise.resolve();
+
 export const loadDailyPlan = async (userId, dateKey) => {
   if (!userId || !dateKey) return null;
+  await waitForPlanSave(userId, dateKey);
   try {
     const snapshot = await getDoc(doc(db, 'users', userId, 'dailyPlans', dateKey));
     return snapshot.exists() ? snapshot.data() : null;
@@ -55,19 +68,29 @@ export const loadDailyPlan = async (userId, dateKey) => {
   }
 };
 
-export const saveDailyPlan = async (userId, dateKey, payload) => {
-  if (!userId || !dateKey) return;
-  try {
-    await setDoc(doc(db, 'users', userId, 'dailyPlans', dateKey), {
-      dateKey,
-      planVersion: PLAN_VERSION,
-      generatedAt: new Date(),
-      answeredNewWordIds: [],
-      ...payload,
-    });
-  } catch (error) {
-    logger.warn('日次計画を保存できませんでした', error);
-  }
+export const saveDailyPlan = (userId, dateKey, payload) => {
+  if (!userId || !dateKey) return Promise.resolve();
+  const key = saveKey(userId, dateKey);
+  const data = {
+    dateKey,
+    planVersion: PLAN_VERSION,
+    generatedAt: new Date(),
+    answeredNewWordIds: [],
+    ...payload,
+  };
+  // 同じ日の保存が重なったら順に書く（後から作ったものが最後に残る）
+  const saving = waitForPlanSave(userId, dateKey).then(async () => {
+    try {
+      await setDoc(doc(db, 'users', userId, 'dailyPlans', dateKey), data);
+    } catch (error) {
+      logger.warn('日次計画を保存できませんでした', error);
+    }
+  });
+  pendingSaves.set(key, saving);
+  saving.then(() => {
+    if (pendingSaves.get(key) === saving) pendingSaves.delete(key);
+  });
+  return saving;
 };
 
 /**
@@ -76,6 +99,8 @@ export const saveDailyPlan = async (userId, dateKey, payload) => {
  */
 export const markNewWordAnswered = async (userId, dateKey, wordId) => {
   if (!userId || !dateKey || !wordId) return;
+  // 計画の保存より先に書き足すと、文書が無くて失敗する（→ waitForPlanSave）
+  await waitForPlanSave(userId, dateKey);
   try {
     await updateDoc(doc(db, 'users', userId, 'dailyPlans', dateKey), {
       answeredNewWordIds: arrayUnion(wordId),

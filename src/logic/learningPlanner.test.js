@@ -63,3 +63,41 @@ describe('getNewWordsFromSource', () => {
     expect(ids(result.words).sort()).toEqual(['a', 'b', 'c']);
   });
 });
+
+// eslint-disable-next-line import/first
+import { pickRandomMasteredWords } from './learningPlanner';
+
+describe('pickRandomMasteredWords（読み済みの reviewWords から絞る）', () => {
+  const motivation = { masteredThreshold: 5, dailyReviewQuota: 10 };
+  const keepOrder = () => 0.5;
+
+  test('繰り返し回数が閾値以上の語だけ。問い合わせの `>=` と同じく数値の欄だけを見る', () => {
+    const entries = [
+      { id: 'a', repetitions: 5 },
+      { id: 'b', repetitions: 4 },
+      { id: 'c', repetitions: 9 },
+      { id: 'd', repetitions: '7' },
+      { id: 'e' },
+      { id: 'f', repetitions: NaN },
+    ];
+    expect(ids(pickRandomMasteredWords(entries, new Set(), motivation, keepOrder)).sort()).toEqual(['a', 'c']);
+  });
+
+  test('今日の復習に入っている語・移行済み・生徒が外した語は出さない', () => {
+    const entries = [
+      { id: 'a', repetitions: 6 },
+      { id: 'b', repetitions: 6 },
+      { id: 'c', repetitions: 6, migratedTo: 'w_x' },
+      { id: 'd', repetitions: 6, status: 'mastered' },
+    ];
+    expect(ids(pickRandomMasteredWords(entries, new Set(['a']), motivation, keepOrder))).toEqual(['b']);
+  });
+
+  test('印を付けて、1日の数で切る', () => {
+    const entries = Array.from({ length: 5 }, (_, i) => ({ id: `w${i}`, repetitions: 8, word: `x${i}` }));
+    const picked = pickRandomMasteredWords(entries, new Set(), { ...motivation, dailyReviewQuota: 2 }, keepOrder);
+    expect(picked).toHaveLength(2);
+    expect(picked[0]).toMatchObject({ isMastered: true, repetitions: 8 });
+    expect(picked[0].word).toBeDefined();
+  });
+});

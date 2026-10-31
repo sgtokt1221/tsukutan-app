@@ -1,6 +1,6 @@
 import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { loadTextbookWords } from './wordMaster';
 import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowledgeAnalysis';
 import { getMotivationConfig, getTargetLevel, toGoalIds, getRecommendedTextbooks } from '../config';
@@ -192,9 +192,18 @@ export const generateDailyPlan = async (userData, userId) => {
   const goalIds = toGoalIds(userData?.goal?.targets);
   // 生徒が目標設定で教材を選んでいればそこから。おまかせ（未選択・知らないID）は今までどおり
   const newWordSource = getNewWordSource(userData?.goal?.newWordTextbook);
-  const picked = newWordSource
-    ? await getNewWordsFromSource(newWordSource, quota.plannedNewWords, userLevel, allProgressEntries)
-    : await getNewWords(quota.plannedNewWords, userLevel, allProgressEntries, goalIds);
+  const targetLevel = getTargetLevel(goalIds);
+  // 新しい単語・隣のレベルの単語・知識マップ（直近のログ）は互いに関係が無い。
+  // 順番に待つと往復のぶんだけ今日のタスクが出るのが遅くなるので、まとめて投げる
+  const [picked, adjacentWords, knowledgeMap] = await Promise.all([
+    newWordSource
+      ? getNewWordsFromSource(newWordSource, quota.plannedNewWords, userLevel, allProgressEntries)
+      : getNewWords(quota.plannedNewWords, userLevel, allProgressEntries, goalIds),
+    targetLevel > 1
+      ? getAdjacentLevelWords(targetLevel, allProgressEntries, motivation, goalIds)
+      : [],
+    computeKnowledgeMap(userId),
+  ]);
   const { sourceFinished = false } = picked;
   let newWordCandidates = picked.words;
   let remainingCandidates = picked.remainingCandidates;
@@ -231,12 +240,8 @@ export const generateDailyPlan = async (userData, userId) => {
   // 忘却防止の習得済み単語と、隣接レベルの単語
   //--------------------------------------------------------------------------
   const scheduledIds = new Set(dueForReview.map((entry) => entry.id));
-  const masteredWords = await getRandomMasteredWords(userId, scheduledIds, motivation);
-
-  const targetLevel = getTargetLevel(goalIds);
-  const adjacentWords = targetLevel > 1
-    ? await getAdjacentLevelWords(targetLevel, allProgressEntries, motivation, goalIds)
-    : [];
+  // 復習単語はもう全部読んである（reviewSnapshot）。同じコレクションを問い合わせ直さない
+  const masteredWords = pickRandomMasteredWords(allProgressEntries, scheduledIds, motivation);
 
   //--------------------------------------------------------------------------
   // 重複排除。優先度は 復習 > 習得済み > 隣接 > 新規 > おかわり（計画書10.2.7）
@@ -252,13 +257,19 @@ export const generateDailyPlan = async (userData, userId) => {
   const finalReviewWords = [...scheduled, ...mastered, ...adjacent];
   const reviewSessions = splitIntoSessions(finalReviewWords, REVIEW_SESSION_SIZE);
 
-  const knowledgeMap = await computeKnowledgeMap(userId);
   const themeGroups = buildThemeGroups([...newWords, ...extraNewWords, ...finalReviewWords]);
   const knowledgeHints = getKnowledgeGaps(themeGroups, knowledgeMap).slice(0, 3);
 
   // その日のうちは同じ計画を返せるように保存する。
   // 復習はIDだけ（reviewWords から引き直せる）、新規と隣接は中身ごと。
-  await saveDailyPlan(userId, dateKey, {
+  /*
+    **保存の返事を待たずに計画を返す**（2026-10-31）。書き込みの往復ぶん、ホームが出るのが遅れていた。
+    保存そのものは saveDailyPlan が控えておき、この計画を読む・書き足す処理
+    （loadDailyPlan / markNewWordAnswered）が**保存の完了を await してから**動く——
+    返事を待たずに作り直すと、別の抽選の計画で上書きしてしまうため。
+    画面に出すのは作った計画そのもので、保存の結果を先取りして見せているのではない。
+  */
+  saveDailyPlan(userId, dateKey, {
     signature,
     newWords,
     extraNewWords,
@@ -299,27 +310,26 @@ export const generateDailyPlan = async (userData, userId) => {
 };
 
 /**
- * 忘却防止のため、習得済みの単語からランダムでいくつか取得する。
+ * 忘却防止のため、習得済みの単語からランダムでいくつか選ぶ。
+ *
+ * `entries` は読み済みの reviewWords（id 付き）。以前は同じコレクションを
+ * `where('repetitions', '>=', 閾値)` で問い合わせ直していたが、全件はもう手元にあるので
+ * ここで同じ条件で絞る（Firestore の `>=` は数値の欄だけに当たるので、数値かも見る）。
  */
-const getRandomMasteredWords = async (userId, excludedIds, motivation) => {
-  const userWordsCollection = collection(db, 'users', userId, 'reviewWords');
-  const snapshot = await getDocs(
-    query(userWordsCollection, where('repetitions', '>=', motivation.masteredThreshold))
-  );
-
+export const pickRandomMasteredWords = (entries, excludedIds, motivation, random = Math.random) => {
   const masteredWords = [];
-  snapshot.forEach((docSnapshot) => {
-    const data = docSnapshot.data();
-    if (excludedIds.has(docSnapshot.id) || data.migratedTo) return;
+  entries.forEach((entry) => {
+    const { repetitions } = entry;
+    if (typeof repetitions !== 'number' || !(repetitions >= motivation.masteredThreshold)) return;
+    if (excludedIds.has(entry.id) || entry.migratedTo) return;
     // 生徒が自分で「リストから削除」した語（status: mastered）はここでも出さない。
     // 繰り返し回数だけで引いていたので、何回か正解してから削除した語が
     // 忘却防止の枠で戻ってきていた。削除と言いながら出てくるのはおかしい。
-    // status を where に足すと複合インデックスが要るので、ここで落とす。
-    if (data.status === 'mastered') return;
-    masteredWords.push({ id: docSnapshot.id, ...data, isMastered: true });
+    if (entry.status === 'mastered') return;
+    masteredWords.push({ ...entry, isMastered: true });
   });
 
-  masteredWords.sort(() => Math.random() - 0.5);
+  masteredWords.sort(() => random() - 0.5);
   return masteredWords.slice(0, motivation.dailyReviewQuota);
 };
 

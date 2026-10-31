@@ -4,6 +4,7 @@ import { logStudyEvent } from './studyLogger';
 import { MOTIVATION_LEVELS } from '../config';
 import { getTodayKey } from './dateKeys';
 import logger from './logger';
+import { waitForPlanSave } from './dailyPlanRepository';
 import { actionForQuality, nextSchedule, shouldRepeatToday, toQuality } from './reviewScheduling';
 
 /**
@@ -193,6 +194,8 @@ const addWordToDailyCache = async (userId, wordToCache) => {
   const dailyPlanRef = doc(db, 'users', userId, 'dailyPlans', todayStr);
 
   try {
+    // 計画の保存中なら終わるのを待つ（→ dailyPlanRepository の waitForPlanSave）
+    await waitForPlanSave(userId, todayStr);
     const dailyPlanSnap = await getDoc(dailyPlanRef);
 
     if (dailyPlanSnap.exists()) {
@@ -237,7 +240,8 @@ export const markWordAsMastered = async (userId, wordId) => {
       nextReviewDate: null,
     }, { merge: true });
 
-    // 今日の計画からは外す
+    // 今日の計画からは外す（計画の保存中なら終わるのを待つ）
+    await waitForPlanSave(userId, todayStr);
     const dailyPlanSnap = await getDoc(dailyPlanRef);
     if (dailyPlanSnap.exists()) {
       await updateDoc(dailyPlanRef, { reviewWordIds: arrayRemove(wordId) });
