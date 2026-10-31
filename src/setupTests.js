@@ -23,4 +23,8 @@ jest.mock('firebase/auth', () => ({
     });
   },
   getAuth: () => ({}),
+  initializeAuth: () => ({}),
+  indexedDBLocalPersistence: {},
+  browserLocalPersistence: {},
+  browserSessionPersistence: {},
 }));

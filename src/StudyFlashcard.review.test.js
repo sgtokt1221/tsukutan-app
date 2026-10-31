@@ -15,7 +15,7 @@ const mockActivity = jest.fn();
 const mockFlipSpeak = jest.fn();
 let mockActiveMs = 0;
 
-jest.mock('firebase/auth', () => ({ getAuth: () => ({ currentUser: { uid: 'u1' } }) }));
+jest.mock('firebase/auth', () => ({ getAuth: () => ({ currentUser: { uid: 'u1' } }), initializeAuth: () => ({ currentUser: { uid: 'u1' } }) }));
 jest.mock('./logic/reviewLogic', () => ({
   updateUserWordProgress: (...args) => { mockUpdate(...args); return Promise.resolve({}); },
   undoWordProgress: () => Promise.resolve(),
