@@ -96,3 +96,15 @@ describe('下タブの寸法', () => {
     expect(appCss.slice(at, at + 700)).toContain('env(safe-area-inset-top, 0px)');
   });
 });
+
+describe('書体の読み込み（2026-10-31）', () => {
+  test('**書体の指定で画面を止めない**（stylesheet で読むと、届くまで何も出ない）', () => {
+    expect(indexHtml).not.toMatch(/<link href="https:\/\/fonts\.googleapis\.com[^>]*rel="stylesheet"/);
+    expect(indexHtml).toMatch(/rel="preload" as="style" href="https:\/\/fonts\.googleapis\.com[^"]*" onload="this\.onload=null;this\.rel='stylesheet'"/);
+  });
+
+  test('**使っていない太さ 300 を読まない**（日本語の書体は1つの太さで指定だけ約29KB）', () => {
+    const href = indexHtml.match(/href="(https:\/\/fonts\.googleapis\.com\/css2[^"]*)"/)[1];
+    expect(href).not.toMatch(/[@;]300/);
+  });
+});

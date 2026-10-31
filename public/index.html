@@ -33,7 +33,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- **書体の指定は画面を止めずに読む**（2026-10-31）。日本語の書体は字の範囲ごとに分かれていて、
+         この指定だけで圧縮後 200KB 余りある。stylesheet で読むと、届くまで何も出なかった（低速4Gで初回 6.8秒）。
+         先に端末の書体で出し、届いたら差し替える（字の幅は useFitText が測り直す）。
+         太さ 300 はどこにも使っていないので読まない -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Poppins:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   </head>
   <body>
     <noscript>つくつくを使うには JavaScript を有効にしてください。</noscript>
