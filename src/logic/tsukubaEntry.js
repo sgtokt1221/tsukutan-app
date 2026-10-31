@@ -68,6 +68,46 @@ export async function signInWithTsukubaToken(idToken) {
 }
 
 /**
+ * トークンの持ち主（uid）を読む。**署名は確かめない。**
+ *
+ * 使うのは「この端末がもう同じ生徒で入っているか」を見て、入場券の交換を飛ばすかどうかを
+ * 決めるときだけ。偽のトークンで飛ばせても、**この端末にすでにある入場がそのまま続くだけ**で、
+ * 新しく誰かとして入れるわけではない（入場券を出すかどうかはサーバが署名を確かめて決める）。
+ *
+ * @param {string} idToken
+ * @returns {string} 読めなければ空文字
+ */
+export function uidOfToken(idToken) {
+    try {
+        const part = String(idToken).split('.')[1] || '';
+        const b64 = part.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(atob(b64.padEnd(Math.ceil(b64.length / 4) * 4, '=')));
+        const uid = payload.user_id || payload.sub;
+        return typeof uid === 'string' ? uid : '';
+    } catch {
+        return '';
+    }
+}
+
+/**
+ * **もう同じ生徒で入っていれば、交換しない**（2026-10-31）。
+ *
+ * つくばホームから来るたびに、交換（サーバでの検証・署名。冷えていると約3秒）と
+ * サインイン（往復2回）を待っていた。uid はつくばホームと共通なので、端末の入場が
+ * 同じ uid なら、交換しても同じ入場券が返るだけ。プロフィールも初回に作り済み
+ * （サーバは「無ければ作る」だけで、毎回は更新しない）。
+ *
+ * @param {string} token
+ * @returns {Promise<boolean>}
+ */
+async function alreadyInAs(token) {
+    const uid = uidOfToken(token);
+    if (uid === '') return false;
+    if (typeof auth.authStateReady === 'function') await auth.authStateReady();
+    return Boolean(auth.currentUser) && auth.currentUser.uid === uid;
+}
+
+/**
  * 起動時に1度だけ呼ぶ。**トークンが無ければ何もしない。**
  *
  * @returns {Promise<{ tried: boolean, ok: boolean, message: string }>}
@@ -76,6 +116,7 @@ export async function enterFromTsukubaHome() {
     const token = takeTokenFromUrl();
     if (token === '') return { tried: false, ok: true, message: '' };
     try {
+        if (await alreadyInAs(token)) return { tried: true, ok: true, message: '' };
         await signInWithTsukubaToken(token);
         return { tried: true, ok: true, message: '' };
     } catch (e) {

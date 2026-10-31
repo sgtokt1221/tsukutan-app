@@ -14,7 +14,11 @@ jest.mock('../firebaseConfig.js', () => ({ auth: {}, db: {} }));
 
 import { httpsCallable } from 'firebase/functions';
 import { signInWithCustomToken } from 'firebase/auth';
-import { takeTokenFromUrl, enterFromTsukubaHome, _forgetTakenToken } from './tsukubaEntry';
+import { takeTokenFromUrl, enterFromTsukubaHome, uidOfToken, _forgetTakenToken } from './tsukubaEntry';
+import { auth } from '../firebaseConfig.js';
+
+/** 署名なしの見かけだけの ID トークン */
+const tokenFor = (uid) => `h.${btoa(JSON.stringify({ user_id: uid, sub: uid })).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_')}.sig`;
 
 /** `window.location` と `history` を差し替える */
 function fakeWindow(hash) {
@@ -26,6 +30,8 @@ function fakeWindow(hash) {
 
 beforeEach(() => {
   _forgetTakenToken();
+  delete auth.currentUser;
+  delete auth.authStateReady;
   jest.clearAllMocks();
 });
 
@@ -89,5 +95,39 @@ describe('入場', () => {
     const r = await enterFromTsukubaHome();
     expect(r.ok).toBe(false);
     expect(signInWithCustomToken).not.toHaveBeenCalled();
+  });
+});
+
+describe('もう同じ生徒で入っているとき（2026-10-31）', () => {
+  test('トークンの持ち主を読む／読めなければ空', () => {
+    expect(uidOfToken(tokenFor('uid-1'))).toBe('uid-1');
+    expect(uidOfToken('abc')).toBe('');
+    expect(uidOfToken('')).toBe('');
+  });
+
+  test('**同じ uid で入っていれば交換しない**（ログイン状態の復帰を待ってから見る）', async () => {
+    window.location.hash = `#token=${tokenFor('uid-1')}`;
+    auth.authStateReady = jest.fn(async () => { auth.currentUser = { uid: 'uid-1' }; });
+    const r = await enterFromTsukubaHome();
+    expect(r).toEqual({ tried: true, ok: true, message: '' });
+    expect(auth.authStateReady).toHaveBeenCalled();
+    expect(httpsCallable).not.toHaveBeenCalled();
+    expect(signInWithCustomToken).not.toHaveBeenCalled();
+  });
+
+  test('**別の生徒で入っていれば交換する**（同じ端末を別の生徒が使う）', async () => {
+    window.location.hash = `#token=${tokenFor('uid-2')}`;
+    auth.authStateReady = jest.fn(async () => { auth.currentUser = { uid: 'uid-1' }; });
+    httpsCallable.mockReturnValue(async () => ({ data: { customToken: 'ct' } }));
+    await enterFromTsukubaHome();
+    expect(signInWithCustomToken).toHaveBeenCalledWith(expect.anything(), 'ct');
+  });
+
+  test('入っていなければ交換する', async () => {
+    window.location.hash = `#token=${tokenFor('uid-1')}`;
+    auth.authStateReady = jest.fn(async () => {});
+    httpsCallable.mockReturnValue(async () => ({ data: { customToken: 'ct' } }));
+    await enterFromTsukubaHome();
+    expect(signInWithCustomToken).toHaveBeenCalledWith(expect.anything(), 'ct');
   });
 });
