@@ -10,8 +10,15 @@ const db = admin.firestore();
 // 外部ライブラリ
 const express = require('express');
 const cors = require('cors');
-const { VertexAI } = require('@google-cloud/vertexai');
-const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
+/*
+  Vertex AI・Translation は**使う関数の中で読む**（2026-10-31）。このファイルは
+  どの関数も起きるたびに丸ごと読むので、先頭で読むと入場（exchangeTsukubaToken）の
+  起動まで重くなる。Speech-to-Text（getSpeechClient）と同じ形。
+*/
+const newVertexAI = () => {
+  const { VertexAI } = require('@google-cloud/vertexai');
+  return new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+};
 
 // 自前モジュール
 const {
@@ -558,7 +565,7 @@ Please adhere to the following rules:
 4.  If you cannot logically include a word, add it to the "unusedWords" array. If all words are used, the array must be empty.
 `;
 
-  const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+  const vertexAi = newVertexAI();
   const generativeModel = vertexAi.getGenerativeModel({
     model: GEMINI_MODEL,
     generationConfig: { responseMimeType: 'application/json' },
@@ -591,6 +598,7 @@ Please adhere to the following rules:
 
 /** 英文を日本語へ訳す */
 const translateToJapanese = async (text) => {
+  const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
   const translationClient = new TranslationServiceClient();
   const projectId = process.env.GCLOUD_PROJECT;
   const [response] = await translationClient.translateText({
@@ -773,7 +781,7 @@ const MODES = new Set(['scripted', 'unscripted']);
 
 /** Vertex AI の Gemini を1回叩く。generateStory と同じ設定。 */
 const generateJson = async (prompt) => {
-  const vertexAi = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+  const vertexAi = newVertexAI();
   const model = vertexAi.getGenerativeModel({
     model: GEMINI_MODEL,
     generationConfig: { responseMimeType: 'application/json' },
@@ -1094,9 +1102,12 @@ exports.exchangeTsukubaToken = onCall({ region: 'us-central1' }, async (request)
     throw new HttpsError('permission-denied', e && e.message);
   }
 
-  const customToken = await admin.auth().createCustomToken(decoded.uid);
-  // **await する。** 返したあとの fire-and-forget は取りこぼす
-  await ensureStudentProfile(db, decoded);
+  // 入場券を作るのと生徒の記録を整えるのは互いに関係が無いので、同時に投げる。
+  // **両方 await する。** 返したあとの fire-and-forget は取りこぼす
+  const [customToken] = await Promise.all([
+    admin.auth().createCustomToken(decoded.uid),
+    ensureStudentProfile(db, decoded),
+  ]);
   return { customToken };
 });
 
