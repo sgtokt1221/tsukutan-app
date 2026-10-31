@@ -12,7 +12,6 @@ import TestResult from './TestResult';
 // 新規も復習も同じ単語カード。違いは learningMode（→ logic/studyMode.js）
 import StudyFlashcard from './StudyFlashcard';
 import { buildThemeGroups, themeLabels, themeDescriptions } from './logic/themeMatcher';
-import AnalyticsPanel from './components/student/AnalyticsPanel';
 import StoryPanel from './components/student/StoryPanel';
 import { useBookmarks } from './logic/useBookmarks';
 import { markNewWordAnswered } from './logic/dailyPlanRepository';
@@ -55,6 +54,9 @@ import { EIKEN_ORDER, easiestEikenLevel, eikenTargetOf } from './logic/eikenLeve
 // 起動時の塊に入れると、使わない生徒の起動まで遅くなる。
 const EikenInterview = React.lazy(() => import('./components/eiken/EikenInterview'));
 const EikenWriting = React.lazy(() => import('./components/eiken/writing/EikenWriting'));
+// 記録（分析）タブも開いたときだけ読む。折れ線の Chart.js はここでしか使わず、
+// ダッシュボードの塊に入れるとホームが出るまでの読み込みが重くなる。
+const AnalyticsPanel = React.lazy(() => import('./components/student/AnalyticsPanel'));
 
 // 英検教材の単語数を計算する関数（実際の収録単語数）
 // 英検の級の並び・語の級・教材IDからの級は logic/eikenLevels.js に移した（日々の新しい単語でも使う）
@@ -1958,10 +1960,12 @@ export default function StudentDashboard() {
 
   // 詳細分析タブのコンテンツ
   const renderAnalyticsContent = () => (
-    <AnalyticsPanel
-      onNavigateTab={setActiveTab}
-      onStartTest={startCheckTest}
-    />
+    <Suspense fallback={<p className="interview-lead">読み込んでいます…</p>}>
+      <AnalyticsPanel
+        onNavigateTab={setActiveTab}
+        onStartTest={startCheckTest}
+      />
+    </Suspense>
   );
 
   // 長文タブのコンテンツ
