@@ -38,6 +38,7 @@ import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
 import { useStartWhenIdle } from './logic/useStartWhenIdle';
+import { loadDashboard } from './logic/dashboardStartup';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
 import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStudyMenu';
 import RecommendationBadge from './components/student/RecommendationBadge';
@@ -652,11 +653,13 @@ export default function StudentDashboard() {
       setUserId(user ? user.uid : null);
       if (user) {
         setLoading(true);
-        Promise.all([
-          refreshDashboardData(user.uid),
-          fetchStories(user.uid),
-          loadFreeStudyProgress(user.uid)
-        ]).finally(() => setLoading(false));
+        // 骨組みを外すのはホームに出るものが揃ったときだけ。
+        // ストーリー・自由学習はホームに出ないので、同時に投げて後から埋める
+        loadDashboard({
+          home: () => refreshDashboardData(user.uid),
+          extras: [() => fetchStories(user.uid), () => loadFreeStudyProgress(user.uid)],
+          onHomeSettled: () => setLoading(false),
+        });
       } else {
         navigate('/login');
       }
