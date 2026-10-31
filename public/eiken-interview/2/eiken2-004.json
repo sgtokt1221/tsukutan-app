@@ -1,0 +1,67 @@
+{
+  "id": "eiken2-004",
+  "grade": "2",
+  "title": "Self-Checkout Machines",
+  "passage": {
+    "text": "Self-checkout machines are now found in many supermarkets. Stores that use them need fewer workers, and customers do not have to wait in a long line. Some stores put several machines near the exit and ask a worker to help beginners. In this way, they keep their customers from getting tired of waiting. However, some older customers say that the machines are hard to use.",
+    "hintPhrase": "In this way",
+    "wordCount": 65
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken2-004-a.webp",
+      "caption": "3コマ。①1台だけのレジに並ぶ長い列を見る店長「Our customers wait too long.」→ One month later ②セルフレジ3台を設置する作業員と、指さして見ている店長 → The following week ③客がセルフレジを使い、列は短い。吹き出しに、機械の前で困っている年配の客。",
+      "panels": 3
+    }
+  ],
+  "narration": {
+    "openingSentence": "One day, a supermarket manager was looking at a long line of customers at the register.",
+    "prepareSeconds": 20,
+    "speakSeconds": null
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do some stores keep their customers from getting tired of waiting?",
+      "modelAnswer": "By putting several machines near the exit and asking a worker to help beginners.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "narration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the picture and describe the situation. You have twenty seconds to prepare. Your story should begin with the sentence on the card.",
+      "modelAnswer": "One day, a supermarket manager was looking at a long line of customers at the register. He said that his customers waited too long. One month later, workers were installing three self-checkout machines, and the manager was watching them. The following week, customers were using the machines and the line was short. He was thinking that some older customers might not know how to use them.",
+      "answerSeconds": 60
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that machines are taking jobs away from people. What do you think about that?",
+      "modelAnswer": "I partly agree. Simple work is being replaced, and older workers find it hard to learn new skills. On the other hand, machines also create jobs in making and repairing them.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Today, many kinds of shops are open twenty-four hours a day. Do you think such shops are necessary?",
+      "modelAnswer": null,
+      "answerSeconds": 40,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "People who work at night need somewhere to buy food. They are also safe places late at night."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "Very few customers come at three in the morning. It is a waste of energy and hard on the workers."
+        }
+      }
+    }
+  ]
+}

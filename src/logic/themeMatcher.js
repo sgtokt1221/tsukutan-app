@@ -54,9 +54,26 @@ for (const theme of THEMES) {
   }
 }
 
-/** 単語1件が属するテーマIDの配列。どこにも入らなければ空。 */
+/**
+ * 単語1件が属するテーマIDの配列。
+ *
+ * 単語データが theme を持っていればそれを使う（scripts/assignThemes.js が
+ * 全語に付けた正本。1語1テーマ）。キーワードでの推測は7〜8割の語に当たらず、
+ * 意味別の合計がレベル別と揃わなかった。
+ *
+ * 下のキーワード判定は、theme を持たない語（Firestore 直入れの教材など）の
+ * ための保険として残す。
+ */
 export const themesForWord = (word) => {
   if (!word) return [];
+
+  // ライティングの型は、意味のテーマとは別にひとまとめでも引けるようにする。
+  // 「英検2級の書ける型を一覧したい」という探し方があるため、意味別の
+  // テーマと重ねて持たせる（1語が2つのテーマに出る）。
+  const extra = word.source === 'writing' ? ['writing'] : [];
+
+  if (word.theme && THEME_IDS.includes(word.theme)) return [word.theme, ...extra];
+
   const matched = new Set();
 
   for (const token of tokenize(word.word)) {
@@ -74,7 +91,7 @@ export const themesForWord = (word) => {
     }
   }
 
-  return [...matched];
+  return [...matched, ...extra];
 };
 
 /**

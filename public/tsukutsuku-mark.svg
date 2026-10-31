@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">つくつくのマーク</title>
+  <desc id="desc">繰り返し学ぶ二枚のカードと、身についた瞬間を表す光</desc>
+  <g transform="rotate(-8 244 270)">
+    <rect x="50" y="138" width="304" height="312" rx="80" fill="#48D7A5" stroke="#183153" stroke-width="20"/>
+    <rect x="130" y="74" width="320" height="336" rx="88" fill="#FFFDF7" stroke="#183153" stroke-width="20"/>
+    <circle cx="218" cy="178" r="32" fill="#48D7A5"/>
+    <path d="M282 166h96M210 266h168M210 322h112" fill="none" stroke="#183153" stroke-width="24" stroke-linecap="round"/>
+  </g>
+  <path d="M400 20c6 33 26 53 59 59-33 7-53 27-59 60-7-33-26-53-60-60 34-6 53-26 60-59Z" fill="#FFC857" stroke="#183153" stroke-width="12" stroke-linejoin="round"/>
+</svg>

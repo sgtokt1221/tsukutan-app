@@ -11,9 +11,20 @@ describe('themes.json の整合性', () => {
       expect(typeof theme.label).toBe('string');
       expect(theme.label.length).toBeGreaterThan(0);
       expect(typeof theme.description).toBe('string');
+      // assignedBy を持つテーマはキーワードで拾わない（単語データの項目で
+      // 入れる）。ライティングの型は伏せ字を含むものが多く、キーワードでは
+      // 当たらないため。
+      if (theme.assignedBy) continue;
       expect(theme.en.length).toBeGreaterThan(0);
       expect(theme.ja.length).toBeGreaterThan(0);
     }
+  });
+
+  test('ライティングの型は意味のテーマと重ねて引ける', () => {
+    const phrase = { word: 'make A B', meaning: 'AをBにする', theme: 'making', source: 'writing' };
+    expect(themesForWord(phrase)).toEqual(['making', 'writing']);
+    // ふつうの語には付かない
+    expect(themesForWord({ word: 'apple', meaning: 'りんご', theme: 'food' })).toEqual(['food']);
   });
 
   test('英語のキーワードは小文字の英字だけ', () => {

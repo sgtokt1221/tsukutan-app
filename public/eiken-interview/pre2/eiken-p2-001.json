@@ -1,0 +1,84 @@
+{
+  "id": "eiken-p2-001",
+  "grade": "pre2",
+  "title": "Clean-up Events",
+  "passage": {
+    "text": "These days, many towns hold clean-up events on weekends. Some people take part in these events with their neighbors, and in this way, they help keep their towns beautiful. Volunteers say that working together is enjoyable, and such events are also a good chance to make new friends.",
+    "hintPhrase": "in this way",
+    "wordCount": 48
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p2-001-a.webp",
+      "caption": "駅前の清掃活動。5人が別々の動作（瓶の箱をトラックに積む男性／花を植える女性／舗道を掃く年配女性／壁を塗る男性／トングで缶を拾う少年）。"
+    },
+    {
+      "id": "b",
+      "file": "eiken-p2-001-b.webp",
+      "caption": "建物の出口で大雨を見ている女性。傘立ては空。吹き出しに傘をさして歩く姿、赤い斜線。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do some people help keep their towns beautiful?",
+      "modelAnswer": "By taking part in clean-up events with their neighbors.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the people in Picture A. They are doing different things. Tell me as much as you can about what they are doing.",
+      "modelAnswer": "A man is putting a box of bottles into a truck. A woman is planting flowers. An older woman is sweeping the pavement. A man is painting a wall. A boy is picking up cans.",
+      "answerSeconds": 45
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, look at the person in Picture B. Please describe the situation.",
+      "modelAnswer": "The woman can't walk outside because it's raining hard and there are no umbrellas in the umbrella stand.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think more people should join volunteer activities in their towns?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Volunteers can do things that the city cannot do by itself. People also get to know their neighbors."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "People are busy with work and school. The city should hire workers for that kind of job."
+        }
+      }
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "cardVisible": false,
+      "prompt": "These days, many people check the weather on the Internet before they go out. Do you often check the weather?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I look at a weather app every morning. I decide what to wear by looking at it."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "I just look at the sky. I keep a small umbrella in my bag all the time."
+        }
+      }
+    }
+  ]
+}

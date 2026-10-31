@@ -1,0 +1,681 @@
+# 教科書 Sunshine で、意味が引けず外した語（679行）
+# 学年 ページ 語。人名・地名（大文字で始まり単語データに無い語）はここに載せない
+1	p.14	every day
+1	p.14	dribble
+1	p.14	it’s
+1	p.16	angel
+1	p.16	cider
+1	p.16	giant
+1	p.16	gorilla
+1	p.16	jellyfish
+1	p.16	kangaroo
+1	p.16	wolf
+1	p.22	be from ～
+1	p.23	aren’t
+1	p.24	you’re
+1	p.26	video game
+1	p.30	don’t
+1	p.31	very much
+1	p.38	can’t
+1	p.38	that’s
+1	p.39	omelet
+1	p.43	cannot
+1	p.44	midfielder
+1	p.50	cent
+1	p.50	cheeseburger
+1	p.50	cola
+1	p.50	ginger ale
+1	p.50	in total
+1	p.52	brand
+1	p.52	isn’t
+1	p.52	jelly
+1	p.53	street singer
+1	p.53	～ year(s) old
+1	p.53	zebra
+1	p.55	deep-fried
+1	p.55	ha-ha
+1	p.56	chef
+1	p.56	custard pudding
+1	p.56	she’s
+1	p.56	who’s
+1	p.59	he’s
+1	p.61	pajama
+1	p.62	doesn’t
+1	p.63	ice hockey
+1	p.65	～, right?
+1	p.66	charity
+1	p.73	monster
+1	p.73	pirate
+1	p.73	romantic
+1	p.75	savanna
+1	p.76	airplane
+1	p.76	attack
+1	p.76	～, you know.
+1	p.76	schoolchild
+1	p.76	schoolchildren
+1	p.76	what’s
+1	p.80	crispy
+1	p.80	juicy
+1	p.82	over there
+1	p.83	shopping mall
+1	p.85	quokka
+1	p.86	coral reef
+1	p.86	helicopter
+1	p.86	seaplane
+1	p.86	show ～ around
+1	p.88	bamboo
+1	p.88	grove
+1	p.94	on top of ～
+1	p.100	countdown
+1	p.101	persimmon
+1	p.103	we’re
+1	p.104	pastry chef
+1	p.104	skillful
+1	p.106	oyster
+1	p.106	streaming
+1	p.106	tuna
+1	p.108	handkerchief
+1	p.110	aurora
+1	p.110	come back
+1	p.110	didn’t
+1	p.110	jet lag
+1	p.110	last night
+1	p.111	checkup
+1	p.111	a lot
+1	p.111	take a walk
+1	p.113	brrr
+1	p.113	how’s
+1	p.113	sauna
+1	p.114	salmiakki
+1	p.114	tasty
+1	p.114	at one time
+1	p.115	all day
+1	p.115	reindeer
+1	p.122	many kinds of ～
+1	p.122	shrimp
+1	p.122	wallet
+1	p.122	around the world
+1	p.123	warming
+1	p.124	ah
+1	p.124	oops
+1	p.124	wasn’t
+1	p.125	awesome
+1	p.127	trampoline
+1	p.128	bang
+1	p.128	mmm
+1	p.128	sleigh
+1	p.129	hold on to ～
+1	p.129	whee
+1	p.130	gosh
+1	p.130	heave ho
+1	p.130	steam
+1	p.130	yourselves
+1	p.131	closet
+1	p.131	fluffy
+1	p.131	quilt
+1	p.131	raccoon dog
+1	p.133	weren’t
+1	p.141	chilly
+1	p.141	foggy
+1	p.141	muggy
+1	p.142	alligator
+1	p.142	apricot
+1	p.142	avocado
+1	p.142	beetle
+1	p.142	carp
+1	p.142	classroom activities
+1	p.142	crab
+1	p.142	crocodile
+1	p.142	donkey
+1	p.142	dragon fruit
+1	p.142	flamingo
+1	p.142	grapefruit
+1	p.142	hawk
+1	p.142	hippo
+1	p.142	industrial arts
+1	p.142	kiwi fruit
+1	p.142	mandarin orange
+1	p.142	mango
+1	p.142	papaya
+1	p.142	pear
+1	p.142	period for integrated studies
+1	p.142	rhino
+1	p.142	seagull
+1	p.142	special activities
+1	p.142	spider
+1	p.142	squirrel
+1	p.142	watermelon
+1	p.142	whale
+1	p.143	accordion
+1	p.143	castanet
+1	p.143	club activities
+1	p.143	go fishing
+1	p.143	fried noodles
+1	p.143	fried rice
+1	p.143	gymnastics
+1	p.143	harmonica
+1	p.143	hockey
+1	p.143	pancake
+1	p.143	practice game
+1	p.143	go shopping
+1	p.143	soft tennis
+1	p.143	softball
+1	p.143	tambourine
+1	p.143	go on a trip
+1	p.143	volunteer work
+1	p.143	go for a walk
+1	p.143	xylophone
+1	p.144	ambitious
+1	p.144	careless
+1	p.144	clever
+1	p.144	courageous
+1	p.144	easygoing
+1	p.144	faithful
+1	p.144	juicy
+1	p.144	police box
+1	p.144	sociable
+1	p.144	swimming pool
+1	p.144	talented
+1	p.144	unkind
+1	p.144	warm-hearted
+2	p.8	he’ll
+2	p.9	it’ll
+2	p.12	a bit
+2	p.12	won’t
+2	p.12	you’ll
+2	p.18	under water
+2	p.20	cheering
+2	p.20	home run
+2	p.20	root for ～
+2	p.21	cycle
+2	p.21	go cycling
+2	p.23	championship
+2	p.23	passionate
+2	p.23	promote
+2	p.24	professionally
+2	p.25	one of ～
+2	p.25	sportsmanship
+2	p.27	field day
+2	p.29	minus
+2	p.29	raincoat
+2	p.29	we’ll
+2	p.30	burger
+2	p.30	revolution
+2	p.32	here’s
+2	p.32	scoop
+2	p.132	shoe store
+2	p.35	corn dog
+2	p.35	cotton candy
+2	p.36	earn
+2	p.36	look forward to 〜
+2	p.36	lemonade
+2	p.36	sometime soon
+2	p.37	toothpick
+2	p.39	handmade
+2	p.42	customize
+2	p.42	eater
+2	p.42	organic
+2	p.42	spinach
+2	p.42	topping
+2	p.43	bean sprout
+2	p.43	bone
+2	p.43	creamy
+2	p.43	miso-flavored
+2	p.43	roast
+2	p.43	slice
+2	p.43	soy sauce-flavored
+2	p.43	spicy
+2	p.46	completely
+2	p.46	a long time ago
+2	p.47	couldn’t
+2	p.47	wire
+2	p.50	help ～ with ...
+2	p.50	water bottle
+2	p.51	footprint
+2	p.52	don’t have to ～
+2	p.52	hood
+2	p.52	mustn’t
+2	p.52	uh-oh
+2	p.53	guitarist
+2	p.53	hallway
+2	p.53	potato chip
+2	p.55	go hiking
+2	p.56	breathtaking
+2	p.57	beaver
+2	p.57	cut down ～
+2	p.57	dam
+2	p.57	they’re
+2	p.59	shampoo
+2	p.61	rare
+2	p.61	well-done
+2	p.64	twenty-four seven
+2	p.66	get ～ place
+2	p.67	chess
+2	p.67	unicycle
+2	p.69	kindly
+2	p.69	shelves
+2	p.70	take action
+2	p.70	listener
+2	p.70	waiting room
+2	p.71	asleep
+2	p.71	fall asleep
+2	p.71	importance
+2	p.71	nursery school
+2	p.71	thank-you
+2	p.71	take ～ for a walk
+2	p.73	flash
+2	p.75	high-tech
+2	p.76	parfait
+2	p.76	stylish
+2	p.77	centimeter
+2	p.79	lotus
+2	p.79	raindrop
+2	p.80	boat shoe
+2	p.80	deck
+2	p.80	～, don’t you?
+2	p.80	fall into ～
+2	p.80	groove
+2	p.80	icy
+2	p.80	inspiration
+2	p.80	non-slip
+2	p.80	paw
+2	p.80	sail
+2	p.81	able
+2	p.81	agriculture
+2	p.81	paper clip
+2	p.83	air circulator
+2	p.83	curtain
+2	p.83	fridge
+2	p.85	guinea pig
+2	p.85	relaxing
+2	p.86	mayonnaise
+2	p.86	plastic bag
+2	p.86	sauce
+2	p.86	soy sauce
+2	p.88	cave
+2	p.88	display
+2	p.88	escape
+2	p.88	handicraft
+2	p.88	magical
+2	p.92	border
+2	p.92	no-fly zone
+2	p.92	shoot down ～
+2	p.92	run short
+2	p.92	at war
+2	p.93	coast
+2	p.93	the dead
+2	p.93	goodwill
+2	p.93	more than ～
+2	p.93	respectfully
+2	p.93	sank
+2	p.93	survivor
+2	p.93	on the way (back) to ～
+2	p.94	ambassador
+2	p.94	between
+2	p.94	former
+2	p.95	accident
+2	p.99	mushroom
+2	p.99	recorder
+2	p.101	～ times a day
+2	p.101	adorable
+2	p.101	all over ～
+2	p.101	cheek
+2	p.101	fur
+2	p.101	sea otter
+2	p.101	shellfish
+2	p.101	warm up ～
+2	p.102	awake
+2	p.103	flying fish
+2	p.103	fry
+2	p.103	seabird
+2	p.105	daytime
+2	p.105	hamster
+2	p.105	nighttime
+2	p.105	sunflower
+2	p.107	lasting
+2	p.108	mmm
+2	p.109	butter
+2	p.111	clay
+2	p.111	take a look
+2	p.111	paper crane
+2	p.111	recycled
+2	p.111	soap
+2	p.115	badge
+2	p.115	mascot
+2	p.115	tin
+2	p.116	straw
+2	p.116	wine
+2	p.117	boarding
+2	p.117	inconvenience
+2	p.117	mineral water
+2	p.117	sparkling water
+2	p.118	chat
+2	p.120	agricultural chemical
+2	p.120	in those days
+2	p.120	marine biologist
+2	p.120	protection
+2	p.125	captain
+2	p.125	tank
+2	p.126	extremely
+2	p.126	at last
+2	p.126	re-entry
+2	p.126	safely
+2	p.127	calm
+2	p.127	failure
+2	p.127	option
+2	p.127	parachute
+2	p.127	successfully
+2	p.128	give up 〜
+2	p.129	go bowling
+2	p.129	chewy
+2	p.129	documentary
+2	p.129	gardening
+2	p.129	greasy
+2	p.129	go jogging
+2	p.129	take a nap
+2	p.129	sit up late at night
+2	p.130	achievement test
+2	p.130	annoyed
+2	p.130	astonished
+2	p.130	ballpoint pen
+2	p.130	beige
+2	p.130	closing ceremony
+2	p.130	confused
+2	p.130	depressed
+2	p.130	disappointed
+2	p.130	discouraged
+2	p.130	embarrassed
+2	p.130	entrance ceremony
+2	p.130	examination
+2	p.130	frightened
+2	p.130	graduation ceremony
+2	p.130	highlighter
+2	p.130	irritated
+2	p.130	marker pen
+2	p.130	mechanical pencil
+2	p.130	midterm exam
+2	p.130	navy blue
+2	p.130	opening ceremony
+2	p.130	outing
+2	p.130	relieved
+2	p.130	satisfied
+2	p.130	scissor
+2	p.130	sneaker
+2	p.130	sports day
+2	p.130	term-end exam
+2	p.130	unhappy
+2	p.131	acoustic guitar
+2	p.131	boiled
+2	p.131	cello
+2	p.131	clarinet
+2	p.131	donut
+2	p.131	electric guitar
+2	p.131	handball
+2	p.131	harp
+2	p.131	keyboard
+2	p.131	pilaf
+2	p.131	skateboarding
+2	p.131	snowboarding
+2	p.131	trombone
+2	p.132	art museum
+2	p.132	bakery
+2	p.132	barbershop
+2	p.132	butcher shop
+2	p.132	candy store
+2	p.132	clothing store
+2	p.132	coffee shop
+2	p.132	do the dishes
+2	p.132	drugstore
+2	p.132	fish shop
+2	p.132	flower shop
+2	p.132	grocery store
+2	p.132	stationery store
+2	p.132	toy store
+2	p.132	vegetable shop
+3	p.8	cream puff
+3	p.8	eel
+3	p.8	haven’t
+3	p.8	so-so
+3	p.9	run a marathon
+3	p.9	musical instrument
+3	p.9	run a marathon
+3	p.9	schoolyard
+3	p.11	cherry blossom
+3	p.11	starving
+3	p.12	homemade
+3	p.13	chain
+3	p.13	chilled
+3	p.13	food waste
+3	p.13	in stock
+3	p.13	in stock
+3	p.15	fried vegetables
+3	p.15	hamburger steak
+3	p.15	meatball
+3	p.15	pickle
+3	p.15	pork cutlet
+3	p.15	salmon
+3	p.15	salted plum
+3	p.18	be based on ～
+3	p.18	be based on ～
+3	p.18	right now
+3	p.18	right now
+3	p.19	keep a diary
+3	p.19	keep a diary
+3	p.19	you’ve
+3	p.21	later on
+3	p.21	make up for ～
+3	p.23	as a result
+3	p.23	as a result
+3	p.23	screen
+3	p.30	get rest
+3	p.30	get rest
+3	p.33	half-time
+3	p.33	not only ～ but also ...
+3	p.33	there’s
+3	p.34	basket
+3	p.34	indoor
+3	p.35	classification
+3	p.35	double dribble
+3	p.35	have ～ in one’s lap
+3	p.35	have ～ in one’s lap
+3	p.37	hoop
+3	p.39	change trains
+3	p.39	change trains
+3	p.42	ranking
+3	p.44	fall over
+3	p.44	it is true that ～
+3	p.44	it is true that 〜
+3	p.46	explanation
+3	p.46	eye contact
+3	p.46	facial
+3	p.49	eagle
+3	p.49	enable
+3	p.49	raptor
+3	p.49	severe
+3	p.49	treatment
+3	p.50	die of ～
+3	p.50	hunter
+3	p.50	poisoning
+3	p.50	weaken
+3	p.51	get angry with ～
+3	p.51	get angry with ～
+3	p.51	little by little
+3	p.52	assign ～ to ...
+3	p.52	softness
+3	p.54	ax
+3	p.54	blanket
+3	p.54	shovel
+3	p.55	gesture
+3	p.55	sign language
+3	p.56	hmm
+3	p.56	waiter
+3	p.60	according
+3	p.60	widely
+3	p.61	writing
+3	p.63	addition
+3	p.63	in addition
+3	p.63	automatically
+3	p.63	barrier-free
+3	p.63	blind
+3	p.63	hand rail
+3	p.63	in addition
+3	p.63	represent
+3	p.67	jean
+3	p.67	stripe
+3	p.69	cacao
+3	p.69	regard ～ as ...
+3	p.69	spice
+3	p.70	consume
+3	p.70	graph
+3	p.71	fair trade
+3	p.71	package
+3	p.73	combination
+3	p.73	dumpling
+3	p.73	powder
+3	p.73	red bean paste
+3	p.73	soybean flour
+3	p.73	wafer
+3	p.75	additional
+3	p.75	pelican
+3	p.75	shark
+3	p.81	balloon
+3	p.81	skating
+3	p.81	stew
+3	p.83	get caught in ～
+3	p.83	get caught in ～
+3	p.83	it is said that ～
+3	p.83	jumbo jet
+3	p.83	it is said that ～
+3	p.83	ton
+3	p.84	at the age of ～
+3	p.84	at the age of ～
+3	p.84	cleanup
+3	p.84	shocked
+3	p.85	mainly
+3	p.88	mug
+3	p.90	food poisoning
+3	p.90	to-go box
+3	p.92	extra
+3	p.94	compact
+3	p.94	what’s more
+3	p.94	on sale
+3	p.94	on sale
+3	p.94	what’s more
+3	p.96	lift
+3	p.96	vacuum cleaner
+3	p.96	wouldn’t
+3	p.97	band
+3	p.97	shake hands with ～
+3	p.97	heater
+3	p.97	shake hands with ～
+3	p.97	vocalist
+3	p.99	including
+3	p.100	take a class
+3	p.100	far away
+3	p.100	grandchildren
+3	p.100	mask
+3	p.100	take a class
+3	p.101	loneliness
+3	p.101	not ～ but ...
+3	p.101	rather
+3	p.103	trash can
+3	p.104	document
+3	p.104	password
+3	p.105	ball game tournament
+3	p.105	inter-class
+3	p.105	introduction
+3	p.107	gunman
+3	p.107	schoolgirl
+3	p.108	freedom
+3	p.108	freely
+3	p.108	shawl
+3	p.109	miraculously
+3	p.110	gun
+3	p.110	speak out
+3	p.110	tank
+3	p.115	brooch
+3	p.115	cheerfully
+3	p.115	come up to ～
+3	p.115	girlfriend
+3	p.115	pearl
+3	p.116	all right
+3	p.116	piggy
+3	p.116	all right
+3	p.116	tag
+3	p.117	affection
+3	p.118	in the recent past
+3	p.118	parody
+3	p.118	in the recent past
+3	p.119	afterwards
+3	p.119	bend over
+3	p.119	demonstration
+3	p.119	discovery
+3	p.119	scientific
+3	p.120	bill
+3	p.120	kronor
+3	p.120	trillion
+3	p.121	attack
+3	p.121	miracle
+3	p.121	shock
+3	p.122	say to oneself
+3	p.122	technical
+3	p.123	construction
+3	p.123	lots of ～
+3	p.123	technique
+3	p.125	aim
+3	p.125	as a result of ～
+3	p.125	feel like ～
+3	p.125	as a result of ～
+3	p.129	community center
+3	p.129	croquette
+3	p.129	dry cleaner
+3	p.129	grilled
+3	p.129	nursing home
+3	p.129	prawn
+3	p.129	spring roll
+3	p.129	steamed meat dumpling
+3	p.130	flu
+3	p.130	toad
+3	p.131	actress
+3	p.131	animator
+3	p.131	announcer
+3	p.131	architect
+3	p.131	baker
+3	p.131	barber
+3	p.131	beautician
+3	p.131	care worker
+3	p.131	carpenter
+3	p.131	cartoonist
+3	p.131	composer
+3	p.131	conductor
+3	p.131	entertainer
+3	p.131	fashion model
+3	p.131	fisherman
+3	p.131	game creator
+3	p.131	gardener
+3	p.131	government worker
+3	p.131	guide dog trainer
+3	p.131	hair stylist
+3	p.131	home attendant
+3	p.131	illustrator
+3	p.131	interpreter
+3	p.131	journalist
+3	p.131	kindergarten teacher
+3	p.131	movie director
+3	p.131	nail artist
+3	p.131	newscaster
+3	p.131	newspaper reporter
+3	p.131	nursery school teacher
+3	p.131	pet groomer
+3	p.131	pharmacist
+3	p.131	potter
+3	p.131	scriptwriter
+3	p.131	songwriter
+3	p.131	taxi driver
+3	p.131	tour conductor
+3	p.131	translator
+3	p.131	violinist
+3	p.131	voice actor
+3	p.131	weather forecaster
+3	p.132	ceiling
+3	p.132	niece

@@ -1,0 +1,635 @@
+{
+  "grade": "3",
+  "source": "3級合格 ライティング道場",
+  "sections": [
+    {
+      "id": "template",
+      "label": "型",
+      "lead": "大きく分けると意見→理由→まとめの三つで構成されます。",
+      "groups": [
+        {
+          "title": "主張",
+          "items": [
+            {
+              "en": "No. I do not like eating in the park.",
+              "ja": "主張",
+              "note": "まずは自分の意見を表明する部分。設問に書いてある表現を真似しながら書くと良い。"
+            }
+          ]
+        },
+        {
+          "title": "理由",
+          "items": [
+            {
+              "en": "I have two reasons for feeling this way.",
+              "ja": "理由",
+              "important": true
+            },
+            {
+              "en": "First, ___",
+              "ja": "理由1",
+              "example": "First, It is not comfortable. It is cold in winter and hot in summer.",
+              "important": true
+            },
+            {
+              "en": "Second, ___",
+              "ja": "理由2",
+              "example": "Second, it is not an usual way to have meals.",
+              "important": true,
+              "note": "理由は2つ書かなければならないので、このような言い方にします。また、you can see beautiful flowers. It will be a good experience.のように何かしらの文章の補足情報をIt is〜で理由を付け加えるという方法も語数を稼げて効果的です。"
+            }
+          ]
+        },
+        {
+          "title": "まとめ",
+          "items": [
+            {
+              "en": "For these reasons, I believe that ___.",
+              "ja": "まとめ",
+              "example": "For these reasons, I believe that they had better make time to play sports together.",
+              "important": true,
+              "note": "まとめパートではもう一度自分の主張を表明します。ここで、主張と同じ意味の違う表現を用いると加点対象になります。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "general",
+      "label": "汎用表現",
+      "lead": "覚えておけばライティングが書けるようになるもののリストです。赤色は特に重要なものです",
+      "groups": [
+        {
+          "title": "特に重要（赤）",
+          "items": [
+            {
+              "en": "make A B",
+              "ja": "AをBにする",
+              "example": "Exercise makes our bodies stronger.",
+              "exampleJa": "運動は私たちの体を強くする。",
+              "important": true
+            },
+            {
+              "en": "be good/bad for-",
+              "ja": "〜に良い/悪い",
+              "example": "Walking for 30 minutes a day is good for your health.",
+              "exampleJa": "1日30分のウォーキングは体に良い",
+              "important": true
+            },
+            {
+              "en": "It is ～（for人) to V",
+              "ja": "Vすることは・・・にとって〜だ。",
+              "example": "It is important for students to study English.",
+              "exampleJa": "生徒にとって英語を勉強することは重要だ。",
+              "important": true,
+              "note": "虹色にしたいくらい超重要です。下のオレンジ色の形容詞を組み合わせれば表現の幅がかなり広くなります。"
+            },
+            {
+              "en": "It is ～ that SV",
+              "ja": "・・・することは〜だ。",
+              "example": "It is important that students study English.",
+              "exampleJa": "生徒が英語を勉強することは重要だ。",
+              "important": true
+            },
+            {
+              "en": "can V easily（easier than～）",
+              "ja": "（〜より）簡単に〜できる",
+              "example": "If you live near the station, you can commute to work easily.",
+              "exampleJa": "あなたがもし駅の近くに住めば、簡単に通勤することができます",
+              "important": true,
+              "note": "一方の選択肢よりも簡単に〜できるという流れにのせられるのでかなり便利です。"
+            },
+            {
+              "en": "If（when)SV, SV",
+              "ja": "もし〜ならば・・・（〜のとき、・・・）",
+              "example": "If it is sunny tomorrow, let’s go outside. / I was reading a book when he came here.",
+              "exampleJa": "明日もし晴れたら、外出しましょう。 / 彼がここに来た時、私は本を読んでいました。",
+              "important": true,
+              "note": "使えば表現の幅が広がりますが意外とみんな使ってないですね。準2級・2級になってもこれはかなり使えるので、絶対マスターです。"
+            },
+            {
+              "en": "I enjoy -.",
+              "ja": "〜を楽しみます。",
+              "example": "I enjoy reading books.",
+              "exampleJa": "本を読むのを楽しみます。",
+              "important": true,
+              "note": "後ろはVingがくることが多いです。"
+            },
+            {
+              "en": "I want to/would like to-",
+              "ja": "〜したい",
+              "example": "I want to play the videogame. / I like listening to music because it helps me relax.",
+              "exampleJa": "そのゲームをプレイしたいです。 / 音楽を聴くのが好きです。リラックスできるからです。",
+              "important": true
+            },
+            {
+              "en": "I am interested in ~.",
+              "ja": "〜に興味があります。",
+              "example": "I am interested in learning languages.",
+              "exampleJa": "言語を学ぶことに興味があります。",
+              "important": true
+            },
+            {
+              "en": "It takes a lot of time.",
+              "ja": "それは時間がかかります。",
+              "example": "I don’t want to cook dinner because it takes a lot of time.",
+              "exampleJa": "夕食を作りたくありません。時間がかかるからです。",
+              "important": true
+            },
+            {
+              "en": "It costs a lot of money to ~.",
+              "ja": "〜するにはたくさんお金がかかります。",
+              "example": "It costs a lot of money to travel abroad.",
+              "exampleJa": "海外旅行にはたくさんお金がかかります。",
+              "important": true
+            },
+            {
+              "en": "I can make good memories by ~.",
+              "ja": "〜することで良い思い出を作ることができます。",
+              "example": "I can make good memories by traveling with my family.",
+              "exampleJa": "家族と旅行することで良い思い出を作ることができます。",
+              "important": true
+            }
+          ]
+        },
+        {
+          "title": "そのほか",
+          "items": [
+            {
+              "en": "I feel happy when I ~.",
+              "ja": "〜するとき幸せを感じます。",
+              "example": "I feel happy when I spend time with my friends.",
+              "exampleJa": "友達と過ごすとき幸せを感じます。"
+            },
+            {
+              "en": "~ is good for my health.",
+              "ja": "〜は健康に良いです。",
+              "example": "Walking every day is good for my health.",
+              "exampleJa": "毎日歩くことは健康に良いです。"
+            },
+            {
+              "en": "I want to learn more about ~.",
+              "ja": "〜についてもっと学びたいです。",
+              "example": "I want to learn more about other cultures.",
+              "exampleJa": "ほかの文化についてもっと学びたいです。"
+            },
+            {
+              "en": "I often ~ in my free time.",
+              "ja": "自由時間によく〜します。",
+              "example": "I often watch movies in my free time.",
+              "exampleJa": "自由時間によく映画を見ます。"
+            },
+            {
+              "en": "I sometimes ~ with my friends.",
+              "ja": "友達と一緒に〜することがあります。",
+              "example": "I sometimes go shopping with my friends.",
+              "exampleJa": "友達と買い物に行くことがあります。"
+            },
+            {
+              "en": "It is boring.",
+              "ja": "〜は退屈です。",
+              "example": "I don’t like doing homework because it is boring.",
+              "exampleJa": "宿題をするのは退屈なので好きではありません。"
+            },
+            {
+              "en": "I prefer ~ because it is more comfortable.",
+              "ja": "〜のほうが快適なので好みます。",
+              "example": "I prefer staying home because it is more comfortable.",
+              "exampleJa": "家にいるほうが快適なので好みます。"
+            },
+            {
+              "en": "I need ~ to enjoy my life.",
+              "ja": "人生を楽しむために〜が必要です。",
+              "example": "I need good friends to enjoy my life.",
+              "exampleJa": "人生を楽しむためには良い友達が必要です。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "adjectives",
+      "label": "形容詞",
+      "lead": "It is ～（for人) to V と組み合わせれば表現の幅がかなり広くなります。",
+      "groups": [
+        {
+          "items": [
+            {
+              "en": "comfortable",
+              "ja": "快適な",
+              "example": "It is comfortable to stay at home on rainy days.",
+              "exampleJa": "雨の日に家にいるのは快適です。"
+            },
+            {
+              "en": "healthy",
+              "ja": "健康に良い",
+              "example": "It is healthy to eat vegetables every day.",
+              "exampleJa": "毎日野菜を食べるのは健康に良いです。"
+            },
+            {
+              "en": "exciting",
+              "ja": "ワクワクする",
+              "example": "It is exciting to visit a new country.",
+              "exampleJa": "新しい国を訪れるのはワクワクします。"
+            },
+            {
+              "en": "useful",
+              "ja": "役に立つ",
+              "example": "It is useful to speak English when traveling abroad.",
+              "exampleJa": "海外旅行のとき、英語を話せるのは役に立ちます。"
+            },
+            {
+              "en": "important",
+              "ja": "大切な",
+              "example": "It is important to study hard for the future.",
+              "exampleJa": "将来のために一生懸命勉強するのは大切です。"
+            },
+            {
+              "en": "fun",
+              "ja": "楽しい",
+              "example": "It is fun to play sports with friends.",
+              "exampleJa": "友達とスポーツをするのは楽しいです。"
+            },
+            {
+              "en": "safe",
+              "ja": "安全な",
+              "example": "It is safe to stay home during a storm.",
+              "exampleJa": "嵐の間は家にいるのが安全です。"
+            },
+            {
+              "en": "dangerous",
+              "ja": "危険な",
+              "example": "It is dangerous to swim in the river alone.",
+              "exampleJa": "一人で川で泳ぐのは危険です。"
+            },
+            {
+              "en": "interesting",
+              "ja": "面白い",
+              "example": "It is interesting to learn about different cultures.",
+              "exampleJa": "異なる文化について学ぶのは面白いです。"
+            },
+            {
+              "en": "enjoyable",
+              "ja": "楽しめる",
+              "example": "It is enjoyable to go shopping with friends.",
+              "exampleJa": "友達と買い物に行くのは楽しいです。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "themes",
+      "label": "テーマ別",
+      "lead": "英検3級では主に日常生活、学校生活、将来の三つのテーマからライティング問題が出題されます。",
+      "groups": [
+        {
+          "title": "① 将来（夢・なりたい職業）",
+          "items": [
+            {
+              "en": "I want to be ~ in the future.",
+              "ja": "将来〜になりたいです。",
+              "example": "I want to be a doctor in the future.",
+              "exampleJa": "将来、医者になりたいです。"
+            },
+            {
+              "en": "I hope to ~ someday.",
+              "ja": "いつか〜したいです。",
+              "example": "I hope to work in another country someday.",
+              "exampleJa": "いつか外国で働きたいです。"
+            },
+            {
+              "en": "It is important to follow my dream.",
+              "ja": "夢を追うことは大切です。",
+              "example": "It is important to follow my dream and never give up.",
+              "exampleJa": "夢を追い、あきらめないことが大切です。"
+            },
+            {
+              "en": "I want to study hard to make my dream come true.",
+              "ja": "夢を叶えるために一生懸命勉強したいです。",
+              "example": "I want to study hard to make my dream come true.",
+              "exampleJa": "夢を叶えるために一生懸命勉強したいです。"
+            }
+          ]
+        },
+        {
+          "title": "② 海外",
+          "items": [
+            {
+              "en": "I want to learn about different cultures.",
+              "ja": "さまざまな文化について学びたいです。",
+              "example": "I want to learn about different cultures by traveling.",
+              "exampleJa": "旅行を通してさまざまな文化について学びたいです。"
+            },
+            {
+              "en": "It is exciting to see famous places.",
+              "ja": "有名な場所を見るのはワクワクします。",
+              "example": "It is exciting to see famous places like the Colosseum.",
+              "exampleJa": "コロッセオのような有名な場所を見るのはワクワクします。"
+            },
+            {
+              "en": "Traveling can make good memories.",
+              "ja": "旅行は良い思い出を作れます。",
+              "example": "Traveling with my family can make good memories.",
+              "exampleJa": "家族と旅行することで良い思い出を作ることができます。"
+            }
+          ]
+        },
+        {
+          "title": "③ 日常生活",
+          "items": [
+            {
+              "en": "I often ~ on weekends.",
+              "ja": "週末によく〜します。",
+              "example": "I often go shopping on weekends.",
+              "exampleJa": "週末によく買い物に行きます。"
+            },
+            {
+              "en": "It helps me relax.",
+              "ja": "それはリラックスするのに役立ちます。",
+              "example": "Listening to music helps me relax.",
+              "exampleJa": "音楽を聴くとリラックスできます。"
+            },
+            {
+              "en": "It is fun to spend time with my friends.",
+              "ja": "友達と過ごすのは楽しいです。",
+              "example": "It is fun to spend time with my friends at the park.",
+              "exampleJa": "公園で友達と過ごすのは楽しいです。"
+            },
+            {
+              "en": "Doing my hobbies makes me happy.",
+              "ja": "趣味をすることは私を幸せにしてくれます。",
+              "example": "Doing my hobbies makes me happy and relaxed.",
+              "exampleJa": "趣味をすることは私を幸せにし、リラックスさせてくれます。"
+            },
+            {
+              "en": "concentrate on-",
+              "ja": "〜に集中する",
+              "example": "The situation lets us concentrate on studying.",
+              "exampleJa": "その状況は私たちに勉強に集中させます。"
+            }
+          ]
+        },
+        {
+          "title": "④ 食べ物（好きな食べ物、外食）",
+          "items": [
+            {
+              "en": "I like ~ because it is delicious.",
+              "ja": "〜が好きです。美味しいからです。",
+              "example": "I like sushi because it is delicious.",
+              "exampleJa": "寿司が好きです。美味しいからです。"
+            },
+            {
+              "en": "I often eat out with my family.",
+              "ja": "家族とよく外食します。",
+              "example": "I often eat out with my family on weekends.",
+              "exampleJa": "週末によく家族と外食します。"
+            },
+            {
+              "en": "It is fun to try new foods.",
+              "ja": "新しい食べ物を試すのは楽しいです。",
+              "example": "It is fun to try new foods at restaurants.",
+              "exampleJa": "レストランで新しい食べ物を試すのは楽しいです。"
+            },
+            {
+              "en": "Eating out saves time.",
+              "ja": "外食は時間を節約できます。",
+              "example": "Eating out saves time when we are busy.",
+              "exampleJa": "忙しいとき、外食は時間を節約できます。"
+            },
+            {
+              "en": "I want to eat healthy food.",
+              "ja": "健康的な食べ物を食べたいです。",
+              "example": "I want to eat healthy food to stay healthy.",
+              "exampleJa": "健康を保つために健康的な食べ物を食べたいです。"
+            }
+          ]
+        },
+        {
+          "title": "⑤ 季節・天気（夏か冬か）",
+          "items": [
+            {
+              "en": "I like ~ because it is comfortable.",
+              "ja": "〜が好きです。快適だからです。",
+              "example": "I like summer because it is comfortable to go outside.",
+              "exampleJa": "外に出るのが快適なので夏が好きです。"
+            },
+            {
+              "en": "I can enjoy outdoor activities in ~.",
+              "ja": "〜には屋外活動を楽しめます。",
+              "example": "I can enjoy outdoor activities in summer.",
+              "exampleJa": "夏には屋外活動を楽しめます。"
+            },
+            {
+              "en": "It is beautiful in ~.",
+              "ja": "〜は美しいです。",
+              "example": "It is beautiful in winter because of the snow.",
+              "exampleJa": "雪のおかげで冬は美しいです。"
+            },
+            {
+              "en": "I like to eat seasonal foods in ~.",
+              "ja": "〜に旬の食べ物を食べるのが好きです。",
+              "example": "I like to eat seasonal foods in winter.",
+              "exampleJa": "冬に旬の食べ物を食べるのが好きです。"
+            },
+            {
+              "en": "It is hard to go outside in ~.",
+              "ja": "〜には外出するのが大変です。",
+              "example": "It is hard to go outside in winter because it is very cold.",
+              "exampleJa": "冬はとても寒いので外出するのが大変です。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "markers",
+      "label": "つなぎ言葉",
+      "lead": "ディスコースマーカーとは文章の中で「話の流れ」をスムーズにするためのつなぎ言葉です。",
+      "groups": [
+        {
+          "title": "【譲歩】（逆のことを認めるとき）",
+          "items": [
+            {
+              "en": "Although 〜",
+              "ja": "〜だけれども"
+            },
+            {
+              "en": "Even though 〜",
+              "ja": "〜にもかかわらず"
+            },
+            {
+              "en": "While 〜",
+              "ja": "〜だけれども"
+            },
+            {
+              "en": "Admittedly, 〜",
+              "ja": "確かに〜だけど"
+            },
+            {
+              "en": "It is true that 〜, but 〜",
+              "ja": "確かに〜だが、〜"
+            }
+          ]
+        },
+        {
+          "title": "【例示】（例をあげるとき）",
+          "items": [
+            {
+              "en": "For example, 〜",
+              "ja": "たとえば",
+              "important": true
+            },
+            {
+              "en": "For instance, 〜",
+              "ja": "たとえば",
+              "important": true
+            },
+            {
+              "en": "Such as 〜",
+              "ja": "〜のような"
+            },
+            {
+              "en": "To give an example, 〜",
+              "ja": "例を挙げると"
+            }
+          ]
+        },
+        {
+          "title": "【追加】（付け足すとき）",
+          "items": [
+            {
+              "en": "In addition, 〜",
+              "ja": "さらに"
+            },
+            {
+              "en": "Moreover, 〜",
+              "ja": "その上"
+            },
+            {
+              "en": "Besides, 〜",
+              "ja": "それに",
+              "important": true
+            },
+            {
+              "en": "Also, 〜",
+              "ja": "〜もまた",
+              "important": true
+            }
+          ]
+        },
+        {
+          "title": "【対比・比較】（違いを示すとき）",
+          "items": [
+            {
+              "en": "On the other hand, 〜",
+              "ja": "一方で"
+            },
+            {
+              "en": "In contrast, 〜",
+              "ja": "対照的に"
+            },
+            {
+              "en": "However, 〜",
+              "ja": "しかしながら",
+              "important": true
+            },
+            {
+              "en": "While 〜, 〜",
+              "ja": "〜だが、〜"
+            }
+          ]
+        },
+        {
+          "title": "【理由・原因】（理由を述べるとき）",
+          "items": [
+            {
+              "en": "Because 〜",
+              "ja": "〜だから",
+              "important": true
+            },
+            {
+              "en": "Since 〜",
+              "ja": "〜なので",
+              "important": true
+            },
+            {
+              "en": "As 〜",
+              "ja": "〜なので",
+              "important": true
+            },
+            {
+              "en": "This is because 〜",
+              "ja": "これは〜が理由である"
+            }
+          ]
+        },
+        {
+          "title": "【結果】（結果を述べるとき）",
+          "items": [
+            {
+              "en": "Therefore, 〜",
+              "ja": "その結果",
+              "important": true
+            },
+            {
+              "en": "As a result, 〜",
+              "ja": "その結果"
+            },
+            {
+              "en": "Consequently, 〜",
+              "ja": "結果として"
+            },
+            {
+              "en": "Thus, 〜",
+              "ja": "したがって"
+            }
+          ]
+        },
+        {
+          "title": "【まとめ・結論】（締めるとき）",
+          "items": [
+            {
+              "en": "In conclusion, 〜",
+              "ja": "結論として"
+            },
+            {
+              "en": "To sum up, 〜",
+              "ja": "要約すると"
+            },
+            {
+              "en": "In summary, 〜",
+              "ja": "まとめると"
+            },
+            {
+              "en": "Overall, 〜",
+              "ja": "全体として"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tips",
+      "label": "減点注意",
+      "groups": [
+        {
+          "items": [
+            {
+              "en": "I'm → I am / It's → It is",
+              "ja": "短縮しちゃだめですよ。I'mとかIt'sとかダメね。I am It isとしましょう。"
+            },
+            {
+              "en": "First, ___ / Second, ___",
+              "ja": "理由は2つ書かなければならないので、このような言い方にします。"
+            },
+            {
+              "en": "think → believe / do not think → I am not sure that〜",
+              "ja": "まとめパートでは主張と同じ意味の違う表現を用いると加点対象になります。thinkはbelieveに、do not thinkはI am not sure that〜と言い換えるようにしましょう。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

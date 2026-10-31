@@ -1,0 +1,67 @@
+{
+  "id": "eiken2-001",
+  "grade": "2",
+  "title": "Book Delivery Services",
+  "passage": {
+    "text": "Some libraries have started services that deliver books to people's homes. Older people and people with disabilities often find it difficult to visit a library by themselves. Libraries send books to these people by post or by delivery companies. In this way, they make it possible for everyone to enjoy reading. Such services are now spreading across the country.",
+    "hintPhrase": "In this way",
+    "wordCount": 59
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken2-001-a.webp",
+      "caption": "3コマ。①タブレットで図書館のサイトを見る年配女性「I can't walk to the library anymore.」→ The next day ②玄関で配達員から本の箱を受け取り署名 → Two weeks later ③椅子で読書。吹き出しに、友人たちも同じ箱を受け取る様子。",
+      "panels": 3
+    }
+  ],
+  "narration": {
+    "openingSentence": "One day, Mrs. Sato was looking at a library website with her grandson.",
+    "prepareSeconds": 20,
+    "speakSeconds": null
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do libraries make it possible for everyone to enjoy reading?",
+      "modelAnswer": "By sending books to older people and people with disabilities by post or by delivery companies.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "narration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the picture and describe the situation. You have twenty seconds to prepare. Your story should begin with the sentence on the card.",
+      "modelAnswer": "One day, Mrs. Sato was looking at a library website with her grandson. She said that she could not walk to the library anymore. The next day, a delivery worker brought a box of books to her door, and she signed for it. Two weeks later, she was reading one of the books in her chair. She was thinking that her friends could also receive books in the same way.",
+      "answerSeconds": 60
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that public services should use delivery companies more. What do you think about that?",
+      "modelAnswer": "I agree. Delivery companies already go to every house, so cities do not have to build new systems. On the other hand, public services must be careful about people's personal information.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Today, many people spend a lot of time using the Internet at home. Do you think people will read fewer books in the future?",
+      "modelAnswer": null,
+      "answerSeconds": 40,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Videos and games take up the time people used to spend reading. Reading also needs more effort than watching a screen."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "People are reading on their phones instead of on paper. The way of reading is changing, but the amount is not."
+        }
+      }
+    }
+  ]
+}

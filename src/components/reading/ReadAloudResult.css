@@ -1,0 +1,164 @@
+/* 音読の結果。下から出す（親指の届くところに操作を置く） */
+.aloud-result-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;   /* 下のタブ（1000）より上 */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-16);
+  background: var(--color-scrim);
+}
+
+.aloud-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: var(--space-24) var(--space-16);
+  /* ホームバーのある端末で「閉じる」が隠れないようにする */
+  padding-bottom: calc(var(--space-24) + env(safe-area-inset-bottom, 0px));
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-2);
+}
+
+.aloud-result__title {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-22);
+  font-weight: 700;
+  color: var(--color-ink-olive);
+  text-align: center;
+}
+
+.aloud-result__score {
+  margin: 0;
+  text-align: center;
+}
+
+.aloud-result__value {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-40);
+  font-weight: 700;
+  /* 数字は文字なので、面用のライムを使わない（白地に 1.82:1 で読めない） */
+  color: var(--color-ink-olive);
+}
+
+.aloud-result__unit {
+  margin-left: var(--space-4);
+  font-size: var(--font-size-14);
+  color: var(--color-olive-muted);
+}
+
+.aloud-result__comment {
+  margin: 0;
+  font-size: var(--font-size-14);
+  line-height: 1.6;
+  color: var(--color-olive-muted);
+  text-align: center;
+}
+
+/* ===== 聞き取っているあいだの帯 =====
+   どこまで進んだかは分からない（1往復なので途中の割合が出てこない）。
+   **作り物の数字は出さない**かわりに、動き続ける帯で「止まっていない」ことを見せる。 */
+.aloud-result__progress {
+  overflow: hidden;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-olive-divider);
+}
+
+.aloud-result__progress-bar {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-brand-lime);
+  animation: aloud-progress 1.2s ease-in-out infinite;
+}
+
+@keyframes aloud-progress {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* 動きを減らす設定の端末では往復させない（酔う人がいる） */
+@media (prefers-reduced-motion: reduce) {
+  .aloud-result__progress-bar { width: 100%; animation: none; }
+}
+
+/* ===== 本文の色分け =====
+   読み飛ばした語だけ並べても、本文のどこだったか分からなかった。
+   **本文をそのまま出して色を付ける**（2026-09-22）。 */
+.aloud-result__passage {
+  padding: var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--color-canvas-lime);
+}
+
+.aloud-result__legend {
+  display: flex;
+  gap: var(--space-12);
+  margin: 0 0 var(--space-8);
+  font-size: var(--font-size-12);
+  font-weight: 700;
+}
+
+.aloud-result__text {
+  margin: 0;
+  /* 本文なので小さくしない。読み直す場所を探す欄でもある */
+  font-size: var(--font-size-16);
+  line-height: 1.9;
+  color: var(--color-ink-olive);
+  word-break: break-word;
+}
+
+/* **文字に使える濃さにする**（→ dads。白地に 4.5:1 が要る）。
+   面や罫線用の色をそのまま文字に置かない。 */
+.aloud-word.is-read {
+  /* #0f6b53 … 白地に 6.46:1 */
+  color: var(--color-aloud-read, #0f6b53);
+}
+
+.aloud-word.is-missed {
+  /* #ce0000 … 白地に 5.79:1（デジタル庁 error-2 と同値） */
+  color: var(--color-aloud-missed, #ce0000);
+  font-weight: 700;
+  /* **色だけに頼らない。** 色が見分けにくい人にも分かるように線を引く */
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.aloud-result__actions {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.aloud-result__actions button {
+  flex: 1;
+  min-height: var(--tap-target);
+}
+
+/* 塾に「音読した日」として出る線に届いたか。**黙って落とさない** */
+.aloud-result__counted {
+  margin: 0;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  background: var(--color-olive-divider);
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  color: var(--color-olive-muted);
+  text-align: center;
+}
+
+.aloud-result__counted.is-ok {
+  /* 読めた語と同じ緑（白地に 6.46:1。文字に使える濃さ） */
+  color: var(--color-aloud-read, #0f6b53);
+  background: var(--color-canvas-lime);
+}

@@ -30,6 +30,8 @@ const GRID = 'rgba(54, 66, 30, 0.10)';
  */
 export default function TrendChart({
   points, label, unit = '', max, min = 0, height = 160, formatValue,
+  // 目盛の刻み（formatValue を渡すとき）。能力スコア（0〜1000）では広めに
+  stepSize = 1,
 }) {
   const data = useMemo(() => ({
     labels: points.map((p) => {
@@ -82,11 +84,11 @@ export default function TrendChart({
           maxTicksLimit: 4,
           font: { size: 10 },
           // ランクは 0〜6 の並び順で描くので、目盛には記号を出す
-          ...(formatValue ? { stepSize: 1, callback: (value) => formatValue(value) } : {}),
+          ...(formatValue ? { stepSize, callback: (value) => formatValue(value) } : {}),
         },
       },
     },
-  }), [label, unit, max, min, formatValue]);
+  }), [label, unit, max, min, formatValue, stepSize]);
 
   if (!points || points.length < 2) return null;
 

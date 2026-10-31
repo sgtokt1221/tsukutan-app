@@ -1,0 +1,172 @@
+/* 自由学習の入口。教材 / 教科書 / 英検 の3枚。
+   スマホ幅では横に3列並べると説明の一行が入らないので縦に積む。 */
+
+.free-study-cards {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.free-study-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  padding: var(--space-16);
+  border: var(--border-default);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--motion-standard) var(--ease-standard),
+              box-shadow var(--motion-standard) var(--ease-standard);
+}
+
+.free-study-card:hover {
+  background-color: var(--color-lime-soft);
+  box-shadow: var(--shadow-2);
+}
+
+.free-study-card__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-control);
+  background-color: var(--color-lime-soft);
+}
+
+.free-study-card__icon svg {
+  width: var(--icon-24);
+  height: var(--icon-24);
+}
+
+.free-study-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.free-study-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-18);
+  font-weight: 700;
+  line-height: var(--line-tight);
+}
+
+.free-study-card__sub {
+  display: block;
+  margin-top: var(--space-4);
+  font-size: var(--font-size-12);
+  font-weight: 400;
+  line-height: var(--line-normal);
+  color: var(--color-olive-muted);
+}
+
+.free-study-card__chevron {
+  flex-shrink: 0;
+  display: flex;
+  color: var(--color-olive-subtle);
+}
+
+/*
+  教材の表紙。**アイコンの枠と同じ場所に入る**（`__icon` と入れ替わる）。
+
+  本は縦長なので、正方形の枠に `cover` で入れると上下が切れて題名が読めない。
+  `contain` で全体を見せ、余りは地の色のままにする。
+*/
+.free-study-card__cover {
+  flex: none;
+  width: 44px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-8, 8px);
+  background-color: var(--color-surface-muted, #f1f5f4);
+}
+
+.free-study-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* 読めなかったときに「壊れた画像」の印を出さない（枠だけ残す） */
+  color: transparent;
+}
+
+/*
+  中に何冊も入っている入口（教材・教科書・英検）。**表紙を少しずつずらして重ねる**（2026-09-27）。
+  奥の本ほど右へ寄せて小さく傾け、いちばん手前（1冊目）が正面を向く。
+*/
+.free-study-card__stack {
+  flex: none;
+  position: relative;
+  width: 84px;
+  height: 64px;
+}
+
+.free-study-card__stack img {
+  position: absolute;
+  top: 2px;
+  width: 42px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: var(--color-surface-muted, #f1f5f4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: transparent;
+}
+
+.free-study-card__stack img:nth-child(1) { left: 0; z-index: 3; }
+.free-study-card__stack img:nth-child(2) { left: 20px; z-index: 2; transform: rotate(6deg); }
+.free-study-card__stack img:nth-child(3) { left: 40px; z-index: 1; transform: rotate(12deg); }
+
+/* 練習｜テスト（2026-09-27）。範囲を選ぶ画面のいちばん上 */
+.free-study-purpose {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
+}
+
+.free-study-purpose__switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: var(--border-default);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+.free-study-purpose__option {
+  min-height: var(--tap-target);
+  border: 0;
+  background: transparent;
+  color: var(--color-ink-olive);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.free-study-purpose__option + .free-study-purpose__option {
+  border-left: var(--border-default);
+}
+
+.free-study-purpose__option.is-active {
+  /* 選んでいる方をはっきり塗る（薄い色だと、どちらを選んでいるか分からない） */
+  background-color: var(--color-ink-olive);
+  color: var(--color-surface);
+}
+
+.free-study-purpose__note {
+  margin: 0;
+  font-size: var(--font-size-12);
+  color: var(--color-olive-muted);
+}

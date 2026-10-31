@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaQuestionCircle } from 'react-icons/fa';
 import './UserMenu.css';
 
 /**
@@ -12,7 +12,7 @@ import './UserMenu.css';
  * avatarUrl は後から設定できるようにするための入口。
  * 未設定のときは既定のアイコンを出す。
  */
-export default function UserMenu({ userName, avatarUrl, onLogout }) {
+export default function UserMenu({ userName, avatarUrl, onLogout, onShowGuide }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -52,6 +52,16 @@ export default function UserMenu({ userName, avatarUrl, onLogout }) {
       {open && (
         <div className="user-menu__panel" role="menu">
           {userName && <p className="user-menu__name">{userName}</p>}
+          {onShowGuide && (
+            <button
+              type="button"
+              className="user-menu__item"
+              role="menuitem"
+              onClick={() => { setOpen(false); onShowGuide(); }}
+            >
+              <FaQuestionCircle aria-hidden="true" /> 使い方を見る
+            </button>
+          )}
           {onLogout && (
             <button type="button" className="user-menu__item" role="menuitem" onClick={onLogout}>
               <FaSignOutAlt aria-hidden="true" /> ログアウト

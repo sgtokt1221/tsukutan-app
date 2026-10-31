@@ -1,0 +1,77 @@
+{
+  "grade": "3",
+  "tasks": {
+    "opinion": {
+      "label": "意見論述",
+      "minWords": 25,
+      "maxWords": 35,
+      "instructions": [
+        "You have received a QUESTION from a foreign friend.",
+        "Write your answer to the QUESTION in English.",
+        "Give TWO reasons to explain your answer.",
+        "Suggested length: 25–35 words."
+      ],
+      "items": [
+        { "id": "o1", "theme": "学校", "question": "Which do you like better, school lunch or a lunch box from home?" },
+        { "id": "o2", "theme": "趣味", "question": "Which do you like better, taking pictures or drawing pictures?" },
+        { "id": "o3", "theme": "食べ物", "question": "Do you like cooking for your family?" },
+        { "id": "o4", "theme": "季節", "question": "Which season is the best for a school trip?" },
+        { "id": "o5", "theme": "将来", "question": "Do you want to have a job that uses English in the future?" },
+        { "id": "o6", "theme": "日常生活", "question": "Which do you like better, getting up early or staying up late?" },
+        { "id": "o7", "theme": "学校行事", "question": "Do you like sports day at your school?" },
+        { "id": "o8", "theme": "家族", "question": "Which do you like better, going shopping with your family or with your friends?" },
+        { "id": "o9", "theme": "動物", "question": "What animal would you like to have as a pet?" },
+        { "id": "o10", "theme": "旅行", "question": "Which do you like better, traveling by train or traveling by bus?" }
+      ]
+    },
+    "email": {
+      "label": "Eメール",
+      "minWords": 15,
+      "maxWords": 25,
+      "instructions": [
+        "You have received an email from a foreign friend.",
+        "Write a reply email to your friend.",
+        "In your reply, answer your friend's TWO questions (the underlined parts).",
+        "Suggested length: 15–25 words."
+      ],
+      "items": [
+        {
+          "id": "e1",
+          "theme": "季節・行事",
+          "from": "Emma",
+          "body": "Hi,\n\nThank you for your email. I heard that you went to a summer festival with your family last week. I have never been to a Japanese festival. [[What did you eat at the festival?]] And [[how long did you stay there?]]\n\nYour friend,\nEmma"
+        },
+        {
+          "id": "e2",
+          "theme": "部活動",
+          "from": "Lucas",
+          "body": "Hi,\n\nI heard that you joined the music club at your school. That's great! I play the guitar at home every day. [[What instrument do you play in the club?]] And [[how many days a week do you practice?]]\n\nYour friend,\nLucas"
+        },
+        {
+          "id": "e3",
+          "theme": "料理",
+          "from": "Mia",
+          "body": "Hi,\n\nYour mother told my mother that you made a cake for her birthday. I like making cakes, too. [[What kind of cake did you make?]] And [[who helped you?]]\n\nYour friend,\nMia"
+        },
+        {
+          "id": "e4",
+          "theme": "読書",
+          "from": "Noah",
+          "body": "Hi,\n\nI heard that you started reading English books. I think that is a good way to learn English. [[What book are you reading now?]] And [[where do you usually read books?]]\n\nYour friend,\nNoah"
+        },
+        {
+          "id": "e5",
+          "theme": "天気",
+          "from": "Chloe",
+          "body": "Hi,\n\nI saw on the news that it snowed a lot in your town last weekend. It never snows in my city, so I want to see snow someday. [[What did you do in the snow?]] And [[how did you go to school that day?]]\n\nYour friend,\nChloe"
+        },
+        {
+          "id": "e6",
+          "theme": "将来・旅行",
+          "from": "Ethan",
+          "body": "Hi,\n\nYou said in your last email that you want to visit Canada someday. My family and I would be happy to show you around our town. [[When do you want to come?]] And [[what do you want to do here?]]\n\nYour friend,\nEthan"
+        }
+      ]
+    }
+  }
+}

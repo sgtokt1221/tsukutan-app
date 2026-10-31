@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const CSS_FILES = ['src/index.css', 'src/App.css', 'src/AdminDashboard.css', 'src/Analytics.css'];
+const CSS_FILES = ['src/index.css', 'src/App.css', 'src/Analytics.css'];
 
 const readIfExists = (rel) => {
   const abs = path.join(ROOT, rel);

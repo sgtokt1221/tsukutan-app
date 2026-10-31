@@ -1,0 +1,67 @@
+{
+  "id": "eiken2-003",
+  "grade": "2",
+  "title": "Bicycle Sharing",
+  "passage": {
+    "text": "Bicycle sharing services have appeared in many Japanese cities. Users can unlock a bicycle with a smartphone and return it to any station in the city. Some companies place their stations near train stations and office buildings. In this way, they give commuters a choice other than crowded buses and trains. The number of users has increased quickly in the last few years.",
+    "hintPhrase": "In this way",
+    "wordCount": 63
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken2-003-a.webp",
+      "caption": "3コマ。①駅前でバス停の長い列を見る会社員の女性「The bus is always so crowded.」→ The next morning ②スマホでシェアサイクルの鍵を開ける → Three months later ③自転車で会社の前を走る。吹き出しに、他の会社員たちも同じ自転車に乗る様子。",
+      "panels": 3
+    }
+  ],
+  "narration": {
+    "openingSentence": "One morning, Ms. Mori was standing outside the station and looking at a long line at the bus stop.",
+    "prepareSeconds": 20,
+    "speakSeconds": null
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do some companies give commuters a choice other than crowded buses and trains?",
+      "modelAnswer": "By placing their bicycle sharing stations near train stations and office buildings.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "narration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the picture and describe the situation. You have twenty seconds to prepare. Your story should begin with the sentence on the card.",
+      "modelAnswer": "One morning, Ms. Mori was standing outside the station and looking at a long line at the bus stop. She said that the bus was always so crowded. The next morning, she was unlocking a rental bicycle with her smartphone. Three months later, she was riding the bicycle past her office. She was thinking that many other workers could also use the bicycles.",
+      "answerSeconds": 60
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that cities should build more roads for bicycles. What do you think about that?",
+      "modelAnswer": "I agree. Bicycles and cars on the same road are dangerous for both. Cities that built bicycle roads have fewer accidents, though it costs a lot of money.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Today, many people are trying to reduce the amount of energy they use. Do you think people will use cars less in the future?",
+      "modelAnswer": null,
+      "answerSeconds": 40,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Cities are getting better public transport, and young people in cities do not even get a license."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "People in the countryside have no other way to move. Cars will only change from gasoline to electricity."
+        }
+      }
+    }
+  ]
+}

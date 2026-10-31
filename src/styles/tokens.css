@@ -1,7 +1,7 @@
 /*
  * src/styles/tokens.css
  *
- * つくたんのデザイントークン。DESIGN_POLISH_PLAN.md の 5〜10章に対応する。
+ * つくつくのデザイントークン。
  *
  * ここが色・文字・余白・角丸・影・動きの唯一の出どころ。
  * 画面固有のCSSで生の値を書かず、必ずこのトークンを参照する。
@@ -12,25 +12,27 @@
 
 :root {
   /* ---- 5.1 変更禁止の基準色 ---- */
-  --color-brand-lime: #A3E635;
-  --color-canvas-lime: #F7FEE7;
-  --color-ink-olive: #36421E;
-  --color-accent-blue: #3B82F6;
-  --color-surface: #FFFFFF;
+  --color-brand-lime: #48D7A5;
+  --color-canvas-lime: #F6F7F2;
+  --color-ink-olive: #183153;
+  --color-accent-blue: #4F78FF;
+  --color-surface: #FFFDF7;
 
   /* ---- 5.2 許可する派生（透明度のみ） ---- */
-  --color-lime-soft: rgba(163, 230, 53, 0.12);
-  --color-lime-muted: rgba(163, 230, 53, 0.24);
-  --color-lime-border: rgba(163, 230, 53, 0.46);
-  --color-olive-strong: #36421E;
-  --color-olive-muted: rgba(54, 66, 30, 0.68);
-  --color-olive-subtle: rgba(54, 66, 30, 0.48);
-  --color-olive-border: rgba(54, 66, 30, 0.14);
-  --color-olive-divider: rgba(54, 66, 30, 0.09);
-  --color-blue-soft: rgba(59, 130, 246, 0.10);
-  --color-blue-border: rgba(59, 130, 246, 0.34);
-  --color-focus-ring: rgba(59, 130, 246, 0.34);
-  --color-scrim: rgba(54, 66, 30, 0.46);
+  --color-lime-soft: rgba(72, 215, 165, 0.12);
+  --color-lime-muted: rgba(72, 215, 165, 0.24);
+  --color-lime-border: rgba(22, 155, 120, 0.42);
+  --color-olive-strong: #183153;
+  --color-olive-muted: rgba(24, 49, 83, 0.70);
+  --color-olive-subtle: rgba(24, 49, 83, 0.48);
+  --color-olive-border: rgba(24, 49, 83, 0.14);
+  --color-olive-divider: rgba(24, 49, 83, 0.09);
+  --color-blue-soft: rgba(79, 120, 255, 0.10);
+  --color-blue-border: rgba(79, 120, 255, 0.34);
+  --color-focus-ring: rgba(79, 120, 255, 0.34);
+  --color-scrim: rgba(24, 49, 83, 0.46);
+  --color-warm: #FFC857;
+  --color-warm-soft: rgba(255, 200, 87, 0.18);
 
   /* ---- 状態色。用途を状態表示に限る ---- */
   --color-success-bg: #d1e7dd;
@@ -79,11 +81,11 @@
   --radius-card: 16px;
   --radius-feature: 24px;
   --radius-pill: 999px;
-  --shadow-1: 0 1px 2px rgba(54, 66, 30, 0.06);
-  --shadow-2: 0 8px 24px rgba(54, 66, 30, 0.09);
-  --shadow-3: 0 16px 40px rgba(54, 66, 30, 0.13);
-  --border-subtle: 1px solid rgba(54, 66, 30, 0.09);
-  --border-default: 1px solid rgba(54, 66, 30, 0.14);
+  --shadow-1: 0 1px 2px rgba(24, 49, 83, 0.05);
+  --shadow-2: 0 14px 34px rgba(24, 49, 83, 0.10);
+  --shadow-3: 0 24px 70px rgba(24, 49, 83, 0.16);
+  --border-subtle: 1px solid rgba(24, 49, 83, 0.09);
+  --border-default: 1px solid rgba(24, 49, 83, 0.14);
 
   /* ---- 9. アイコン ---- */
   --icon-16: 16px;
@@ -95,7 +97,9 @@
   --motion-fast: 120ms;
   --motion-standard: 200ms;
   --motion-card: 320ms;
+  --motion-loader: 2200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-loader: cubic-bezier(0.45, 0, 0.2, 1);
 }
 
 /*
@@ -108,7 +112,7 @@
   --background-color: var(--color-canvas-lime);
   --text-color: var(--color-ink-olive);
   --card-bg: var(--color-surface);
-  --shadow-color: rgba(54, 66, 30, 0.08);
+  --shadow-color: rgba(24, 49, 83, 0.10);
 }
 
 /* 10. 動きを減らす設定では、装飾的な中間演出を止める */

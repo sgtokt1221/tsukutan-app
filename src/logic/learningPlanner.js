@@ -1,6 +1,7 @@
 import { estimateNeededWords } from './vocabularyEstimator';
 import { db } from '../firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
+import { loadTextbookWords } from './wordMaster';
 import { buildThemeGroups, computeKnowledgeMap, getKnowledgeGaps } from './knowledgeAnalysis';
 import { getMotivationConfig, getTargetLevel, toGoalIds, getRecommendedTextbooks } from '../config';
 import { parseLocalDate, getTodayKey } from './dateKeys';
@@ -17,12 +18,15 @@ import {
   dedupeAcross,
   splitIntoSessions,
   sortReviewCandidates,
+  unlearnedCandidates,
   REVIEW_SESSION_SIZE,
 } from './dailyPlanMath';
+import { getNewWordSource, estimateLevels, orderByLevelFit, withoutLearnedSpellings } from './newWordSources';
 
-// Firestore に実体がある教材だけを引く。
-// 以前は英検コース名（eiken-5 など）もここに並んでいたが、
-// textbooks/{id}/words が存在しないため7回分の空クエリを投げていた。
+// 新しい単語を選ぶ教材。中身は public/data の教材ファイル（loadTextbookWords）。
+// 2026-09-24 までは Firestore の textbooks/{id}/words から引いていたが、そちらは
+// 付け直す前のレベル（1〜10）とランダムな文書IDのままで、生徒のレベル（1〜7）とも
+// 単語データの id とも合っていなかった。
 const TEXTBOOK_IDS = ['osaka-koukou-nyuushi', 'highschool-english'];
 
 const SECONDS_PER_NEW_WORD = 60;
@@ -73,6 +77,9 @@ const emptyPlan = (reason) => ({
   remainingDays: 0,
   remainingWords: 0,
   knowledgeHints: [],
+  newWordSourceTitle: null,
+  newWordSourceFinished: false,
+  newWordSourceFallback: false,
   reason,
 });
 
@@ -97,7 +104,14 @@ export const generateDailyPlan = async (userData, userId) => {
     return emptyPlan('invalid-target-date');
   }
 
-  const remainingWordsCount = await estimateNeededWords(userData);
+  // 必要語数・復習単語・保存済みの計画は互いに関係が無い。
+  // 順番に待つと往復のぶんだけ今日のタスクが出るのが遅くなる。
+  const dateKey = getTodayKey();
+  const [remainingWordsCount, reviewSnapshot, stored] = await Promise.all([
+    estimateNeededWords(userData),
+    getDocs(collection(db, 'users', userId, 'reviewWords')),
+    loadDailyPlan(userId, dateKey),
+  ]);
 
   // 期限由来の必要語数と、やる気レベルの希望語数の両方を出す（計画書10.2.3）
   const quota = computeNewWordsQuota({
@@ -109,7 +123,6 @@ export const generateDailyPlan = async (userData, userId) => {
   //--------------------------------------------------------------------------
   // 復習対象
   //--------------------------------------------------------------------------
-  const reviewSnapshot = await getDocs(collection(db, 'users', userId, 'reviewWords'));
   // 永続IDへ移行済みの旧文書は二重に出さない
   const allProgressEntries = reviewSnapshot.docs
     .map((docSnapshot) => ({ id: docSnapshot.id, ...docSnapshot.data() }))
@@ -118,7 +131,7 @@ export const generateDailyPlan = async (userData, userId) => {
   // 一度でも学習した単語は新規に出さない。習得済みも含める。
   // ここを復習候補から作ると、習得済みの単語が新規単語として
   // 出題し直されてしまう。
-  const learnedWordIds = new Set(allProgressEntries.map((entry) => entry.id));
+  // Firestore の教材から学んだ語は id が単語データと違うので、中身でも照らす（unlearnedCandidates）
 
   // 復習候補。習得済み（status: mastered）は履歴として残しているだけなので外す。
   const enrichedReviewEntries = allProgressEntries
@@ -136,9 +149,7 @@ export const generateDailyPlan = async (userData, userId) => {
   //--------------------------------------------------------------------------
   // 保存済みの計画があればそれを使う（その日のうちは並びを変えない）
   //--------------------------------------------------------------------------
-  const dateKey = getTodayKey();
   const signature = planSignature(userData);
-  const stored = await loadDailyPlan(userId, dateKey);
 
   if (isStoredPlanUsable(stored, signature)) {
     // 復習単語はIDだけ保存してある。今日の reviewWords から引き直す。
@@ -149,6 +160,7 @@ export const generateDailyPlan = async (userData, userId) => {
       .filter(Boolean);
 
     const answered = stored.answeredNewWordIds || [];
+    const storedSource = getNewWordSource(stored.newWordSourceId);
     const restoredNewWords = remainingWords(stored.newWords, answered);
 
     return {
@@ -165,6 +177,9 @@ export const generateDailyPlan = async (userData, userId) => {
       remainingDays,
       remainingWords: remainingWordsCount,
       knowledgeHints: stored.knowledgeHints || [],
+      newWordSourceTitle: storedSource?.title ?? null,
+      newWordSourceFinished: Boolean(storedSource && stored.newWordSourceFinished),
+      newWordSourceFallback: Boolean(storedSource && stored.newWordSourceFallback),
       dateKey,
       fromStoredPlan: true,
     };
@@ -175,12 +190,42 @@ export const generateDailyPlan = async (userData, userId) => {
   //--------------------------------------------------------------------------
   const userLevel = userData?.level || 1;
   const goalIds = toGoalIds(userData?.goal?.targets);
-  const { words: newWordCandidates, remainingCandidates } = await getNewWords(
-    quota.plannedNewWords,
-    userLevel,
-    learnedWordIds,
-    goalIds
-  );
+  // 生徒が目標設定で教材を選んでいればそこから。おまかせ（未選択・知らないID）は今までどおり
+  const newWordSource = getNewWordSource(userData?.goal?.newWordTextbook);
+  const targetLevel = getTargetLevel(goalIds);
+  // 新しい単語・隣のレベルの単語・知識マップ（直近のログ）は互いに関係が無い。
+  // 順番に待つと往復のぶんだけ今日のタスクが出るのが遅くなるので、まとめて投げる
+  const [picked, adjacentWords, knowledgeMap] = await Promise.all([
+    newWordSource
+      ? getNewWordsFromSource(newWordSource, quota.plannedNewWords, userLevel, allProgressEntries)
+      : getNewWords(quota.plannedNewWords, userLevel, allProgressEntries, goalIds),
+    targetLevel > 1
+      ? getAdjacentLevelWords(targetLevel, allProgressEntries, motivation, goalIds)
+      : [],
+    computeKnowledgeMap(userId),
+  ]);
+  const { sourceFinished = false } = picked;
+  let newWordCandidates = picked.words;
+  let remainingCandidates = picked.remainingCandidates;
+  /*
+    **選んだ教材が尽きても止めない**（2026-09-26）。以前は教材の語を学び終えると
+    新しい単語が0になり、「目標を再設定する」まで勉強が止まった。
+    足りないぶんは目標に合わせた教材（おまかせと同じ）から埋め、ホームでそう知らせる。
+  */
+  let sourceFallback = false;
+  if (newWordSource && newWordCandidates.length < quota.plannedNewWords) {
+    const rest = await getNewWords(quota.plannedNewWords - newWordCandidates.length, userLevel, allProgressEntries, goalIds);
+    const seen = new Set(newWordCandidates.map((word) => word.id));
+    const spellings = new Set(newWordCandidates.map((word) => String(word.word || '').trim().toLowerCase()));
+    const fresh = (list) => list.filter((word) => !seen.has(word.id)
+      && !spellings.has(String(word.word || '').trim().toLowerCase()));
+    const filled = fresh(rest.words);
+    if (filled.length > 0) {
+      newWordCandidates = [...newWordCandidates, ...filled];
+      remainingCandidates = [...remainingCandidates, ...fresh(rest.remainingCandidates || [])];
+      sourceFallback = sourceFinished;
+    }
+  }
 
   // 時間に余裕があれば「おかわり」分を用意する
   const reviewTimeInSeconds = dueForReview.length * SECONDS_PER_REVIEW_WORD;
@@ -195,12 +240,8 @@ export const generateDailyPlan = async (userData, userId) => {
   // 忘却防止の習得済み単語と、隣接レベルの単語
   //--------------------------------------------------------------------------
   const scheduledIds = new Set(dueForReview.map((entry) => entry.id));
-  const masteredWords = await getRandomMasteredWords(userId, scheduledIds, motivation);
-
-  const targetLevel = getTargetLevel(goalIds);
-  const adjacentWords = targetLevel > 1
-    ? await getAdjacentLevelWords(targetLevel, learnedWordIds, motivation, goalIds)
-    : [];
+  // 復習単語はもう全部読んである（reviewSnapshot）。同じコレクションを問い合わせ直さない
+  const masteredWords = pickRandomMasteredWords(allProgressEntries, scheduledIds, motivation);
 
   //--------------------------------------------------------------------------
   // 重複排除。優先度は 復習 > 習得済み > 隣接 > 新規 > おかわり（計画書10.2.7）
@@ -216,18 +257,28 @@ export const generateDailyPlan = async (userData, userId) => {
   const finalReviewWords = [...scheduled, ...mastered, ...adjacent];
   const reviewSessions = splitIntoSessions(finalReviewWords, REVIEW_SESSION_SIZE);
 
-  const knowledgeMap = await computeKnowledgeMap(userId);
   const themeGroups = buildThemeGroups([...newWords, ...extraNewWords, ...finalReviewWords]);
   const knowledgeHints = getKnowledgeGaps(themeGroups, knowledgeMap).slice(0, 3);
 
   // その日のうちは同じ計画を返せるように保存する。
   // 復習はIDだけ（reviewWords から引き直せる）、新規と隣接は中身ごと。
-  await saveDailyPlan(userId, dateKey, {
+  /*
+    **保存の返事を待たずに計画を返す**（2026-10-31）。書き込みの往復ぶん、ホームが出るのが遅れていた。
+    保存そのものは saveDailyPlan が控えておき、この計画を読む・書き足す処理
+    （loadDailyPlan / markNewWordAnswered）が**保存の完了を await してから**動く——
+    返事を待たずに作り直すと、別の抽選の計画で上書きしてしまうため。
+    画面に出すのは作った計画そのもので、保存の結果を先取りして見せているのではない。
+  */
+  saveDailyPlan(userId, dateKey, {
     signature,
     newWords,
     extraNewWords,
     reviewWordIds: finalReviewWords.map((word) => word.id),
     knowledgeHints,
+    // 選んだ教材と、その語を全部学び終えていたか。**undefined を入れない**（書き込みごと拒否される）
+    newWordSourceId: newWordSource?.id ?? null,
+    newWordSourceFinished: sourceFinished,
+    newWordSourceFallback: sourceFallback,
     quota: {
       preferredNewWords: quota.preferredNewWords,
       requiredNewWords: quota.requiredNewWords,
@@ -250,28 +301,35 @@ export const generateDailyPlan = async (userData, userId) => {
     remainingDays,
     remainingWords: remainingWordsCount,
     knowledgeHints,
+    newWordSourceTitle: newWordSource?.title ?? null,
+    newWordSourceFinished: sourceFinished,
+    newWordSourceFallback: sourceFallback,
     dateKey,
     fromStoredPlan: false,
   };
 };
 
 /**
- * 忘却防止のため、習得済みの単語からランダムでいくつか取得する。
+ * 忘却防止のため、習得済みの単語からランダムでいくつか選ぶ。
+ *
+ * `entries` は読み済みの reviewWords（id 付き）。以前は同じコレクションを
+ * `where('repetitions', '>=', 閾値)` で問い合わせ直していたが、全件はもう手元にあるので
+ * ここで同じ条件で絞る（Firestore の `>=` は数値の欄だけに当たるので、数値かも見る）。
  */
-const getRandomMasteredWords = async (userId, excludedIds, motivation) => {
-  const userWordsCollection = collection(db, 'users', userId, 'reviewWords');
-  const snapshot = await getDocs(
-    query(userWordsCollection, where('repetitions', '>=', motivation.masteredThreshold))
-  );
-
+export const pickRandomMasteredWords = (entries, excludedIds, motivation, random = Math.random) => {
   const masteredWords = [];
-  snapshot.forEach((docSnapshot) => {
-    const data = docSnapshot.data();
-    if (excludedIds.has(docSnapshot.id) || data.migratedTo) return;
-    masteredWords.push({ id: docSnapshot.id, ...data, isMastered: true });
+  entries.forEach((entry) => {
+    const { repetitions } = entry;
+    if (typeof repetitions !== 'number' || !(repetitions >= motivation.masteredThreshold)) return;
+    if (excludedIds.has(entry.id) || entry.migratedTo) return;
+    // 生徒が自分で「リストから削除」した語（status: mastered）はここでも出さない。
+    // 繰り返し回数だけで引いていたので、何回か正解してから削除した語が
+    // 忘却防止の枠で戻ってきていた。削除と言いながら出てくるのはおかしい。
+    if (entry.status === 'mastered') return;
+    masteredWords.push({ ...entry, isMastered: true });
   });
 
-  masteredWords.sort(() => Math.random() - 0.5);
+  masteredWords.sort(() => random() - 0.5);
   return masteredWords.slice(0, motivation.dailyReviewQuota);
 };
 
@@ -282,26 +340,20 @@ const getRandomMasteredWords = async (userId, excludedIds, motivation) => {
  * 存在しないため常に 0 になり、隣接語が一度も出ていなかった。
  * 目標レベルは src/config の targetLevel から引く。
  */
-const getAdjacentLevelWords = async (targetLevel, learnedWordIds, motivation, goalIds) => {
+const getAdjacentLevelWords = async (targetLevel, learnedEntries, motivation, goalIds) => {
   const adjacentLevel = targetLevel - 1;
-  const textbookIds = textbooksForGoals(goalIds);
-
-  const snapshots = await Promise.all(
-    textbookIds.map((id) =>
-      getDocs(query(collection(db, 'textbooks', id, 'words'), where('level', '==', adjacentLevel)))
-    )
-  );
-
-  const candidateWords = [];
-  snapshots.forEach((snapshot) => {
-    snapshot.forEach((docSnapshot) => {
-      if (learnedWordIds.has(docSnapshot.id)) return;
-      candidateWords.push({ id: docSnapshot.id, ...docSnapshot.data(), isAdjacent: true });
-    });
-  });
+  const words = await loadGoalTextbookWords(goalIds);
+  const candidateWords = unlearnedCandidates(words, learnedEntries, (word) => word.level === adjacentLevel)
+    .map((word) => ({ ...word, isAdjacent: true }));
 
   candidateWords.sort(() => Math.random() - 0.5);
   return candidateWords.slice(0, motivation.adjacentWordsQuota);
+};
+
+/** 目標に紐づく教材の語をまとめて読む。読めなければ例外（空で返すと「単語がありません」と誤表示する） */
+const loadGoalTextbookWords = async (goalIds) => {
+  const lists = await Promise.all(textbooksForGoals(goalIds).map((id) => loadTextbookWords(id)));
+  return lists.flat();
 };
 
 /** 目標に紐づく教材だけを引く。目標が無ければ全教材。 */
@@ -313,31 +365,42 @@ const textbooksForGoals = (goalIds) => {
 /**
  * ユーザーのレベルに基づき、まだ学習していない新規単語を取得する。
  */
-const getNewWords = async (quota, userLevel, learnedWordIds, goalIds) => {
+const getNewWords = async (quota, userLevel, learnedEntries, goalIds) => {
   const safeQuota = Math.max(0, quota);
   // 単語データのレベルは1〜7（計画書11.3）
   const targetLevels = [userLevel, userLevel + 1].filter((level) => level >= 1 && level <= 7);
   if (targetLevels.length === 0) return { words: [], remainingCandidates: [] };
 
-  const textbookIds = textbooksForGoals(goalIds);
-  const snapshots = await Promise.all(
-    textbookIds.map((id) =>
-      getDocs(query(collection(db, 'textbooks', id, 'words'), where('level', 'in', targetLevels)))
-    )
-  );
-
-  const candidateWords = [];
-  snapshots.forEach((snapshot) => {
-    snapshot.docs.forEach((docSnapshot) => {
-      if (learnedWordIds.has(docSnapshot.id)) return;
-      candidateWords.push({ id: docSnapshot.id, ...docSnapshot.data() });
-    });
-  });
+  const words = await loadGoalTextbookWords(goalIds);
+  const candidateWords = unlearnedCandidates(words, learnedEntries, (word) => targetLevels.includes(word.level));
 
   candidateWords.sort(() => Math.random() - 0.5);
 
   return {
     words: candidateWords.slice(0, safeQuota),
     remainingCandidates: candidateWords.slice(safeQuota),
+  };
+};
+
+/**
+ * 生徒が選んだ教材から新しい単語を取る。
+ *
+ * 生徒のレベルに合う語（[level, level+1]）から出し、足りなければ近いレベルへ広げて埋める
+ * （newWordSources.js の orderByLevelFit）。教材の語を全部学び終えていたら
+ * sourceFinished を立てる——**黙って0語にしない**（ホームで「学び終えた」と出す）。
+ *
+ * 学習済みは id と 語＋品詞＋意味 の両方で見る（unlearnedCandidates）。単語帳はさらに綴りでも見る
+ * （本だけの語は id も訳もマスタと違い、マスタで覚えた同じ語を出し直してしまうため）。
+ */
+export const getNewWordsFromSource = async (source, quota, userLevel, learnedEntries, random = Math.random) => {
+  const safeQuota = Math.max(0, quota);
+  const words = await source.load();
+  const unlearned = unlearnedCandidates(words, learnedEntries);
+  const candidates = source.matchBySpelling ? withoutLearnedSpellings(unlearned, learnedEntries) : unlearned;
+  const ordered = orderByLevelFit(candidates, estimateLevels(words), userLevel, random);
+  return {
+    words: ordered.slice(0, safeQuota),
+    remainingCandidates: ordered.slice(safeQuota),
+    sourceFinished: words.length > 0 && candidates.length === 0,
   };
 };

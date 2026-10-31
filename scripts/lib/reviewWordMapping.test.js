@@ -122,13 +122,25 @@ test('実際のマスターでも同綴語が別IDになっている', () => {
   }
 });
 
-test('マスター全件が自分自身へ一意に対応づく', () => {
+test('マスター全件が自分自身か、中身がまったく同じ語へ対応づく', () => {
+  // 語・品詞・意味まで同じ重複が6組ある（despite / elite / fatigue / frequent /
+  // heritage / shake hands）。以前はレベルだけが違っていて見分けられたが、
+  // 2026-09-24 の付け直しで同じ組を同じレベルに揃えた（統合はしていない）。
+  // どちらへ寄っても中身は同じなので、それ以外の取り違えだけを数える。
   const master = require('../../public/data/words-master.json');
   const real = buildIndex(master);
+  const byId = new Map(master.map((entry) => [entry.id, entry]));
+  const same = (a, b) => a && b && ['word', 'partOfSpeech', 'meaning'].every(
+    (k) => String(a[k] || '').trim().toLowerCase() === String(b[k] || '').trim().toLowerCase()
+  );
   let mismatched = 0;
+  let duplicates = 0;
   for (const entry of master) {
     const result = mapReviewWord(entry, real);
-    if (result.status !== 'matched' || result.id !== entry.id) mismatched += 1;
+    if (result.status === 'matched' && result.id === entry.id) continue;
+    if (result.status === 'matched' && same(byId.get(result.id), entry)) duplicates += 1;
+    else mismatched += 1;
   }
   assert.equal(mismatched, 0);
+  assert.ok(duplicates <= 6, `中身が同じ重複が増えた: ${duplicates}`);
 });

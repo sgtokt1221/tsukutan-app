@@ -14,7 +14,6 @@ import {
   totalScore,
   questionsForStage,
   computeResultLevel,
-  estimateVocabulary,
 } from './placementTestEngine';
 
 /** レベルごとに単語を用意する。eikenLevels には文字列も混ぜる。 */
@@ -255,49 +254,47 @@ describe('前の問題へ戻る', () => {
   });
 });
 
-describe('estimateVocabulary', () => {
-  test('永続IDのユニーク件数で数える', () => {
-    const words = [
-      { id: 'w1', level: 1 },
-      { id: 'w1', level: 1 }, // 同じIDが別教材から来ても1件
-      { id: 'w2', level: 3 },
-      { id: 'w3', level: 5 },
+describe('computeResultLevel（答え全部から推定した力を丸める）', () => {
+  const at = (wordLevel, isCorrect) => ({ level: wordLevel, wordLevel, isCorrect });
+
+  test('Lv3はほぼ知っていて、Lv5はほぼ知らない → Lv4', () => {
+    const answers = [
+      ...Array.from({ length: 10 }, (_, i) => at(3, i < 9)),
+      ...Array.from({ length: 10 }, (_, i) => at(4, i < 5)),
+      ...Array.from({ length: 10 }, (_, i) => at(5, i < 1)),
     ];
-    expect(estimateVocabulary(words, 3)).toBe(2);
-    expect(estimateVocabulary(words, 5)).toBe(3);
-  });
-
-  test('レベル0や空配列でも壊れない', () => {
-    expect(estimateVocabulary([], 3)).toBe(0);
-    expect(estimateVocabulary(null, 3)).toBe(0);
-  });
-
-  test('実際のマスターでも単調に増える', () => {
-    const master = require('../../public/data/words-master.json');
-    const counts = [1, 2, 3, 4, 5, 6, 7].map((level) => estimateVocabulary(master, level));
-    expect(counts).toEqual([...counts].sort((a, b) => a - b));
-    expect(counts[6]).toBe(master.length);
-  });
-});
-
-describe('computeResultLevel', () => {
-  test('落ち着いたレベルでほぼ全問正解なら1段上げる', () => {
-    const answers = Array.from({ length: 10 }, () => ({ level: 4, isCorrect: true }));
-    expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBe(5);
-  });
-
-  test('ほぼ全問不正解なら1段下げる', () => {
-    const answers = Array.from({ length: 10 }, () => ({ level: 4, isCorrect: false }));
-    expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBe(3);
-  });
-
-  test('中間ならそのまま', () => {
-    const answers = Array.from({ length: 10 }, (_, i) => ({ level: 4, isCorrect: i < 6 }));
     expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBe(4);
+  });
+
+  test('出した単語のレベル（wordLevel）で見る。ステージの狙い（level）ではない', () => {
+    // 狙いは4でも、実際に出たのがLv6の語で全部わかるなら力は高い
+    const answers = Array.from({ length: 20 }, () => ({ level: 4, wordLevel: 6, isCorrect: true }));
+    expect(computeResultLevel({ targetLevel: 4, allAnswers: answers })).toBeGreaterThanOrEqual(6);
   });
 
   test('回答が無ければ現在レベル', () => {
     expect(computeResultLevel({ targetLevel: 3, allAnswers: [] })).toBe(3);
+  });
+});
+
+describe('判定が割れたら1ステージ足す', () => {
+  const { MAX_EXTRA_STAGES } = require('./placementTestEngine');
+  // 狙いのレベルで毎回ちょうど半分わかる生徒（力が2つのレベルの境目にいる）
+  const playHalf = () => {
+    let s = createInitialState();
+    let n = 0;
+    while (!s.completed && n < 200) {
+      s = recordAnswer(s, { wordId: `w${n}`, isCorrect: n % 2 === 0, wordLevel: s.targetLevel });
+      n += 1;
+      if (isStageComplete(s)) s = completeStage(s);
+    }
+    return s;
+  };
+
+  test('足すのは最大 MAX_EXTRA_STAGES 回。必ず終わる', () => {
+    const s = playHalf();
+    expect(s.completed).toBe(true);
+    expect(s.extraStages || 0).toBeLessThanOrEqual(MAX_EXTRA_STAGES);
   });
 });
 
@@ -329,5 +326,89 @@ describe('答えを見てからの回答', () => {
     }
     // 半分の得点では正答率0.5で、レベルアップの閾値0.7に届かない
     expect(state.targetLevel).toBeLessThanOrEqual(3);
+  });
+});
+
+/*
+  **同じつづりを1回のテストで二度出さない**（2026-09-24）。単語データには同じつづりの
+  別の行があり、IDだけで除いていたのでテストの23%で同じ語が2回出ていた。
+*/
+describe('同じつづりの二度出し', () => {
+  const dupWords = [
+    { id: 'a1', word: 'about', level: 3 },
+    { id: 'a2', word: 'About ', level: 3 },
+    { id: 'b1', word: 'bread', level: 3 },
+    { id: 'c1', word: 'cat', level: 3 },
+  ];
+
+  it('**同じステージの中で同じつづりを2つ選ばない**', () => {
+    for (let seed = 1; seed <= 20; seed += 1) {
+      const picked = selectQuestions(dupWords, 3, 4, [], seededRandom(seed));
+      const spellings = picked.map((w) => w.word.trim().toLowerCase());
+      expect(new Set(spellings).size).toBe(spellings.length);
+      expect(picked).toHaveLength(3);
+    }
+  });
+
+  it('**前のステージで出したつづりは、別のIDでも出さない**', () => {
+    for (let seed = 1; seed <= 20; seed += 1) {
+      const picked = selectQuestions(dupWords, 3, 4, ['a1'], seededRandom(seed));
+      expect(picked.map((w) => w.id)).not.toContain('a2');
+    }
+  });
+});
+
+describe('ステージをまたいで前の問題へ戻る（2026-09-26）', () => {
+  const answerAll = (state, count, isCorrect) => {
+    let s = state;
+    for (let i = 0; i < count; i++) s = recordAnswer(s, { wordId: `w${s.allAnswers.length}`, isCorrect });
+    return s;
+  };
+
+  it('**次のステージの1問目から戻ると、前のステージの最後の問題に戻る**', () => {
+    const before = answerAll(createInitialState(), QUESTIONS_STAGE_1, true);
+    const next = completeStage(before);
+    expect(next.stage).toBe(2);
+    expect(next.targetLevel).toBe(before.targetLevel + 1);
+
+    const back = undoLastAnswer(next);
+    expect(back.stage).toBe(1);
+    expect(back.targetLevel).toBe(before.targetLevel);
+    expect(back.stageAnswers).toHaveLength(QUESTIONS_STAGE_1 - 1);
+    expect(back.allAnswers).toHaveLength(QUESTIONS_STAGE_1 - 1);
+  });
+
+  it('戻ってから答え直すと、その答えでステージを締め直す', () => {
+    const before = answerAll(createInitialState(), QUESTIONS_STAGE_1, true);
+    const back = undoLastAnswer(completeStage(before));
+    // 最後の1問を「わからない」に直すと 4/5 = 80% で、まだ上がる
+    const redone = completeStage(recordAnswer(back, { wordId: 'w4', isCorrect: false }));
+    expect(redone.stage).toBe(2);
+    expect(redone.allAnswers.at(-1).isCorrect).toBe(false);
+  });
+
+  it('最初のステージの1問目では何もしない', () => {
+    const start = createInitialState();
+    expect(undoLastAnswer(start)).toBe(start);
+  });
+});
+
+describe('あと何問くらい（estimateRemaining）', () => {
+  // eslint-disable-next-line global-require
+  const { estimateRemaining, MIN_ANSWERS_FOR_EARLY_FINISH } = require('./placementTestEngine');
+
+  test('始めは、最短で終わるまでの問題数', () => {
+    // ステージ1(5) + ステージ2(10) で最低回答数15に届き、レベルが動かなければ終われる
+    expect(estimateRemaining(createInitialState())).toBe(MIN_ANSWERS_FOR_EARLY_FINISH);
+  });
+
+  test('答えるたびに1つずつ減る（同じステージの中）', () => {
+    const s0 = createInitialState();
+    const s1 = recordAnswer(s0, { wordId: 'a', isCorrect: true });
+    expect(estimateRemaining(s1)).toBe(estimateRemaining(s0) - 1);
+  });
+
+  test('終わっていれば0', () => {
+    expect(estimateRemaining({ ...createInitialState(), completed: true })).toBe(0);
   });
 });

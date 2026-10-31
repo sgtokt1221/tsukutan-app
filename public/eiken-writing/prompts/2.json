@@ -1,0 +1,100 @@
+{
+  "grade": "2",
+  "tasks": {
+    "opinion": {
+      "label": "意見論述",
+      "minWords": 80,
+      "maxWords": 100,
+      "instructions": [
+        "Write an answer to the TOPIC.",
+        "Give TWO reasons to support your answer.",
+        "The POINTS below may help you write your answer, but you can also use other points.",
+        "Suggested length: 80–100 words."
+      ],
+      "items": [
+        { "id": "o1", "theme": "環境", "question": "Some people say that shops should charge customers for paper cups and disposable chopsticks. Do you agree with this opinion?", "points": ["Cost", "The environment", "Convenience"] },
+        { "id": "o2", "theme": "教育", "question": "Do you think the number of students who take online classes at home will increase in the future?", "points": ["Technology", "Communication", "Cost"] },
+        { "id": "o3", "theme": "テクノロジー", "question": "Some people say that all supermarkets should use self-checkout machines. Do you agree with this opinion?", "points": ["Staff shortages", "Elderly people", "Time"] },
+        { "id": "o4", "theme": "社会", "question": "Do you think more people will choose to live in the countryside in the future?", "points": ["Jobs", "Housing costs", "Transportation"] },
+        { "id": "o5", "theme": "健康", "question": "Some people say that companies should give workers time to exercise during working hours. Do you agree with this opinion?", "points": ["Health", "Productivity", "Cost"] },
+        { "id": "o6", "theme": "文化", "question": "Do you think Japanese schools should teach students more about foreign cultures?", "points": ["Globalization", "Class time", "Tourism"] },
+        { "id": "o7", "theme": "福祉", "question": "Some people say that elderly people should be able to use public transportation for free. Do you agree with this opinion?", "points": ["Cost", "Safety", "Health"] },
+        { "id": "o8", "theme": "経済", "question": "Do you think the number of people who share cars with others will increase in the future?", "points": ["Cost", "Convenience", "The environment"] },
+        { "id": "o9", "theme": "キャリア", "question": "Some people say that all university students should do an internship before they graduate. Do you agree with this opinion?", "points": ["Career", "Study time", "Experience"] },
+        { "id": "o10", "theme": "安全", "question": "Do you think it is a good idea for cities to put more security cameras in public places?", "points": ["Safety", "Privacy", "Cost"] }
+      ]
+    },
+    "summary": {
+      "label": "要約",
+      "minWords": 45,
+      "maxWords": 55,
+      "instructions": [
+        "Read the passage below and summarize its contents in English.",
+        "Use your own words as far as possible.",
+        "Suggested length: 45–55 words."
+      ],
+      "items": [
+        {
+          "id": "s1",
+          "theme": "健康・学校",
+          "title": "Standing Desks at School",
+          "passage": [
+            "In recent years, some schools in Europe and North America have started to replace ordinary desks with standing desks. With these desks, students can choose to stand or sit during lessons. The schools hope to help young people spend less time sitting still, and some schools in Japan are now also thinking about trying them.",
+            "Supporters say that standing desks have several benefits. Students who stand for part of the day move their bodies more, so they may become healthier. In addition, some teachers report that students pay more attention in class because they do not feel sleepy.",
+            "However, there are also some problems. Standing desks are more expensive than normal desks, so many schools cannot afford to buy enough for every classroom. Moreover, some students say that their legs become tired, and they find it difficult to write neatly while standing."
+          ]
+        },
+        {
+          "id": "s2",
+          "theme": "環境",
+          "title": "Water Refill Stations",
+          "passage": [
+            "Many people buy drinks in plastic bottles every day. To reduce this plastic waste, some cities and shops have set up water refill stations. At these places, people can fill their own bottles with drinking water for free or for a small fee. Some apps even show users where the nearest station is.",
+            "These stations have clear advantages. People who carry their own bottles can save money because they do not need to buy drinks so often. Also, fewer plastic bottles are thrown away, which helps protect the ocean and reduces the energy needed for recycling.",
+            "On the other hand, not everyone is happy with this system. Shop owners worry that they will sell fewer drinks and earn less money. In addition, the stations must be cleaned regularly to keep the water safe, and some local governments say that this costs too much."
+          ]
+        },
+        {
+          "id": "s3",
+          "theme": "テクノロジー",
+          "title": "Smart Speakers for Older People",
+          "passage": [
+            "The number of older people living alone is increasing in many countries. Recently, some local governments have begun lending smart speakers to these people. The speakers can answer questions, play music, and remind users to take their medicine at the right time. Users can also ask the speakers about the weather or the news.",
+            "There are several reasons why this service has become popular. Older people can use the speakers just by talking, so they do not need to learn how to use a keyboard or a touch screen. Moreover, family members who live far away can send messages through the speakers, which helps elderly people feel less lonely.",
+            "However, some people have concerns about this service. The speakers record voices, so users may worry about their privacy. Also, when the internet connection stops working, the speakers cannot be used, and some experts say that machines should not replace human visits."
+          ]
+        },
+        {
+          "id": "s4",
+          "theme": "経済",
+          "title": "Renting Clothes",
+          "passage": [
+            "Traditionally, people bought the clothes they wanted to wear. Today, however, a growing number of companies offer clothing rental services. Customers pay a monthly fee and receive several items of clothing by mail. When they are tired of the clothes, they can send them back and get new ones.",
+            "This kind of service has some merits. Customers can wear many different styles without spending a lot of money on each item. Also, they do not need much space at home to keep clothes. Because the same clothes are worn by many people, fewer clothes are thrown away.",
+            "Some people, however, point out problems with clothing rental. The clothes must be washed and delivered many times, which uses a lot of water and fuel. Furthermore, customers may have to pay extra if the clothes are damaged, so some people feel nervous when they wear them."
+          ]
+        },
+        {
+          "id": "s5",
+          "theme": "文化",
+          "title": "Museums at Night",
+          "passage": [
+            "Most museums close in the early evening, so people who work during the day often cannot visit them. Recently, however, some museums have started to stay open until late at night on certain days. Some of them also hold special events such as concerts and talks after dark.",
+            "Night openings can bring several benefits. Office workers and students can enjoy art and history after work or school. Furthermore, the events attract young people who were not interested in museums before, and this helps museums to increase the number of visitors.",
+            "On the other hand, staying open late creates some difficulties. Museums have to pay staff to work at night and spend more money on electricity and security. Also, if only a few people come on quiet evenings, the museum may lose money, so some managers are not sure whether night openings are worth it."
+          ]
+        },
+        {
+          "id": "s6",
+          "theme": "社会",
+          "title": "Shared Offices in Small Towns",
+          "passage": [
+            "Since more companies now allow employees to work from home, some small towns have opened shared offices. These offices are usually in empty buildings such as old schools or shops. Anyone can rent a desk there for a small fee and use the fast internet connection. Some offices also have kitchens and meeting rooms.",
+            "Towns hope that these offices will solve some local problems. When workers from cities come to use them, they may spend money at local restaurants and shops. In addition, some of these workers may decide to move to the town permanently, which can help towns whose populations are getting smaller.",
+            "However, shared offices do not always succeed. In some towns, very few people use them because there is no convenient train or bus service. Moreover, the towns must continue paying to maintain the buildings, so some residents think the money should be spent on other things."
+          ]
+        }
+      ]
+    }
+  }
+}

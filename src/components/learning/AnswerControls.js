@@ -1,5 +1,17 @@
 import React from 'react';
+import { FaCheck, FaGraduationCap, FaRedo } from 'react-icons/fa';
 import './AnswerControls.css';
+
+/**
+ * 丸いボタン（round）のときの中身。印を丸の中に、名前を下に。
+ * **文字は label だけ**にする（印は svg なので、ボタンの名前・textContent は今までと同じ）
+ */
+const RoundLabel = ({ Icon, label }) => (
+  <>
+    <span className="answer-btn__circle" aria-hidden="true"><Icon /></span>
+    <span className="answer-btn__label">{label}</span>
+  </>
+);
 
 /**
  * 回答操作。DESIGN_IMPLEMENTATION_PLAN.md 7.4 / 7.5。
@@ -14,23 +26,28 @@ export default function AnswerControls({
   onCorrect,
   onIncorrect,
   onHard,
+  // 中央に置く「もう覚えた」（上スワイプと同じ）。`{ label, fullLabel, hint, onClick }`
+  middle,
   disabled = false,
   correctLabel = 'わかった',
   incorrectLabel = 'もう一度',
   hardLabel = '迷った',
   hint,
+  // 丸いボタンにする（単語力チェックテストと同じ見た目。2026-09-26）
+  round = false,
 }) {
+  const body = (Icon, label) => (round ? <RoundLabel Icon={Icon} label={label} /> : label);
   return (
-    <div className="answer-controls">
+    <div className={round ? 'answer-controls answer-controls--round' : 'answer-controls'}>
       {hint && <p className="answer-controls__hint">{hint}</p>}
-      <div className={onHard ? 'answer-controls__buttons answer-controls__buttons--three' : 'answer-controls__buttons'}>
+      <div className={(onHard || middle) ? 'answer-controls__buttons answer-controls__buttons--three' : 'answer-controls__buttons'}>
         <button
           type="button"
           className="answer-btn answer-btn--again"
           onClick={onIncorrect}
           disabled={disabled}
         >
-          {incorrectLabel}
+          {body(FaRedo, incorrectLabel)}
         </button>
         {onHard && (
           <button
@@ -42,13 +59,25 @@ export default function AnswerControls({
             {hardLabel}
           </button>
         )}
+        {middle && (
+          <button
+            type="button"
+            className="answer-btn answer-btn--graduate"
+            onClick={middle.onClick}
+            disabled={disabled}
+            aria-label={middle.fullLabel || middle.label}
+            title={middle.hint}
+          >
+            {body(FaGraduationCap, middle.label)}
+          </button>
+        )}
         <button
           type="button"
           className="answer-btn answer-btn--known"
           onClick={onCorrect}
           disabled={disabled}
         >
-          {correctLabel}
+          {body(FaCheck, correctLabel)}
         </button>
       </div>
     </div>

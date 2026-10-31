@@ -1,0 +1,67 @@
+{
+  "id": "eiken2-002",
+  "grade": "2",
+  "title": "Online Medical Care",
+  "passage": {
+    "text": "Online medical services are becoming common in Japan. Doctors examine patients through a computer or a smartphone and send prescriptions to a pharmacy near the patient's home. In this way, they reduce the time and the effort that sick people need to spend. However, some doctors say that it is difficult to find serious illnesses in this way, so hospitals still play an important role.",
+    "hintPhrase": "In this way",
+    "wordCount": 65
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken2-002-a.webp",
+      "caption": "3コマ。①ソファでお腹を押さえる男性と妻「The clinic is too far to go today.」→ Ten minutes later ②食卓のノートPCで医師と会話。医師は処方を書いている → That evening ③水で薬を飲む。吹き出しに、元気に職場の机で働く姿。",
+      "panels": 3
+    }
+  ],
+  "narration": {
+    "openingSentence": "One evening, Mr. and Mrs. Kato were sitting at home, and Mr. Kato was feeling sick.",
+    "prepareSeconds": 20,
+    "speakSeconds": null
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do doctors reduce the time and the effort that sick people need to spend?",
+      "modelAnswer": "By examining patients through a computer or a smartphone and sending prescriptions to a pharmacy near the patient's home.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "narration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the picture and describe the situation. You have twenty seconds to prepare. Your story should begin with the sentence on the card.",
+      "modelAnswer": "One evening, Mr. and Mrs. Kato were sitting at home, and Mr. Kato was feeling sick. His wife said that the clinic was too far to go to that day. Ten minutes later, Mr. Kato was talking to a doctor on his laptop, and the doctor was writing a prescription. That evening, he was taking the medicine with a glass of water. He was thinking that he would be able to go back to work.",
+      "answerSeconds": 60
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that hospitals should offer more services online. What do you think about that?",
+      "modelAnswer": "I agree. People who live far from a hospital, or who cannot leave their homes, need it the most. However, doctors cannot examine everything through a screen, so it should be used together with real visits.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Today, many people are worried about their personal information. Do you think companies protect people's information well enough?",
+      "modelAnswer": null,
+      "answerSeconds": 40,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Companies now lose their customers if information leaks, so they spend a lot of money on security."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "We hear about leaks almost every month. Many companies only act after a problem happens."
+        }
+      }
+    }
+  ]
+}

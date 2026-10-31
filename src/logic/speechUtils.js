@@ -1,4 +1,5 @@
 import logger from './logger';
+import { fetchClip } from './audioLibrary';
 const synthesis = window.speechSynthesis;
 let voices = [];
 let initializationPromise = null;
@@ -8,6 +9,37 @@ let initializationPromise = null;
 let activeUtterance = null;
 // 実行中の読み上げの並び。打ち切ったあとに古いイベントで進まないようにする。
 let activeSequence = null;
+/*
+  最後に cancel() を呼んだ時刻。
+
+  **Chrome は cancel() の直後の speak() を黙って捨てる。**
+  ところが直後は `synthesis.speaking` も `pending` も false なので、
+  「鳴っていたら100ms待つ」という下の守りをすり抜ける。
+  呼び出し側が stopSpeaking() してすぐ speakSequence() する経路
+  （ReadingPanel の読み上げボタン）がまさにこれで、**2回目以降が無音になる**。
+  鳴っているかではなく「直前に打ち切ったか」で待つ。
+*/
+let lastCancelAt = 0;
+const CANCEL_GUARD_MS = 150;
+
+const noteCancel = () => {
+  lastCancelAt = Date.now();
+};
+
+/*
+  待ってから積むぶんの予約。**止めたら取り消す。**
+  取り消さないと、止めたあとに前の予約が起きて鳴り、次のぶんと重なる
+  （押し直すたびに古い文が混ざる）。
+*/
+let pendingStart = null;
+const scheduleStart = (run, ms) => {
+  clearTimeout(pendingStart);
+  pendingStart = setTimeout(run, ms);
+};
+const cancelScheduledStart = () => {
+  clearTimeout(pendingStart);
+  pendingStart = null;
+};
 
 const initialize = () => {
   if (initializationPromise) {
@@ -117,8 +149,10 @@ const buildUtterance = (text, lang) => {
         logger.debug('Japanese voices found (desktop):', japaneseVoices.map(v => `${v.name} (${v.lang})`));
         
         if (japaneseVoices.length > 0) {
-          const selectedVoice = 
-            japaneseVoices.find(voice => voice.name.includes('Google')) ||
+          const selectedVoice =
+            // **端末の中にある声を先に選ぶ。** Google の声はサーバで合成するので、
+            // 読み始めるまでに毎回待ちが入る（通しの読み上げが遅いのはこれ）
+            japaneseVoices.find(voice => voice.localService) ||
             japaneseVoices.find(voice => voice.name.includes('Kyoko')) || // macOSの日本語音声
             japaneseVoices.find(voice => voice.name.includes('Microsoft')) ||
             japaneseVoices.find(voice => voice.name.includes('日本語')) ||
@@ -136,8 +170,10 @@ const buildUtterance = (text, lang) => {
         );
         
         if (englishVoices.length > 0) {
-          const selectedVoice = 
-            englishVoices.find(voice => voice.name.includes('Google')) ||
+          const selectedVoice =
+            // **端末の中にある声を先に選ぶ**（上の日本語と同じ理由）
+            englishVoices.find(voice => voice.localService && voice.lang === 'en-US') ||
+            englishVoices.find(voice => voice.localService) ||
             englishVoices.find(voice => voice.name === 'Alex') || // macOSの高品質な音声
             englishVoices.find(voice => voice.name.includes('Microsoft')) ||
             englishVoices.find(voice => voice.name.includes('English')) ||
@@ -209,19 +245,168 @@ const speak = (text, lang = 'en-US') => {
  * @param {Array<{text: string, lang?: string, onStart?: Function}>} items 読み上げる順に並べる
  * @param {{onDone?: Function}} [options] 全部読み終えたときに呼ぶ
  */
+// 再生中の音声ファイル。止めるときに使う。
+let activeAudio = null;
+
+const stopClip = () => {
+  if (!activeAudio) return;
+  try {
+    activeAudio.pause();
+    if (activeAudio.src.startsWith('blob:')) URL.revokeObjectURL(activeAudio.src);
+  } catch (error) {
+    // 止められなくても続行する
+  }
+  activeAudio = null;
+};
+
+/**
+ * 作っておいた音声ファイルを鳴らす。
+ * 用意が無ければ false を返し、呼び出し側が端末の読み上げに戻す。
+ */
+const playClip = (blob) => new Promise((resolve) => {
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  activeAudio = audio;
+
+  const done = () => {
+    if (activeAudio === audio) activeAudio = null;
+    URL.revokeObjectURL(url);
+    resolve();
+  };
+
+  audio.onended = done;
+  audio.onerror = done;
+  audio.play().catch(done);
+});
+
+/**
+ * 続けて読むぶんを、1つの発話にまとめる。
+ *
+ * **通しの読み上げが遅いのはここ。** 1文ずつ積むと、文と文のあいだに
+ * 合成の待ちが必ず入る（ネット音声だと1文ごとに200〜400ms）。
+ * 10文の読みものなら数秒ぶん、ただ黙っている時間になる。
+ *
+ * 言語が同じで、**始まりを知らせる必要が無い**ぶんだけ繋ぐ。
+ * 1文ずつ光らせている経路（`onStart` を持つ）は繋がない——
+ * まとめると、どの文を読んでいるか分からなくなる。
+ *
+ * @param {Array<{text: string, lang?: string, onStart?: Function}>} queue
+ * @returns {Array<{text: string, lang?: string, onStart?: Function}>}
+ */
+const mergeSameVoice = (queue) => {
+  const out = [];
+  for (const item of queue) {
+    const last = out[out.length - 1];
+    const sameVoice = last
+      && (last.lang || 'en-US') === (item.lang || 'en-US')
+      && typeof last.onStart !== 'function'
+      && typeof item.onStart !== 'function';
+    if (sameVoice) last.text = `${last.text} ${item.text}`;
+    else out.push({ ...item });
+  }
+  return out;
+};
+
+/**
+ * 作り置きの音声が置いてあるか。`null` はまだ分からない。
+ *
+ * **鳴らす前に確かめない。** 確かめには通信が要るので、待っているあいだに
+ * 操作の瞬間が過ぎ、iOS では鳴らなくなる。裏で1回だけ見に行く。
+ */
+let clipLibrary = null;
+let probing = false;
+
+const probeClipLibrary = (item) => {
+  if (clipLibrary !== null || probing || !item) return;
+  probing = true;
+  fetchClip(item.text, item.lang || 'en-US')
+    .then((blob) => { clipLibrary = Boolean(blob && String(blob.type || '').startsWith('audio/')); })
+    .catch(() => { clipLibrary = false; })
+    .finally(() => { probing = false; });
+};
+
 const speakSequence = (items, options = {}) => {
-  const queue = (items || []).filter((item) => item && item.text);
+  // 前の再生が残っていれば止める。**通信を待たないので操作の瞬間を逃さない**
+  stopClip();
+  const queue = mergeSameVoice((items || []).filter((item) => item && item.text));
   if (queue.length === 0) {
     if (typeof options.onDone === 'function') options.onDone();
     return;
   }
+
+  /**
+   * 音声ファイルで順に鳴らす。1つでも用意が無ければ false を返し、
+   * 端末の読み上げに任せる（声が混ざるより揃っている方がよい）。
+   */
+  const playAllClips = async (token) => {
+    const blobs = [];
+    for (const item of queue) {
+      // eslint-disable-next-line no-await-in-loop
+      const blob = await fetchClip(item.text, item.lang || 'en-US');
+      // **音声でないものを鳴らしたことにしない。** 端末に古い取り違え
+      // （SPA が返した index.html）が残っていると、`audio.onerror` が
+      // 「再生し終わった」と同じ扱いになり、無音のまま先へ進む
+      if (!blob || !String(blob.type || '').startsWith('audio/')) return false;
+      blobs.push(blob);
+    }
+
+    for (let index = 0; index < queue.length; index += 1) {
+      if (activeSequence !== token) return true;
+      const item = queue[index];
+      if (typeof item.onStart === 'function') item.onStart();
+      // eslint-disable-next-line no-await-in-loop
+      await playClip(blobs[index]);
+    }
+
+    if (activeSequence === token) {
+      activeSequence = null;
+      if (typeof options.onDone === 'function') options.onDone();
+    }
+    return true;
+  };
 
   const enqueueAll = () => {
     // 打ち切られたあとに古いキューのイベントで先へ進まないよう、
     // この呼び出しぶんだけを見分ける印を持たせる。
     const token = {};
     activeSequence = token;
-    const pending = [];
+
+    /*
+      **作っておいた音声を「あるか確かめてから」鳴らさない。**
+
+      iOS Safari は、押した操作と同じ処理の中で `speak()` を呼ばないと鳴らさない。
+      確かめには通信が要る（`fetchClip`）ので、待っているあいだに操作の瞬間が過ぎ、
+      **エラーも出ないまま無音になる**（2026-09-20 に実機で「読み上げが効かない」）。
+
+      置いてあると分かっているときだけ使い、分からないうちは端末の読み上げで鳴らす。
+      あるかどうかは裏で1回だけ見に行き、次の再生から効かせる。
+    */
+    if (clipLibrary === true) {
+      playAllClips(token).then((played) => {
+        if (played || activeSequence !== token) return;
+        enqueueUtterances(token);
+      });
+    } else {
+      enqueueUtterances(token);
+    }
+    probeClipLibrary(queue[0]);
+  };
+
+  /*
+    **1つずつ積む。まとめて積まない。**
+
+    以前は queue を全部 speak() に渡していた。1つ読んでいる間に次の音声が
+    用意されるので速い——のだが、**iOS Safari は一度に積んだ2つ目以降を黙って落とす**。
+    「1文ずつの読み上げは鳴るのに、通しの読み上げボタンだけ効かない」という形で出る
+    （2026-09-20 に実機で報告）。エラーは出ないので画面からは分からない。
+
+    読み終わりを待って次を積むので、ネット音声だと文の間が少し空く。
+    鳴らないより間が空く方がよい。
+  */
+  const enqueueUtterances = (token) => {
+    const held = [];
+    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残す。
+    activeUtterance = held;
 
     const finish = () => {
       if (activeSequence !== token) return;
@@ -229,35 +414,43 @@ const speakSequence = (items, options = {}) => {
       if (typeof options.onDone === 'function') options.onDone();
     };
 
-    queue.forEach((item, index) => {
+    const speakAt = (index) => {
+      if (activeSequence !== token) return;
+      if (index >= queue.length) {
+        finish();
+        return;
+      }
+      const item = queue[index];
       const utterance = buildUtterance(item.text, item.lang || 'en-US');
-      const isLast = index === queue.length - 1;
+      held.push(utterance);
 
       utterance.onstart = () => {
         if (activeSequence !== token) return;
         if (typeof item.onStart === 'function') item.onStart();
       };
-      utterance.onend = () => {
-        if (isLast) finish();
-      };
-      // 読み上げに失敗しても止めない（音声が無い端末で固まらないように）
-      utterance.onerror = () => {
-        if (isLast) finish();
-      };
+      // 失敗しても止めない（音声が無い端末で固まらないように）次へ進む
+      utterance.onend = () => speakAt(index + 1);
+      utterance.onerror = () => speakAt(index + 1);
 
-      pending.push(utterance);
-    });
+      synthesis.speak(utterance);
+    };
 
-    // Chrome は発話中の utterance がGCされると途中で切れる。参照を残す。
-    activeUtterance = pending;
-    pending.forEach((utterance) => synthesis.speak(utterance));
+    speakAt(0);
   };
 
   if (synthesis.speaking || synthesis.pending) {
     // 前の読み上げは打ち切る。カードを次々めくったときに溜まらないように。
     synthesis.cancel();
+    noteCancel();
     // cancel() の直後に speak() を呼ぶと Chrome が無視することがあるので間を置く。
-    setTimeout(enqueueAll, 100);
+    scheduleStart(enqueueAll, CANCEL_GUARD_MS);
+    return;
+  }
+
+  // 鳴っていなくても、直前に打ち切っていれば同じだけ待つ
+  const sinceCancel = Date.now() - lastCancelAt;
+  if (sinceCancel < CANCEL_GUARD_MS) {
+    scheduleStart(enqueueAll, CANCEL_GUARD_MS - sinceCancel);
     return;
   }
 
@@ -280,7 +473,10 @@ const speakWordThenMeaning = (word, meaning, direction = 'en-ja') => {
 const stopSpeaking = () => {
   activeUtterance = null;
   activeSequence = null;
+  cancelScheduledStart();
+  stopClip();
   synthesis.cancel();
+  noteCancel();
 };
 
 export { initialize, speak, speakSequence, speakWordThenMeaning, stopSpeaking };

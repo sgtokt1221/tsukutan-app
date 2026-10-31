@@ -1,0 +1,53 @@
+{
+  "id": "eiken-p1-001",
+  "grade": "pre1",
+  "title": "Rubbish in the Park",
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p1-001-a.webp",
+      "caption": "4コマ。①日曜の朝、公園の芝生に散らばるゴミを見る女性 ②「Clean Park Project」の幕の下でボランティアと清掃（The next month）③新しいゴミ箱3つを設置。「Please use the bins」の看板（Six months later）④そのゴミ箱が家庭ゴミの大袋で溢れている。女性は困惑（A few weeks later）。",
+      "panels": 4
+    }
+  ],
+  "narration": {
+    "storyLine": "This is a story about a woman who wanted to make her local park clean.",
+    "openingSentence": "One Sunday morning, a woman was walking in a park and saw a lot of rubbish on the grass.",
+    "prepareSeconds": 60,
+    "speakSeconds": 120
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "roleplay",
+      "cardVisible": true,
+      "prompt": "Please look at the fourth picture. If you were the person in the picture, what would you be thinking?",
+      "modelAnswer": "I'd be thinking that I never expected people to bring their household rubbish here. The park itself is clean now, but I have created a new problem for the city. I should ask them to empty the bins more often, or to put up a sign explaining what the bins are for.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 2,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think local governments should spend more money on public parks?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that volunteer work should be a part of school education. Do you agree with that idea?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think people today care enough about the environment in their own neighborhoods?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    }
+  ]
+}

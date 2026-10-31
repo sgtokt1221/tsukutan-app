@@ -5,7 +5,9 @@
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  background-color: var(--color-canvas-lime);
+  background:
+    radial-gradient(circle at 100% 0, var(--color-lime-soft), transparent 30%),
+    var(--color-canvas-lime);
 }
 
 .student-shell__main {
@@ -14,15 +16,21 @@
   /* 本文が横に間延びしないようにする（計画書7） */
   max-width: var(--width-reading);
   margin: 0 auto;
-  padding: var(--space-16) var(--space-16) calc(var(--space-64) + env(safe-area-inset-bottom, 0px));
+  padding: var(--space-16) var(--space-16) calc(88px + env(safe-area-inset-bottom, 0px));
 }
 
 /* 下部ナビのアイコンとラベルを縦に積む */
 .tab-item {
   flex-direction: column;
-  gap: var(--space-4);
+  /* **受験サポートと同じ 3px**（`gap-[3px]`）。4px だと1行ぶん高く見える */
+  gap: 3px;
 }
 
 .tab-icon {
-  font-size: var(--icon-20);
+  /* **受験サポートと同じ 21px**（lucide の `size={21}`） */
+  font-size: 21px;
+}
+
+@media (min-width: 768px) {
+  .student-shell__main { padding-top: var(--space-24); }
 }

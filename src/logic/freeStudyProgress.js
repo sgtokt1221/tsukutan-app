@@ -3,6 +3,21 @@ import { db } from '../firebaseConfig';
 import logger from './logger';
 
 /**
+ * レベル別の「続き」を覚える鍵のレベル部分。
+ *
+ * 単語の中身と並びが変わったら、古い位置（「120語目まで」）から再開すると別の語から始まる。
+ * 変えたときは版を上げて、続きを一度まっさらにする。
+ * - r2（2026-09-24）: レベルを付け直した（scripts/relevel-words.js）。大阪府・高校英語
+ * - r3（2026-09-24）: 中学の語の英検の級を教科書で決め直した（scripts/apply-textbook-eiken.js）。
+ *   英検の級別も語の集まりが変わったので対象に入れた
+ */
+const PROGRESS_VERSION = 'r3';
+const isLevelTextbook = (textbookId) =>
+  textbookId === 'osaka-koukou-nyuushi' || textbookId === 'highschool-english' || String(textbookId).startsWith('eiken-');
+export const levelProgressKey = (textbookId, level) =>
+  (isLevelTextbook(textbookId) ? `${PROGRESS_VERSION}-${level}` : String(level));
+
+/**
  * 自由学習の進捗を保存します
  * @param {string} userId ユーザーID
  * @param {string} textbookId テキストブックID

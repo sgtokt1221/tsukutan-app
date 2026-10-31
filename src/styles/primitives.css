@@ -94,10 +94,16 @@
   background-color: var(--color-lime-soft);
   font-weight: 700;
 }
+/* ✓ は角に重ねる。行として積むと、選んだカードだけ背が高くなって一覧がガタつく。
+   ✓ の居場所（右側の余白）は選択前から空けてある（App.css の .goal-chip / .motivation-option）。 */
 .goal-chip[aria-pressed="true"]::before,
 .motivation-option[aria-pressed="true"]::before {
-  content: '✓ ';
+  content: '✓';
+  position: absolute;
+  top: var(--space-8);
+  right: var(--space-8);
   font-weight: 700;
+  line-height: 1;
 }
 .goal-chip:hover:not(:disabled),
 .motivation-option:hover:not(:disabled) {

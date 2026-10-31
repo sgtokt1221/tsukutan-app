@@ -1,0 +1,53 @@
+{
+  "id": "eiken-p1-003",
+  "grade": "pre1",
+  "title": "A Night Market",
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p1-003-a.webp",
+      "caption": "4コマ。①静かな商店街。近隣の店はシャッターに「For Rent」（Last spring）②「Summer Night Market」のチラシを持って店主たちと相談（In May）③提灯と屋台で賑わう夜。店主は客の応対に追われる（In August）④カウンターで手紙を読む店主。窓の外で近隣住民が耳を塞いで怒っている。壁に「Noise Complaint」（In September）。",
+      "panels": 4
+    }
+  ],
+  "narration": {
+    "storyLine": "This is a story about a shop owner who tried to bring visitors back to her shopping street.",
+    "openingSentence": "Last spring, a shop owner was standing outside her shop in a quiet shopping street.",
+    "prepareSeconds": 60,
+    "speakSeconds": 120
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "roleplay",
+      "cardVisible": true,
+      "prompt": "Please look at the fourth picture. If you were the person in the picture, what would you be thinking?",
+      "modelAnswer": "I'd be thinking that the night market saved our shops but hurt the people who live here. Their complaint is fair, and I cannot ignore it just because business is good. I should meet them and find a compromise, perhaps by ending the event earlier or by limiting it to a few days.",
+      "answerSeconds": 40
+    },
+    {
+      "no": 2,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think small local shops can survive against large shopping malls?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 3,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Some people say that towns should hold more events to attract visitors. What do you think?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think the opinions of local residents are respected enough when a town makes decisions?",
+      "modelAnswer": null,
+      "answerSeconds": 40
+    }
+  ]
+}

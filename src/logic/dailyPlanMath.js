@@ -5,6 +5,8 @@
  * IMPLEMENTATION_PLAN.md 8.4 / 10.2。
  */
 
+import { wordContentKey } from './wordKey';
+
 // 1日に提案する新規語数の上限。これを超える必要がある期限は「達成困難」として扱う。
 // 最もやる気が高い設定（30語/日）の倍を上限にしている。
 export const MAX_NEW_WORDS_PER_DAY = 60;
@@ -106,3 +108,21 @@ export const sortReviewCandidates = (entries = []) =>
     if (a.isOverdue !== b.isOverdue) return a.isOverdue ? -1 : 1;
     return (b.forgettingScore || 0) - (a.forgettingScore || 0);
   });
+
+/**
+ * 教材の語から、まだ学んでいない語だけを残す（id で重複も除く）。
+ * @param {Array} words 教材ファイルの語（複数の教材を連結してよい）
+ * @param {Array} learnedEntries reviewWords の文書（id・word・partOfSpeech・meaning）
+ * @param {(word) => boolean} include 対象のレベルか
+ */
+export const unlearnedCandidates = (words = [], learnedEntries = [], include = () => true) => {
+  const learnedIds = new Set(learnedEntries.map((entry) => entry.id));
+  const learnedKeys = new Set(learnedEntries.map(wordContentKey));
+  const seen = new Set();
+  return words.filter((word) => {
+    if (!word?.id || seen.has(word.id)) return false;
+    seen.add(word.id);
+    if (!include(word)) return false;
+    return !learnedIds.has(word.id) && !learnedKeys.has(wordContentKey(word));
+  });
+};

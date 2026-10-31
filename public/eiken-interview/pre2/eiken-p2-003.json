@@ -1,0 +1,84 @@
+{
+  "id": "eiken-p2-003",
+  "grade": "pre2",
+  "title": "Camping with Families",
+  "passage": {
+    "text": "Camping has become popular among families in Japan. Parents take their children to campsites near the sea or in the mountains, and in this way, they give them a chance to enjoy nature. Many campsites now rent tents and cooking tools, so even beginners can join easily.",
+    "hintPhrase": "in this way",
+    "wordCount": 47
+  },
+  "illustrations": [
+    {
+      "id": "a",
+      "file": "eiken-p2-003-a.webp",
+      "caption": "海辺のキャンプ場。5人が別々の動作（テントを張る男性／グリルで料理する女性／海で泳ぐ女の子／薪を集める男の子／岸で釣る年配男性）。"
+    },
+    {
+      "id": "b",
+      "file": "eiken-p2-003-b.webp",
+      "caption": "駅の券売機の前に立つ女性。券売機に OUT OF ORDER の貼り紙。吹き出しに切符を持って改札を通る姿、赤い斜線。"
+    }
+  ],
+  "questions": [
+    {
+      "no": 1,
+      "type": "passage",
+      "cardVisible": true,
+      "prompt": "Please look at the passage. According to the passage, how do parents give their children a chance to enjoy nature?",
+      "modelAnswer": "By taking them to campsites near the sea or in the mountains.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 2,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, please look at the people in Picture A. They are doing different things. Tell me as much as you can about what they are doing.",
+      "modelAnswer": "A man is putting up a tent. A woman is cooking on a grill. A girl is swimming in the sea. A boy is collecting firewood. An older man is fishing.",
+      "answerSeconds": 45
+    },
+    {
+      "no": 3,
+      "type": "illustration",
+      "cardVisible": true,
+      "prompt": "Now, look at the person in Picture B. Please describe the situation.",
+      "modelAnswer": "The woman can't buy a ticket and go through the gate because the ticket machine is out of order.",
+      "answerSeconds": 20
+    },
+    {
+      "no": 4,
+      "type": "opinion",
+      "cardVisible": false,
+      "prompt": "Do you think it is important for children to spend time in nature?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Why?",
+          "modelAnswer": "Children learn things outside that they cannot learn from books. It is also good for their health."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "There are many things children need to study. Nature is not the only way to learn."
+        }
+      }
+    },
+    {
+      "no": 5,
+      "type": "personal",
+      "cardVisible": false,
+      "prompt": "These days, many people travel by train on weekends. Do you often travel by train?",
+      "modelAnswer": null,
+      "answerSeconds": 30,
+      "followUp": {
+        "yes": {
+          "prompt": "Please tell me more.",
+          "modelAnswer": "I take the train to Osaka with my friends. We go shopping there."
+        },
+        "no": {
+          "prompt": "Why not?",
+          "modelAnswer": "My family usually goes by car. There are not many trains near my house."
+        }
+      }
+    }
+  ]
+}

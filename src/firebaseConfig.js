@@ -1,6 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import {
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from 'firebase/auth';
 
 /**
  * Firebase の初期化。
@@ -30,6 +35,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
+// **getAuth は使わない**（2026-10-31）。getAuth はポップアップ／リダイレクトのログイン用の部品を付け、
+// 携帯・Safari では gapi と auth の iframe（約130KB・別オリジン2つ）を読み終えるまでログイン状態を返さない。
+// ログインはメール・パスワードと custom token だけなので要らない。
+// **保存先の並びは getAuth の既定と同じ**（変えると全員ログアウト）。ほかの場所の getAuth() はこの1つを返す
+const auth = initializeAuth(app, {
+  persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
+});
 
 export { db, auth };

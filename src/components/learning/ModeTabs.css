@@ -24,10 +24,10 @@
 }
 
 .mode-tabs__tab {
-  padding: var(--space-8);
+  margin: var(--space-4) 0;
+  padding: var(--space-4) var(--space-12);
   border: none;
-  /* 選択中の下線ぶんの高さを常に確保して、切り替えても行が動かないようにする */
-  border-bottom: 2px solid transparent;
+  border-radius: var(--radius-pill);
   background: none;
   font-family: var(--font-family-body);
   font-size: var(--font-size-14);
@@ -41,7 +41,9 @@
   color: var(--color-ink-olive);
 }
 
+/* 選択中はベタ塗り＋白抜き文字（下線は使わない。2026-09-26 に決めた） */
 .mode-tabs__tab[aria-selected="true"] {
-  color: var(--color-ink-olive);
-  border-bottom-color: var(--color-brand-lime);
+  background-color: var(--color-ink-olive);
+  color: #ffffff;
+  font-weight: 700;
 }
