@@ -37,6 +37,7 @@ import ExamPracticeCard from './components/quiz/ExamPracticeCard';
 import Onboarding from './components/onboarding/Onboarding';
 import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
+import { useStartWhenIdle } from './logic/useStartWhenIdle';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
 import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStudyMenu';
 import RecommendationBadge from './components/student/RecommendationBadge';
@@ -402,9 +403,16 @@ export default function StudentDashboard() {
       });
   }, []);
 
-  useEffect(() => {
+  /*
+    **ホームのデータが届いてから読む**（2026-10-31）。words-master は gzip で 600KB 余りあり、
+    開いた直後に投げるとホームの読み込みと回線を取り合って、今日のタスクが出るのが遅れる。
+    使う場面（単語力チェック・英検の「えらぶ」）は、未着ならその場で loadMasterWords を待つ。
+    初回の案内を出しているときだけは、案内を読んでいる間に読めるようすぐ始める。
+  */
+  const startMasterWords = useCallback(() => {
     loadMasterWords().catch(() => {});
   }, [loadMasterWords]);
+  useStartWhenIdle(!loading, startMasterWords, { now: showOnboarding });
 
   /*
     **いまのランクを、勉強を送るときに添えられるようにしておく**（2026-09-22）。
