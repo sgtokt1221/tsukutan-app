@@ -39,6 +39,7 @@ import DashboardSkeleton from './components/student/DashboardSkeleton';
 import { useOnboarding } from './logic/useOnboarding';
 import { useStartWhenIdle } from './logic/useStartWhenIdle';
 import { loadDashboard } from './logic/dashboardStartup';
+import { takeUserDoc } from './logic/userDocHandover';
 import { FaBook, FaSyncAlt, FaMagic, FaStar, FaArrowLeft } from 'react-icons/fa';
 import FreeStudyMenu, { freeStudyBackTarget } from './components/student/FreeStudyMenu';
 import RecommendationBadge from './components/student/RecommendationBadge';
@@ -521,15 +522,18 @@ export default function StudentDashboard() {
   }, []);
 
   // --- データ取得・更新ロジック (変更なし) ---
-  const refreshDashboardData = useCallback(async (uid) => {
+  // `preloaded` は App が直前に読んだ users 文書（開いた最初の1回だけ。→ logic/userDocHandover.js）。
+  // それ以外（テストのあと・学習のあと・再試行）は必ずサーバから読み直す
+  const refreshDashboardData = useCallback(async (uid, { preloaded = null } = {}) => {
     setDashboardError(null);
     try {
-      const userDocRef = doc(db, 'users', uid);
-      // キャッシュを無効化して最新データを取得
-      const userDoc = await getDoc(userDocRef);
+      let data = preloaded;
+      if (!data) {
+        const userDoc = await getDoc(doc(db, 'users', uid));
+        data = userDoc.exists() ? userDoc.data() : null;
+      }
 
-      if (userDoc.exists()) {
-        const data = userDoc.data();
+      if (data) {
         logger.debug('👤 ユーザーデータ取得:', {
           level: data.level,
           testResultLevel: data.testResultLevel,
@@ -656,7 +660,7 @@ export default function StudentDashboard() {
         // 骨組みを外すのはホームに出るものが揃ったときだけ。
         // ストーリー・自由学習はホームに出ないので、同時に投げて後から埋める
         loadDashboard({
-          home: () => refreshDashboardData(user.uid),
+          home: () => refreshDashboardData(user.uid, { preloaded: takeUserDoc(user.uid) }),
           extras: [() => fetchStories(user.uid), () => loadFreeStudyProgress(user.uid)],
           onHomeSettled: () => setLoading(false),
         });

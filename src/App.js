@@ -14,6 +14,8 @@ import BrandLoader from './components/brand/BrandLoader';
 import { enterFromTsukubaHome } from './logic/tsukubaEntry.js';
 // 勉強時間をつくばホームへ送る。**前回閉じたぶんも、ここで締めて送る**
 import { resumeAndFlush } from './logic/studySession.js';
+// App が読んだ users 文書を、ダッシュボードの最初の1回だけに渡す（同じ文書を2回読まない）
+import { handOverUserDoc, dropUserDoc } from './logic/userDocHandover.js';
 const loadStudentDashboard = () => import('./StudentDashboard.js');
 const StudentDashboard = lazy(loadStudentDashboard);
 const AdminMoved = lazy(() => import('./AdminMoved.js'));
@@ -87,6 +89,8 @@ function AppContent() {
               void resumeAndFlush();
               const userDocRef = doc(db, 'users', user.uid);
               const userDoc = await getDoc(userDocRef);
+              // 画面を切り替える前に置く（ダッシュボードが読みに行く前に間に合わせる）
+              handOverUserDoc(user.uid, userDoc.exists() ? userDoc.data() : null);
               setSchoolGrade(userDoc.exists() ? userDoc.data().grade ?? null : null);
               if (userDoc.exists() && userDoc.data().goal && userDoc.data().goal.isSet) {
                 setIsGoalSet(true);
@@ -95,6 +99,7 @@ function AppContent() {
               }
             }
           } else {
+            dropUserDoc();
             setUserRole(null);
             setIsGoalSet(false);
           }
@@ -129,6 +134,8 @@ function AppContent() {
 
   // 保存そのものは GoalSetter が行う。ここではルーティングの状態だけ更新する。
   const handleGoalSet = () => {
+    // 目標を変えたので、App が先に読んだものは古い。ダッシュボードには読み直させる
+    dropUserDoc();
     setIsGoalSet(true);
     navigate('/student-dashboard');
   };
